@@ -1,0 +1,40 @@
+
+
+:root{   
+    --primary-blue: #227DD7;
+    --primary-blue-dark-shade: #1D76CE;
+    --primary-orange: #F4693A;
+    --primary-orange-dark-shade: #F06434;
+    --accent-color-01: #C7FFE0;
+    --accent-color-02: #E4DDFF;
+    --accent-color-03: #FFE8CA;
+    --accent-color-04: #FFD3F6;
+    --accent-color-05: #C6ECFF;
+    --white: #FFFFFF;
+    --black: #000000;
+    --inactive-button: #919191;
+    --type-text: #D9DCE0;
+    --unnamed-color-e7edf4: #E7EDF4;
+    --ligh-grey: #798896;
+    --light: #F6F8FA;
+
+
+
+
+    /* Font/text values */
+--unnamed-font-family-inter: Inter;
+--unnamed-font-style-normal: normal;
+--unnamed-font-weight-normal: normal;
+--unnamed-font-weight-medium: medium;
+--unnamed-font-size-14: 14px;
+--unnamed-font-size-16: 16px;
+--unnamed-font-size-20: 20px;
+--unnamed-font-size-24: 24px;
+--unnamed-font-size-32: 32px;
+--unnamed-character-spacing-0: 0px;
+--unnamed-line-spacing-17: 17px;
+--unnamed-line-spacing-20: 20px;
+--unnamed-line-spacing-24: 24px;
+--unnamed-line-spacing-29: 29px;
+--unnamed-line-spacing-39: 39px;
+}

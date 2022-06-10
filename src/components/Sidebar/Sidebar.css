@@ -1,0 +1,71 @@
+.sidebar-main{
+    position: fixed;
+    top: 80px !important;
+    width: 100%;
+}
+
+.sidebar-main .logo{
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    /* height: 100%; */
+    /* overflow-y: auto; */
+    /* flex-wrap: wrap; */
+}
+
+
+/* ant-menu-css */
+.ant-menu{
+    background-color: #f8f8f8 !important;
+}
+
+.ant-layout-sider{
+    background-color: #f8f8f8 !important;
+}
+
+.ant-layout .site-layout{
+    width: 100px !important;
+    height: 100vh !important;
+    overflow: auto !important;
+    background-color: white;
+}
+
+.ant-layout-sider-children{
+    height: 100vh !important;
+    overflow-y: auto !important;
+}
+
+
+/* ant-active-menu-sidebar */
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected{
+    background-color: #F57234 !important;
+    border-radius: 5px !important;
+    color: white !important;
+    /* margin: 10px 20px !important; */
+}
+
+.ant-menu-item-selected, .ant-menu-item-selected a, .ant-menu-item-selected a:hover{
+    color: white !important;
+}
+
+.ant-menu-inline .ant-menu-item:after{
+    border-right: none !important;
+}
+
+.ant-menu-root.ant-menu-inline{
+    padding: 10px !important;
+}
+
+/* ant-sider-menu-text-hide/visible */
+@media only screen and (min-width:80px){
+    .ant-layout-sider-collapsed span{
+        display: none !important;
+    }
+}
+
+@media only screen and (max-width:250px){
+    .ant-layout-sider-collapsed span{
+        display: block !important;
+    }
+}

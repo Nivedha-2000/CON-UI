@@ -1,0 +1,109 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+
+/* .ant-breadcrumb-link a{
+  color: black !important;
+} */
+
+.form-button button{
+  padding: 6px 30px;
+}
+
+
+/* for-NxTitleTab-css */
+.title-tab span{
+  font-size: 20px !important;
+  font-weight: bold !important;
+}
+
+
+/* for-NxCard-css */
+.card-tab{
+  border-radius: 0% !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* custom-styles-for-packages */
+
+tbody{
+  border-top: none !important;
+}
+
+._2YFvv{
+  font-size: 14px;
+}
+
+._3tNMX span{
+  font-weight: 500;
+}
+
+._3sJKz{
+  font-size: 14px;
+}
+
+._31l3M{
+  padding: 4px 15px !important;
+  display: flex;
+}
+
+._31l3M div{
+  display: flex;
+  align-items: center;
+}
+
+/* .svg-inline--fa{
+  width: 14px !important;
+} */
+
+
+
+/* right-menu-header */
+._30ScU{
+  /* padding: 4px 15px !important; */
+  display: flex !important;
+}
+
+._30ScU div{
+  display: flex !important;
+  align-items: center !important;
+}
