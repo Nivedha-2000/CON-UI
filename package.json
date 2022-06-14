@@ -39,6 +39,7 @@
     "common-constants": "^4.1.0",
     "dotenv-cli": "^5.1.0",
     "formik": "^2.2.9",
+    "js-cookie": "^3.0.1",
     "mui-datatables": "^4.0.0",
     "node-sass": "^7.0.1",
     "prop-types": "^15.8.1",

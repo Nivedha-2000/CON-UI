@@ -31,7 +31,7 @@ export default function OperationMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `GarOperMaster/GetGarOprbyId/${operationId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setOperationMaster(res.data);
@@ -83,7 +83,7 @@ export default function OperationMaster() {
                     else {
                         ItrApiService.POST({
                             url: 'GarOperMaster/SaveGarOperation',
-                            appCode: "ENAPP003",
+                            appCode: "CNF",
                             data: { ...operationMaster, active: true ? 'Y' : 'N' }
                         }).then(res => {
                             if (res.Success == true) {
@@ -103,7 +103,7 @@ export default function OperationMaster() {
                 else {
                     ItrApiService.POST({
                         url: 'GarOperMaster/SaveGarOperation',
-                        appCode: "ENAPP003",
+                        appCode: "CNF",
                         data: { ...operationMaster, active: true ? 'Y' : 'N' }
                     }).then(res => {
                         if (res.Success == true) {
@@ -136,7 +136,7 @@ export default function OperationMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: `GarOperMaster/SaveGarOperation`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: operationMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -171,7 +171,7 @@ export default function OperationMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarOperMaster/GetAllGarOperationMaster',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.table(res.data);
             if (res.Success == true) {

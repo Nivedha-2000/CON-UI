@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import { ItrApiService, ItrAuthService } from '@afiplfeed/itr-ui';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { configUrl } from '../../config';
 
 
 export default function Header() {
@@ -74,7 +75,7 @@ export default function Header() {
       // window.location.href = "http://iam.ithred.info"
       // window.location.href = "http://172.16.9.252:7001"
       sessionStorage.clear();
-      window.location.href = "http://localhost/"
+      window.location.href = configUrl.appUrl;
       message.success('Logout Successfully');
     }
     else if (result.Success == false) {
@@ -160,8 +161,10 @@ export default function Header() {
           <div className='drawer-body-container mt-4'>
             <div className='row'>
               {userApps.map((apps, index) => {
-                return <div key={index} className='col-sm-6 col-md-6 col-lg-6 col-xl-6 mt-4 menu-items' onClick={() => apps.serviceCode == 'ENAPP002' ? window.location.href = 'http://localhost:82/' : apps.serviceCode == 'ENAPP003' ? window.location.href = 'http://localhost:82/' : apps.serviceCode == 'ENAPP001' ? window.location.href = 'http://localhost:83/' : window.location.href = 'http://localhost:83/'}>
-                {/* return <div key={index} className='col-sm-6 col-md-6 col-lg-6 col-xl-6 mt-4 menu-items' onClick={() => { apps.serviceCode == 'ENAPP002' ? window.location.href = '/ProductDevelopment' : apps.serviceCode == 'ENAPP003' ? window.location.href = '/ConfigurationManagement' : apps.serviceCode == 'ENAPP004' ? window.location.href = '/QualityAssurance' : window.location.href = '/PreProduction' }}> */}
+                return <div key={index} className='col-sm-6 col-md-6 col-lg-6 col-xl-6 mt-4 menu-items'
+                  onClick={() => window.location.href = `http://${apps.hostUIURL}/`}>
+                  {/* onClick={() => apps.serviceCode == 'ENAPP002' ? window.location.href = 'http://localhost:82/' : apps.serviceCode == 'ENAPP003' ? window.location.href = 'http://localhost:82/' : apps.serviceCode == 'ENAPP001' ? window.location.href = 'http://localhost:83/' : window.location.href = 'http://localhost:83/'}> */}
+                  {/* return <div key={index} className='col-sm-6 col-md-6 col-lg-6 col-xl-6 mt-4 menu-items' onClick={() => { apps.serviceCode == 'ENAPP002' ? window.location.href = '/ProductDevelopment' : apps.serviceCode == 'ENAPP003' ? window.location.href = '/ConfigurationManagement' : apps.serviceCode == 'ENAPP004' ? window.location.href = '/QualityAssurance' : window.location.href = '/PreProduction' }}> */}
                   <div className='menu-list '>
                     <div className='menu-img'>
                       <img src={userAppIcons.icons} width="40" />

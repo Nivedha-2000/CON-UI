@@ -2,16 +2,13 @@ import React, { useEffect } from 'react';
 import './Dashboard.css';
 import Header from '../../components/Header/Header'
 import Sidebar from '../../components/Sidebar/Sidebar';
-
+import Cookies from 'js-cookie';
 export default function Dashboard() {
 
-  const fin = async () => {
-    const q = await window.cookieStore.get('user');
-    const q1 = await window.cookieStore.get('applicationConf');
-    console.log("------------------>", q)
-    console.log("------------------>", q1)
+  const fin = () => {
+    const q = Cookies.get('user');
     if (!q) {
-      window.location.replace('http://localhost');
+      window.location.replace(configUrl.appUrl);
     }
   }
 

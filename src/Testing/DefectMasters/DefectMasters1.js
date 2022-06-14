@@ -23,7 +23,7 @@ export default function DefectMasters1() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `DefectMaster/GetDefectbyId/${defectId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setDefectMaster(res.data);
@@ -70,7 +70,7 @@ export default function DefectMasters1() {
             setLoader(true);
             await ItrApiService.POST({
                 url: 'DefectMaster/SaveDefectMaster',
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: defectMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -97,7 +97,7 @@ export default function DefectMasters1() {
             setLoader(true);
             ItrApiService.POST({
                 url: `DefectMaster/SaveDefectMaster`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: defectMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -134,7 +134,7 @@ export default function DefectMasters1() {
     const getDefectCat = () => {
         ItrApiService.GET({
             url: 'DefectMaster/GetAllDefectMasterWithCategory',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -152,7 +152,7 @@ export default function DefectMasters1() {
         setLoader(true);
         ItrApiService.GET({
             url: 'DefectMaster/GetAllDefectMaster',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);

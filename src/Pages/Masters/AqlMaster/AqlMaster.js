@@ -52,7 +52,7 @@ export default function AqlMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `AQLBaseTable/GetAQLBaseById/${aqlId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setAqlMaster(res.data);
@@ -187,7 +187,7 @@ export default function AqlMaster() {
                         setLoader(true);
                         ItrApiService.POST({
                             url: 'AQLBaseTable/SaveAQLBase',
-                            appCode: "ENAPP003",
+                            appCode: "CNF",
                             data: {
                                 ...aqlMaster, maxAllowCriticalDefects: parseInt(aqlMaster.maxAllowCriticalDefects),
                                 maxAllowMesurementDefects: parseInt(aqlMaster.maxAllowMesurementDefects), maxAllowOthDefects: parseInt(aqlMaster.maxAllowOthDefects),
@@ -287,7 +287,7 @@ export default function AqlMaster() {
                 setLoader(true);
                 ItrApiService.POST({
                     url: `AQLBaseTable/SaveAQLBase`,
-                    appCode: "ENAPP003",
+                    appCode: "CNF",
                     data: {
                         ...aqlMaster, maxAllowCriticalDefects: parseInt(aqlMaster.maxAllowCriticalDefects),
                         maxAllowMesurementDefects: parseInt(aqlMaster.maxAllowMesurementDefects), maxAllowOthDefects: parseInt(aqlMaster.maxAllowOthDefects),
@@ -360,7 +360,7 @@ export default function AqlMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AQLBaseTable/GetAllAQLBase',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.log(res.data);
             if (res.Success == true) {
