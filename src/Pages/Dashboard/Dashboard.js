@@ -3,6 +3,7 @@ import './Dashboard.css';
 import Header from '../../components/Header/Header'
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Cookies from 'js-cookie';
+import { configUrl } from '../../config';
 export default function Dashboard() {
 
   const fin = () => {
