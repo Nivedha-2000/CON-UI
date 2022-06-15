@@ -178,7 +178,7 @@ export default function PartsMasters() {
             }
             else {
                 setLoader(false);
-                message.warning('Something went wrong');
+                // message.warning('Something went wrong');
             }
         });
     }
@@ -199,7 +199,7 @@ export default function PartsMasters() {
             }
             else {
                 setLoader(false);
-                message.warning('Something went wrong');
+                // message.warning('Something went wrong');
             }
         });
     }
@@ -219,7 +219,7 @@ export default function PartsMasters() {
             }
             else {
                 setLoader(false);
-                message.warning('Something went wrong');
+                // message.warning('Something went wrong');
             }
         });
     }
