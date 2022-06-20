@@ -13,13 +13,13 @@ function App() {
     ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/", react_app_site);
     // ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", react_app_site);
     // ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/",react_app_site);
-    ItrAuthService.Login({
-      data: {
-        userName: 'mathankumar@ambattur.com',
-        password: 'password123'
-      }
-    }).then((res) => console.log(res.data));
-    ItrApiService.userApp().then(res => console.log(res.data,'userApps'));
+    // ItrAuthService.Login({
+    //   data: {
+    //     userName: 'mathankumar@ambattur.com',
+    //     password: 'password123'
+    //   }
+    // }).then((res) => console.log(res.data));
+    // ItrApiService.userApp().then(res => console.log(res.data,'userApps'));
   }, []);
 
   return (
