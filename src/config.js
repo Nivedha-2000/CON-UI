@@ -1,5 +1,5 @@
 export const configUrl = {
     appUrl:'http://172.16.9.253:83/',
-    // appUrl:'http://localhost/'
+    // appUrl: 'http://localhost/'
     // appUrl:'http://localhost:3000/'
 }

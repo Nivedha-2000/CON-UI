@@ -4,13 +4,28 @@ import Routing from './Routing/Routing';
 import '@progress/kendo-theme-default/dist/all.css';
 import { ItrApiService, ItrAuthService } from '@afiplfeed/itr-ui';
 import './Assets/index.css'
+import { useLocation } from 'react-router-dom';
+import { configUrl } from './config';
+
 
 function App() {
 
   useEffect(() => {
+    const delQuery = new URLSearchParams(location.search);
+
     const { react_app_baseurl, react_app_env, react_app_site } = process.env
     // ItrApiService.CONFIG(react_app_env, "http://gateway01.ithred.info/api/", react_app_site);
-    ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/", react_app_site);
+    ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/", react_app_site).then(res => {
+      if (res.directLogin == true && res.tokenState == true) {
+        delQuery.delete('userkey');
+      }
+      else {
+        window.location.replace(configUrl.appUrl);
+      }
+    });
+
+
+
     // ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", react_app_site);
     // ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/",react_app_site);
     // ItrAuthService.Login({

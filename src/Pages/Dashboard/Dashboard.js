@@ -11,9 +11,9 @@ export default function Dashboard() {
     // debugger
     const q = Cookies.get('user');
     console.log(configUrl.appUrl);
-    if (!q) {
-      window.location.replace(configUrl.appUrl);
-    }
+    // if (!q) {
+    //   window.location.replace(configUrl.appUrl);
+    // }
   }
 
   useEffect(() => {
