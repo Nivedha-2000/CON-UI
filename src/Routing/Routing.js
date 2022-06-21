@@ -28,7 +28,7 @@ export default function Routing() {
 
   return (
     <Routes>
-      <Route index path='/' element={ <Navigate replace to="/masters/defect-master" /> } />
+      {/* <Route index path='/' element={ <Navigate replace to="/masters/defect-master" /> } /> */}
       <Route path='/' element={<Dashboard />}>
         <Route index path='quality' element={<Home />} />
         <Route path='scheduler' element={<SchedulerTwo />} />

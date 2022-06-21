@@ -18,6 +18,8 @@ function App() {
     const { react_app_baseurl, react_app_env, react_app_site } = process.env
     // ItrApiService.CONFIG(react_app_env, "http://gateway01.ithred.info/api/", react_app_site);
     await ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/", react_app_site).then(res => {
+      // debugger
+      console.log(res);
       if (res.directLogin == true && res.tokenState == true) {
         navigate('/masters/defect-master');
       }
