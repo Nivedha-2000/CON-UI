@@ -20,70 +20,77 @@ export const API_URLS = {
     GET_TRANSIT_MASTER_LIST: "TransitMaster/GetAllTransitMaster",
     GET_TRANSIT_MASTER_BY_ID:"TransitMaster/GetTransitMasterById",
     SAVE_TRANSIT_MASTER: "TransitMaster/SaveTransitMaster",
+
+    // LOCATIONMASTER
     GET_LOCATION_MASTER_LIST:"LocationMaster/GetAllLocCode",
+    GET_LOCATION_MASTER_BY_ID: "LocationMaster/GetLocCode", 
+    SAVE_LOCATION_MASTER: "LocationMaster/SaveLocationMaster", 
 
+    // MERIAATL TYPE MASTER
+    GET_MERIAATLTYPE_MASTER_LIST: "MatTypeMaster/GetAllMattype", 
+    SAVE_MATERIALTYPE_MASTER: "MatTypeMaster/SaveMatTypeMaster", 
+    GET_MATERIALTYPE_BY_ID: "MatTypeMaster/GetMattypeByMattype", 
 
-    //GET_LOCATION_MASTER_LIST:"LocationMaster/GetAllLocCode", //Nalla
-    GET_LOCATION_MASTER_BY_ID: "LocationMaster/GetLocCode", //Nalla
-   // GET_LOCATION_MASTER_BY_ID: "LocationMaster/GetLocCodeByLocCode", //Nalla
-    SAVE_LOCATION_MASTER: "LocationMaster/SaveLocationMaster", //Nalla
-    GET_MATERIALTYPE_MASTER_LIST: "MatTypeMaster/GetAllMattype", //Nalla
-    SAVE_MATERIALTYPE_MASTER: "MatTypeMaster/SaveMatTypeMaster", //Nalla
-    GET_MATERIALTYPE_BY_ID: "MatTypeMaster/GetMattypeByMattype", //Nalla
+    // PRODUCT TYPE MASTER
+    GET_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/GetAllProdType", 
+    SAVE_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/SaveProdTypeMaster", 
+    GET_PRODUCTTYPE_BY_ID: "ProdTypeMaster/GetProdTypeByProdType", 
 
-    GET_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/GetAllProdType", //Nalla
-    SAVE_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/SaveProdTypeMaster", //Nalla
-    GET_PRODUCTTYPE_BY_ID: "ProdTypeMaster/GetProdTypeByProdType", //Nalla
+    // UD TYPE MASTER
+    GET_UDTYPE_MASTER_LIST: "UDMasterType/GetAllMiscType", 
+    SAVE_UDTYPE_MASTER: "UDMasterType/SaveUDMasterType", 
+    GET_UDTYPEMASTER_BY_ID: "UDMasterType/GetMiscTypeByMiscType", 
 
-    GET_UDTYPE_MASTER_LIST: "UDMasterType/GetAllMiscType", //Nalla
-    SAVE_UDTYPE_MASTER: "UDMasterType/SaveUDMasterType", //Nalla
-    GET_UDTYPEMASTER_BY_ID: "UDMasterType/GetMiscTypeByMiscType", //Nalla
+    // BUYER DIVISION MASTER
+    GET_BUYERDIVISION_MASTER_LIST: "BuyerDivMaster/GetAllBuyerDivInfo", 
+    SAVE_BUYERDIVISION_MASTER: "BuyerDivMaster/SaveBuyerDivMaster", 
+    GET_BUYERDIVISIONEMASTER_BY_ID: "BuyerDivMaster/GetBuyerDivInfoByBuyerDivCode" ,
+   // GET_BUYERDIVISION_MASTER_LIST: "BuyerDivMaster/GetAllBuyerDivInfo", 
 
-
-    GET_BUYERDIVISION_MASTER_LIST: "BuyerDivMaster/GetAllBuyerDivInfo", //Nalla
-    SAVE_BUYERDIVISION_MASTER: "BuyerDivMaster/SaveBuyerDivMaster", //Nalla
-    GET_BUYERDIVISIONEMASTER_BY_ID: "BuyerDivMaster/GetBuyerDivInfoByBuyerDivCode" ,//Nalla
-   // GET_BUYERDIVISION_MASTER_LIST: "BuyerDivMaster/GetAllBuyerDivInfo", //Nalla
-
-   GET_BUSINESS_GROUP_MASTER_LIST:"BGcodeMaster/GetAllBGcode", //Nalla
-   GET_BUSINESS_GROUP_MASTER_BY_ID: "BGcodeMaster/GetBGcode", //Nalla
-   SAVE_BUSINESS_GROUP_MASTER: "BGcodeMaster/SaveBGcodeMaster", //Nalla
+   // BUSINESS GROUP MASTER
+   GET_BUSINESS_GROUP_MASTER_LIST:"BGcodeMaster/GetAllBGcode", 
+   GET_BUSINESS_GROUP_MASTER_BY_ID: "BGcodeMaster/GetBGcode", 
+   SAVE_BUSINESS_GROUP_MASTER: "BGcodeMaster/SaveBGcodeMaster", 
     
+    // CORPORATE GROUP MASTER
+   GET_CORPORATE_GROUP_MASTER_LIST:"CGcodeMaster/GetAllCGcode", 
+   GET_CORPORATE_GROUP_MASTER_BY_ID: "CGcodeMaster/GetCGcode", 
+   SAVE_CORPORATE_GROUP_MASTER: "CGcodeMaster/SaveCGcodeMaster", 
 
-   GET_CORPORATE_GROUP_MASTER_LIST:"CGcodeMaster/GetAllCGcode", //Nalla
-   GET_CORPORATE_GROUP_MASTER_BY_ID: "CGcodeMaster/GetCGcode", //Nalla
-   SAVE_CORPORATE_GROUP_MASTER: "CGcodeMaster/SaveCGcodeMaster", //Nalla
+   // VERTICAL GROUP MASTER
+   GET_VERTICAL_GROUP_MASTER_LIST:"VGcodeMaster/GetAllVGcode", 
+   GET_VERTICAL_GROUP_MASTER_BY_ID: "VGcodeMaster/GetVGcode", 
+   SAVE_VERTICAL_GROUP_MASTER: "VGcodeMaster/SaveVGcodeMaster", 
 
-   GET_VERTICAL_GROUP_MASTER_LIST:"VGcodeMaster/GetAllVGcode", //Nalla
-   GET_VERTICAL_GROUP_MASTER_BY_ID: "VGcodeMaster/GetVGcode", //Nalla
-   SAVE_VERTICAL_GROUP_MASTER: "VGcodeMaster/SaveVGcodeMaster", //Nalla
+    // PROJECTMASTER
+   GET_PROJECT_MASTER_LIST:"PJMaster/GetAllPJMaster", 
+   GET_PROJECT_MASTER_BY_ID: "PJMaster/GetPJMaster", 
+   SAVE_PROJECT_MASTER: "PJMaster/SavePJMaster", 
 
-   GET_PROJECT_MASTER_LIST:"PJMaster/GetAllPJMaster", //Nalla
-   GET_PROJECT_MASTER_BY_ID: "PJMaster/GetPJMaster", //Nalla
-   SAVE_PROJECT_MASTER: "PJMaster/SavePJMaster", //Nalla
-
-
-   GET_SEASON_MASTER_LIST:"SeasonMaster/GetAllSeason", //Nalla
-   GET_SEASON_MASTER_BY_ID: "SeasonMaster/GetSeasonBySeasonCode", //Nalla
-   SAVE_SEASON_MASTER: "SeasonMaster/SaveSeasonMaster", //Nalla
+    // SEASON MASTER
+   GET_SEASON_MASTER_LIST:"SeasonMaster/GetAllSeason", 
+   GET_SEASON_MASTER_BY_ID: "SeasonMaster/GetSeasonBySeasonCode", 
+   SAVE_SEASON_MASTER: "SeasonMaster/SaveSeasonMaster", 
     
+    // STYLE DIVMASTER
+   GET_STYLEDIV_MASTER_LIST:"StyleDivMaster/GetAllStyleDivMaster", 
+   GET_STYLEDIV_MASTER_BY_ID: "StyleDivMaster/GetStyleDivMasterByFashionGroupProductTypStyleDivisioneSubProductType", 
+   SAVE_STYLEDIV_MASTER: "StyleDivMaster/SaveStyleDivMaster", 
 
-   GET_STYLEDIV_MASTER_LIST:"StyleDivMaster/GetAllStyleDivMaster", //Nalla
-   GET_STYLEDIV_MASTER_BY_ID: "StyleDivMaster/GetStyleDivMasterByFashionGroupProductTypStyleDivisioneSubProductType", //Nalla
-   SAVE_STYLEDIV_MASTER: "StyleDivMaster/SaveStyleDivMaster", //Nalla
+   // UD MASTER
+   GET_UD_MASTER_LIST:"UDMaster/GetAllUDMaster", 
+   GET_UD_MASTER_BY_ID: "UDMaster/GetUDMasterByType", 
+   SAVE_UD_MASTER: "UDMaster/SaveUDMaster", 
 
-   GET_UD_MASTER_LIST:"UDMaster/GetAllUDMaster", //Nalla
-   GET_UD_MASTER_BY_ID: "UDMaster/GetUDMasterByType", //Nalla
-   SAVE_UD_MASTER: "UDMaster/SaveUDMaster", //Nalla
+   // INECOST MASTER
+   GET_LINECOST_MASTER_LIST:"LineCostMaster/GetAllLineCostMaster", 
+   GET_LINECOST_MASTER_BY_ID: "LineCostMaster/LineCostMaster/GetLineCostMasterByTransMonthTransYearLocCodeFactCodeLineGroup", 
+   SAVE_LINECOST_MASTER: "LineCostMaster/SaveLineCostMasterList", 
 
-   GET_LINECOST_MASTER_LIST:"LineCostMaster/GetAllLineCostMaster", //Nalla
-   GET_LINECOST_MASTER_BY_ID: "LineCostMaster/LineCostMaster/GetLineCostMasterByTransMonthTransYearLocCodeFactCodeLineGroup", //Nalla
-   SAVE_LINECOST_MASTER: "LineCostMaster/SaveLineCostMasterList", //Nalla
-
-   
-   GET_SUPPLIER_MASTER_LIST:"SupplierMaster/GetAllSupplier", //Nalla
-   GET_SUPPLIER_MASTER_BY_ID: "SupplierMaster/GetSupplier", //Nalla
-   SAVE_SUPPLIER_MASTER: "SupplierMaster/SaveSupplierMaster" //Nalla
+   // SUPPLIER MASTER
+   GET_SUPPLIER_MASTER_LIST:"SupplierMaster/GetAllSupplier", 
+   GET_SUPPLIER_MASTER_BY_ID: "SupplierMaster/GetSupplier", 
+   SAVE_SUPPLIER_MASTER: "SupplierMaster/SaveSupplierMaster" 
 
 }
 
