@@ -38,6 +38,15 @@ import UserDefinedMaster from '../Pages/Masters/UserDefinedMaster';
 import HSCodeMaster from '../Pages/Masters/HSCodeMaster';
 import SupplierMaster from '../Pages/Masters/SupplierMaster';
 
+import MaterialGroupMaster from '../Pages/Masters/MaterialGroupMaster';
+import BuyerProductTypeMaster from '../Pages/Masters/BuyerProductTypeMaster';
+import SizeMaster from '../Pages/Masters/SizeMaster';
+import RoleMaster from '../Pages/Masters/RoleMaster';
+import HandOverTaskMaster from '../Pages/Masters/HandOverTaskMaster';
+import UnitMaster from '../Pages/Masters/UnitMaster';
+import CompanyMaster from '../Pages/Masters/CompanyMaster';
+import BuyerMaster from '../Pages/Masters/BuyerMaster';
+// import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
@@ -82,6 +91,17 @@ export default function Routing() {
         <Route path='masters/user-defined-master' element={<UserDefinedMaster name="User Defined Master" />}/>
         <Route path='masters/hs-code-master' element={<HSCodeMaster name="Hs Code Master" />}/>
         <Route path='masters/supplier-master' element={<SupplierMaster name="Supplier Master" />}/>
+
+        <Route path='masters/material-group-master' element={<MaterialGroupMaster name="Material Group Master" />}/>
+        <Route path='masters/buyer-product-type-master' element={<BuyerProductTypeMaster name="Buyer Product Type Master" />}/>
+        <Route path='masters/size-master' element={<SizeMaster name="Size Master" />}/>
+        <Route path='masters/role-master' element={<RoleMaster name='Role Master'/>}/>
+        <Route path='masters/hand-over-task-master' element={<HandOverTaskMaster name='Hand Over Task Master'/>}/>
+        <Route path='masters/unit-master' element={<UnitMaster name='Unit Master'/>}/>
+        <Route path='masters/company-master' element={<CompanyMaster name='Company Master'/>}/>
+        <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master'/>}/>
+        {/* <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master'/>}/> */}
+
 
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>

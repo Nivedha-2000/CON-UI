@@ -210,7 +210,54 @@ export default function Sidebar() {
                   <NavLink to="masters/supplier-master">
                     <span className='mx-2'> Supplier Master</span>
                   </NavLink>
-                </Menu.Item> 
+                </Menu.Item>
+
+                <Menu.Item key="3-21" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/material-group-master">
+                    <span className='mx-2'> Material Group Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-22" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/buyer-product-type-master">
+                    <span className='mx-2'> Buyer Product Type Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-23" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/size-master">
+                    <span className='mx-2'> Size Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-24" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/role-master">
+                    <span className='mx-2'> Role Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-25" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/hand-over-task-master">
+                    <span className='mx-2'> HandOver Task Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-26" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/unit-master">
+                    <span className='mx-2'> Unit Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-27" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/company-master">
+                    <span className='mx-2'> Company Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-28" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/buyer-master">
+                    <span className='mx-2'> Buyer Master</span>
+                  </NavLink>
+                </Menu.Item>
+
+                {/* <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/user-buyer-rights-master">
+                    <span className='mx-2'> User Buyer Rights Master</span>
+                  </NavLink>
+                </Menu.Item> */}
                 {/* <Menu.Item key="3-9" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/hs-code-master">
                     <span className='mx-2'> HS Code Master</span>

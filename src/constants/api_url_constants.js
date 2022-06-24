@@ -90,7 +90,50 @@ export const API_URLS = {
    // SUPPLIER MASTER
    GET_SUPPLIER_MASTER_LIST:"SupplierMaster/GetAllSupplier", 
    GET_SUPPLIER_MASTER_BY_ID: "SupplierMaster/GetSupplier", 
-   SAVE_SUPPLIER_MASTER: "SupplierMaster/SaveSupplierMaster" 
+   SAVE_SUPPLIER_MASTER: "SupplierMaster/SaveSupplierMaster", 
+
+    GET_LOCATION_MASTER_LIST:"LocationMaster/GetAllLocationMaster",
+    //MatGroupMaster
+    GET_MATERIALGROUP_MASTER_LIST: "MatGroupMaster/GetAllMatGroupMaster",
+    GET_MATERIALGROUP_MASTER_BY_ID:"MatGroupMaster/GetMatGroupMasterByEntityID",
+    SAVE_MATERIALGROUP_MASTER: "MatGroupMaster/SaveMatGroupMaster",
+    GET_MATERIALTYPE_DROPDOWN:"MatTypeMaster/GetAllMattype",
+    ///BuyProdTypeMaster
+    GET_BUYPRODTYPE_MASTER_LIST: "BuyProdTypeMaster/GetAllBuyProdType",
+    GET_BUYPRODTYPE_MASTER_BY_ID:"BuyProdTypeMaster/GetBuyProdTypeByBuyCode",
+    SAVE_BUYPRODTYPE_MASTER: "BuyProdTypeMaster/SaveBuyProdTypeMaster",
+    GET_BUYCODE_DROPDOWN:"BuyerMaster/GetAllBuyerCode",
+    GET_BUYDIVCODE_DROPDOWN:"BuyerDivMaster/GetAllBuyerDivInfo",
+    GET_PRODUCT_TYPE_DROPDOWN:"ProdTypeMaster/GetAllProdType",
+    //SizeMaster
+    GET_SIZE_MASTER_LIST: "SizeMaster/GetAllSizeMaster",
+    GET_SIZE_MASTER_BY_ID:"SizeMaster/GetSizeMasterByBuyDivCodeProductTypeFitGenderSizecode",
+    SAVE_SIZE_MASTER: "SizeMaster/SaveSizeMaster",
+    //RoleMaster
+    GET_ROLE_MASTER_LIST: "RoleMaster/GetAllRole",
+    GET_ROLE_MASTER_BY_ID:"RoleMaster/GetRoleByRoleId",
+    SAVE_ROLE_MASTER: "RoleMaster/SaveRoleMaster",
+    //HANDOVERTASK
+    GET_HO_MASTER_LIST: "HOTaskMaster/GetAllHOTask",
+    GET_HO_MASTER_BY_ID:"HOTaskMaster/GetHOTaskByid",
+    SAVE_HO_MASTER: "HOTaskMaster/SaveHOTaskMaster",
+    //UnitMaster
+    GET_UNIT_MASTER_LIST: "UnitMaster/GetAllUCode",
+    GET_UNIT_MASTER_BY_ID:"UnitMaster/GetUCodeByUCode",
+    SAVE_UNIT_MASTER: "UnitMaster/SaveUnitMaster",
+    //CompanyMaster
+    GET_COMPANY_MASTER_LIST: "LEMaster/GetAllLEMaster",
+    GET_COMPANY_MASTER_BY_ID:"LEMaster/GetLEMasterByEntityID",
+    SAVE_COMPANY_MASTER: "LEMaster/SaveLEMaster",
+    //BuyerMaster
+    GET_BUYER_MASTER_LIST: "BuyerMaster/GetAllBuyerInfo",
+    GET_BUYER_MASTER_BY_ID:"BuyerMaster/GetBuyerInfoById",
+    SAVE_BUYER_MASTER: "BuyerMaster/SaveBuyerMaster",
+
+    //UserBuyerRights
+    //GET_BUYER_MASTER_LIST: "BuyerMaster/GetAllBuyerInfo",
+    GET_USER_BUYER_RIGHTS_MASTER_BY_ID:"/UserBuyerRights/GetBuyerListByuser",
+    SAVE_USER_BUYER_RIGHTS_MASTER: "UserBuyerRights/SaveUserBuyerRights",
 
 }
 
@@ -106,4 +149,10 @@ export const MISCELLANEOUS_TYPES = {
     FASHIONGROUP:'FASHIONGRP',
     MiscType:'MiscType',
     SUPPLIERCATE:'SUPCAT',
+    HANDOVERTYPE: 'HOTYPE',
+    HANDOVERTASK: 'HOTASK',
+    GUIDETYPE: 'GUIDETYPE',
+    SOURCEFROM: 'SOURCEFROM',
+    FIT:'FIT',
+    GENDER:'GENDER'
 }
