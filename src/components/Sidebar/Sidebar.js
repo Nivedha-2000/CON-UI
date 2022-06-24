@@ -211,7 +211,7 @@ export default function Sidebar() {
                     <span className='mx-2'> Supplier Master</span>
                   </NavLink>
                 </Menu.Item> 
-                <Menu.Item key="3-9" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                {/* <Menu.Item key="3-9" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/hs-code-master">
                     <span className='mx-2'> HS Code Master</span>
                   </NavLink>
@@ -225,7 +225,7 @@ export default function Sidebar() {
                   <NavLink to="masters/sub-product-type-master">
                     <span className='mx-2'> Sub Product Type Master</span>
                   </NavLink>
-                </Menu.Item>
+                </Menu.Item> */}
               </SubMenu>
 
               <SubMenu key="4" title="Corporate Group" icon={<img src={production} width="20" />} >
