@@ -301,6 +301,12 @@ export default function Sidebar() {
                     <span className='mx-2'> Project  Master</span>
                   </NavLink>
                 </Menu.Item>
+
+                <Menu.Item key="4-6" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/tab-test">
+                    <span className='mx-2'> Tab Test</span>
+                  </NavLink>
+                </Menu.Item>
               </SubMenu>
 
               {/* <Menu.Item key="3" icon={<img src={production} alt="" width="20" />}>
