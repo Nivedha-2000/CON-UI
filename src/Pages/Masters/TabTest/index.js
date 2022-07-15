@@ -9,7 +9,7 @@ import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import '../../../Assets/sumoselect.css'
 import jquery from '../../../Assets/js/jquerymin'
 // import jquerySumoselect from '../../../Assets/js/jquerysumoselect' 
-import customjs from '../../../Assets/js/custom'
+// import customjs from '../../../Assets/js/custom'
 export default function TabTest() {
   
   return (
