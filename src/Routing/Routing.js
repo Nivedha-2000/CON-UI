@@ -46,6 +46,9 @@ import HandOverTaskMaster from '../Pages/Masters/HandOverTaskMaster';
 import UnitMaster from '../Pages/Masters/UnitMaster';
 import CompanyMaster from '../Pages/Masters/CompanyMaster';
 import BuyerMaster from '../Pages/Masters/BuyerMaster';
+
+
+import TabTest from '../Pages/Masters/TabTest'
 // import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
@@ -99,7 +102,8 @@ export default function Routing() {
         <Route path='masters/hand-over-task-master' element={<HandOverTaskMaster name='Hand Over Task Master'/>}/>
         <Route path='masters/unit-master' element={<UnitMaster name='Unit Master'/>}/>
         <Route path='masters/company-master' element={<CompanyMaster name='Company Master'/>}/>
-        <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master'/>}/>
+        <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
+        <Route path='masters/tab-test' element={<TabTest name='Tab Test'/>}></Route>
         {/* <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master'/>}/> */}
 
 
