@@ -68,6 +68,15 @@ export default function Sidebar() {
               </Menu.Item>
             </Menu> */}
             <Menu defaultSelectedKeys={['1']} defaultActiveFirst={true} mode="inline" >
+            <SubMenu key="5" title="ADMIN" icon={<img src={production} width="20" />} >
+              <Menu.Item key="5-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/user-buyer-rights-master">
+                    <span className='mx-2'> User Buyer Rights Master</span>
+                  </NavLink>
+              </Menu.Item>  
+
+              </SubMenu>
+
               <SubMenu key="1" title="Quality Assurance" icon={<img src={QualityLogo} width="20" />} >
                 <Menu.Item key="1-1" icon={<FontAwesomeIcon icon={faShield} size="lg" />}>
                   <NavLink to="masters/defect-master">

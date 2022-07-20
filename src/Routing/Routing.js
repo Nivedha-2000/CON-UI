@@ -50,7 +50,7 @@ import BuyerMaster from '../Pages/Masters/BuyerMaster';
 
 import TabTest from '../Pages/Masters/TabTest'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
-// import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
+import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
@@ -106,7 +106,7 @@ export default function Routing() {
         <Route path='masters/company-master' element={<CompanyMaster name='Company Master'/>}/>
         <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
         <Route path='masters/tab-test' element={<TabTest name='Tab Test'/>}></Route>
-        {/* <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master'/>}/> */}
+        <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master'/>}/>
 
 
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
