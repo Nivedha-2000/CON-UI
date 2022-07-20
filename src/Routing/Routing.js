@@ -49,6 +49,7 @@ import BuyerMaster from '../Pages/Masters/BuyerMaster';
 
 
 import TabTest from '../Pages/Masters/TabTest'
+import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
 // import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
@@ -94,6 +95,7 @@ export default function Routing() {
         <Route path='masters/user-defined-master' element={<UserDefinedMaster name="User Defined Master" />}/>
         <Route path='masters/hs-code-master' element={<HSCodeMaster name="Hs Code Master" />}/>
         <Route path='masters/supplier-master' element={<SupplierMaster name="Supplier Master" />}/>
+        <Route path='masters/supplier-master-new' element={<SupplierMasterNew name="Supplier Master" />}/>
 
         <Route path='masters/material-group-master' element={<MaterialGroupMaster name="Material Group Master" />}/>
         <Route path='masters/buyer-product-type-master' element={<BuyerProductTypeMaster name="Buyer Product Type Master" />}/>

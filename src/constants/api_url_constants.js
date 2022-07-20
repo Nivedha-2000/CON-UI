@@ -16,7 +16,7 @@ export const API_URLS = {
     SAVE_SHIP_TOLERANCE_MASTER: "ShipToleranceMaster/SaveShipToleranceMaster",
     GET_SHIP_TOLERANCE_MASTER: "ShipToleranceMaster/GetAllShipToleranceMaster",
     GET_SHIP_TOLERANCE_MASTER_BY_ID: "ShipToleranceMaster/GetShipToleranceMasterById",
-    SAVE_PACK_TYPE_MASTER: "PackTypeMaster/SavePackTypeMaster",
+   // SAVE_PACK_TYPE_MASTER: "PackTypeMaster/SavePackTypeMaster",
     GET_TRANSIT_MASTER_LIST: "TransitMaster/GetAllTransitMaster",
     GET_TRANSIT_MASTER_BY_ID:"TransitMaster/GetTransitMasterById",
     SAVE_TRANSIT_MASTER: "TransitMaster/SaveTransitMaster",
@@ -82,17 +82,21 @@ export const API_URLS = {
    GET_UD_MASTER_BY_ID: "UDMaster/GetUDMasterByType", 
    SAVE_UD_MASTER: "UDMaster/SaveUDMaster", 
 
-   // INECOST MASTER
-   GET_LINECOST_MASTER_LIST:"LineCostMaster/GetAllLineCostMaster", 
+   // LINECOST MASTER
+   GET_LINECOST_MASTER_LIST:"LineCostMaster/GetLineCostMaster", 
    GET_LINECOST_MASTER_BY_ID: "LineCostMaster/LineCostMaster/GetLineCostMasterByTransMonthTransYearLocCodeFactCodeLineGroup", 
+   GET_FINYEAR_MASTER_LIST:"FinYearMaster/GetAllFinYearMaster", 
+   GET_LINECOST_MONTHWISE_LIST: "LineCostMaster/GetFinYearMaster",
    SAVE_LINECOST_MASTER: "LineCostMaster/SaveLineCostMasterList", 
+   
+
 
    // SUPPLIER MASTER
    GET_SUPPLIER_MASTER_LIST:"SupplierMaster/GetAllSupplier", 
    GET_SUPPLIER_MASTER_BY_ID: "SupplierMaster/GetSupplier", 
    SAVE_SUPPLIER_MASTER: "SupplierMaster/SaveSupplierMaster", 
 
-    GET_LOCATION_MASTER_LIST:"LocationMaster/GetAllLocationMaster",
+    GET_LOCATION_MASTER_LIST:"LocationMaster/GetAllLocCode",
     //MatGroupMaster
     GET_MATERIALGROUP_MASTER_LIST: "MatGroupMaster/GetAllMatGroupMaster",
     GET_MATERIALGROUP_MASTER_BY_ID:"MatGroupMaster/GetMatGroupMasterByEntityID",
@@ -119,8 +123,11 @@ export const API_URLS = {
     SAVE_HO_MASTER: "HOTaskMaster/SaveHOTaskMaster",
     //UnitMaster
     GET_UNIT_MASTER_LIST: "UnitMaster/GetAllUCode",
-    GET_UNIT_MASTER_BY_ID:"UnitMaster/GetUCodeByUCode",
+    GET_UNIT_MASTER_BY_ID:"UnitMaster/GetUCode",
     SAVE_UNIT_MASTER: "UnitMaster/SaveUnitMaster",
+    GET_ALLFACTORY_LIST: "UnitMaster/GetAllActiveFactory",
+
+    
     //CompanyMaster
     GET_COMPANY_MASTER_LIST: "LEMaster/GetAllLEMaster",
     GET_COMPANY_MASTER_BY_ID:"LEMaster/GetLEMasterByEntityID",
@@ -134,6 +141,10 @@ export const API_URLS = {
     //GET_BUYER_MASTER_LIST: "BuyerMaster/GetAllBuyerInfo",
     GET_USER_BUYER_RIGHTS_MASTER_BY_ID:"/UserBuyerRights/GetBuyerListByuser",
     SAVE_USER_BUYER_RIGHTS_MASTER: "UserBuyerRights/SaveUserBuyerRights",
+
+
+
+
 
 }
 

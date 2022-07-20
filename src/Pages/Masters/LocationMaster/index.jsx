@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import { Drawer, Switch, message, Spin } from 'antd';
+import { Drawer, Switch, message, Spin,Input, Table, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+
+import { ColumnProps } from "antd/lib/table";
+import { render } from "react-dom";
 
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
 import { getHostName, validateInputOnKeyup } from "../../../helpers";
@@ -169,6 +172,15 @@ function LacationMaster({ name }) {
         })
     }
 
+    // const onInputChange = (key, index) => (
+    //     e: React.ChangeEvent<HTMLInputElement>
+    //   ) => {
+    //     const newData = [...tableData];
+    //     newData[index][key] = Number(e.target.value);
+    //     setTotal(newData, index);
+    //     setTableData(newData);
+    //   };
+    
    
    
 
@@ -181,6 +193,10 @@ function LacationMaster({ name }) {
         {
             name: "locCode",
             label: "Location code"
+            // ,
+            // render: (text, record, index) => (
+            //     <Input value={text} onChange={onInputChange("locCode", index)} />
+            //   )
         },
         {
             name: "locName",

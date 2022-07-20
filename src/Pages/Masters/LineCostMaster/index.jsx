@@ -9,34 +9,45 @@ import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable
 import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import ApiCall from "../../../services"
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
-import { PDM_APP_CODE } from "../../../constants";
+
+
+import '../../../Assets/style.css'
+import bootstrap from 'bootstrap/dist/js/bootstrap'
+// import '../../../Assets/bootstrapstyle.min.css'
+//import 'bootstrap/dist/css/bootstrap.min.css'
+//assets/img/delete-tbl.svg
+import deletetbl from '../../../Assets/images/style/delete-tbl.svg'
+import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
+import '../../../Assets/sumoselect.css'
+import jquery from '../../../Assets/js/jquerymin'
 
 const initialErrorMessages = {
+    id: 0,
     transMonth: "",
-    transYear: 0,
+    transYear: "",
     locCode: "",
     factCode: "",
-    lineGroup:"",
-    operators:0,
-    workingHrs:0,
-    linecost:0,
-    smv:0,
+    lineGroup: "",
+    operators: 0,
+    workingHrs: 0,
+    linecost: 0,
+    smv: 0,
 
 },
     initialFieldValues = {
-    id: 0,
-    transMonth: "",
-    transYear: 0,
-    locCode: "",
-    factCode: "",
-    lineGroup:"",
-    operators:0,
-    workingHrs:0,
-    linecost:0,
-    smv:0,
+        id: 0,
+        transMonth: "",
+        transYear: "",
+        locCode: "",
+        factCode: "",
+        lineGroup: "",
+        operators: 0,
+        workingHrs: 0,
+        linecost: 0,
+        smv: 0,
 
     },
-    requiredFields = ["transMonth", "transYear", "locCode", "factCode","lineGroup"]
+    requiredFields = ["transMonth", "transYear", "locCode", "factCode", "lineGroup"]
 
 function LineCostMaster({ name }) {
     const clearFields = () => {
@@ -47,46 +58,63 @@ function LineCostMaster({ name }) {
     }
 
     const [visible, setVisible] = useState(false);
-    const add = () => {
-        try {
-            setVisible(true);
-            clearFields()
-        } catch (err) {
-            setLoader(false)
-            message.error(typeof err == "string" ? err : "data not found")
-        }
-    };
+    const [datas, setDatas] = useState([]);
 
-    const getDataById = id => {
-        return ApiCall({
-            path: API_URLS.GET_LINECOST_MASTER_BY_ID + "/" + id,
-        })
-    }
+    // const dataSource = [
+    //     {
+    //     //  key: '1',
+    //       transMonth: "JAN",
+    //       transYear: 0,
+    //       locCode: "",
+    //       factCode: "",
+    //       lineGroup:"",
+    //       operators:65,
+    //       workingHrs:9.00,
+    //       linecost:2000,
+    //       smv:0,
+    //     },
+    //     {
+    //    //   key: '2',
+    //       transMonth: "FEB",
+    //       transYear: 0,
+    //       locCode: "",
+    //       factCode: "",
+    //       lineGroup:"",
+    //       operators:65,
+    //       workingHrs:9.00,
+    //       linecost:2000,
+    //       smv:0,
+    //     },
+    //   ];
 
-    const edit = async id => {
-        try {
-            setLoader(true)
-            setVisible(true);
-            let { data } = (await getDataById(id))
-            data = Array.isArray(data) ? data[0] : data
-            if (!data) {
-                message.error("Data not found")
-                return
-            }
-            setFields({
-                id,
-                buyCode: data.buyCode,
-                buyDivcode: data.buyDivcode,
-                packType: data.packType,
-                active: data.active,
-                unitperPack: data.unitperPack,
-            })
-            setLoader(false)
-        } catch (err) {
-            setLoader(false)
-            message.error(typeof err == "string" ? err : "data not found")
-        }
-    }
+    // const pageSize = 10;
+
+    // // for-list-pagination
+    // const [pagination, setPagination] = useState({
+    //     totalPage: 0,
+    //     current: 1,
+    //     minIndex: 0,
+    //     maxIndex: 0
+    // });
+
+    // const handleChange = (page) => {
+    //     setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
+    // };
+
+
+    // const add = () => {
+    //     try {
+    //         setVisible(true);
+    //         clearFields()
+    //     } catch (err) {
+    //         setLoader(false)
+    //         message.error(typeof err == "string" ? err : "data not found")
+    //     }
+    // };
+
+
+
+
     const onClose = () => {
         clearFields()
         setVisible(false);
@@ -96,21 +124,7 @@ function LineCostMaster({ name }) {
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
-    const [tableProps, setTableProps] = useState({
-        page: 0,
-        rowsPerPage: 10,
-        sortOrder: {
-            name: 'packType',
-            direction: 'asc'
-        }
-    })
-
-    const updateTableProps = props => {
-        setTableProps({
-            ...tableProps,
-            ...props
-        })
-    }
+   
 
     const inputOnChange = name => e => {
         let value = e.target.value
@@ -120,8 +134,10 @@ function LineCostMaster({ name }) {
 
     const [listLoading, setListLoading] = useState(false);
     const [loader, setLoader] = useState(false);
-    const [buyerList, setBuyerList] = useState([]);
-    const [buyerDivisionList, setBuyerDivisionList] = useState([]);
+    const [locationList, setLocationList] = useState([]);
+    const [finyearList, setFinyearList] = useState([]);
+    const [foctoryList, setFoctoryList] = useState([]);
+
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
@@ -136,24 +152,24 @@ function LineCostMaster({ name }) {
                 validation = false
             }
         })
-        if (fields.unitperPack && /[^\d]/g.test(fields.unitperPack)) {
-            err.unitperPack = "Enter numbers only"
-            validation = false
-        }
-        if (fields.unitperPack && parseInt(fields.unitperPack) == 0) {
-            err.unitperPack = "Should be greater than zero"
-            validation = false
-        }
+        // if (fields.unitperPack && /[^\d]/g.test(fields.unitperPack)) {
+        //     err.unitperPack = "Enter numbers only"
+        //     validation = false
+        // }
+        // if (fields.unitperPack && parseInt(fields.unitperPack) == 0) {
+        //     err.unitperPack = "Should be greater than zero"
+        //     validation = false
+        // }
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             setLoader(true)
             ApiCall({
                 method: "POST",
-                path: API_URLS.SAVE_PACK_TYPE_MASTER,
+                path: API_URLS.SAVE_LINECOST_MASTER,
                 data: {
                     ...fields,
                     packType: fields.packType.trim(),
-                    maxShipPer:0,
+                    maxShipPer: 0,
                     hostName: getHostName()
                 }
             }).then(resp => {
@@ -168,32 +184,14 @@ function LineCostMaster({ name }) {
         }
     }
 
-    const getDatas = () => {
-        setListLoading(true)
-        ApiCall({
-            path: API_URLS.GET_PACK_TYPE_MASTER
-        }).then(resp => {
-            setListLoading(false)
-            if (Array.isArray(resp.data)) {
-                setList(resp.data.map(d => {
-                    d.activeText = d.active == "Y" ? "Yes" : "No"
-                    return d
-                }))
-            } else {
-                message.error("Response data is expected as array")
-            }
-        }).catch(err => {
-            setListLoading(false)
-            message.error(err.message || err)
-        })
-    }
 
-    const getBuyerList = () => {
+
+    const getLocationList = () => {
         ApiCall({
-            path: API_URLS.GET_BUYER_DROPDOWN
+            path: API_URLS.GET_LOCATION_MASTER_LIST
         }).then(resp => {
             if (Array.isArray(resp.data)) {
-                setBuyerList(resp.data)
+                setLocationList(resp.data.filter(d => d.active == "Y"))
             } else {
                 message.error("Response data is expected as array")
             }
@@ -202,209 +200,342 @@ function LineCostMaster({ name }) {
         })
     }
 
-    const getBuyerDivisionDropDown = () => {
-        setFields({ ...fields, buyDivcode: fields.id == 0 ? "" : fields.buyDivcode })
-        if (fields.buyCode) {
-            ApiCall({ 
-                path: API_URLS.GET_BUYER_DIVISION_DROPDOWN + `/${fields.buyCode}`
-            }).then(resp => {
+    const getFactCodeDropDown = () => {
+        // alert(fields.locCode);
+        setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
+        if (fields.locCode) {
+            ApiCall({
+                path: API_URLS.GET_ALLFACTORY_LIST + "/" + fields.locCode
+            }).then(respp => {
                 try {
-                    setBuyerDivisionList(resp.data)
-                } catch(er) {
+                    alert(respp.data);
+                    setFoctoryList(respp.data)
+                } catch (er) {
                     message.error("Response data is not as expected")
                 }
             })
-            .catch(err => {
-                message.error(err.message || err)
-            })
+                .catch(err => {
+                    message.error(err.message || err)
+                })
         } else {
-            setBuyerDivisionList([])
+            setFoctoryList([])
         }
     }
 
+    const getFinyearList = () => {
+        ApiCall({
+            path: API_URLS.GET_FINYEAR_MASTER_LIST
+        }).then(res => {
+            if (Array.isArray(res.data)) {
+                setFinyearList(res.data.filter(a => a.locCode == "INDIA"))
+            } else {
+                message.error("Response data is expected as array")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+
+    function GridDataLoad(transYear, locName, factCode, lineGroup) {
+        debugger;
+       // if (loader) return
+        let err = {}, validation = true
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }else{
+                validation = true
+            }
+        })
+
+        setErrors({ ...initialErrorMessages, ...err })
+        if (validation) {
+        console.log( API_URLS.GET_LINECOST_MONTHWISE_LIST + "?Finyear=" + transYear + "&LocCode=" + locName + "&FactCode=" + factCode + "&LineGroup=" + lineGroup);
+        ApiCall({
+            path: API_URLS.GET_LINECOST_MONTHWISE_LIST + "?Finyear=" + transYear + "&LocCode=" + locName + "&FactCode=" + factCode + "&LineGroup=" + lineGroup,
+        }).then(respp => {
+            console.log(respp)
+            if (Array.isArray(respp.data)) {
+                console.log(respp.data)
+                setList(respp.data)
+            } else {
+                message.error("Response data is expected as array")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+
+    }
+    }
     useEffect(() => {
-        if (fields.buyCode) {
-            getBuyerDivisionDropDown()
+        if (fields.locCode) {
+            getFactCodeDropDown()
         }
-    }, [fields.buyCode])
+    }, [fields.locCode])
 
     useEffect(() => {
-        getDatas()
-        getBuyerList()
+
+        getLocationList()
+        getFinyearList()
     }, []);
 
-    const tableColumns = [
-        {
-            name: "buyCode",
-            label: "Buyer code"
-        },
-        {
-            name: "buyDivcode",
-            label: "Buyer Division code"
-        },
-        {
-            name: "packType",
-            label: "Pack Type"
-        },
-        {
-            name: "unitperPack",
-            label: "Unit Per Pack"
-        },
-        {
-            name: "activeText",
-            label: "Active"
-        },
-        {
-            name: "id",
-            label: "Action",
-            options: {
-                sort: false,
-                customBodyRender: (value, tm) => {
-                    return (
-                        <div title="Edit" onClick={() => edit(value)}>
-                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                        </div>
-                    )
-                }
-            }
+    const [tableProps, setTableProps] = useState({
+        page: 0,
+        rowsPerPage: 12,
+        sortOrder: {
+            name: 'mattype',
+            direction: 'asc'
         }
-    ]
+    })
+
+    const updateTableProps = props => {
+        setTableProps({
+            ...tableProps,
+            ...props
+        })
+    }
+
+    // const tableColumns = [
+    //     {
+    //         name: "transMonth",
+    //         label: "transMonth",
+    //         editable: true
+    //     },   
+    //     {
+    //         name: "operators",
+    //         label: "operators"
+    //     },  
+    //     {
+    //         name: "workingHrs",
+    //         label: "workingHrs"
+    //     },  
+    //     {
+    //         name: "linecost",
+    //         label: "linecost"
+    //     }, 
+    //     {
+    //         name: "smv",
+    //         label: "smv"
+    //     }
+    //     //,     
+    //     // {
+    //     //     name: "mattype",
+    //     //     label: "Action",
+    //     //     options: {
+    //     //         customBodyRender: (value, tm) => {
+    //     //             return (
+    //     //                 <div style={{display: 'flex', justifyContent: 'space-around'}}>
+    //     //                     <div onClick={() => edit(value, 'edit')}>
+    //     //                         <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+    //     //                     </div>
+    //     //                     {/* <div onClick={() => edit(value, 'clone')}>
+    //     //                         <FontAwesomeIcon icon={faCopy} color="#919191" />
+    //     //                     </div> */}
+    //     //                 </div>
+
+    //     //             )
+    //     //         }
+    //     //     }
+    //     // }
+    // ]
 
     return (
-        <div className='defect-master-main'>
-            <div className='m-3'>
-                <h6 className='m-0 p-0' style={{fontWeight: "bold"}}>{name}</h6>
 
-                <div className='row align-items-center mt-2'>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
+        <>
+            <div class="container-fluid">
+                <div class="row mt-25 main-tab pl-15 pr-15">
+                    <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
+                        {/* <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                type="button" role="tab" aria-controls="home" aria-selected="true">Thread</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1"
+                                type="button" role="tab" aria-controls="profile" aria-selected="false">Fabric</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                                type="button" role="tab" aria-controls="profile" aria-selected="false">Details</button>
+                        </li> */}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
+                                type="button" role="tab" aria-controls="contact" aria-selected="false">Line Cost Master</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-15 mb-80" id="myTabContent">
+                        <div class="tab-pane fade show active" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row mt-10">
+                            <div class="col-lg-4">
+                                    <label>Financial Year <span className='text-danger'>*  </span> </label>
+                                    <small className='text-danger'>{fields.transYear === '' ? errors.transYear : ''}</small>
+                                <div class="main-select">
+                                    <select name="somename" class="form-control SlectBox main-select"
+                                       required
+                                       value={fields.transYear}
+                                       onChange={inputOnChange("transYear")}
+                                       id="transYear"     
+                                        >
+                                        <option value=""> Financial Year</option>
+                                        {
+                                            finyearList.map((t, ind) => (
+                                                <option key={ind} value={t.finyear}>{t.finyear}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                    <label>Location <span className='text-danger'>*  </span> </label>
+                                    <small className='text-danger'>{errors.locName}</small>
+                                <div class="main-select">
+                                    <select name="somename" class="form-control SlectBox main-select"
+                                      id="locName"
+                                      value={fields.locName} onChange={inputOnChange("locName")} required>
+                                         <option value="" hidden>Select Location Code</option>
+                                            {
+                                                locationList.map((t, ind) => (
+                                                    <option key={ind} value={t.locName}>{t.locName}</option>
+                                                ))
+                                            }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label>FactCode <span className='text-danger'>*  </span> </label>
+                                <small className='text-danger'>{fields.factCode === '' ? errors.factCode : ''}</small>
+                                <div class="main-select">
+                                    <select name="somename" class="form-control SlectBox main-select"
+                                      required
+                                      value={fields.factCode}
+                                      onChange={inputOnChange("factCode")}    
+                                        >
+                                         <option value=""> Select FactCode</option>
+                                            {foctoryList.map((v, index) => {
+                                                return <option key={index} value={v.uCode}>{v.uCode}</option>
+                                            })}
+                                            <option value="D15-2"> D15-2 </option>
+                                            <option value="B9B10"> B9B10 </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label>Line Group <span className='text-danger'>*  </span> </label>
+                                <small className='text-danger'>{fields.lineGroup === '' ? errors.lineGroup : ''}</small>
+                                <input type="text" class="form-control" placeholder='Enter line Group'
+                                value={fields.lineGroup} maxLength="50"
+                                id="line-Group"
+                                onChange={inputOnChange("lineGroup")}
+                                required />
+                            </div>
+
+                            <div class="col-lg-auto"> 
+                                <button class="icons-list-item org-plus m-8 mt-20" onClick={() => GridDataLoad(fields.transYear, fields.locName, fields.factCode, fields.lineGroup)}>
+                                    <i class="fe fe-plus fs-10 pe-auto">ADD</i>
+                                </button>
+                            </div>
+                                
+                              
+                        </div>
+
+                            {/* <div class="table-responsive pb-10 bg-white mt-20">
+                                <CustomTableContainer
+                                    columns={tableColumns}
+                                    data={list}
+                                    options={{
+                                        download: !1,
+                                        print: !1,
+                                        filter: !1,
+                                        viewColumns: !1,
+                                        jumpToPage: !0,
+                                        selectableRows: "none",
+                                        rowsPerPageOptions: [10, 25, 50, 100],
+                                        rowsPerPage: tableProps.rowsPerPage,
+                                        page: tableProps.page,
+                                        count: list.length,
+                                        sortOrder: tableProps.sortOrder,
+                                        onTableChange: (action, tableState) => {
+                                            if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                            const { page, rowsPerPage, sortOrder } = tableState
+                                            updateTableProps({
+                                                page, rowsPerPage, sortOrder
+                                            })
+                                        }
+                                    }}
+                                />
+                            </div> */}
+
+                            <div class="table-responsive pb-10 bg-white mt-20">
+                                <table id="example-1" class="table table-striped tbl-wht   text-md-nowrap ">
+                                    <thead>
+                                        <tr>
+                                            <th>SlNo</th>
+                                            <th>Financial Year</th>
+                                            <th>Operators </th>
+                                            <th>WorkingHrs </th>
+                                            <th>LineCost $ </th>
+                                            <th>OT Amount </th>
+                                            <th>Incentive </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {list.map((linecost, index) => (
+                                            <tr key={index}>
+                                                <td> {index +1} </td>
+                                                <td>
+                                                    <input type="text" className="form-control form-control-sm mt-1" 
+                                                    value= {linecost.transMonth}  id="transMonth" onChange={inputOnChange("transMonth")}/> 
+                                                </td>
+                                                <td>
+                                                    <input type="text" className="form-control form-control-sm mt-1" 
+                                                    value={linecost.operators} name="operators" id="operators" onChange={inputOnChange("operators")}/> 
+                                                </td>
+                                                <td>
+                                                    <input type="text" className="form-control form-control-sm mt-1" 
+                                                    value={linecost.workingHrs} name="workingHrs" id="workingHrs" onChange={inputOnChange("workingHrs")}/> 
+                                                </td>
+                                                <td>
+                                                    <input type="text" className="form-control form-control-sm mt-1" 
+                                                    value={linecost.linecost} name="linecost" id="linecost" onChange={inputOnChange("linecost")}/> 
+                                                    
+                                                </td>
+                                                <td>
+                                                    <input type="text" className="form-control form-control-sm mt-1" 
+                                                    value={linecost.smv} name="smv" id="smv" onChange={inputOnChange("smv")}/> 
+                                                    
+                                                </td>
+                                                <td>
+                                                    {linecost.operators}
+                                                </td>
+                                            </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </div>
                     </div>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
-                        <button className='btn-sm btn defect-master-add' id="frd-opr-add" onClick={add}> + Add New </button>
+                    <div class="d-flex align-content-center pt-20 pb-20 justify-content-center sticky-bottom">
+
+
+                        <div class=" ">
+                            <button class="btn btn-primary search-btn btn-block  ">Cancel</button>
+                        </div>
+                        <div class="">
+                            <button class="btn btn-success search-btn btn-block ml-10">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div>
-                <CustomTableContainer
-                    columns={tableColumns}
-                    data={list}
-                    options={{
-                        download: !1,
-                        print: !1,
-                        filter: !1,
-                        viewColumns: !1,
-                        jumpToPage: !0,
-                        selectableRows: "none",
-                        rowsPerPageOptions: [10, 25, 50, 100],
-                        rowsPerPage: tableProps.rowsPerPage,
-                        page: tableProps.page,
-                        count: list.length,
-                        sortOrder: tableProps.sortOrder,
-                        onTableChange: (action, tableState) => {
-                            if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
-                            const { page, rowsPerPage, sortOrder } = tableState
-                            updateTableProps({
-                                page, rowsPerPage, sortOrder
-                            })
-                        }
-                    }}
-                />
-            </div>
-            {listLoading && <div className='text-center'>
-                <Spin style={{ color: '#F57234' }} tip="Loading..." />
-            </div>}
+        </>
 
 
-            {/* Add */}
-            <Drawer footer={
-                <>
-                    <div>
-                        {
-                            !loader ?
-                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Submit" : "Update"} </button>
-                                : (
-                                    <div className="text-center">
-                                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                                    </div>
-                                )
-                        }
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={e => {
-                            let _id = new Number(fields.id)
-                            if (_id == 0) add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id == 0 ? "Add New" : "Edit"} Pack Type Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
-                <div className='defect-master-add-new'>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Buyer Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{errors.buyCode}</small>
-                        </div>
-                        <select className='form-control form-control-sm mt-1' id="buyer-code" value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
-                            <option value="" hidden>Select Buyer Code</option>
-                            {
-                                buyerList.map((t, ind) => (
-                                    <option key={ind} value={t.buyCode}>{t.buyCode}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Buyer Division Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{errors.buyDivcode}</small>
-                        </div>
-                        <select className='form-control form-control-sm mt-1' id="buyer-div-code" value={fields.buyDivcode} onChange={inputOnChange("buyDivcode")} required>
-                            <option value="" hidden>Select Buyer Division Code</option>
-                            {
-                                buyerDivisionList.map((t, ind) => (
-                                    <option key={ind} value={t.buyDivCode}>{t.buyDivCode}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack Type Name <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{errors.packType}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Pack Type Name'
-                            value={fields.packType} maxLength="500"
-                            id="pack-type-name"
-                            onChange={inputOnChange("packType")} required />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Unit Per Pack <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{errors.unitperPack}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Unit Per Pack'
-                            value={fields.unitperPack} maxLength="3"
-                            id="unit-per-pack"
-                            numeric="1"
-                            onChange={inputOnChange("unitperPack")} required />
-                    </div>
-
-                    <div className='mt-3'>
-                        <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
-                        <div className='mt-1'>
-                            <Switch size='default'
-                                checked={fields.active == 'Y'}
-                                id="opr-active"
-                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
-                        </div>
-                    </div>
-                </div>
-            </Drawer>
-        </div >
+        
+       
     )
 }
 
