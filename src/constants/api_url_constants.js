@@ -130,20 +130,17 @@ export const API_URLS = {
     
     //CompanyMaster
     GET_COMPANY_MASTER_LIST: "LEMaster/GetAllLEMaster",
-    GET_COMPANY_MASTER_BY_ID:"LEMaster/GetLEMasterByEntityID",
+    GET_COMPANY_MASTER_BY_ID:"LEMaster/GetLEMaster",
     SAVE_COMPANY_MASTER: "LEMaster/SaveLEMaster",
     //BuyerMaster
     GET_BUYER_MASTER_LIST: "BuyerMaster/GetAllBuyerInfo",
     GET_BUYER_MASTER_BY_ID:"BuyerMaster/GetBuyerInfoById",
-    SAVE_BUYER_MASTER: "BuyerMaster/SaveBuyerMaster",
+    SAVE_BUYER_MASTER: "BuyerMaster/SaveBuyerMaster",    
 
-    //UserBuyerRights
-    //GET_BUYER_MASTER_LIST: "BuyerMaster/GetAllBuyerInfo",
-    GET_USER_BUYER_RIGHTS_MASTER_BY_ID:"/UserBuyerRights/GetBuyerListByuser",
-    SAVE_USER_BUYER_RIGHTS_MASTER: "UserBuyerRights/SaveUserBuyerRights",
-
-
-
+     //BuyerMaster
+     GET_USER_BUYER_RIGHTS_MASTER_ENS: "User/GetAll",
+     GET_USER_BUYER_RIGHTS_MASTER_BY_ID:"UserBuyerRights/GetBuyerListByuser",
+     SAVE_USER_BUYER_RIGHTS_MASTER: "UserBuyerRights/SaveUserBuyerRights",
 
 
 }
@@ -165,5 +162,6 @@ export const MISCELLANEOUS_TYPES = {
     GUIDETYPE: 'GUIDETYPE',
     SOURCEFROM: 'SOURCEFROM',
     FIT:'FIT',
-    GENDER:'GENDER'
+    GENDER:'GENDER',
+    Catalog:'Catalog'
 }
