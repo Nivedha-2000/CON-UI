@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './DefectMasters.css';
+import './LanguageMaster.css';
 import { Tag, Drawer, Switch, Pagination, Spin, message, Select } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faStar } from '@fortawesome/free-regular-svg-icons';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 
-export default function DefectMasters() {
+export default function LanguageMaster() {
 
     const clearFields = () => {
         setDefectMaster({
@@ -364,27 +364,12 @@ export default function DefectMasters() {
         console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
-        //         filter = input.value.toUpperCase();
-        //         table = document.getElementById("masterTable");
-        //         tr = table.getElementsByTagName("tr");
-        // 
-        //         for (i = 0; i < tr.length; i++) {
-        //             td = tr[i].getElementsByTagName("td")[1];
-        //             if (td) {
-        //                 txtValue = td.textContent || td.innerText;
-        //                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        //                     tr[i].style.display = "";
-        //                 } else {
-        //                     tr[i].style.display = "none";
-        //                 }
-        //             }
-        //         }
     }
 
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
-                <h6 className='m-0 p-0'>Defect Master</h6>
+                <h6 className='m-0 p-0'>Language Master</h6>
                 <div className='row align-items-center mt-2'>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1'>
                         <input type="search" className='form-control' id='masterSearch' placeholder='Search' onChange={myFunction} />
@@ -400,7 +385,7 @@ export default function DefectMasters() {
                 </div>
 
                 <div className='table-responsive mt-2 defect-master-table'>
-                    <table className="table table-hover" id='masterTable'>
+                    {/* <table className="table table-hover" id='masterTable'>
                         <thead id='table-header'>
                             <tr>
                                 <th scope="col">Favourite</th>
@@ -435,7 +420,6 @@ export default function DefectMasters() {
                                         >
                                             {defect?.defectProfile ? defect?.defectProfile.split('') : '-'}
                                         </Tag>
-                                        {/* {defect?.defectProfile ? defect?.defectProfile : '-'}  */}
                                     </td>
                                     <td>
                                         <Tag style={{ borderRadius: '4px', backgroundColor: defect?.active == 'Y' ? 'green' : '#FF1414', color: 'white' }}
@@ -450,36 +434,14 @@ export default function DefectMasters() {
                                     </td>
                                 </tr>
                             ))}
-                            {/* { datas && datas?.map((defect, index) => (
-                                <tr key={index}>
-                                    <td> {defect?.isFav == "Y" ? <FontAwesomeIcon icon={faStar} color="yellow" /> : <FontAwesomeIcon icon={faStar} color="grey" />} </td>
-                                    <td> {defect?.defectCode} </td>
-                                    <td> {defect?.defectCategory} </td>
-                                    <td> {defect?.defectName} </td>
-                                    <td>
-                                        <Tag
-                                            color={defect?.defectLevel == 'Critical' ? '#FF1414' : defect?.defectLevel == 'Major' ? '#F7931D' : '#59A0E5'}
-                                        >
-                                            {defect?.defectLevel}
-                                        </Tag>
-                                    </td>
-                                    <td> {defect?.defectProfile ? defect?.defectProfile : '-'} </td>
-                                    <td>
-                                        <div className='text-center' onClick={() => { editDefect(defect?.id); console.log(defect?.id, 'defect master id') }}>
-                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))} */}
-                            {/* </>} */}
                         </tbody>
-                    </table>
-                    {loader && <div className='text-center mt-3'>
+                    </table> */}
+                    {/* {loader && <div className='text-center mt-3'>
                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                    </div>}
+                    </div>} */}
                 </div>
 
-                <div className='text-end mt-3'>
+                {/* <div className='text-end mt-3'>
                     <Pagination
                         current={pagination.current}
                         pageSize={pageSize}
@@ -487,12 +449,12 @@ export default function DefectMasters() {
                         onChange={handleChange}
                         responsive={true}
                     />
-                </div>
+                </div> */}
             </div>
 
 
             {/* Add */}
-            <Drawer
+            {/* <Drawer
                 maskClosable={false}
                 keyboard={false}
                 footer={
@@ -528,22 +490,11 @@ export default function DefectMasters() {
                                 <small className='text-danger'>{defectMaster.defectCode == '' ? errors.defectCode : ''}</small>
                             </div>
                             <input
-                                // style={{ borderColor: focus == true ? 'rgb(255,5,5)' : '', boxShadow: focus == true ? '-2px 2px 7px -1px rgba(255,5,5,1)': '' }}
                                 className='form-control form-control-sm mt-1' placeholder='Enter Defect Name'
                                 minLength="1" maxLength="10"
                                 value={defectMaster.defectCode}
                                 onChange={(e) => {
                                     setDefectMaster({ ...defectMaster, defectCode: e.target.value });
-                                    //                                     ItrApiService.POST({
-                                    //                                         appCode:'ENAPP003',
-                                    //                                         url:`DefectMaster/IsCheckDefectCode?defectcode=${e.target.value}`
-                                    //                                     }).then(res => {
-                                    //                                         if(res.Success == true){
-                                    //                                             // setDefectMaster({...defectMaster, ...res.data})
-                                    //                                         } else {
-                                    // 
-                                    //                                         }
-                                    //                                     })
                                 }}
                                 required />
                         </div>
@@ -597,16 +548,7 @@ export default function DefectMasters() {
                                 <label>Defect Profile <span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{defectMaster.defectProfile == '' ? errors.defectProfile : ''}</small>
                             </div>
-                            {/* <select className='form-select form-select-sm mt-1'
-                                value={defectMaster.defectProfile}
-                                onChange={(e) => setDefectMaster({ ...defectMaster, defectProfile: e.target.value })}
-                                required>
-                                <option selected> Multi-Select Profile </option>
-                                <option value="Score Card"> Score Card </option>
-                                <option value="End Line"> End Line </option>
-                                <option value="Finishing"> Finishing </option>
-                                <option value="Audit"> Audit </option>
-                            </select> */}
+                           
                             <Select mode="multiple" style={{ width: '100%' }} placeholder="Select Defect Profile"
                                 value={defectMaster.profArr}
                                 onChange={(e) => {
@@ -622,7 +564,6 @@ export default function DefectMasters() {
                                 <Option value="F" > Finishing </Option>
                                 <Option value="A" > Audit </Option>
                             </Select>
-                            {/* <p className='text-danger'> {errors} </p> */}
                         </div>
 
                         <div className='mt-3'>
@@ -633,11 +574,10 @@ export default function DefectMasters() {
                                 />
                                 <span className='px-2'> {defectMaster.active === 'Y' ? 'Active' : 'Disable'} </span>
                             </div>
-                            {/* <p className='text-danger'> {errors} </p> */}
                         </div>
                     </form>
                 </div>
-            </Drawer>
+            </Drawer> */}
 
 
 

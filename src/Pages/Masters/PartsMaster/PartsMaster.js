@@ -38,7 +38,7 @@ export default function PartsMasters() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `GarPartsMaster/GetGarPartsbyId/${partsId}`,
-            appCode: "CNF",
+            appCode: "ENAPP003",
         }).then(res => {
             console.log(res.data);
             if (res.Success == true) {
@@ -64,7 +64,7 @@ export default function PartsMasters() {
         hostName: ""
     });
 
-    console.log(partsMaster.id, 'edit')
+    // console.log(partsMaster.id, 'edit')
 
     const [errors, setErrors] = useState({
         productType: "",
@@ -99,7 +99,7 @@ export default function PartsMasters() {
                     else {
                         ItrApiService.POST({
                             url: 'GarPartsMaster/SaveGarParts',
-                            appCode: "CNF",
+                            appCode: "ENAPP003",
                             data: { ...partsMaster, id: 0 }
                         }).then(res => {
                             console.log(partsMaster)
@@ -120,7 +120,7 @@ export default function PartsMasters() {
                 else {
                     ItrApiService.POST({
                         url: 'GarPartsMaster/SaveGarParts',
-                        appCode: "CNF",
+                        appCode: "ENAPP003",
                         data: partsMaster
                     }).then(res => {
                         if (res.Success == true) {
@@ -161,7 +161,7 @@ export default function PartsMasters() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarPartsMaster/GetAllGarPartData',
-            appCode: "CNF"
+            appCode: "ENAPP003"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -178,7 +178,7 @@ export default function PartsMasters() {
             }
             else {
                 setLoader(false);
-                // message.warning('Something went wrong');
+                message.warning('Something went wrong');
             }
         });
     }
@@ -199,7 +199,7 @@ export default function PartsMasters() {
             }
             else {
                 setLoader(false);
-                // message.warning('Something went wrong');
+                message.warning('Something went wrong');
             }
         });
     }
@@ -219,7 +219,7 @@ export default function PartsMasters() {
             }
             else {
                 setLoader(false);
-                // message.warning('Something went wrong');
+                message.warning('Something went wrong');
             }
         });
     }
@@ -233,7 +233,7 @@ export default function PartsMasters() {
             setLoader(true);
             ItrApiService.POST({
                 url: `GarPartsMaster/SaveGarParts`,
-                appCode: "CNF",
+                appCode: "ENAPP003",
                 data: partsMaster
             }).then(res => {
                 if (res.Success == true) {
