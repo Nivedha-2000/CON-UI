@@ -68,13 +68,22 @@ export default function Sidebar() {
               </Menu.Item>
             </Menu> */}
             <Menu defaultSelectedKeys={['1']} defaultActiveFirst={true} mode="inline" >
-            <SubMenu key="5" title="ADMIN" icon={<img src={production} width="20" />} >
-              <Menu.Item key="5-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+              <SubMenu key="5" title="Administrator" icon={<img src={production} width="20" />} >
+                <Menu.Item key="5-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-buyer-rights-master">
                     <span className='mx-2'> User Buyer Rights Master</span>
                   </NavLink>
-              </Menu.Item>  
-
+                </Menu.Item>
+                <Menu.Item key="5-2" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/menu-rights-master">
+                    <span className='mx-2'> Menu Rights Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="5-3" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/menu-master">
+                    <span className='mx-2'> Menu Master</span>
+                  </NavLink>
+                </Menu.Item>
               </SubMenu>
 
               <SubMenu key="1" title="Quality Assurance" icon={<img src={QualityLogo} width="20" />} >
@@ -108,7 +117,7 @@ export default function Sidebar() {
                     <span className='mx-2'> AQL Master</span>
                   </NavLink>
                 </Menu.Item>
-                 {/* <Menu.Item key="1-42" icon={<FontAwesomeIcon icon={faBarcode} size="lg" />}>
+                {/* <Menu.Item key="1-42" icon={<FontAwesomeIcon icon={faBarcode} size="lg" />}>
                   <NavLink to="masters/stitch-type-master">
                     <span className='mx-2'> Stitch Master</span>
                   </NavLink>
@@ -180,7 +189,7 @@ export default function Sidebar() {
 
 
               <SubMenu key="3" title="Product Development" icon={<img src={production} width="20" />} >
-              <Menu.Item key="3-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="3-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/material-type-master">
                     <span className='mx-2'> Material Type Master</span>
                   </NavLink>
@@ -199,17 +208,17 @@ export default function Sidebar() {
                   <NavLink to="masters/user-defined-type-master">
                     <span className='mx-2'> User Defined Type Master</span>
                   </NavLink>
-                </Menu.Item>   
+                </Menu.Item>
                 <Menu.Item key="3-5" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-defined-master">
                     <span className='mx-2'> User Defined Master</span>
                   </NavLink>
-                </Menu.Item>         
+                </Menu.Item>
                 <Menu.Item key="3-6" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/season-master">
                     <span className='mx-2'> Season Master</span>
                   </NavLink>
-                </Menu.Item>     
+                </Menu.Item>
                 <Menu.Item key="3-7" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/style-division-master">
                     <span className='mx-2'> Style Division Master</span>
@@ -229,7 +238,12 @@ export default function Sidebar() {
                   <NavLink to="masters/line-cost-master">
                     <span className='mx-2'> Line Cost Master</span>
                   </NavLink>
-                </Menu.Item>  
+                </Menu.Item>
+                <Menu.Item key="3-11" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/pdc-master">
+                    <span className='mx-2'> PDC Master</span>
+                  </NavLink>
+                </Menu.Item>
 
                 <Menu.Item key="3-21" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/material-group-master">
@@ -256,21 +270,23 @@ export default function Sidebar() {
                     <span className='mx-2'> HandOver Task Master</span>
                   </NavLink>
                 </Menu.Item>
-               
+
                 <Menu.Item key="3-28" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/buyer-master">
                     <span className='mx-2'> Buyer Master</span>
                   </NavLink>
                 </Menu.Item>
-
-               
-
-                
+                <Menu.Item key="3-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/purpose-master">
+                    <span className='mx-2'> Purpose Master</span>
+                  </NavLink>
+                </Menu.Item>
                 <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/tab-test">
                     <span className='mx-2'> Material Master</span>
                   </NavLink>
-                </Menu.Item>  
+                </Menu.Item>
+
 
                 {/* <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-buyer-rights-master">
@@ -295,7 +311,7 @@ export default function Sidebar() {
               </SubMenu>
 
               <SubMenu key="4" title="Corporate Group" icon={<img src={production} width="20" />} >
-              <Menu.Item key="4-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/location-master">
                     <span className='mx-2'> Location Master</span>
                   </NavLink>

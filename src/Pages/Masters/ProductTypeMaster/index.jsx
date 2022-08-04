@@ -316,7 +316,7 @@ function ProductTypeMaster({ name }) {
                         }}> Cancel </button>
                     </div>
                 </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Material Type Master`}</h6 >} placement="right" onClose={() => {
+            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Product Type Master`}</h6 >} placement="right" onClose={() => {
                 clearFields();
                 onClose();
             }} visible={visible} >
@@ -326,8 +326,8 @@ function ProductTypeMaster({ name }) {
                             <label>Product Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.productType === '' ? errors.productType : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter location code'
-                            value={fields.productType} maxLength="10"
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Product Type'
+                            value={fields.productType} maxLength="20"
                             id="Product-Type"
                             onChange={inputOnChange("productType")} 
                             required />

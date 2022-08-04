@@ -15,6 +15,7 @@ import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_consta
 import { PDM_APP_CODE } from "../../../constants";
 
 const initialErrorMessages = {
+    id: 0,
     locCode: "",
     locName: "",
 },
@@ -300,6 +301,7 @@ function LacationMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter location code'
                             value={fields.locCode} maxLength="10"
                             id="location-code"
+                            disabled={fields.id != 0}
                             onChange={inputOnChange("locCode")} 
                             required />
                     </div>
