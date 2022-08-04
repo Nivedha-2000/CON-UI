@@ -323,7 +323,7 @@ function UserDefinedTypeMaster({ name }) {
                         }}> Cancel </button>
                     </div>
                 </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Material Type Master`}</h6 >} placement="right" onClose={() => {
+            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} User Defined Type Master`}</h6 >} placement="right" onClose={() => {
                 clearFields();
                 onClose();
             }} visible={visible} >
@@ -345,7 +345,7 @@ function UserDefinedTypeMaster({ name }) {
                             <small className='text-danger'>{fields.description === '' ? errors.description : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Description'
-                            value={fields.description} maxLength="10"
+                            value={fields.description} maxLength="50"
                             id="description"
                             onChange={inputOnChange("description")} 
                             required />

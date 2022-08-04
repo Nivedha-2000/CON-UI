@@ -11,7 +11,7 @@ import ApiCall from "../../../services"
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
 
 import MedalCellRenderer from '../LineCostMaster/calculation';
- import '../../../Assets/style.css'
+import '../../../Assets/style.css'
 import bootstrap from 'bootstrap/dist/js/bootstrap'
 // import '../../../Assets/bootstrapstyle.min.css'
 //import 'bootstrap/dist/css/bootstrap.min.css'
@@ -33,12 +33,9 @@ const initialErrorMessages = {
     transMonth: "",
     transYear: "",
     locCode: "",
-    factCode: "",
-    lineGroup: "",
-    operators: 0,
-    workingHrs: 0,
-    linecost: 0,
-    smv: 0,
+    buyCode: "",
+    buyDivCode: "",
+    pdcPer: 0,
 
 },
     initialFieldValues = {
@@ -46,17 +43,14 @@ const initialErrorMessages = {
         transMonth: "",
         transYear: "",
         locCode: "",
-        factCode: "",
-        lineGroup: "",
-        operators: 0,
-        workingHrs: 0,
-        linecost: 0,
-        smv: 0,
+        buyCode: "",
+        buyDivCode: "",
+        pdcPer: 0,
 
     },
-    requiredFields = ["transMonth", "transYear", "locCode", "factCode", "lineGroup","locName"]
+    requiredFields = [ "transYear", "locCode", "buyDivCode"]
 
-function LineCostMaster({ name }) {
+function PDCMaster({ name }) {
     const clearFields = () => {
         setFields({
             ...initialFieldValues
@@ -67,59 +61,6 @@ function LineCostMaster({ name }) {
 
     const [visible, setVisible] = useState(false);
     const [datas, setDatas] = useState([]);
-
-    // const dataSource = [
-    //     {
-    //     //  key: '1',
-    //       transMonth: "JAN",
-    //       transYear: 0,
-    //       locCode: "",
-    //       factCode: "",
-    //       lineGroup:"",
-    //       operators:65,
-    //       workingHrs:9.00,
-    //       linecost:2000,
-    //       smv:0,
-    //     },
-    //     {
-    //    //   key: '2',
-    //       transMonth: "FEB",
-    //       transYear: 0,
-    //       locCode: "",
-    //       factCode: "",
-    //       lineGroup:"",
-    //       operators:65,
-    //       workingHrs:9.00,
-    //       linecost:2000,
-    //       smv:0,
-    //     },
-    //   ];
-
-    // const pageSize = 10;
-
-    // // for-list-pagination
-    // const [pagination, setPagination] = useState({
-    //     totalPage: 0,
-    //     current: 1,
-    //     minIndex: 0,
-    //     maxIndex: 0
-    // });
-
-    // const handleChange = (page) => {
-    //     setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
-    // };
-
-
-    // const add = () => {
-    //     try {
-    //         setVisible(true);
-    //         clearFields()
-    //     } catch (err) {
-    //         setLoader(false)
-    //         message.error(typeof err == "string" ? err : "data not found")
-    //     }
-    // };
-
 
 
     const gridRef = useRef(); // Optional - for accessing Grid's API
@@ -147,6 +88,8 @@ function LineCostMaster({ name }) {
     const [locationList, setLocationList] = useState([]);
     const [finyearList, setFinyearList] = useState([]);
     const [foctoryList, setFoctoryList] = useState([]);
+    const [buyerList, setBuyerList] = useState([]);
+    const [buyerDivisionList, setBuyerDivisionList] = useState([]);
 
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
@@ -203,16 +146,14 @@ function LineCostMaster({ name }) {
     }
 
     const getFactCodeDropDown = () => {
-        debugger;
+        // alert(fields.locCode);
         setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
-
-      
         if (fields.locCode) {
-            console.log(API_URLS.GET_ALLFACTORY_LIST +  `/${fields.locCode}`)
             ApiCall({
-                path: API_URLS.GET_ALLFACTORY_LIST + "?locationcode="+ `${fields.locCode}`  //"/" + fields.locCode
+                path: API_URLS.GET_ALLFACTORY_LIST + `/${fields.locCode}`  //"/" + fields.locCode
             }).then(respp => {
                 try {
+                    alert(respp.data);
                     setFoctoryList(respp.data)
                 } catch (er) {
                     message.error("Response data is not as expected")
@@ -225,8 +166,6 @@ function LineCostMaster({ name }) {
             setFoctoryList([])
         }
     }
-
-    
 
     const getFinyearList = () => {
        
@@ -248,7 +187,41 @@ function LineCostMaster({ name }) {
         }
     }
 
-    function GridDataLoad(transYear, locCode, factCode, lineGroup) {
+    const getBuyerList = () => {
+        ApiCall({
+            path: API_URLS.GET_BUYER_DROPDOWN
+        }).then(resp => {
+            if (Array.isArray(resp.data)) {
+                setBuyerList(resp.data)
+            } else {
+                message.error("Response data is expected as array")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+
+    const getBuyerDivisionDropDown = () => {
+        setFields({ ...fields, buyDivCode: fields.id == 0 ? "" : fields.buyDivCode })
+        if (fields.buyCode) {
+            ApiCall({
+                path: API_URLS.GET_BUYER_DIVISION_DROPDOWN + `/${fields.buyCode}`
+            }).then(resp => {
+                try {
+                    setBuyerDivisionList(resp.data)
+                } catch (er) {
+                    message.error("Response data is not as expected")
+                }
+            })
+                .catch(err => {
+                    message.error(err.message || err)
+                })
+        } else {
+            setBuyerDivisionList([])
+        }
+    }
+
+    function GridDataLoad(transYear, locCode, buyDivCode) {
         debugger;
         // if (loader) return
         let err = {}, validation = true
@@ -263,9 +236,9 @@ function LineCostMaster({ name }) {
 
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
-            console.log(API_URLS.GET_LINECOST_MONTHWISE_LIST + "?Finyear=" + transYear + "&LocCode=" + locCode + "&FactCode=" + factCode + "&LineGroup=" + lineGroup);
+            console.log(API_URLS.GET_PDC_MONTHWISE_LIST + "?Finyear=" + transYear + "&locCode=" + locCode + "&buyDivCode=" + buyDivCode );
             ApiCall({
-                path: API_URLS.GET_LINECOST_MONTHWISE_LIST + "?Finyear=" + transYear + "&LocCode=" + locCode + "&FactCode=" + factCode + "&LineGroup=" + lineGroup,
+                path: API_URLS.GET_PDC_MONTHWISE_LIST + "?Finyear=" + transYear + "&locCode=" + locCode + "&buyDivCode=" + buyDivCode ,
             }).then(respp => {
                 console.log(respp)
                 if (Array.isArray(respp.data)) {
@@ -281,6 +254,18 @@ function LineCostMaster({ name }) {
 
         }
     }
+   
+    useEffect(() => {
+        getBuyerList()
+        getLocationList()
+        //   getFinyearList()
+    }, []);
+    useEffect(() => {
+        if (fields.buyCode) {
+            getBuyerDivisionDropDown()
+        }
+    }, [fields.buyCode])
+
     useEffect(() => {
         if (fields.locCode) {
             getFactCodeDropDown(fields.locCode)
@@ -292,118 +277,28 @@ function LineCostMaster({ name }) {
         }
     }, [fields.locCode])
 
-    useEffect(() => {
-        getLocationList()
-      //  getFinyearList()
-    }, []);
-
-  
-
-    const [tableProps, setTableProps] = useState({
-        page: 0,
-        rowsPerPage: 12,
-        sortOrder: {
-            name: 'mattype',
-            direction: 'asc'
-        }
-    })
-
-    const updateTableProps = props => {
-        setTableProps({
-            ...tableProps,
-            ...props
-        })
-    }
-
-    // const tableColumns = [
-    //     {
-    //         name: "transMonth",
-    //         label: "transMonth",
-    //         editable: true
-    //     },   
-    //     {
-    //         name: "operators",
-    //         label: "operators"
-    //     },  
-    //     {
-    //         name: "workingHrs",
-    //         label: "workingHrs"
-    //     },  
-    //     {
-    //         name: "linecost",
-    //         label: "linecost"
-    //     }, 
-    //     {
-    //         name: "smv",
-    //         label: "smv"
-    //     }
-    //     //,     
-    //     // {
-    //     //     name: "mattype",
-    //     //     label: "Action",
-    //     //     options: {
-    //     //         customBodyRender: (value, tm) => {
-    //     //             return (
-    //     //                 <div style={{display: 'flex', justifyContent: 'space-around'}}>
-    //     //                     <div onClick={() => edit(value, 'edit')}>
-    //     //                         <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-    //     //                     </div>
-    //     //                     {/* <div onClick={() => edit(value, 'clone')}>
-    //     //                         <FontAwesomeIcon icon={faCopy} color="#919191" />
-    //     //                     </div> */}
-    //     //                 </div>
-
-    //     //             )
-    //     //         }
-    //     //     }
-    //     // }
-    // ]
-
     // Each Column Definition results in one Column.
     const [columnDefs, setColumnDefs] = useState([
         { field: 'transMonth', filter: true },
         {
-            field: 'operators'
+            field: 'transYear'
             , filter: true
-            // , cellRenderer: MedalCellRenderer
-            // , cellRendererParams: {
-            //     "onClick": (operParam) => operatorschange(operParam),
-            // }
-            , editable: true
         },
         {
-            field: 'workingHrs'
+            field: 'buyDivCode'
             , filter: true
-            // , cellRenderer: MedalCellRenderer
-            // , cellRendererParams: {
-            //     "onClick": (whrParam) => workingHrschange(whrParam),
-            // }
-            , editable: true
         },
         {
-            field: 'linecost'
+            field: 'pdcPer'
             , filter: true
-            , cellRenderer: MedalCellRenderer
-            , cellRendererParams: {
-                "onClick": (testParam) => change(testParam),
-            }
             , editable: true
-
-        },
-        {
-            field: 'smv'
-            , filter: true
-            , cellRenderer: (param) => {
-                debugger;
-                return param.data.workingHrs * param.data.linecost;
-            }
         }
     ]);
 
-   // function change(testParam) {
+    // function change(testParam) {
     const change = (testParam) => {
         debugger;
-        setRowData({ ...rowData,testParam })
+        setRowData({ ...rowData, testParam })
         const test = rowData;
         // const index=test.findIndex(x=>)
         test[0] = testParam;
@@ -415,18 +310,9 @@ function LineCostMaster({ name }) {
         console.log(rowData);
         const test = rowData;
         test[0] = testParam;
-        
+
     }
-    // const operatorschange = (operParam) => {
-    //     debugger;
-    //     console.log(rowData);
 
-    // }
-
-    // const workingHrschange = (whrParam) => {
-    //     debugger;
-    //     console.log(rowData);
-    // }
 
     // DefaultColDef sets props common to all Columns
     const defaultColDef = useMemo(() => ({
@@ -443,7 +329,7 @@ function LineCostMaster({ name }) {
         gridRef.current.api.deselectAll();
     }, []);
 
-    function postLineCostsave() {
+    function postPDCsave() {
         debugger;
         let err = {}, validation = true
         requiredFields.forEach(f => {
@@ -456,8 +342,8 @@ function LineCostMaster({ name }) {
         })
 
         setErrors({ ...initialErrorMessages, ...err })
-     
-        if ((fields.locName != "")) {
+
+        if ((fields.locCode != "")) {
             let validation = 'false';
             const dataset = [];
             for (const item of rowData) {
@@ -466,17 +352,13 @@ function LineCostMaster({ name }) {
                     transMonth: item.transMonth,
                     transYear: item.transYear,
                     locCode: item.locCode,
-                    factCode: item.factCode,
-                    lineGroup: item.lineGroup,
-                    operators: item.operators,
-                    workingHrs: item.workingHrs,
-                    linecost: item.linecost,
-                    smv: item.smv,
+                    buyDivCode: item.buyDivCode,
+                    pdcPer: item.pdcPer,
                     createdDate: item.createdDate,
                     createdBy: "ADMIN",
                     modifiedDate: item.modifiedDate,
                     modifiedBy: "ADMIN",
-                    hostName: "NAllA"
+                    hostName: "ADMIN"
                 });
                 validation = 'true';
             }
@@ -485,7 +367,7 @@ function LineCostMaster({ name }) {
 
                 ApiCall({
                     method: "POST",
-                    path: API_URLS.SAVE_LINECOST_MASTER,
+                    path: API_URLS.SAVE_PDC_MASTER,
                     data: dataset
                 }).then(resp => {
                     message.success(resp.message)
@@ -506,34 +388,21 @@ function LineCostMaster({ name }) {
             <div class="container-fluid">
                 <div class="row mt-25 main-tab pl-15 pr-15">
                     <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
-                        {/* <li class="nav-item" role="presentation">
-                            <button class="nav-link " id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                                type="button" role="tab" aria-controls="home" aria-selected="true">Thread</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">Fabric</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">Details</button>
-                        </li> */}
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active1" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
-                                type="button" role="tab" aria-controls="contact" aria-selected="false">Line Cost Master</button>
+                                type="button" role="tab" aria-controls="contact" aria-selected="false">PDC Master</button>
                         </li>
                     </ul>
                     <div class="tab-content p-15 mb-80" id="myTabContent">
                         <div class="tab-pane fade show active" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                             <div class="row mt-10">
-
                                 <div class="col-lg-4">
                                     <label>Location <span className='text-danger'>*  </span> </label>
                                     <small className='text-danger'>{errors.locCode}</small>
                                     <div class="main-select">
                                         <select name="somename" class="form-control SlectBox main-select"
                                             id="locCode"
-                                            value={fields.locName} onChange={inputOnChange("locCode")} required>
+                                            value={fields.locCode} onChange={inputOnChange("locCode")} required>
                                             <option value="" hidden>Select Location Code</option>
                                             {
                                                 locationList.map((t, ind) => (
@@ -565,25 +434,41 @@ function LineCostMaster({ name }) {
                                 </div>
 
                                 <div class="col-lg-4">
-                                    <label>FactCode <span className='text-danger'>*  </span> </label>
-                                    <small className='text-danger'>{fields.factCode === '' ? errors.factCode : ''}</small>
+                                    <label>Buyer Code <span className='text-danger'>*  </span> </label>
+                                    <small className='text-danger'>{fields.buyCode === '' ? errors.buyCode : ''}</small>
                                     <div class="main-select">
                                         <select name="somename" class="form-control SlectBox main-select"
                                             required
-                                            value={fields.factCode}
-                                            onChange={inputOnChange("factCode")}
+                                            value={fields.buyCode}
+                                            onChange={inputOnChange("buyCode")}
                                         >
-                                            <option value=""> Select FactCode</option>
-                                            {foctoryList.map((v, index) => {
-                                                return <option key={index} value={v.uCode}>{v.uCode}</option>
+                                            <option value=""> Select buyCode</option>
+                                            {buyerList.map((v, index) => {
+                                                return <option key={index} value={v.buyCode}>{v.buyCode}</option>
                                             })}
-                                            {/* <option value="D15-2"> D15-2 </option>
-                                            <option value="B9B10"> B9B10 </option> */}
                                         </select>
                                     </div>
                                 </div>
 
+
                                 <div class="col-lg-4">
+                                    <label>Buyer Div Code <span className='text-danger'>*  </span> </label>
+                                    <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
+                                    <div class="main-select">
+                                        <select name="somename" class="form-control SlectBox main-select"
+                                            required
+                                            value={fields.buyDivCode}
+                                            onChange={inputOnChange("buyDivCode")}
+                                        >
+                                            <option value=""> Select buy div Code</option>
+                                            {buyerDivisionList.map((v, index) => {
+                                                return <option key={index} value={v.buyDivCode}>{v.buyDivCode}</option>
+                                            })}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* <div class="col-lg-4">
                                     <label>Line Group <span className='text-danger'>*  </span> </label>
                                     <small className='text-danger'>{fields.lineGroup === '' ? errors.lineGroup : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter line Group'
@@ -591,44 +476,18 @@ function LineCostMaster({ name }) {
                                         id="line-Group"
                                         onChange={inputOnChange("lineGroup")}
                                         required />
-                                </div>
+                                </div> */}
 
-                                <div class="col-lg-auto">
-                                    <button class="btn btn-success search-btn btn-block ml-10 p-6"  onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.factCode, fields.lineGroup)}>
-                                        <i class="fe fe-plus fs-10 pe-auto">ADD</i>
+                                <div class="col-lg-4">
+
+                                    <button class="btn btn-success search-btn btn-block ml-2 " onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.buyDivCode)}>
+                                        ADD
+                                        {/* <i class="fe fe-plus fs-10 pe-auto">ADD</i> */}
                                     </button>
-
                                 </div>
-
-
                             </div>
 
-                            {/* <div class="table-responsive pb-10 bg-white mt-20">
-                                <CustomTableContainer
-                                    columns={tableColumns}
-                                    data={list}
-                                    options={{
-                                        download: !1,
-                                        print: !1,
-                                        filter: !1,
-                                        viewColumns: !1,
-                                        jumpToPage: !0,
-                                        selectableRows: "none",
-                                        rowsPerPageOptions: [10, 25, 50, 100],
-                                        rowsPerPage: tableProps.rowsPerPage,
-                                        page: tableProps.page,
-                                        count: list.length,
-                                        sortOrder: tableProps.sortOrder,
-                                        onTableChange: (action, tableState) => {
-                                            if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
-                                            const { page, rowsPerPage, sortOrder } = tableState
-                                            updateTableProps({
-                                                page, rowsPerPage, sortOrder
-                                            })
-                                        }
-                                    }}
-                                />
-                            </div> */}
+
 
                             <div class="table-responsive pb-10 bg-white mt-20">
 
@@ -647,55 +506,6 @@ function LineCostMaster({ name }) {
                                         onCellClicked={cellClickedListener} // Optional - registering for Grid Event
                                     />
                                 </div>
-
-
-                                {/* <table id="example-1" class="table table-striped tbl-wht   text-md-nowrap ">
-                                    <thead>
-                                        <tr>
-                                            <th>SlNo</th>
-                                            <th>Financial Year</th>
-                                            <th>Operators </th>
-                                            <th>WorkingHrs </th>
-                                            <th>LineCost $ </th>
-                                            <th>OT Amount </th>
-                                            <th>Incentive </th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {list.map((linecost, index) => (
-                                            <tr key={index}>
-                                                <td> {index + 1} </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.transMonth} id="transMonth" onChange={inputOnChange("transMonth")} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.operators} name="operators" id="operators" onChange={inputOnChange("operators")} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.workingHrs} name="workingHrs" id="workingHrs" onChange={inputOnChange("workingHrs")} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.linecost} name="linecost" id="linecost" onChange={inputOnChange("linecost")} />
-
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.smv} name="smv" id="smv" onChange={inputOnChange("smv")} />
-
-                                                </td>
-                                                <td>
-                                                    {linecost.operators}
-                                                </td>
-                                            </tr>
-                                        ))
-                                        }
-                                    </tbody>
-                                </table> */}
                             </div>
                         </div>
                     </div>
@@ -703,10 +513,10 @@ function LineCostMaster({ name }) {
 
 
                         <div class=" ">
-                            <button class="btn btn-primary search-btn btn-block  " onClick={()=> onClose()}>Cancel</button>
+                            <button class="btn btn-primary search-btn btn-block  " onClick={()=>onClose()}>Cancel</button>
                         </div>
                         <div class="">
-                            <button class="btn btn-success search-btn btn-block ml-10" onClick={() => postLineCostsave()}>Save</button>
+                            <button class="btn btn-success search-btn btn-block ml-10" onClick={() => postPDCsave()}>Save</button>
                         </div>
                     </div>
                 </div>
@@ -719,9 +529,9 @@ function LineCostMaster({ name }) {
     )
 }
 
-LineCostMaster.propTypes = {
+PDCMaster.propTypes = {
     name: PropTypes.string
 }
 
 
-export default LineCostMaster;
+export default PDCMaster;

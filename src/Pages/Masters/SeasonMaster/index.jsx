@@ -280,7 +280,7 @@ function SeasonMaster({ name }) {
                             <label>Season code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.seasonCode === '' ? errors.seasonCode : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='season Code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter season Code'
                             value={fields.seasonCode} maxLength="10"
                             id="seasonCode"
                             onChange={inputOnChange("seasonCode")} 
@@ -292,8 +292,8 @@ function SeasonMaster({ name }) {
                             <label>Season Group <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.seasonGroup === '' ? errors.seasonGroup : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='season Group'
-                            value={fields.seasonGroup} maxLength="50"
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter season Group'
+                            value={fields.seasonGroup} maxLength="20"
                             id="seasonGroup"
                             onChange={inputOnChange("seasonGroup")} 
                             required />
@@ -304,8 +304,8 @@ function SeasonMaster({ name }) {
                             <label>Season Name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.seasonName === '' ? errors.seasonName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='season Name'
-                            value={fields.seasonName} maxLength="50"
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter season Name'
+                            value={fields.seasonName} maxLength="25"
                             id="seasonName"
                             onChange={inputOnChange("seasonName")} 
                             required />

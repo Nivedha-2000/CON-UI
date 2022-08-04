@@ -395,7 +395,7 @@ function MaterialTypeMaster({ name }) {
                 <div className='defect-master-add-new'>
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Material Type Code <span className='text-danger'>*  </span> </label>
+                            <label>Type Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Type === '' ? errors.Type : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
@@ -417,8 +417,8 @@ function MaterialTypeMaster({ name }) {
                             <label>Material Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Mattype === '' ? errors.Mattype : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter location code'
-                            value={fields.Mattype} maxLength="10"
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type'
+                            value={fields.Mattype} maxLength="20"
                             id="Material-Type"
                             onChange={inputOnChange("Mattype")} 
                             required />
@@ -429,8 +429,8 @@ function MaterialTypeMaster({ name }) {
                             <label>Material Type Description <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.MatDesc === '' ? errors.MatDesc : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter location name'
-                            value={fields.MatDesc} maxLength="50"
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type Description'
+                            value={fields.MatDesc} maxLength="40"
                             id="Material-Desc"
                             onChange={inputOnChange("MatDesc")} 
                             required />
@@ -441,7 +441,7 @@ function MaterialTypeMaster({ name }) {
                             <small className='text-danger'>{errors.MatTypeIndex ? errors.MatTypeIndex : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Transit days Value'
-                               value={fields.MatTypeIndex} minLength="1" maxLength="2"
+                               value={fields.MatTypeIndex} minLength="1" maxLength="8"
                                onChange={inputOnChange("MatTypeIndex")}                         
                         />
                     </div> 

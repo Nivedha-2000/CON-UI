@@ -46097,6 +46097,14 @@ tfoot {
     padding-bottom: 15px;
 }
 
+.main-tab .nav-tabs .nav-link.active1 {
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: #000;
+    padding-bottom: 15px;
+}
+
 .dis-sel .SumoSelect>.CaptionCont,
 .dis-sel .form-control {
     background-color: #F6FAFD;

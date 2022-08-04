@@ -12,6 +12,7 @@ import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_consta
 import { PDM_APP_CODE } from "../../../constants";
 
 const initialErrorMessages = {
+    id: 0,
     pcode: "",
     pName: "",
 },
@@ -275,6 +276,7 @@ function ProjectMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Project code'
                             value={fields.pcode} maxLength="10"
                             id="pcode"
+                            disabled={fields.id != 0}
                             onChange={inputOnChange("pcode")} 
                             required />
                     </div>
