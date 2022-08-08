@@ -13,8 +13,6 @@ function App() {
   let navigate = useNavigate();
 
   useEffect(async () => {
-    // const delQuery = new URLSearchParams(location.search);
-
     const { react_app_baseurl, react_app_env, react_app_site } = process.env
     await ItrApiService.CONFIG(react_app_env, "http://gateway01.ithred.info/api/", react_app_site).then(res => {
       // debugger
@@ -28,29 +26,6 @@ function App() {
     });
 
 
-
-    // await ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/", react_app_site).then(res => {
-    //   // debugger
-    //   console.log(res);
-    //   if (res.directLogin == true && res.tokenState == true) {
-    //     navigate('/masters/defect-master');
-    //   }
-    //   else {
-    //     window.location.replace(configUrl.appUrl);
-    //   }
-    // });
-
-
-
-    // ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", react_app_site);
-    // ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/",react_app_site);
-    // ItrAuthService.Login({
-    //   data: {
-    //     userName: 'mathankumar@ambattur.com',
-    //     password: 'password123'
-    //   }
-    // }).then((res) => console.log(res.data));
-    // ItrApiService.userApp().then(res => console.log(res.data,'userApps'));
   }, []);
 
   return (
