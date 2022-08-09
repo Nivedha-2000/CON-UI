@@ -39,6 +39,7 @@ import StyleDivisionMaster from '../Pages/Masters/StyleDivisionMaster';
 import UserDefinedMaster from '../Pages/Masters/UserDefinedMaster';
 import HSCodeMaster from '../Pages/Masters/HSCodeMaster';
 import SupplierMaster from '../Pages/Masters/SupplierMaster';
+import PDCMaster from '../Pages/Masters/PDCMaster';
 
 import MaterialGroupMaster from '../Pages/Masters/MaterialGroupMaster';
 import BuyerProductTypeMaster from '../Pages/Masters/BuyerProductTypeMaster';
@@ -49,10 +50,14 @@ import UnitMaster from '../Pages/Masters/UnitMaster';
 import CompanyMaster from '../Pages/Masters/CompanyMaster';
 import BuyerMaster from '../Pages/Masters/BuyerMaster';
 
+import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
+import MenurightsElement from '../Pages/Masters/MenuRightsMaster';
+import MenuElement from '../Pages/Masters/MenuMaster';
+import PurposeMaster from '../Pages/Masters/PurposeMaster';
+
 
 import TabTest from '../Pages/Masters/TabTest'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
-import UserbuyerrightsElement from '../Pages/Masters/UserBuyerRights';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
@@ -101,7 +106,7 @@ export default function Routing() {
         <Route path='masters/hs-code-master' element={<HSCodeMaster name="Hs Code Master" />} />
         <Route path='masters/supplier-master' element={<SupplierMaster name="Supplier Master" />} />
         <Route path='masters/supplier-master-new' element={<SupplierMasterNew name="Supplier Master" />} />
-
+        <Route path='masters/pdc-master' element={<PDCMaster name="PDC Master" />} />
         <Route path='masters/material-group-master' element={<MaterialGroupMaster name="Material Group Master" />} />
         <Route path='masters/buyer-product-type-master' element={<BuyerProductTypeMaster name="Buyer Product Type Master" />} />
         <Route path='masters/size-master' element={<SizeMaster name="Size Master" />} />
@@ -112,7 +117,9 @@ export default function Routing() {
         <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
         <Route path='masters/tab-test' element={<TabTest name='Tab Test' />}></Route>
         <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master' />} />
-
+        <Route path='masters/menu-rights-master' element={<MenurightsElement name='Menu Rights Master' />} />
+        <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
+        <Route path='masters/purpose-master' element={<PurposeMaster name='Purpose Master' />} /> 
 
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>

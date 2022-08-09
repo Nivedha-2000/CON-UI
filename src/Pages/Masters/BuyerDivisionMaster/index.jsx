@@ -385,7 +385,8 @@ function BuyerDivisionMaster({ name }) {
                             <label>Buyer Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{errors.buyCode}</small>
                         </div>
-                        <select className='form-control form-control-sm mt-1' id="buyer-code" value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
+                        <select className='form-control form-control-sm mt-1' id="buyer-code" disabled={fields.id != 0}
+                         value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
                             <option value="" hidden>Select Buyer Code</option>
                             {
                                 buyCodeList.map((t, ind) => (
@@ -412,7 +413,7 @@ function BuyerDivisionMaster({ name }) {
                             <label>Buyer Division Name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.divName === '' ? errors.divName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Division'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Division Name'
                             value={fields.divName} maxLength="50"
                             id="Material-Desc"
                             onChange={inputOnChange("divName")} 
@@ -424,7 +425,7 @@ function BuyerDivisionMaster({ name }) {
                             <small className='text-danger'>{errors.profitPercent ? errors.profitPercent : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter profit Percent'
-                               value={fields.profitPercent} minLength="1" maxLength="5"
+                               value={fields.profitPercent} 
                                onChange={inputOnChange("profitPercent")}               
                             onFocus={NUMBER_IS_FOCUS_IN_ZERO("profitPercent")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("profitPercent")}
                         />

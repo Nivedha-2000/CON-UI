@@ -13,6 +13,7 @@ import {faCopy} from "@fortawesome/free-solid-svg-icons";
 
 const requiredFields = ["fashionGroup", "productType","styleDivision","subProductType","avgSAM"],
     initialErrorMessages = {
+        id: 0,   
         fashionGroup: "",
         productType: "",
         styleDivision: "",
@@ -21,7 +22,7 @@ const requiredFields = ["fashionGroup", "productType","styleDivision","subProduc
         Active: 'Y'
     },
     initialFieldValues = {
-      //  id: 0,       
+        id: 0,       
         fashionGroup: "",
         productType: "",
         styleDivision: "",
@@ -443,7 +444,7 @@ function StyleDivisionMaster({ name }) {
                             <small className='text-danger'>{fields.styleDivision === '' ? errors.styleDivision : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter style Division '
-                            value={fields.styleDivision} maxLength="10"
+                            value={fields.styleDivision} maxLength="50"
                             id="styleDivision"
                             onChange={inputOnChange("styleDivision")} 
                             required />

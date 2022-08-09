@@ -24,7 +24,7 @@ import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import '../../../Assets/sumoselect.css'
 import jquery from '../../../Assets/js/jquerymin'
 
-const requiredFields = ["buyCode", "buyName", "buyType", "address1", "address2","address3", "city", "pinCode","country", "emailId", "contPerson1","contPerson2", "contNo", "imageFileName"],
+const requiredFields = ["buyCode", "buyName", "buyType", "address1", "city", "pinCode","country","active"],
     initialErrorMessages = {
         buyCode: "",
         buyName: "",
@@ -220,15 +220,15 @@ function BuyerMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'inSeamIndex'){
+        if (name === 'contNo'){
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['inSeamIndex'] =  ''
+                err['contNo'] =  ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['inSeamIndex'] = "Please enter numbers only"
+                err['contNo'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
@@ -775,13 +775,20 @@ function BuyerMaster({ name }) {
             </div>
             <div class="col-lg-4">
             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                    <label>Buyer Type<span className='text-danger'>*  </span> </label>
-                    <small className='text-danger'>{fields.buyType === '' ? errors.buyType : ''}</small>
-                </div>
-                <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Type'
-                    value={fields.buyType} minLength="1" maxLength="25"
-                    onChange={inputOnChange("buyType")}                            
-                /> 
+                            <label>Buyer Type<span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{fields.buyType === '' ? errors.buyType : ''}</small>
+                        </div>
+                        <select className='form-select form-select-sm mt-1' required
+                                value={fields.buyType}
+                                onChange={inputOnChange("buyType")}                            
+                        >
+                            <option value=""> Select Buyer Type</option>
+                            {/* {MaterialTypeList.map((v, index) => {
+                                return <option key={index} value={v.code}>{v.codeDesc}</option>
+                            })} */}
+                             <option value="INTERNATIONAL"> INTERNATIONAL </option>
+                             <option value="DOMESTIC"> DOMESTIC </option>                             
+                        </select>
             </div>
         
             {/* <div class="d-flex align-content-center pt-40 justify-content-center">
@@ -958,6 +965,15 @@ function BuyerMaster({ name }) {
                             value={fields.imageFileName} 
                             onChange={inputOnChange("imageFileName")}  
                             />
+                        </div>
+
+                        <div className='col-lg-3'>
+                        <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
+                        <div className='mt-1'>
+                            <Switch size='default'
+                                    checked={fields.active === 'Y'}
+                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                        </div>
                         </div>
                         {/* <div class="col-lg-3">
                             <label>TDS Type</label>

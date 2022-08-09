@@ -13,7 +13,7 @@ import {faCopy} from "@fortawesome/free-solid-svg-icons";
 import { Radio } from 'antd';
 
 
-import '../../../Assets/style.css'
+// import '../../../Assets/style.css'
 import bootstrap from 'bootstrap/dist/js/bootstrap'
 // import '../../../Assets/bootstrapstyle.min.css'
 //import 'bootstrap/dist/css/bootstrap.min.css'

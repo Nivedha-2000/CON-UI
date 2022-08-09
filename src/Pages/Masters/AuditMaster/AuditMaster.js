@@ -386,6 +386,7 @@ export default function AuditMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Name'
                             value={auditMaster.auditName}
+                            readOnly
                             minLength="1" maxLength="10"
                             onChange={(e) => setAuditMaster({ ...auditMaster, auditName: e.target.value })} />
                     </div>

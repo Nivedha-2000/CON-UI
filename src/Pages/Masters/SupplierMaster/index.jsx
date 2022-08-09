@@ -600,6 +600,8 @@ function SupplierMaster({ name }) {
                 onClose();
             }} visible={visible} >
                 <div className='defect-master-add-new'>
+                  
+                  
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Supplier Category <span className='text-danger'>*  </span> </label>

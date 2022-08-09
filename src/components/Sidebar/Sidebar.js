@@ -68,10 +68,20 @@ export default function Sidebar() {
               </Menu.Item>
             </Menu> */}
             <Menu defaultSelectedKeys={['1']} defaultActiveFirst={true} mode="inline" >
-              <SubMenu key="5" title="ADMIN" icon={<img src={production} width="20" />} >
+              <SubMenu key="5" title="Administrator" icon={<img src={production} width="20" />} >
                 <Menu.Item key="5-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-buyer-rights-master">
                     <span className='mx-2'> User Buyer Rights Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="5-2" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/menu-rights-master">
+                    <span className='mx-2'> Menu Rights Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="5-3" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/menu-master">
+                    <span className='mx-2'> Menu Master</span>
                   </NavLink>
                 </Menu.Item>
               </SubMenu>
@@ -245,6 +255,12 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
 
+                <Menu.Item key="3-11" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/pdc-master">
+                    <span className='mx-2'> PDC Master</span>
+                  </NavLink>
+                </Menu.Item>
+
                 <Menu.Item key="3-21" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/material-group-master">
                     <span className='mx-2'> Material Group Master</span>
@@ -277,9 +293,11 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
 
-
-
-
+                <Menu.Item key="3-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/purpose-master">
+                    <span className='mx-2'> Purpose Master</span>
+                  </NavLink>
+                </Menu.Item>
                 <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/tab-test">
                     <span className='mx-2'> Material Master</span>

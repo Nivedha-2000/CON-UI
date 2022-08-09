@@ -124,15 +124,16 @@ function UserDefinedMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'avgSAM'){
-            const re =/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
+        if (name === 'indexkey'){
+            //const re =/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
+            const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['avgSAM'] =  ''
+                err['indexkey'] =  ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['avgSAM'] = "Please enter numbers only"
+                err['indexkey'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
@@ -387,7 +388,7 @@ function UserDefinedMaster({ name }) {
                             <small className='text-danger'>{fields.code === '' ? errors.code : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter code'
-                            value={fields.code} maxLength="50"
+                            value={fields.code} maxLength="10"
                             id="code"
                             onChange={inputOnChange("code")} 
                             required />
