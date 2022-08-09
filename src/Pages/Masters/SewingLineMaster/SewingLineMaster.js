@@ -31,7 +31,7 @@ export default function SewingLineMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `SewLineMaster/GetSewLinebyId/${sewingId}`,
-            appCode: "CNF",
+            appCode: "ENAPP003",
         }).then(res => {
             if (res.Success == true) {
                 console.log(res.data.active);
@@ -92,7 +92,7 @@ export default function SewingLineMaster() {
                     else {
                         ItrApiService.POST({
                             url: 'SewLineMaster/SaveSewLine',
-                            appCode: "CNF",
+                            appCode: "ENAPP003",
                             data: sewingMaster
                         }).then(res => {
                             if (res.Success == true) {
@@ -113,7 +113,7 @@ export default function SewingLineMaster() {
                 else {
                     ItrApiService.POST({
                         url: 'SewLineMaster/SaveSewLine',
-                        appCode: "CNF",
+                        appCode: "ENAPP003",
                         data: sewingMaster
                     }).then(res => {
                         if (res.Success == true) {
@@ -145,7 +145,7 @@ export default function SewingLineMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: `SewLineMaster/SaveSewLine`,
-                appCode: "CNF",
+                appCode: "ENAPP003",
                 data: sewingMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -183,7 +183,7 @@ export default function SewingLineMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'SewLineMaster/GetAllSewingLine',
-            appCode: "CNF"
+            appCode: "ENAPP003"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);

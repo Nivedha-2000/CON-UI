@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route,Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../Pages/Login/Login';
 import Dashboard from '../Pages/Dashboard/Dashboard';
 import Scheduler from '../Screens/Scheduler/Scheduler';
@@ -19,7 +19,9 @@ import StitchTypeMaster from '../Pages/Masters/StitchTypeMaster';
 import ShipmentTolerance from "../Pages/Masters/ShipmentTolerance";
 import PackTypeMaster from '../Pages/Masters/PackTypeMaster';
 import TransitMaster from '../Pages/Masters/TransitMaster';
-
+import LanguageMaster from '../Pages/Masters/LanguageMaster/LanguageMaster';
+import AuditMaster from '../Pages/Masters/AuditMaster/AuditMaster';
+import AssignmentMaster from '../Pages/Masters/AssignmentMaster/AssignmentMaster';
 
 import LocationMaster from '../Pages/Masters/LocationMaster';
 import MaterialTypeMaster from '../Pages/Masters/MaterialTypeMaster';
@@ -60,13 +62,16 @@ export default function Routing() {
 
   return (
     <Routes>
-      {/* <Route index path='/' element={ <Navigate replace to="/masters/defect-master" /> } /> */}
+      <Route index path='/' element={ <Navigate replace to="/masters/defect-master" /> } />
       <Route path='/' element={<Dashboard />}>
         <Route index path='quality' element={<Home />} />
         <Route path='scheduler' element={<SchedulerTwo />} />
         <Route path='external-audit' element={<ExternalAudit />} />
         <Route path='reports' element={<Reports />} />
         <Route path='quality/defects' element={<Defects />} />
+        <Route path='masters/audit-master' element={<AuditMaster />} />
+        <Route path='masters/assignment-master' element={<AssignmentMaster />} />
+        <Route path='masters/language-master' element={<LanguageMaster />} />
         <Route path='masters/defect-master' element={<DefectMaster />} />
         <Route path='masters/parts-master' element={<PartsMasters />} />
         <Route path='masters/operation-master' element={<OperationMaster />} />
@@ -76,37 +81,37 @@ export default function Routing() {
         <Route path='masters/shipment-tolerance-master' element={<ShipmentTolerance name="Shipment Tolerance Master" />} />
         <Route path='masters/sewingline-master' element={<SewingLineMaster />} />
         <Route path='masters/aql-master' element={<AqlMaster />} />
-        <Route path='masters/transit-master' element={<TransitMaster name="Transit Master" />}/>
+        <Route path='masters/transit-master' element={<TransitMaster name="Transit Master" />} />
 
 
-        <Route path='masters/location-master' element={<LocationMaster name="Location Master" />}/>
-        <Route path='masters/material-type-master' element={<MaterialTypeMaster name="Material Type Master" />}/>
-        <Route path='masters/product-type-master' element={<ProductTypeMaster name="Product Type Master" />}/>
-        <Route path='masters/sub-product-type-master' element={<SubProductTypeMaster name="sub Product Type Master" />}/>
-        <Route path='masters/user-defined-type-master' element={<UserDefinedTypeMaster name="User Defined Type Master" />}/>
-        <Route path='masters/buyer-division-master' element={<BuyerDivisionMaster name="Buyer Division Master" />}/>
-        <Route path='masters/business-group-master' element={<BusinessGroupMaster name="Business Group Master" />}/>
-        <Route path='masters/corporate-group-master' element={<CorporateGroupMaster name="Corporate Group Master" />}/>
-        <Route path='masters/vertical-group-master' element={<VerticalGroupMaster name="Vertical Group Master" />}/>
-        <Route path='masters/project-master' element={<ProjectMaster name="Project Master" />}/>
-        <Route path='masters/line-cost-master' element={<LineCostMaster name="Line Cost Master" />}/>
-        <Route path='masters/season-master' element={<SeasonMaster name="Season Master" />}/>
-        <Route path='masters/style-division-master' element={<StyleDivisionMaster name="Style Division Master" />}/>
-        <Route path='masters/user-defined-master' element={<UserDefinedMaster name="User Defined Master" />}/>
-        <Route path='masters/hs-code-master' element={<HSCodeMaster name="Hs Code Master" />}/>
-        <Route path='masters/supplier-master' element={<SupplierMaster name="Supplier Master" />}/>
-        <Route path='masters/supplier-master-new' element={<SupplierMasterNew name="Supplier Master" />}/>
+        <Route path='masters/location-master' element={<LocationMaster name="Location Master" />} />
+        <Route path='masters/material-type-master' element={<MaterialTypeMaster name="Material Type Master" />} />
+        <Route path='masters/product-type-master' element={<ProductTypeMaster name="Product Type Master" />} />
+        <Route path='masters/sub-product-type-master' element={<SubProductTypeMaster name="sub Product Type Master" />} />
+        <Route path='masters/user-defined-type-master' element={<UserDefinedTypeMaster name="User Defined Type Master" />} />
+        <Route path='masters/buyer-division-master' element={<BuyerDivisionMaster name="Buyer Division Master" />} />
+        <Route path='masters/business-group-master' element={<BusinessGroupMaster name="Business Group Master" />} />
+        <Route path='masters/corporate-group-master' element={<CorporateGroupMaster name="Corporate Group Master" />} />
+        <Route path='masters/vertical-group-master' element={<VerticalGroupMaster name="Vertical Group Master" />} />
+        <Route path='masters/project-master' element={<ProjectMaster name="Project Master" />} />
+        <Route path='masters/line-cost-master' element={<LineCostMaster name="Line Cost Master" />} />
+        <Route path='masters/season-master' element={<SeasonMaster name="Season Master" />} />
+        <Route path='masters/style-division-master' element={<StyleDivisionMaster name="Style Division Master" />} />
+        <Route path='masters/user-defined-master' element={<UserDefinedMaster name="User Defined Master" />} />
+        <Route path='masters/hs-code-master' element={<HSCodeMaster name="Hs Code Master" />} />
+        <Route path='masters/supplier-master' element={<SupplierMaster name="Supplier Master" />} />
+        <Route path='masters/supplier-master-new' element={<SupplierMasterNew name="Supplier Master" />} />
 
-        <Route path='masters/material-group-master' element={<MaterialGroupMaster name="Material Group Master" />}/>
-        <Route path='masters/buyer-product-type-master' element={<BuyerProductTypeMaster name="Buyer Product Type Master" />}/>
-        <Route path='masters/size-master' element={<SizeMaster name="Size Master" />}/>
-        <Route path='masters/role-master' element={<RoleMaster name='Role Master'/>}/>
-        <Route path='masters/hand-over-task-master' element={<HandOverTaskMaster name='Hand Over Task Master'/>}/>
-        <Route path='masters/unit-master' element={<UnitMaster name='Unit Master'/>}/>
-        <Route path='masters/company-master' element={<CompanyMaster name='Company Master'/>}/>
+        <Route path='masters/material-group-master' element={<MaterialGroupMaster name="Material Group Master" />} />
+        <Route path='masters/buyer-product-type-master' element={<BuyerProductTypeMaster name="Buyer Product Type Master" />} />
+        <Route path='masters/size-master' element={<SizeMaster name="Size Master" />} />
+        <Route path='masters/role-master' element={<RoleMaster name='Role Master' />} />
+        <Route path='masters/hand-over-task-master' element={<HandOverTaskMaster name='Hand Over Task Master' />} />
+        <Route path='masters/unit-master' element={<UnitMaster name='Unit Master' />} />
+        <Route path='masters/company-master' element={<CompanyMaster name='Company Master' />} />
         <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
-        <Route path='masters/tab-test' element={<TabTest name='Tab Test'/>}></Route>
-        <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master'/>}/>
+        <Route path='masters/tab-test' element={<TabTest name='Tab Test' />}></Route>
+        <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master' />} />
 
 
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}

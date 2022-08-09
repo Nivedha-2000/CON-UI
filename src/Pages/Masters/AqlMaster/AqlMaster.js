@@ -16,17 +16,17 @@ export default function AqlMaster() {
             aqlType: "",
             auditFormat: "",
             buyerCode: "",
-            packQtyFrom: 0,
-            packQtyTo: 0,
-            sampleSize: 0,
-            mesurementPcs: 0,
-            packSamples: 0,
-            maxAllowVisualDefects: 0,
-            maxAllowCriticalDefects: 0,
-            maxAllowSewDefects: 0,
-            maxAllowOthDefects: 0,
-            maxAllowMesurementDefects: 0,
-            maxAllowPackDefects: 0,
+            packQtyFrom: "",
+            packQtyTo: "",
+            sampleSize: "",
+            mesurementPcs: "",
+            packSamples: "",
+            maxAllowVisualDefects: "",
+            maxAllowCriticalDefects: "",
+            maxAllowSewDefects: "",
+            maxAllowOthDefects: "",
+            maxAllowMesurementDefects: "",
+            maxAllowPackDefects: "",
             active: 'Y',
             hostName: ""
         });
@@ -52,7 +52,7 @@ export default function AqlMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `AQLBaseTable/GetAQLBaseById/${aqlId}`,
-            appCode: "CNF",
+            appCode: "ENAPP003",
         }).then(res => {
             if (res.Success == true) {
                 setAqlMaster(res.data);
@@ -76,17 +76,17 @@ export default function AqlMaster() {
         aqlType: "",
         auditFormat: "",
         buyerCode: "",
-        packQtyFrom: 0,
-        packQtyTo: 0,
-        sampleSize: 0,
-        mesurementPcs: 0,
-        packSamples: 0,
-        maxAllowVisualDefects: 0,
-        maxAllowCriticalDefects: 0,
-        maxAllowSewDefects: 0,
-        maxAllowOthDefects: 0,
-        maxAllowMesurementDefects: 0,
-        maxAllowPackDefects: 0,
+        packQtyFrom: "",
+        packQtyTo: "",
+        sampleSize: "",
+        mesurementPcs: "",
+        packSamples: "",
+        maxAllowVisualDefects: "",
+        maxAllowCriticalDefects: "",
+        maxAllowSewDefects: "",
+        maxAllowOthDefects: "",
+        maxAllowMesurementDefects: "",
+        maxAllowPackDefects: "",
         active: 'Y',
         hostName: ""
     });
@@ -187,7 +187,7 @@ export default function AqlMaster() {
                         setLoader(true);
                         ItrApiService.POST({
                             url: 'AQLBaseTable/SaveAQLBase',
-                            appCode: "CNF",
+                            appCode: "ENAPP003",
                             data: {
                                 ...aqlMaster, maxAllowCriticalDefects: parseInt(aqlMaster.maxAllowCriticalDefects),
                                 maxAllowMesurementDefects: parseInt(aqlMaster.maxAllowMesurementDefects), maxAllowOthDefects: parseInt(aqlMaster.maxAllowOthDefects),
@@ -287,7 +287,7 @@ export default function AqlMaster() {
                 setLoader(true);
                 ItrApiService.POST({
                     url: `AQLBaseTable/SaveAQLBase`,
-                    appCode: "CNF",
+                    appCode: "ENAPP003",
                     data: {
                         ...aqlMaster, maxAllowCriticalDefects: parseInt(aqlMaster.maxAllowCriticalDefects),
                         maxAllowMesurementDefects: parseInt(aqlMaster.maxAllowMesurementDefects), maxAllowOthDefects: parseInt(aqlMaster.maxAllowOthDefects),
@@ -360,7 +360,7 @@ export default function AqlMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AQLBaseTable/GetAllAQLBase',
-            appCode: "CNF"
+            appCode: "ENAPP003"
         }).then(res => {
             console.log(res.data);
             if (res.Success == true) {
@@ -627,7 +627,6 @@ export default function AqlMaster() {
                             //  onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")}
                             // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packQtyFrom")}
                             minLength="1" maxLength="4"
-
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
                                 if (e.target.value != '' && reg.test(e.target.value) != false) {
@@ -672,7 +671,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.sampleSize}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
@@ -695,7 +694,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.mesurementPcs}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("mesurementPcs")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("mesurementPcs")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("mesurementPcs")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("mesurementPcs")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
@@ -721,7 +720,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.packSamples}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("packSamples")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packSamples")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packSamples")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packSamples")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
@@ -744,7 +743,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.maxAllowVisualDefects}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 console.log(e.target.value)
@@ -772,7 +771,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.maxAllowCriticalDefects}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowCriticalDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowCriticalDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowCriticalDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowCriticalDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 if (e.target.value == '') {
@@ -797,7 +796,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.maxAllowSewDefects}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowSewDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowSewDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowSewDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowSewDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 if (e.target.value == '') {
@@ -823,7 +822,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.maxAllowOthDefects}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowOthDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowOthDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowOthDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowOthDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 if (e.target.value == '') {
@@ -849,7 +848,7 @@ export default function AqlMaster() {
                             type="text"
                             // min={aqlMaster.mesurementPcs}
                             value={aqlMaster.maxAllowMesurementDefects}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 console.log(aqlMaster.mesurementPcs)
@@ -871,7 +870,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.maxAllowPackDefects}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowPackDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowPackDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowPackDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowPackDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 if (parseInt(aqlMaster.packSamples) && (parseInt(aqlMaster.packSamples) > parseInt(e.target.value))) {
@@ -997,7 +996,7 @@ export default function AqlMaster() {
                             type="text"
                             min="0"
                             value={aqlMaster.sampleSize}
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
@@ -1020,7 +1019,7 @@ export default function AqlMaster() {
                             min="0"
                             value={aqlMaster.mesurementPcs}
                             minLength="1" maxLength="4"
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("mesurementPcs")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("mesurementPcs")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("mesurementPcs")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("mesurementPcs")}
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
                                 if (e.target.value != '' && reg.test(e.target.value) != false) {
@@ -1039,7 +1038,7 @@ export default function AqlMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter PackSamples'
                             type="text"
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("packSamples")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packSamples")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packSamples")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packSamples")}
                             min="0"
                             minLength="1" maxLength="4"
                             value={aqlMaster.packSamples}
@@ -1062,7 +1061,7 @@ export default function AqlMaster() {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowVisualDefects'
                             type="text"
                             min="0"
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
                             minLength="1" maxLength="4"
                             value={aqlMaster.maxAllowVisualDefects}
                             onChange={(e) => {
@@ -1168,7 +1167,7 @@ export default function AqlMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowMesurementDefects'
                             type="text"
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
                             minLength="1" maxLength="4"
                             min="0"
                             value={aqlMaster.maxAllowMesurementDefects}
@@ -1193,7 +1192,7 @@ export default function AqlMaster() {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowPackDefects'
                             type="number"
                             min="0"
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowPackDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowPackDefects")}
+                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowPackDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowPackDefects")}
                             minLength="1" maxLength="4"
                             value={aqlMaster.maxAllowPackDefects}
                             onChange={(e) => {

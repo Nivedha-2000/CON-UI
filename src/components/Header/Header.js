@@ -52,7 +52,38 @@ export default function Header() {
 
   const [dt, setDt] = useState(new Date().toLocaleString());
 
+  // get-parts-name
+  const [LocationData, setLocationData] = useState([]);
+  const [locationCode, setLocationCode] = useState();
+
+  const getUserLocations = () => {
+    ItrApiService.UserLocation({
+      url: 'Platform/UserLocations',
+      appCode: 'ENAPP004'
+    }).then(res => {
+      if (res.Success == true) {
+        setLocationData(res.data);
+      }
+    })
+  }
+
+  const changeLocation = (code) => {
+    ItrApiService.UserLocationChange({
+      data: {
+        locationCode: code
+      }
+    }).then(res => {
+      console.log(res);
+      if (res.Success == true) {
+        message.success('Location Changed Successfully');
+      }
+      else {
+      }
+    })
+  }
+
   useEffect(() => {
+    getUserLocations();
     ItrApiService.userProfile().then(res => {
       if (res.Success == true) {
         setUserProfile(res.data);
@@ -103,7 +134,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className='col-6 col-sm-4 col-md-4 col-lg-6 col-xl-6 middle'>
+        <div className='col-6 col-sm-4 col-md-4 col-lg-5 col-xl-5 middle'>
           <div className='search-box'>
             <input type="search" placeholder='Search With Keywords' className='form-control form-control-sm' />
             {/* <span > */}
@@ -115,7 +146,24 @@ export default function Header() {
 
         </div>
 
-        <div className='col-3 col-sm-4 col-md-4 col-lg-3 col-xl-3 right'>
+        <div className='col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2'>
+          <div className='search-box'>
+            <select className='form-select form-select-sm'
+              value={locationCode}
+              onChange={(e) => {
+                setLocationCode(e.target.value);
+                changeLocation(e.target.value)
+              }}
+            >
+              <option value=""> Select Location</option>
+              {LocationData.map((data, index) => {
+                return <option key={index} value={data.locationCode}>{data.locationCode}</option>
+              })}
+            </select>
+          </div>
+        </div>
+
+        <div className='col-3 col-sm-4 col-md-4 col-lg-2 col-xl-2 right'>
           <Popover placement="bottomRight" title="" content={
             <button className='btn btn-sm text-danger px-4 py-0' onClick={logOut}>Logout</button>
           }>

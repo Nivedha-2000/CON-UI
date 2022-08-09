@@ -23,7 +23,7 @@ function App() {
         navigate('/masters/defect-master');
       }
       else {
-        window.location.replace(configUrl.appUrl);
+        // window.location.replace(configUrl.appUrl);
       }
     });
 

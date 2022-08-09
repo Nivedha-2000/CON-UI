@@ -10,9 +10,9 @@ export default function OperationMaster() {
 
     const clearFields = () => {
         setOperationMaster({
-            ...operationMaster, operCode: '', operName: '', id: 0, active: 'Y'
+            ...operationMaster, operCode: '', operName: '', part_ID: '', id: 0, active: 'Y'
         });
-        setErrors({ ...errors, opeCode: '', opeName: '' });
+        setErrors({ ...errors, opeCode: '', opeName: '', part_ID: '' });
         setexists(false);
     }
 
@@ -31,7 +31,7 @@ export default function OperationMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `GarOperMaster/GetGarOprbyId/${operationId}`,
-            appCode: "CNF",
+            appCode: "ENAPP003",
         }).then(res => {
             if (res.Success == true) {
                 setOperationMaster(res.data);
@@ -48,11 +48,31 @@ export default function OperationMaster() {
 
     const [operationMaster, setOperationMaster] = useState({
         id: 0,
+        part_ID: 0,
         operCode: "",
         operName: "",
         active: 'Y',
         hostName: "",
     });
+
+
+    const [partsList, setPartsList] = useState([]);
+    const getPartsData = () => {
+        setLoader(true);
+        ItrApiService.GET({
+            url: 'GarPartsMaster/GetAllGarPartData',
+            appCode: "ENAPP003"
+        }).then(res => {
+            if (res.Success == true) {
+                setLoader(false);
+                setPartsList(res.data);
+            }
+            else {
+                setLoader(false);
+                // message.warning('Something went wrong');
+            }
+        });
+    }
 
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
@@ -60,7 +80,8 @@ export default function OperationMaster() {
 
     const [errors, setErrors] = useState({
         opeCode: '',
-        opeName: ''
+        opeName: '',
+        part_ID: ''
     })
 
     const [exist, setexists] = useState(false);
@@ -68,7 +89,7 @@ export default function OperationMaster() {
     const createOperationMaster = () => {
         let { operCode, operName } = operationMaster;
         if (operCode == '' || operName == '') {
-            setErrors({ ...errors, opeCode: 'Operation Code is required', opeName: 'Operation Name is required' })
+            setErrors({ ...errors, opeCode: 'Operation Code is required', opeName: 'Operation Name is required', part_ID: 'Part Name is required' })
         }
         else {
             setLoader(true);
@@ -83,7 +104,7 @@ export default function OperationMaster() {
                     else {
                         ItrApiService.POST({
                             url: 'GarOperMaster/SaveGarOperation',
-                            appCode: "CNF",
+                            appCode: "ENAPP003",
                             data: { ...operationMaster, active: true ? 'Y' : 'N' }
                         }).then(res => {
                             if (res.Success == true) {
@@ -103,7 +124,7 @@ export default function OperationMaster() {
                 else {
                     ItrApiService.POST({
                         url: 'GarOperMaster/SaveGarOperation',
-                        appCode: "CNF",
+                        appCode: "ENAPP003",
                         data: { ...operationMaster, active: true ? 'Y' : 'N' }
                     }).then(res => {
                         if (res.Success == true) {
@@ -128,15 +149,15 @@ export default function OperationMaster() {
     // for-Update-Operation-master
     const updateOperationMaster = () => {
 
-        let { operCode, operName } = operationMaster;
-        if (operCode == '' || operName == '') {
-            setErrors({ ...errors, opeCode: 'Operation Code is required', opeName: 'Operation Name is required' })
+        let { part_ID, operName } = operationMaster;
+        if (part_ID == '' || operName == '') {
+            setErrors({ ...errors, opeCode: 'Operation Code is required', opeName: 'Operation Name is required', part_ID: 'Part Name is required' })
         }
         else {
             setLoader(true);
             ItrApiService.POST({
                 url: `GarOperMaster/SaveGarOperation`,
-                appCode: "CNF",
+                appCode: "ENAPP003",
                 data: operationMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -171,9 +192,9 @@ export default function OperationMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarOperMaster/GetAllGarOperationMaster',
-            appCode: "CNF"
+            appCode: "ENAPP003"
         }).then(res => {
-            console.table(res.data);
+            // console.table(res.data);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data);
@@ -196,6 +217,7 @@ export default function OperationMaster() {
 
     useEffect(() => {
         getDatas();
+        getPartsData();
     }, []);
 
 
@@ -255,6 +277,7 @@ export default function OperationMaster() {
                     <table className="table table-hover" id='operationTable'>
                         <thead id='table-header'>
                             <tr>
+                                <th scope="col">Part ID</th>
                                 <th scope="col">Operation Code</th>
                                 <th scope="col">Operation Name</th>
                                 <th scope="col">Active</th>
@@ -264,6 +287,7 @@ export default function OperationMaster() {
                         <tbody>
                             {datas.map((operation, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
                                 <tr key={index}>
+                                    <td> {operation?.part_ID ? operation?.part_ID : '-'} </td>
                                     <td> {operation?.operCode ? operation?.operCode : '-'} </td>
                                     <td> {operation?.operName ? operation?.operName : '-'} </td>
                                     <td>
@@ -273,7 +297,7 @@ export default function OperationMaster() {
                                         </Tag>
                                     </td>
                                     <td>
-                                        <div className='text-center' onClick={() => editDefect(operation?.id)}>
+                                        <div className='text-center' onClick={() => { console.log(operation); editDefect(operation?.id) }}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                         </div>
                                     </td>
@@ -321,6 +345,28 @@ export default function OperationMaster() {
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label>Part Name <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{operationMaster.part_ID == '' ? errors.part_ID : ''}</small>
+                        </div>
+                        <select className='form-select form-select-sm mt-1'
+                            value={operationMaster.part_ID}
+                            onChange={(e) => {
+                                setOperationMaster({ ...operationMaster, part_ID: e.target.value })
+                            }}>
+                            <option value="" selected> Select Part Name </option>
+                            {partsList && partsList.map((parts, index) => {
+                                if (parts.active == 'Y') {
+                                    return <option key={index} value={parts.id}> {parts.partName} </option>
+                                }
+                            })}
+                        </select>
+                        {/* <input className='form-control form-control-sm mt-1' placeholder='Enter Part Name'
+                            value={operationMaster.operName} minLength="1" maxLength="50"
+                            onChange={(e) => setOperationMaster({ ...operationMaster, operName: e.target.value })} required /> */}
+                    </div>
+
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Operation Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{operationMaster.operCode == '' ? errors.opeCode : ''}</small>
                         </div>
@@ -365,8 +411,29 @@ export default function OperationMaster() {
                             <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => { clearFields(); cancel(); }}> Cancel </button>
                         </div>
                     </>
-                } title={< h6 className='m-0' > Edit Operation</h6 >} placement="right" onClose={() => { clearFields(); cancel(); }} visible={closeDefect} >
+                } title={<h6 className='m-0'> Edit Operation</h6>} placement="right" onClose={() => { clearFields(); cancel(); }} visible={closeDefect} >
                 <div className='defect-master-add-new'>
+
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label>Part Name <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{operationMaster.part_ID == '' ? errors.part_ID : ''}</small>
+                        </div>
+                        <select className='form-select form-select-sm mt-1'
+                            value={operationMaster.part_ID}
+                            onChange={(e) => {
+                                setOperationMaster({ ...operationMaster, part_ID: e.target.value })
+                            }}>
+                            <option value="" selected> Select Part Name </option>
+                            {partsList && partsList.map((parts, index) => {
+                                return <option key={index} value={parts.id}> {parts.partName} </option>
+                            })}
+                        </select>
+                        {/* <input className='form-control form-control-sm mt-1' placeholder='Enter Part Name'
+                            value={operationMaster.operName} minLength="1" maxLength="50"
+                            onChange={(e) => setOperationMaster({ ...operationMaster, operName: e.target.value })} required /> */}
+                    </div>
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Operation Code <span className='text-danger'>*  </span> </label>
