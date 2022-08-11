@@ -9,16 +9,21 @@
 /*black variables*/
 /*shadow variables*/
 
-.main-content .container, .main-content .container-fluid {
+.main-content .container,
+.main-content .container-fluid {
     padding-left: 20px;
     padding-right: 20px;
 }
-.dis-sel .SumoSelect>.CaptionCont, .dis-sel .form-control {
+
+.dis-sel .SumoSelect>.CaptionCont,
+.dis-sel .form-control {
     background-color: #F6FAFD;
 }
+
 .form-control {
     border: none !important;
 }
+
 .form-control {
     font-size: 14px !important;
     color: #3E4D5C !important;
@@ -26,19 +31,38 @@
     font-weight: 400 !important;
 }
 
-.btn-primary, .btn-primary:focus, .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active {
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
     background-color: #919191 !important;
     color: #fff;
 }
+
 .pb-20 {
     padding-bottom: 20px !important;
 }
+
 .mt-10 {
     margin-top: 10px !important;
 }
+
 .pt-20 {
     padding-top: 20px !important;
 }
+
+.pt-5 {
+    padding-top: 5px !important;
+}
+
+.pt-10 {
+    padding-top: 10px !important;
+}
+
+.pt-15 {
+    padding-top: 15px !important;
+}
+
 .form-control {
     display: block;
     width: 100%;
@@ -55,7 +79,8 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-h4, .h4 {
+h4,
+.h4 {
     font-size: 1.3125rem !important;
 }
 
@@ -73,11 +98,13 @@ h4, .h4 {
 .mt-20 {
     margin-top: 20px !important;
 }
+
 .mt-15 {
     margin-top: 15px;
 }
 
-.container, .container-fluid {
+.container,
+.container-fluid {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
@@ -8933,8 +8960,8 @@ textarea.custom-file-input.parsley-error:focus~.custom-file-label {
 }
 
 .nav .nav-item .dropdown-menu {
-    top: 46px;
-    border-radius: 6px;
+    top: 68px;
+    border-radius: 4px;
     min-width: 245px;
     -webkit-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
     box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
@@ -38886,9 +38913,27 @@ button.bg-dark:focus {
 .pt-40 {
     padding-top: 40px !important;
 }
+
 .mt-25 {
     margin-top: 25px !important;
 }
+
+.pl-5 {
+    padding-left: 5px !important;
+}
+
+.pr-5 {
+    padding-right: 5px !important;
+}
+
+.pl-10 {
+    padding-left: 10px !important;
+}
+
+.pr-10 {
+    padding-right: 10px !important;
+}
+
 .pl-15 {
     padding-left: 15px !important;
 }
@@ -38900,10 +38945,11 @@ button.bg-dark:focus {
 .p-15 {
     padding: 15px !important;
 }
+
 .search-btn {
     transition: all .5s ease !important;
-    color: #000000 ;
-    background-color: #fff ;
+    color: #000000;
+    background-color: #fff;
     width: 130px !important;
     height: 40px;
     border-color: #fff !important;
@@ -46069,9 +46115,11 @@ tfoot {
 .main-tab .nav-tabs {
     background: #F6FAFD;
 }
+
 .ml-10 {
     margin-left: 10px !important;
 }
+
 .main-tab .nav {
     padding-left: 15px;
     border-bottom: 1px solid #D7D7D7;
@@ -46188,7 +46236,7 @@ h5 {
     z-index: 99;
     right: 0;
     width: 81% !important;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255, 255, 255, 0.8);
 }
 
 .mb-80 {
@@ -46200,10 +46248,14 @@ table tbody .acv th {
     background: #fef6f3;
     padding-bottom: 5px;
 }
-.edit-np .form-control{height: 25px;}
+
+.edit-np .form-control {
+    height: 25px;
+}
+
 .btn-outline-light {
-  border-color: #fff;
-  color: #fff;
+    border-color: #fff;
+    color: #fff;
 }
 
 /* f -sizes */
@@ -46242,28 +46294,37 @@ table tbody .acv th {
     padding: 5px 10px;
 }
 
-.sm-size .panel-heading1 a.collapsed::before{
+.sm-size .panel-heading1 a.collapsed::before {
     top: 5px;
-    font-size: 18px;width: 26px;
-    height: 26px; background: url(../Assets/images/style/pl-ro.svg) no-repeat; content: "";
+    font-size: 18px;
+    width: 26px;
+    height: 26px;
+    background: url(../Assets/images/style/pl-ro.svg) no-repeat;
+    content: "";
 }
 
 .sm-size .panel-heading1 a::before {
-   top: 5px;
-   font-size: 18px;width: 26px;
-   height: 26px; background: url(../Assets/images/style/mi-ro.svg) no-repeat; content: "";
+    top: 5px;
+    font-size: 18px;
+    width: 26px;
+    height: 26px;
+    background: url(../Assets/images/style/mi-ro.svg) no-repeat;
+    content: "";
 }
-.sm-size .border-0.bg-white.mt-5.pl-15 img {
-   width: 15px;
- }
 
- .sm-size .ro-ico.f-buu,
- .sm-size .flt {
+.sm-size .border-0.bg-white.mt-5.pl-15 img {
+    width: 15px;
+}
+
+.sm-size .ro-ico.f-buu,
+.sm-size .flt {
     font-size: 12px;
 }
 
 .sm-size .table thead th,
-.sm-size .table thead td, .sm-size .table th, .sm-size .table td {
+.sm-size .table thead td,
+.sm-size .table th,
+.sm-size .table td {
     font-size: 12px;
     padding: 4px 12px;
 }
@@ -46306,22 +46367,86 @@ table tbody .acv th {
 .sm-size .main-profile-menu .profile-user h6 {
     font-size: 12px;
 }
-.sm-size .card-body .main-select .SumoSelect > .optWrapper > .options li.opt{font-size: 11px;}
-.sm-size .breadcrumb-style1 .breadcrumb-item, .sm-size  .breadcrumb-style2 .breadcrumb-item, .sm-size  .breadcrumb-style3 .breadcrumb-item{font-size: 10px;}
+
+.sm-size .card-body .main-select .SumoSelect>.optWrapper>.options li.opt {
+    font-size: 11px;
+}
+
+.sm-size .breadcrumb-style1 .breadcrumb-item,
+.sm-size .breadcrumb-style2 .breadcrumb-item,
+.sm-size .breadcrumb-style3 .breadcrumb-item {
+    font-size: 10px;
+}
 
 .sm-size h4.content-title {
-   padding-bottom: 10px;
- }
- .sm-size .breadcrumb-style1 .breadcrumb-item{font-size: 12px;}
- .sm-size .card{margin-bottom: 10px;}
- .sm-size .app.sidenav-toggled .side-menu__item{padding: 8px 0 9px 0;}
- .sm-size .main-header{height: 55px;}
- .sm-size .SumoSelect > .CaptionCont{height: 35px;}
- .sm-size .four-col-list > div{margin-bottom: 5px;}
- .sm-size .btn-outline-primary{line-height: 18px; font-size: 12px;}
- .sm-size h5{font-size: 12px;}
- .sm-size .justify-content-end .SumoSelect > .CaptionCont{font-size: 12px;}
- .sm-size .search-tbl .btn{padding: 5px 15px;}
- .sm-size .check input[type="checkbox"]:not(old) + label{font-size: 12px;}
- .sm-size .flt img{width: 15px;}
- .b-siz .btn-outline-light{padding: 0 8px;}
+    padding-bottom: 10px;
+}
+
+.sm-size .breadcrumb-style1 .breadcrumb-item {
+    font-size: 12px;
+}
+
+.sm-size .card {
+    margin-bottom: 10px;
+}
+
+.sm-size .app.sidenav-toggled .side-menu__item {
+    padding: 8px 0 9px 0;
+}
+
+.sm-size .main-header {
+    height: 55px;
+}
+
+.sm-size .SumoSelect>.CaptionCont {
+    height: 35px;
+}
+
+.sm-size .four-col-list>div {
+    margin-bottom: 5px;
+}
+
+.sm-size .btn-outline-primary {
+    line-height: 18px;
+    font-size: 12px;
+}
+
+.sm-size h5 {
+    font-size: 12px;
+}
+
+.sm-size .justify-content-end .SumoSelect>.CaptionCont {
+    font-size: 12px;
+}
+
+.sm-size .search-tbl .btn {
+    padding: 5px 15px;
+}
+
+.sm-size .check input[type="checkbox"]:not(old)+label {
+    font-size: 12px;
+}
+
+.sm-size .flt img {
+    width: 15px;
+}
+
+.b-siz .btn-outline-light {
+    padding: 0 8px;
+}
+
+#table-scroll .table td a.profile-user.d-flex {
+    background: url(images/style/a_dots.svg) no-repeat left center;
+    padding: 5px 0 5px 41px;
+    color: #000;
+    width: 28px;
+    height: 28px;
+}
+
+#table-scroll .table td a.profile-user.ind-flex {
+    background: url(images/style/in_dots.svg) no-repeat left center;
+    padding: 5px 0 5px 41px;
+    color: #000;
+    width: 28px;
+    height: 28px;
+}

@@ -13,18 +13,27 @@ function App() {
   let navigate = useNavigate();
 
   useEffect(async () => {
-    const { react_app_baseurl, react_app_env, react_app_site } = process.env
-    await ItrApiService.CONFIG(react_app_env, "http://gateway01.ithred.info/api/", react_app_site).then(res => {
-      // debugger
-      console.log(res);
-      if (res.directLogin == true && res.tokenState == true) {
-        navigate('/masters/defect-master');
-      }
-      else {
-        window.location.replace(configUrl.appUrl);
-      }
-    });
 
+    // const { react_app_baseurl, react_app_env, react_app_site } = process.env
+    // await ItrApiService.CONFIG(react_app_env, "http://gateway01.ithred.info/api/", react_app_site).then(res => {
+    //   // debugger
+    //   console.log(res);
+    //   if (res.directLogin == true && res.tokenState == true) {
+    //     navigate('/masters/defect-master');
+    //   }
+    //   else {
+    //     window.location.replace(configUrl.appUrl);
+    //   }
+    // });
+
+    ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", "app");
+    ItrAuthService.Login({
+      data: {
+        userName: 'santhosh_s@ambattur.com',
+        password: 'Iamadmin@123'
+      }
+    }).then((res) => console.log(res.data));
+    ItrApiService.userApp().then(res => console.log(res.data, 'userApps'));
 
   }, []);
 
