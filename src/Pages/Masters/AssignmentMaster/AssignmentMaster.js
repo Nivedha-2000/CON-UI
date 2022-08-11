@@ -4,7 +4,7 @@ import { Tag, Space, Drawer, Switch, Avatar, message, Pagination, Spin } from 'a
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { useEffect } from 'react';
-import { ItrApiService } from '@afiplfeed/itr-ui';
+import { ItrApiService, ItrAuthService } from '@afiplfeed/itr-ui';
 
 export default function AssignmentMaster() {
 
@@ -31,7 +31,7 @@ export default function AssignmentMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `AssignmentAudits/GetAssignmentAuditsByID/${operationId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setAssignmentMaster(res.data);
@@ -67,7 +67,7 @@ export default function AssignmentMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarPartsMaster/GetAllGarPartData',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -85,7 +85,7 @@ export default function AssignmentMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'Lang/GetAllLanguageInfo',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -104,7 +104,7 @@ export default function AssignmentMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AuditTypeMaster/GetAllAuditType',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -141,7 +141,7 @@ export default function AssignmentMaster() {
             delete deletedValue.userNameValue;
             ItrApiService.POST({
                 url: 'AssignmentAudits/SaveAssignmentAudits',
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: {
                     ...deletedValue, active: deletedValue.active == true ? 'Y' : 'N',
                     createdDate: new Date(),
@@ -180,7 +180,7 @@ export default function AssignmentMaster() {
             delete deletedValue.userNameValue;
             ItrApiService.POST({
                 url: `AssignmentAudits/SaveAssignmentAudits`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: {
                     ...deletedValue,
                     createdDate: new Date(),
@@ -217,11 +217,19 @@ export default function AssignmentMaster() {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
+
+    const getUsers = () => {
+        ItrApiService.GET({
+            url: 'Users/GetUsers', data: {}, appCode: 'Catalog'
+        }).then(res => { console.log(res) });
+    }
+
+
     const getDatas = (onCreate, onUpdate) => {
         setLoader(true);
         ItrApiService.GET({
             url: 'AssignmentAudits/GetAllAssignmentAudits',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.table(res.data);
             if (res.Success == true) {
@@ -249,6 +257,7 @@ export default function AssignmentMaster() {
         getAuditData()
         getPartsData();
         getLangData();
+        getUsers()
     }, []);
 
 

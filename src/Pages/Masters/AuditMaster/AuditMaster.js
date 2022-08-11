@@ -21,7 +21,7 @@ export default function AuditMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AuditTypeMaster/GetAllAuditType',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -49,7 +49,7 @@ export default function AuditMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `AuditTypeMaster/GetAssigneeDetailByID/${auditId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setAuditMaster(res.data);
@@ -97,7 +97,7 @@ export default function AuditMaster() {
             setLoader(true);
             await ItrApiService.POST({
                 url: 'AuditTypeMaster/SaveAuditType',
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: { ...auditMaster, active: true ? 'Y' : 'N' }
             }).then(res => {
                 if (res.Success == true) {
@@ -125,7 +125,7 @@ export default function AuditMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: `AuditTypeMaster/SaveAuditType`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: auditMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -160,7 +160,7 @@ export default function AuditMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AuditTypeMaster/GetAllAuditType',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.table(res.data);
             if (res.Success == true) {

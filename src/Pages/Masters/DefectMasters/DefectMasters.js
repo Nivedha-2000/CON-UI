@@ -47,7 +47,7 @@ export default function DefectMasters() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `DefectMaster/GetDefectbyId/${defectId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             console.log(res.data, 'editdata')
             if (res.Success == true) {
@@ -154,7 +154,7 @@ export default function DefectMasters() {
                     else {
                         ItrApiService.POST({
                             url: 'DefectMaster/SaveDefectMaster',
-                            appCode: "ENAPP003",
+                            appCode: "CNF",
                             data: data
                         }).then(res => {
                             console.log(res.data, 'create')
@@ -176,7 +176,7 @@ export default function DefectMasters() {
                 } else {
                     ItrApiService.POST({
                         url: 'DefectMaster/SaveDefectMaster',
-                        appCode: "ENAPP003",
+                        appCode: "CNF",
                         data: data
                     }).then(res => {
                         console.log(res.data, 'create')
@@ -249,7 +249,7 @@ export default function DefectMasters() {
             setLoader(true);
             ItrApiService.POST({
                 url: `DefectMaster/SaveDefectMaster`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: defectMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -287,7 +287,7 @@ export default function DefectMasters() {
     const getDefectCat = () => {
         ItrApiService.GET({
             url: 'DefectMaster/GetAllDefectMasterWithCategory',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -305,7 +305,7 @@ export default function DefectMasters() {
         setLoader(true);
         ItrApiService.GET({
             url: 'DefectMaster/GetAllDefectMaster',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.log(res.data);
             if (res.Success == true) {

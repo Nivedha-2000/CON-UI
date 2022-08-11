@@ -36,7 +36,7 @@ export default function LanguageMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `Lang/GetLangInfoByID/${langId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setlanguageMasterMaster(res.data);
@@ -66,7 +66,7 @@ export default function LanguageMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarPartsMaster/GetAllGarPartData',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -99,7 +99,7 @@ export default function LanguageMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: 'Lang/SaveLangMaster',
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: languageMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -127,7 +127,7 @@ export default function LanguageMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: `Lang/SaveLangMaster`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: languageMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -162,7 +162,7 @@ export default function LanguageMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'Lang/GetAllLanguageInfo',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.table(res.data);
             if (res.Success == true) {

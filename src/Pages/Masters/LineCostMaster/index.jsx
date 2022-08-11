@@ -24,8 +24,9 @@ import jquery from '../../../Assets/js/jquerymin'
 
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
 
-import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS, always needed
-import 'ag-grid-community/styles/ag-theme-alpine.css'; // Optional theme CSS
+// import 'ag-grid-community/styles/ag-grid.css'; 
+// import "ag-grid-community/styles/ag-grid.css"
+// import 'ag-grid-community/styles/ag-theme-alpine.css'; // Optional theme CSS
 
 
 const initialErrorMessages = {
