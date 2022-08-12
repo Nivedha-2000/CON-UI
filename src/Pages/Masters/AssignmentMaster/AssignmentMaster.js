@@ -10,7 +10,7 @@ export default function AssignmentMaster() {
 
     const clearFields = () => {
         setAssignmentMaster({
-            ...assignmentMaster, usercode: '', username: '', audit_Id: '', id: 0, active: 'Y', emaild: "", languageCode: ""
+            ...assignmentMaster, usercode: '', username: '', audit_Id: '', id: 0, active: 'Y', emaild: "", languageCode: "", userNameValue: ""
         });
         setErrors({ ...errors, usercode: '', username: '', emaild: '', languageCode: "" });
         setexists(false);
@@ -33,8 +33,17 @@ export default function AssignmentMaster() {
             url: `AssignmentAudits/GetAssignmentAuditsByID/${operationId}`,
             appCode: "CNF",
         }).then(res => {
+            console.log(res)
             if (res.Success == true) {
-                setAssignmentMaster(res.data);
+                let userN = res.data.usercode;
+                let userValue = ""
+                for (let value of users) {
+                    if (value.userCode == userN) {
+                        userValue = JSON.stringify(value);
+                    }
+                }
+                // if (res.data.usercode)
+                setAssignmentMaster({ ...res.data, userNameValue: userValue });
             }
             else {
                 setLoader(false);
@@ -49,15 +58,14 @@ export default function AssignmentMaster() {
     const [assignmentMaster, setAssignmentMaster] = useState({
         isActive: true,
         id: 0,
-        audit_Id: 0,
+        audit_Id: "",
         usercode: "",
         username: "",
         emaild: "",
         unitCode: "D15-2",
         languageCode: "",
-        active: "",
+        active: true,
         hostName: "",
-
         userNameValue: ''
     });
 
@@ -119,6 +127,7 @@ export default function AssignmentMaster() {
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
     const [datas2, setDatas2] = useState([]);
+    console.log(datas)
 
     const [errors, setErrors] = useState({
         usercode: "",
@@ -148,6 +157,7 @@ export default function AssignmentMaster() {
                     createdBy: "",
                     modifiedDate: new Date(),
                     modifiedBy: "",
+                    audit_Id: parseInt(deletedValue.audit_Id)
                 }
             }).then(res => {
                 if (res.Success == true) {
@@ -217,11 +227,12 @@ export default function AssignmentMaster() {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
+    const [users, setUsers] = useState([]);
 
     const getUsers = () => {
         ItrApiService.GET({
-            url: 'Users/GetUsers', data: {}, appCode: 'Catalog'
-        }).then(res => { console.log(res) });
+            url: 'User/GetAll', data: {}, appCode: 'Catalog'
+        }).then(res => { setUsers(res.data.activeUsers); });
     }
 
 
@@ -231,7 +242,6 @@ export default function AssignmentMaster() {
             url: 'AssignmentAudits/GetAllAssignmentAudits',
             appCode: "CNF"
         }).then(res => {
-            console.table(res.data);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data);
@@ -263,13 +273,14 @@ export default function AssignmentMaster() {
 
     const myFunction = (e) => {
         let val = datas2;
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("masterSearch");
         let ss = val.filter(dd => {
-            if (dd.operCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.audit_Name.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
-            if (dd.operName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.username.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+                return dd;
+            }
+            if (dd.languageCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
@@ -323,9 +334,8 @@ export default function AssignmentMaster() {
                                     </td>
                                     <td>
                                         <div className='text-center' onClick={() => {
-                                            console.log(assign);
                                             for (let value of datas) {
-                                                if (value.usercode == assign.usercode) {
+                                                if (value.userCode == assign.usercode) {
                                                     setAssignmentMaster({ ...assignmentMaster, userNameValue: JSON.stringify(value) })
                                                 }
                                             }
@@ -415,20 +425,14 @@ export default function AssignmentMaster() {
                             value={assignmentMaster.userNameValue}
                             onChange={(e) => {
                                 let vs = JSON.parse(e.target.value);
-                                setAssignmentMaster({ ...assignmentMaster, username: vs.username, usercode: vs.usercode, emaild: vs.emaild, userNameValue: e.target.value })
+                                setAssignmentMaster({ ...assignmentMaster, username: vs.displayName, usercode: vs.userCode, emaild: vs.emailID, userNameValue: e.target.value })
                             }} required
                         >
                             <option value="" selected disabled> -- Please Select-- </option>
-                            {datas.map((data, index) => {
-                                return <option key={index} value={JSON.stringify(data)}> {data.username} </option>
+                            {users && users.map((data, index) => {
+                                return <option hidden={data.department != 'QA'} key={index} value={JSON.stringify(data)}> {data.displayName} </option>
                             })}
                         </select>
-                        {/* <input className='form-control form-control-sm mt-1'
-                            placeholder='Enter Username'
-                            value={assignmentMaster.username}
-                            onChange={(e) => {
-                                setAssignmentMaster({ ...assignmentMaster, username: e.target.value })
-                            }} /> */}
                     </div>
 
                     {/* <div className='mt-3'>
@@ -461,9 +465,9 @@ export default function AssignmentMaster() {
                         <label>Assignment Status</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                checked={assignmentMaster.active == 'Y'}
-                                onChange={(e) => setAssignmentMaster({ ...assignmentMaster, active: e == true ? 'Y' : 'N' })} />
-                            <span className='px-2'> {assignmentMaster.active === 'Y' ? 'Active' : 'Disable'} </span>
+                                checked={assignmentMaster.active}
+                                onChange={(e) => setAssignmentMaster({ ...assignmentMaster, active: e })} />
+                            <span className='px-2'> {assignmentMaster.active ? 'Active' : 'Disable'} </span>
                         </div>
                     </div>
                 </div>
@@ -525,12 +529,12 @@ export default function AssignmentMaster() {
                             value={assignmentMaster.userNameValue}
                             onChange={(e) => {
                                 let vs = JSON.parse(e.target.value);
-                                setAssignmentMaster({ ...assignmentMaster, username: vs.username, usercode: vs.usercode, emaild: vs.emaild, userNameValue: e.target.value })
+                                setAssignmentMaster({ ...assignmentMaster, username: vs.displayName, usercode: vs.userCode, emaild: vs.emailID, userNameValue: e.target.value })
                             }} required
                         >
                             <option value="" selected disabled> -- Please Select-- </option>
-                            {datas.map((data, index) => {
-                                return <option key={index} value={JSON.stringify(data)}> {data.username} </option>
+                            {users.map((data, index) => {
+                                return <option hidden={data.department != 'QA'} key={index} value={JSON.stringify(data)}> {data.displayName} </option>
                             })}
                         </select>
                         {/* <input className='form-control form-control-sm mt-1'

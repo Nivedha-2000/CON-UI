@@ -67,13 +67,15 @@ export default function Header() {
     })
   }
 
+  const [appCode, setAppCode] = useState('');
   const changeLocation = (code) => {
+    ItrApiService
     ItrApiService.UserLocationChange({
       data: {
         locationCode: code
-      }
+      },
+      appCode: appCode,
     }).then(res => {
-      console.log(res);
       if (res.Success == true) {
         message.success('Location Changed Successfully');
       }
@@ -83,18 +85,27 @@ export default function Header() {
   }
 
   useEffect(() => {
-    getUserLocations();
-    ItrApiService.userProfile().then(res => {
-      if (res.Success == true) {
-        setUserProfile(res.data);
-      }
-      else {
-        message.warning(res.message);
-      }
-    });
+    const myTimeout = setTimeout(() => {
 
-    let secTimer = setInterval(() => { setDt(new Date().toLocaleString()) }, 1000)
-    return () => clearInterval(secTimer);
+      let getAppCode = sessionStorage.getItem('appCode');
+      setAppCode(getAppCode);
+      getUserLocations();
+      ItrApiService.userProfile().then(res => {
+        console.log(res);
+        if (res.Success == true) {
+          setUserProfile(res.data);
+        }
+        else {
+          message.warning(res.message);
+        }
+      });
+
+      let secTimer = setInterval(() => {
+        setDt(new Date().toLocaleString())
+      }, 1000);
+
+      return () => clearInterval(secTimer);
+    }, 2000)
 
   }, []);
 
@@ -116,7 +127,6 @@ export default function Header() {
   }
 
   // const [swi,setSwi] = useState(true);
-  // console.log(swi);
 
   return (
     <div className='header-main'>

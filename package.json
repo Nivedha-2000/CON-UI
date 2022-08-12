@@ -41,6 +41,7 @@
     "cldr-numbers-full": "^41.0.0-ALPHA4",
     "common-constants": "^4.1.0",
     "dotenv-cli": "^5.1.0",
+    "env-cmd": "^10.1.0",
     "formik": "^2.2.9",
     "js-cookie": "^3.0.1",
     "mui-datatables": "^4.0.0",
@@ -61,15 +62,15 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build:development": "env-cmd -f .env.development react-scripts build",
-    "build:production": "env-cmd -f .env.development react-scripts build",
-    "build:testing": "env-cmd -f .env.development react-scripts build",
-    "build:uat": "env-cmd -f .env.development react-scripts build",
+    "build:production": "env-cmd -f .env.production react-scripts build",
+    "build:testing": "env-cmd -f .env.testing react-scripts build",
+    "build:uat": "env-cmd -f .env.uat react-scripts build",
     "build:devtest": "env-cmd -f .env.devtest react-scripts build",
     "start:development": "env-cmd -f .env.development react-scripts start",
-    "start:production": "env-cmd -f .env.development react-scripts start",
-    "start:testing": "env-cmd -f .env.development react-scripts start",
-    "start:uat": "env-cmd -f .env.development react-scripts start",
-    "start:devtest": "env-cmd -f .env.development react-scripts start"
+    "start:production": "env-cmd -f .env.production react-scripts start",
+    "start:testing": "env-cmd -f .env.testing react-scripts start",
+    "start:uat": "env-cmd -f .env.uat react-scripts start",
+    "start:devtest": "env-cmd -f .env.devtest react-scripts start"
   },
   "eslintConfig": {
     "extends": [

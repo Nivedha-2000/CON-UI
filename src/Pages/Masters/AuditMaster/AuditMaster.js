@@ -65,10 +65,14 @@ export default function AuditMaster() {
 
 
     const [auditMaster, setAuditMaster] = useState({
+        createdDate: new Date(),
+        createdBy: "",
+        modifiedDate: new Date(),
+        modifiedBy: "",
         id: 0,
         auditCode: "",
         auditName: "",
-        auditMainGroup: "N",
+        auditMainGroup: "Y",
         audit_ID: 0,
         colorCode: "",
         active: "Y",
@@ -78,6 +82,7 @@ export default function AuditMaster() {
 
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
+    console.log(datas, 'audit');
     const [datas2, setDatas2] = useState([]);
 
     const [errors, setErrors] = useState({
@@ -98,7 +103,7 @@ export default function AuditMaster() {
             await ItrApiService.POST({
                 url: 'AuditTypeMaster/SaveAuditType',
                 appCode: "CNF",
-                data: { ...auditMaster, active: true ? 'Y' : 'N' }
+                data: { ...auditMaster, active: true ? 'Y' : 'N', assignmentAuditsModels: [] }
             }).then(res => {
                 if (res.Success == true) {
                     setLoader(false);
@@ -162,19 +167,26 @@ export default function AuditMaster() {
             url: 'AuditTypeMaster/GetAllAuditType',
             appCode: "CNF"
         }).then(res => {
-            console.table(res.data);
             if (res.Success == true) {
                 setLoader(false);
-                setDatas(res.data);
-                setDatas2(res.data);
+                // setDatas(res.data);
+                let loopData = res.data;
+                let arr = [];
+                for (let dd of loopData) {
+                    if (dd.auditMainGroup != 'N') {
+                        arr = [...arr, dd]
+                    }
+                };
+                setDatas(arr);
+                setDatas2(arr);
                 if (onCreate && onCreate == true) {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: (Math.ceil(res.data.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(res.data.length / pageSize) * pageSize, current: Math.ceil(res.data.length / pageSize) });
+                    setPagination({ ...pagination, totalPage: arr.length / pageSize, minIndex: (Math.ceil(arr.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(arr.length / pageSize) * pageSize, current: Math.ceil(arr.length / pageSize) });
                 } else if (onUpdate && onUpdate == true) {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize });
+                    setPagination({ ...pagination, totalPage: arr.length / pageSize });
                 } else {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: 0, maxIndex: pageSize });
+                    setPagination({ ...pagination, totalPage: arr.length / pageSize, minIndex: 0, maxIndex: pageSize });
                 }
-                // setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: 0, maxIndex: pageSize });
+                // setPagination({ ...pagination, totalPage: arr.length / pageSize, minIndex: 0, maxIndex: pageSize });
             }
             else {
                 setLoader(false);
@@ -191,17 +203,14 @@ export default function AuditMaster() {
 
     const myFunction = (e) => {
         let val = datas2;
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("masterSearch");
         let ss = val.filter(dd => {
-            if (dd.operCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.auditCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
-            if (dd.operName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.auditName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
-        console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
     }
@@ -238,7 +247,7 @@ export default function AuditMaster() {
                         </thead>
                         <tbody>
                             {datas.map((audit, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
-                                <tr key={index} hidden={audit.auditMainGroup == "N" ? true : false}>
+                                <tr key={index}>
                                     <td> {audit?.auditCode ? audit?.auditCode : '-'} </td>
                                     <td> {audit?.auditName ? audit?.auditName : '-'} </td>
                                     <td>

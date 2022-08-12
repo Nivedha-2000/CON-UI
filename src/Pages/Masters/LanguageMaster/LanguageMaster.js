@@ -193,17 +193,17 @@ export default function LanguageMaster() {
 
     const myFunction = (e) => {
         let val = datas2;
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("masterSearch");
         let ss = val.filter(dd => {
-            if (dd.operCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.languageCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
-            if (dd.operName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.languageName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+                return dd;
+            }
+            if (dd.translationName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
-        console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
     }
@@ -303,10 +303,12 @@ export default function LanguageMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             placeholder='Enter Language Code'
-                            minLength="1" maxLength="5"
+                            minLength="1" maxLength="2"
                             value={languageMaster.languageCode}
                             onChange={(e) => {
-                                setlanguageMasterMaster({ ...languageMaster, languageCode: e.target.value })
+                                if(e.target.value.length <= 2){
+                                    setlanguageMasterMaster({ ...languageMaster, languageCode: e.target.value })
+                                }
                             }} />
                     </div>
 
