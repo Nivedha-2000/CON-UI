@@ -91,15 +91,12 @@ export default function AqlMaster() {
         hostName: ""
     });
 
-    console.log(aqlMaster);
 
 
     function test() {
         // debugger;
         // let GetMeaPcs = aqlMaster.mesurementPcs;
         // const data = { ...aqlMaster, premaxAllowMesurementDefects: (premaxAllowMesurementDefects) => premaxAllowMesurementDefects + aqlMaster.maxAllowMesurementDefects }
-        // console.log(GetMeaPcs)
-        // console.log(data)
         // if (data > GetMeaPcs) {
         //     alert("not allowed")
         // }
@@ -119,7 +116,6 @@ export default function AqlMaster() {
     const [temp, setTemp] = useState(0)
 
     const createAqlMaster = () => {
-        console.log(aqlMaster)
         let { unitCode,
             aqlType,
             auditFormat,
@@ -173,12 +169,6 @@ export default function AqlMaster() {
                 if (index2 != -1) {
                     from2 = datas[index2].packQtyFrom;
                 }
-                console.log(from1);
-                console.log(from2);
-                console.log(aqlMaster.packQtyFrom);
-                console.log(aqlMaster.packQtyTo);
-                // console.log(to);
-                console.log(aqlMaster.packQtyTo);
                 if ((parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) < from2 || parseInt(aqlMaster.packQtyFrom) > from1) && (parseInt(aqlMaster.packQtyFrom) < parseInt(aqlMaster.packQtyTo)))) {
                     if ((parseInt(aqlMaster.packQtyFrom) < from2 && parseInt(aqlMaster.packQtyTo) > from2)) {
                         message.warning('This range of Pack-Qty From and Pack-Qty To is already exists');
@@ -247,7 +237,6 @@ export default function AqlMaster() {
                 sampleSize: '', measurementPcs: '', samples: '', visualDef: '', criticalDef: '',
                 sewDef: '', othDef: '', mesDef: '', packDef: ''
             }
-            console.log('132456789')
             if (unitCode == '' || unitCode == '0' || unitCode == undefined) obj = { ...obj, unitCode: 'Unit Code is required' };
             if (aqlType == '' || aqlType == '0' || aqlType == undefined) obj = { ...obj, aqlType: 'Aql Type is required' };
             if (auditFormat == '' || auditFormat == '0' || auditFormat == undefined) obj = { ...obj, auditFormat: 'Audit Format is required' };
@@ -277,13 +266,6 @@ export default function AqlMaster() {
                 if (index2 != -1) {
                     from2 = datas[index2].packQtyFrom;
                 }
-                console.log(from1);
-                console.log(from2);
-                console.log(aqlMaster.packQtyFrom);
-                console.log(aqlMaster.packQtyTo);
-                // console.log(to);
-                console.log(aqlMaster.packQtyTo);
-
                 setLoader(true);
                 ItrApiService.POST({
                     url: `AQLBaseTable/SaveAQLBase`,
@@ -362,7 +344,6 @@ export default function AqlMaster() {
             url: 'AQLBaseTable/GetAllAQLBase',
             appCode: "CNF"
         }).then(res => {
-            console.log(res.data);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data);
@@ -440,7 +421,6 @@ export default function AqlMaster() {
                 return dd;
             }
         });
-        console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
         // var input, filter, table, tr, td, i, txtValue;
@@ -706,7 +686,6 @@ export default function AqlMaster() {
                                 }
                             }} />
                         {/* onChange={(e) => {
-                                console.log(e.target.value)
                                 setAqlMaster({ ...aqlMaster, mesurementPcs: e.target.value })
                             }} /> */}
                     </div>
@@ -746,7 +725,6 @@ export default function AqlMaster() {
                             // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
-                                console.log(e.target.value)
                                 if (parseInt(aqlMaster.sampleSize) && (parseInt(aqlMaster.sampleSize) >= parseInt(e.target.value))) {
                                     setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value });
                                     setTemp(parseInt(e.target.value));
@@ -851,7 +829,6 @@ export default function AqlMaster() {
                             // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
                             minLength="1" maxLength="4"
                             onChange={(e) => {
-                                console.log(aqlMaster.mesurementPcs)
                                 if (parseInt(aqlMaster.mesurementPcs) && (parseInt(aqlMaster.mesurementPcs) > parseInt(e.target.value))) {
                                     setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value });
                                 } else if (e.target.value == '') {
@@ -1065,7 +1042,6 @@ export default function AqlMaster() {
                             minLength="1" maxLength="4"
                             value={aqlMaster.maxAllowVisualDefects}
                             onChange={(e) => {
-                                console.log(e.target.value)
                                 if (parseInt(aqlMaster.sampleSize) && (parseInt(aqlMaster.sampleSize) >= parseInt(e.target.value))) {
                                     setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value });
                                     setTemp(parseInt(e.target.value));
@@ -1172,7 +1148,6 @@ export default function AqlMaster() {
                             min="0"
                             value={aqlMaster.maxAllowMesurementDefects}
                             onChange={(e) => {
-                                console.log(aqlMaster.mesurementPcs)
                                 if (parseInt(aqlMaster.mesurementPcs) && (parseInt(aqlMaster.mesurementPcs) > parseInt(e.target.value))) {
                                     setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value });
                                 } else if (e.target.value == '') {

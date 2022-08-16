@@ -164,7 +164,6 @@ export default function LanguageMaster() {
             url: 'Lang/GetAllLanguageInfo',
             appCode: "CNF"
         }).then(res => {
-            console.table(res.data);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data);
@@ -251,7 +250,7 @@ export default function LanguageMaster() {
                                         </Tag>
                                     </td> */}
                                     <td>
-                                        <div className='text-center' onClick={() => { console.log(lang); editDefect(lang?.id) }}>
+                                        <div className='text-center' onClick={() => { editDefect(lang?.id) }}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                         </div>
                                     </td>
@@ -306,7 +305,7 @@ export default function LanguageMaster() {
                             minLength="1" maxLength="2"
                             value={languageMaster.languageCode}
                             onChange={(e) => {
-                                if(e.target.value.length <= 2){
+                                if (e.target.value.length <= 2) {
                                     setlanguageMasterMaster({ ...languageMaster, languageCode: e.target.value })
                                 }
                             }} />

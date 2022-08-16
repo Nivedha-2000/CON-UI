@@ -19,7 +19,6 @@ function App() {
 
     const { react_app_baseurl, react_app_env, react_app_site } = process.env
     await ItrApiService.CONFIG(react_app_env, react_app_baseurl, react_app_site).then(res => {
-      // await ItrApiService.CONFIG("prod", "http://172.16.9.253:5002/api/", process.env.react_app_site).then(res => {
       // ItrAuthService.Login({
       //   data: {
       //     userName: 'mathankumar@ambattur.com',
@@ -27,7 +26,6 @@ function App() {
       //   }
       // });
       // ItrApiService.userApp().then(res => console.log(res));
-      // debugger
       if (res.directLogin == true && res.tokenState == true) {
         navigate('/masters/defect-master');
       }

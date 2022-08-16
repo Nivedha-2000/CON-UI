@@ -10,7 +10,7 @@ export default function AuditMaster() {
 
     const clearFields = () => {
         setAuditMaster({
-            ...auditMaster, auditCode: '', auditName: '', colorCode: '', audit_ID: 0, id: 0, active: 'Y'
+            ...auditMaster, auditCode: '', auditName: '', colorCode: '#000000', audit_ID: 0, id: 0, active: 'Y'
         });
         setErrors({ ...errors, auditCode: '', auditName: '', colorCode: '', });
         setexists(false);
@@ -74,7 +74,7 @@ export default function AuditMaster() {
         auditName: "",
         auditMainGroup: "Y",
         audit_ID: 0,
-        colorCode: "",
+        colorCode: "#000000",
         active: "Y",
         hostName: "",
     });
@@ -82,7 +82,6 @@ export default function AuditMaster() {
 
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
-    console.log(datas, 'audit');
     const [datas2, setDatas2] = useState([]);
 
     const [errors, setErrors] = useState({
@@ -169,28 +168,25 @@ export default function AuditMaster() {
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
-                // setDatas(res.data);
                 let loopData = res.data;
-                let arr = [];
-                for (let dd of loopData) {
-                    if (dd.auditMainGroup != 'N') {
-                        arr = [...arr, dd]
-                    }
-                };
-                setDatas(arr);
-                setDatas2(arr);
+                // let arr = [];
+                // for (let dd of loopData) {
+                //     if (dd.auditMainGroup != 'N') {
+                //         arr = [...arr, dd]
+                //     }
+                // };
+                setDatas(res.data);
+                setDatas2(res.data);
                 if (onCreate && onCreate == true) {
-                    setPagination({ ...pagination, totalPage: arr.length / pageSize, minIndex: (Math.ceil(arr.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(arr.length / pageSize) * pageSize, current: Math.ceil(arr.length / pageSize) });
+                    setPagination({ ...pagination, totalPage: loopData.length / pageSize, minIndex: (Math.ceil(loopData.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(loopData.length / pageSize) * pageSize, current: Math.ceil(loopData.length / pageSize) });
                 } else if (onUpdate && onUpdate == true) {
-                    setPagination({ ...pagination, totalPage: arr.length / pageSize });
+                    setPagination({ ...pagination, totalPage: loopData.length / pageSize });
                 } else {
-                    setPagination({ ...pagination, totalPage: arr.length / pageSize, minIndex: 0, maxIndex: pageSize });
+                    setPagination({ ...pagination, totalPage: loopData.length / pageSize, minIndex: 0, maxIndex: pageSize });
                 }
-                // setPagination({ ...pagination, totalPage: arr.length / pageSize, minIndex: 0, maxIndex: pageSize });
             }
             else {
                 setLoader(false);
-                // message.warning('Something went wrong');
             }
         })
     }
@@ -315,6 +311,7 @@ export default function AuditMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             value={auditMaster.auditCode}
+                            minLength="1" maxLength="10"
                             placeholder='Enter Audit Code'
                             onChange={(e) => {
                                 setAuditMaster({ ...auditMaster, auditCode: e.target.value })
@@ -330,7 +327,9 @@ export default function AuditMaster() {
                             <label>Audit Name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{auditMaster.auditName == '' ? errors.auditName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Name'
+                        <input className='form-control form-control-sm mt-1'
+                            placeholder='Enter Audit Name'
+                            minLength="1" maxLength="50"
                             value={auditMaster.auditName}
                             onChange={(e) => setAuditMaster({ ...auditMaster, auditName: e.target.value })} required />
                     </div>
@@ -344,6 +343,16 @@ export default function AuditMaster() {
                             type="color"
                             value={auditMaster.colorCode}
                             onChange={(e) => setAuditMaster({ ...auditMaster, colorCode: e.target.value })} required />
+                    </div>
+
+                    <div className='mt-3'>
+                        <label>Audit Main Group</label>
+                        <div className='mt-1'>
+                            <Switch size='default'
+                                checked={auditMaster.auditMainGroup == 'Y'}
+                                onChange={(e) => setAuditMaster({ ...auditMaster, auditMainGroup: e == true ? 'Y' : 'N' })} />
+                            <span className='px-2'> {auditMaster.auditMainGroup === 'Y' ? 'Active' : 'Disable'} </span>
+                        </div>
                     </div>
 
                     <div className='mt-3'>
@@ -383,6 +392,7 @@ export default function AuditMaster() {
                         <input className='form-control form-control-sm mt-1'
                             placeholder='Enter Audit Code'
                             value={auditMaster.auditCode}
+                            readOnly
                             onChange={(e) => {
                                 setAuditMaster({ ...auditMaster, auditCode: e.target.value })
                             }} />
@@ -395,7 +405,6 @@ export default function AuditMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Name'
                             value={auditMaster.auditName}
-                            readOnly
                             minLength="1" maxLength="10"
                             onChange={(e) => setAuditMaster({ ...auditMaster, auditName: e.target.value })} />
                     </div>
@@ -409,6 +418,16 @@ export default function AuditMaster() {
                             value={auditMaster.colorCode}
                             type="color"
                             onChange={(e) => setAuditMaster({ ...auditMaster, colorCode: e.target.value })} />
+                    </div>
+
+                    <div className='mt-3'>
+                        <label>Audit Main Group</label>
+                        <div className='mt-1'>
+                            <Switch size='default'
+                                checked={auditMaster.auditMainGroup == 'Y'}
+                                onChange={(e) => setAuditMaster({ ...auditMaster, auditMainGroup: e == true ? 'Y' : 'N' })} />
+                            <span className='px-2'> {auditMaster.auditMainGroup === 'Y' ? 'Active' : 'Disable'} </span>
+                        </div>
                     </div>
 
                     <div className='mt-3'>

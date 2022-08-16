@@ -93,6 +93,7 @@ export default function Header() {
       ItrApiService.userProfile().then(res => {
         console.log(res);
         if (res.Success == true) {
+          setLocationCode(res.data.locationCode);
           setUserProfile(res.data);
         }
         else {
@@ -133,7 +134,7 @@ export default function Header() {
       {/* <Switch checked={swi} onChange={(e) => setSwi(e == true ? 'Y' : 'N')} /> */}
       {/* <h6> {swi == true ? 'Active' : 'Disable'} </h6> */}
       <div className='row header align-items-center'>
-        <div className='col-3 col-sm-4 col-md-4 col-lg-3 col-xl-3 left'>
+        <div className='col-3 col-sm-6 col-md-6 col-lg-6 col-xl-6 left'>
           <div className='left-menu'>
             <div className='profile-card' onClick={showDrawer}>
               <img src={ConfigurationLogo} width="100%" />
@@ -144,19 +145,14 @@ export default function Header() {
           </div>
         </div>
 
-        <div className='col-6 col-sm-4 col-md-4 col-lg-5 col-xl-5 middle'>
+        {/* <div className='col-6 col-sm-4 col-md-4 col-lg-5 col-xl-5 middle'>
           <div className='search-box'>
             <input type="search" placeholder='Search With Keywords' className='form-control form-control-sm' />
-            {/* <span > */}
             <img className='search-icon' src={SearchIcon} width="15" />
-            {/* </span> */}
           </div>
-          {/* <div className='search-icon'>
-          </div> */}
+        </div> */}
 
-        </div>
-
-        <div className='col-4 col-sm-4 col-md-4 col-lg-2 col-xl-2'>
+        <div className='col-4 col-sm-3 col-md-3 col-lg-3 col-xl-3'>
           <div className='search-box'>
             <select className='form-select form-select-sm'
               value={locationCode}
@@ -173,7 +169,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className='col-3 col-sm-4 col-md-4 col-lg-2 col-xl-2 right'>
+        <div className='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 right'>
           <Popover placement="bottomRight" title="" content={
             <button className='btn btn-sm text-danger px-4 py-0' onClick={logOut}>Logout</button>
           }>

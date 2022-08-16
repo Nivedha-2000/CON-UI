@@ -127,8 +127,6 @@ export default function AssignmentMaster() {
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
     const [datas2, setDatas2] = useState([]);
-    console.log(datas)
-
     const [errors, setErrors] = useState({
         usercode: "",
         username: "",

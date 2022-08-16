@@ -192,7 +192,6 @@ export default function PartsMasters() {
             url: 'ProductType/GetProductTypeDropDown',
             appCode: "ENAPP002"
         }).then(res => {
-            console.log(res.data)
             if (res.Success == true) {
                 setLoader(false);
                 setPartsProductType(res.data.result.data);
