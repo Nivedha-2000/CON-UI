@@ -344,6 +344,7 @@ export default function PartsMasters() {
                         total={partsList.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>

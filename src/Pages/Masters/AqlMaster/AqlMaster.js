@@ -527,7 +527,8 @@ export default function AqlMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
-                        showTotal={total => `Total ${total} items`}
+                        showSizeChanger={false}
+                        // showTotal={total => `Total ${total} items`}
                     />
                 </div>
             </div>

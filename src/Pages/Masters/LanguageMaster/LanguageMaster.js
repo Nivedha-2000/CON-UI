@@ -111,14 +111,13 @@ export default function LanguageMaster() {
                 }
                 else {
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
     }
 
-    // for-Update-Operation-master
-    const updateAssignmentMaster = () => {
-
+    const updateLanguageMaster = () => {
         let { languageCode, languageName, translationName } = languageMaster;
         if (languageName == '' || translationName == '' || languageCode == "") {
             setErrors({ ...errors, languageName: 'Language Name is required', translationName: 'Translation Name is required', languageCode: "Language Code is required" })
@@ -137,8 +136,8 @@ export default function LanguageMaster() {
                     getDatas(false, true);
                 }
                 else {
-                    message.warning(res.message);
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -269,6 +268,7 @@ export default function LanguageMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>
@@ -318,6 +318,7 @@ export default function LanguageMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             placeholder='Enter Language Name'
+                            minLength="1" maxLength="20"
                             value={languageMaster.languageName}
                             onChange={(e) => {
                                 setlanguageMasterMaster({ ...languageMaster, languageName: e.target.value })
@@ -331,6 +332,7 @@ export default function LanguageMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             placeholder='Enter Translation Name'
+                            minLength="1" maxLength="20"
                             value={languageMaster.translationName}
                             onChange={(e) => {
                                 setlanguageMasterMaster({ ...languageMaster, translationName: e.target.value })
@@ -357,7 +359,7 @@ export default function LanguageMaster() {
                 footer={
                     <>
                         <div>
-                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={updateAssignmentMaster}> Update </button>
+                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={updateLanguageMaster}> Update </button>
                         </div>
                         <div>
                             <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => { clearFields(); cancel(); }}> Cancel </button>
@@ -371,7 +373,8 @@ export default function LanguageMaster() {
                             <small className='text-danger'>{languageMaster.languageCode == '' ? errors.languageCode : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
-                            placeholder='Enter User Code'
+                            // placeholder='Enter User Code'
+                            readOnly
                             value={languageMaster.languageCode}
                             onChange={(e) => {
                                 setlanguageMasterMaster({ ...languageMaster, languageCode: e.target.value })
@@ -384,7 +387,8 @@ export default function LanguageMaster() {
                             <small className='text-danger'>{languageMaster.languageName == '' ? errors.languageName : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
-                            placeholder='Enter User Code'
+                            placeholder='Enter Language Name'
+                            minLength="1" maxLength="20"
                             value={languageMaster.languageName}
                             onChange={(e) => {
                                 setlanguageMasterMaster({ ...languageMaster, languageName: e.target.value })
@@ -397,7 +401,8 @@ export default function LanguageMaster() {
                             <small className='text-danger'>{languageMaster.translationName == '' ? errors.translationName : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
-                            placeholder='Enter User Code'
+                            placeholder='Enter Translation Name'
+                            minLength="1" maxLength="20"
                             value={languageMaster.translationName}
                             onChange={(e) => {
                                 setlanguageMasterMaster({ ...languageMaster, translationName: e.target.value })

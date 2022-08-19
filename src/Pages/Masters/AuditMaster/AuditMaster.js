@@ -113,7 +113,7 @@ export default function AuditMaster() {
                 }
                 else {
                     setLoader(false);
-                    // message.warning(res.message);
+                    message.warning(res.message);
                 }
             });
         }
@@ -139,8 +139,8 @@ export default function AuditMaster() {
                     getDatas(false, true);
                 }
                 else {
-                    message.warning(res.message);
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -237,6 +237,7 @@ export default function AuditMaster() {
                                 <th scope="col">Audit Code</th>
                                 <th scope="col">Audit Name</th>
                                 <th scope="col">Color</th>
+                                <th scope="col">Main Group</th>
                                 <th scope="col">Active</th>
                                 <th scope="col" className='text-center'>Action</th>
                             </tr>
@@ -247,9 +248,13 @@ export default function AuditMaster() {
                                     <td> {audit?.auditCode ? audit?.auditCode : '-'} </td>
                                     <td> {audit?.auditName ? audit?.auditName : '-'} </td>
                                     <td>
-                                        <Tag style={{ width: '30px', height: '30px', borderRadius: '4px', backgroundColor: audit?.colorCode ? audit?.colorCode : '-' }}
-                                        />
-                                        {/* {audit?.colorCode ? audit?.colorCode : '-'} */}
+                                        <Tag style={{ width: '30px', height: '30px', borderRadius: '4px', backgroundColor: audit?.colorCode ? audit?.colorCode : '-' }} />
+                                    </td>
+                                    <td>
+                                        <Tag style={{ borderRadius: '4px', backgroundColor: audit?.auditMainGroup == 'Y' ? 'green' : '#FF1414', color: 'white' }}
+                                        >
+                                            {audit?.auditMainGroup ? audit?.auditMainGroup == 'Y' ? 'Yes' : 'No' : '-'}
+                                        </Tag>
                                     </td>
                                     <td>
                                         <Tag style={{ borderRadius: '4px', backgroundColor: audit?.active == 'Y' ? 'green' : '#FF1414', color: 'white' }}
@@ -277,6 +282,7 @@ export default function AuditMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>
@@ -405,7 +411,7 @@ export default function AuditMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Name'
                             value={auditMaster.auditName}
-                            minLength="1" maxLength="10"
+                            minLength="1" maxLength="50"
                             onChange={(e) => setAuditMaster({ ...auditMaster, auditName: e.target.value })} />
                     </div>
 

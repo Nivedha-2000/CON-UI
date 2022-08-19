@@ -150,7 +150,7 @@ export default function AssignmentMaster() {
                 url: 'AssignmentAudits/SaveAssignmentAudits',
                 appCode: "CNF",
                 data: {
-                    ...deletedValue, active: deletedValue.active == true ? 'Y' : 'N',
+                    ...deletedValue, active: true ? 'Y' : 'N',
                     createdDate: new Date(),
                     createdBy: "",
                     modifiedDate: new Date(),
@@ -167,6 +167,7 @@ export default function AssignmentMaster() {
                 }
                 else {
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -204,8 +205,8 @@ export default function AssignmentMaster() {
                     getDatas(false, true);
                 }
                 else {
-                    message.warning(res.message);
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -357,6 +358,7 @@ export default function AssignmentMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>

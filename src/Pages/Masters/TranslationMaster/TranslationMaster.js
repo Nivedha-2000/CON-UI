@@ -48,7 +48,6 @@ export default function TranslationMaster() {
             appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
-                console.log(res.data)
                 let defUser = ''
                 for (let data of defList) {
                     if (data.defectCode == res.data.defectCode) {
@@ -133,7 +132,7 @@ export default function TranslationMaster() {
 
     const [exist, setexists] = useState(false);
 
-    const createAssignmentMaster = () => {
+    const createTranslationMaster = () => {
         // let { languageCode, defectName, translation } = translationMaster;
         // if (translation == '' || defectName == '' || languageCode == "") {
         //     message.warning('Mandatory fields are missing');
@@ -144,55 +143,56 @@ export default function TranslationMaster() {
         //     });
         // }
         // else {
-            setLoader(true);
-            ItrApiService.POST({
-                url: 'DefectTranslationMaster/SaveDefectTranslationMasterList',
-                appCode: "CNF",
-                data: translationsMaster
-            }).then(res => {
-                if (res.Success == true) {
-                    setLoader(false);
-                    message.success("Language Master Created Successfully");
-                    onClose();
-                    clearFields();
-                    getDatas(true);
-                }
-                else {
-                    setLoader(false);
-                }
-            })
+        setLoader(true);
+        ItrApiService.POST({
+            url: 'DefectTranslationMaster/SaveDefectTranslationMasterList',
+            appCode: "CNF",
+            data: translationsMaster
+        }).then(res => {
+            if (res.Success == true) {
+                setLoader(false);
+                message.success("Translation Master Created Successfully");
+                onClose();
+                clearFields();
+                getDatas(true);
+            }
+            else {
+                setLoader(false);
+            }
+        })
         // }
     }
 
     // for-Update-Operation-master
-    const updateAssignmentMaster = () => {
+    const updateTranslationMaster = () => {
 
-        let { languageCode, languageName, translationName } = translationMaster;
-        if (languageName == '' || translationName == '' || languageCode == "") {
-            setErrors({ ...errors, languageName: 'Language Name is required', translationName: 'Translation Name is required', languageCode: "Language Code is required" })
-        }
-        else {
-            setLoader(true);
-            ItrApiService.POST({
-                url: `Lang/SaveLangMaster`,
-                appCode: "CNF",
-                data: translationMaster
-            }).then(res => {
-                if (res.Success == true) {
-                    message.success("Language Master Updated Successfully");
-                    cancel();
-                    clearFields();
-                    getDatas(false, true);
-                }
-                else {
-                    message.warning(res.message);
-                    setLoader(false);
-                }
-            })
-        }
+        // let { languageCode, languageName, translationName } = translationMaster;
+        // if (languageName == '' || translationName == '' || languageCode == "") {
+        //     setErrors({ ...errors, languageName: 'Language Name is required', translationName: 'Translation Name is required', languageCode: "Language Code is required" })
+        // }
+        // else {
+        setLoader(true);
+        ItrApiService.POST({
+            url: `DefectTranslationMaster/SaveDefectTranslationMasterList`,
+            appCode: "CNF",
+            data: translationsMaster
+        }).then(res => {
+            if (res.Success == true) {
+                message.success("Translation Master Updated Successfully");
+                cancel();
+                clearFields();
+                getDatas(false, true);
+            }
+            else {
+                message.warning(res.message);
+                setLoader(false);
+            }
+        })
+        // }
     }
 
     const pageSize = 10;
+    // const [pageSize, setPageSize] = useState('10');
 
     // for-list-pagination
     const [pagination, setPagination] = useState({
@@ -236,20 +236,22 @@ export default function TranslationMaster() {
 
     useEffect(() => {
         getDatas();
-
     }, []);
 
 
     const myFunction = (e) => {
         let val = datas2;
         let ss = val.filter(dd => {
-            if (dd.languageName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.defectCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
             if (dd.defectName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
             if (dd.translation.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+                return dd;
+            }
+            if (dd.languageCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
@@ -270,9 +272,9 @@ export default function TranslationMaster() {
                             <option> All Locations </option>
                         </select> */}
                     </div>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
+                    {/* <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
                         <button className='btn-sm btn defect-master-add' onClick={showDrawer}> + Add New </button>
-                    </div>
+                    </div> */}
                 </div>
 
 
@@ -280,6 +282,7 @@ export default function TranslationMaster() {
                     <table className="table table-hover" id='operationTable'>
                         <thead id='table-header'>
                             <tr>
+                                {/* <th scope="col">S.No</th> */}
                                 <th scope="col">Defect Code</th>
                                 <th scope="col">Defect Name</th>
                                 <th scope="col">Translation Name</th>
@@ -290,6 +293,7 @@ export default function TranslationMaster() {
                         <tbody>
                             {datas.map((trans, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
                                 <tr key={index}>
+                                    {/* <td> {index + 1} </td> */}
                                     <td> {trans?.defectCode ? trans?.defectCode : '-'} </td>
                                     <td> {trans?.defectName ? trans?.defectName : '-'} </td>
                                     <td> {trans?.translation ? trans?.translation : ''} </td>
@@ -314,6 +318,8 @@ export default function TranslationMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
+                    // onShowSizeChange={(e, e1) => setPageSize(e1)}
                     />
                 </div>
             </div>
@@ -327,7 +333,7 @@ export default function TranslationMaster() {
                 footer={
                     <>
                         <div>
-                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={createAssignmentMaster}> Save </button>
+                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={createTranslationMaster}> Save </button>
                         </div>
                         <div>
                             <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => {
@@ -432,12 +438,12 @@ export default function TranslationMaster() {
                                                 let def = JSON.parse(e.target.value);
                                                 if (e.target.value != '') {
                                                     if (translationMaster.languageCode == 'EN') {
-                                                        setTranslationMaster({ ...translationMaster, defectName: def.defectName, defectCode: def.defectCode, defUser: e.target.value, translation: def.defectName });
+                                                        setTranslationMaster({ ...translationMaster, defectMast_Id: def.id, defectName: def.defectName, defectCode: def.defectCode, defUser: e.target.value, translation: def.defectName });
                                                     } else {
-                                                        setTranslationMaster({ ...translationMaster, defectName: def.defectName, defectCode: def.defectCode, defUser: e.target.value });
+                                                        setTranslationMaster({ ...translationMaster, defectMast_Id: def.id, defectName: def.defectName, defectCode: def.defectCode, defUser: e.target.value });
                                                     }
                                                 } else {
-                                                    setTranslationMaster({ ...translationMaster, defectName: def.defectName, defectCode: def.defectCode, defUser: e.target.value });
+                                                    setTranslationMaster({ ...translationMaster, defectMast_Id: def.id, defectName: def.defectName, defectCode: def.defectCode, defUser: e.target.value });
                                                 }
                                             }}
                                         >
@@ -463,7 +469,6 @@ export default function TranslationMaster() {
                                     <td>
                                         <div className='text-center'
                                             onClick={() => {
-                                                console.log(translationsMaster)
                                                 let { languageCode, defectName, translation } = translationMaster;
                                                 if (languageCode == '' || defectName == '' || translation == '') {
                                                     let obj = {
@@ -486,6 +491,7 @@ export default function TranslationMaster() {
                                                     });
                                                     let deldef = translationMaster;
                                                     delete deldef.defUser
+                                                    delete deldef.languageName
                                                 }
                                             }}
                                         >
@@ -508,7 +514,7 @@ export default function TranslationMaster() {
                 footer={
                     <>
                         <div>
-                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={updateAssignmentMaster}> Update </button>
+                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={updateTranslationMaster}> Update </button>
                         </div>
                         <div>
                             <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => { clearFields(); cancel(); }}> Cancel </button>
@@ -638,7 +644,6 @@ export default function TranslationMaster() {
                                     <td>
                                         <div className='text-center'
                                             onClick={() => {
-                                                console.log(translationsMaster)
                                                 let { languageCode, defectName, translation } = translationMaster;
                                                 if (languageCode == '' || defectName == '' || translation == '') {
                                                     let obj = {
@@ -659,6 +664,9 @@ export default function TranslationMaster() {
                                                         translation: "",
                                                         languageCode: "",
                                                     });
+                                                    let deldef = translationMaster;
+                                                    delete deldef.defUser
+                                                    delete deldef.languageName
                                                 }
                                             }}
                                         >

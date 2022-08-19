@@ -114,11 +114,8 @@ export default function Header() {
   const logOut = async () => {
     let result = await ItrAuthService.logout();
     if (result.Success == true) {
-      // navigate('/');
-      // window.location.href = "http://iam.ithred.info"
-      // window.location.href = "http://172.16.9.252:7001"
       sessionStorage.clear();
-      window.location.href = configUrl.appUrl;
+      window.location.href = configUrl().appUrl;
       message.success('Logout Successfully');
     }
     else if (result.Success == false) {
@@ -134,7 +131,7 @@ export default function Header() {
       {/* <Switch checked={swi} onChange={(e) => setSwi(e == true ? 'Y' : 'N')} /> */}
       {/* <h6> {swi == true ? 'Active' : 'Disable'} </h6> */}
       <div className='row header align-items-center'>
-        <div className='col-3 col-sm-6 col-md-6 col-lg-6 col-xl-6 left'>
+        <div className='col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 left'>
           <div className='left-menu'>
             <div className='profile-card' onClick={showDrawer}>
               <img src={ConfigurationLogo} width="100%" />
@@ -152,7 +149,7 @@ export default function Header() {
           </div>
         </div> */}
 
-        <div className='col-4 col-sm-3 col-md-3 col-lg-3 col-xl-3'>
+        <div className='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3'>
           <div className='search-box'>
             <select className='form-select form-select-sm'
               value={locationCode}
