@@ -509,6 +509,7 @@ export default function AssignmentMaster() {
                             <small className='text-danger'>{assignmentMaster.audit_Id == '' ? errors.audit_Id : ''}</small>
                         </div>
                         <select className='form-select form-select-sm'
+                            disabled
                             value={assignmentMaster.audit_Id}
                             onChange={(e) => { setAssignmentMaster({ ...assignmentMaster, audit_Id: e.target.value }); console.log(e.target.value) }} required
                         >
@@ -526,6 +527,7 @@ export default function AssignmentMaster() {
                             <small className='text-danger'>{assignmentMaster.username == '' ? errors.username : ''}</small>
                         </div>
                         <select className='form-select form-select-sm'
+                            disabled
                             value={assignmentMaster.userNameValue}
                             onChange={(e) => {
                                 let vs = JSON.parse(e.target.value);
@@ -537,23 +539,7 @@ export default function AssignmentMaster() {
                                 return <option hidden={data.department != 'QA'} key={index} value={JSON.stringify(data)}> {data.displayName} </option>
                             })}
                         </select>
-                        {/* <input className='form-control form-control-sm mt-1'
-        placeholder='Enter Username'
-        value={assignmentMaster.username}
-        onChange={(e) => {
-            setAssignmentMaster({ ...assignmentMaster, username: e.target.value })
-        }} /> */}
                     </div>
-
-                    {/* <div className='mt-3'>
-    <div className='d-flex flex-wrap align-items-center justify-content-between'>
-        <label>Email ID <span className='text-danger'>*  </span> </label>
-        <small className='text-danger'>{assignmentMaster.emaild == '' ? errors.emaild : ''}</small>
-    </div>
-    <input className='form-control form-control-sm mt-1' placeholder='Enter Email ID'
-        value={assignmentMaster.emaild}
-        onChange={(e) => setAssignmentMaster({ ...assignmentMaster, emaild: e.target.value })} required />
-</div> */}
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -561,6 +547,7 @@ export default function AssignmentMaster() {
                             <small className='text-danger'>{assignmentMaster.languageCode == '' ? errors.languageCode : ''}</small>
                         </div>
                         <select className='form-select form-select-sm'
+                            disabled
                             value={assignmentMaster.languageCode}
                             onChange={(e) => setAssignmentMaster({ ...assignmentMaster, languageCode: e.target.value })} required
                         >

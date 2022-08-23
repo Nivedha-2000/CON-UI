@@ -9,7 +9,7 @@ import { ItrApiService } from '@afiplfeed/itr-ui';
 export default function LanguageMaster() {
 
     const clearFields = () => {
-        setlanguageMasterMaster({
+        setlanguageMaster({
             ...languageMaster, isActive: true,
             id: 0,
             languageCode: "",
@@ -39,7 +39,7 @@ export default function LanguageMaster() {
             appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
-                setlanguageMasterMaster(res.data);
+                setlanguageMaster(res.data);
             }
             else {
                 setLoader(false);
@@ -51,7 +51,11 @@ export default function LanguageMaster() {
     };
 
 
-    const [languageMaster, setlanguageMasterMaster] = useState({
+    const [languageMaster, setlanguageMaster] = useState({
+        createdDate: new Date(),
+        createdBy: "string",
+        modifiedDate: new Date(),
+        modifiedBy: "string",
         isActive: true,
         id: 0,
         languageCode: "",
@@ -127,7 +131,7 @@ export default function LanguageMaster() {
             ItrApiService.POST({
                 url: `Lang/SaveLangMaster`,
                 appCode: "CNF",
-                data: languageMaster
+                data: { ...languageMaster, createdDate: new Date(), modifiedDate: new Date() }
             }).then(res => {
                 if (res.Success == true) {
                     message.success("Language Master Updated Successfully");
@@ -137,7 +141,7 @@ export default function LanguageMaster() {
                 }
                 else {
                     setLoader(false);
-                    message.warning(res.message);
+                    // message.warning(res.message);
                 }
             })
         }
@@ -306,7 +310,7 @@ export default function LanguageMaster() {
                             value={languageMaster.languageCode}
                             onChange={(e) => {
                                 if (e.target.value.length <= 2) {
-                                    setlanguageMasterMaster({ ...languageMaster, languageCode: e.target.value })
+                                    setlanguageMaster({ ...languageMaster, languageCode: e.target.value })
                                 }
                             }} />
                     </div>
@@ -321,7 +325,7 @@ export default function LanguageMaster() {
                             minLength="1" maxLength="20"
                             value={languageMaster.languageName}
                             onChange={(e) => {
-                                setlanguageMasterMaster({ ...languageMaster, languageName: e.target.value })
+                                setlanguageMaster({ ...languageMaster, languageName: e.target.value })
                             }} />
                     </div>
 
@@ -335,7 +339,7 @@ export default function LanguageMaster() {
                             minLength="1" maxLength="20"
                             value={languageMaster.translationName}
                             onChange={(e) => {
-                                setlanguageMasterMaster({ ...languageMaster, translationName: e.target.value })
+                                setlanguageMaster({ ...languageMaster, translationName: e.target.value })
                             }} />
                     </div>
 
@@ -344,7 +348,7 @@ export default function LanguageMaster() {
                         <div className='mt-1'>
                             <Switch size='default'
                                 checked={languageMaster.isActive == 'Y'}
-                                onChange={(e) => setlanguageMasterMaster({ ...languageMaster, isActive: e == true ? 'Y' : 'N' })} />
+                                onChange={(e) => setlanguageMaster({ ...languageMaster, isActive: e == true ? 'Y' : 'N' })} />
                             <span className='px-2'> {languageMaster.isActive === 'Y' ? 'Active' : 'Disable'} </span>
                         </div>
                     </div> */}
@@ -377,7 +381,7 @@ export default function LanguageMaster() {
                             readOnly
                             value={languageMaster.languageCode}
                             onChange={(e) => {
-                                setlanguageMasterMaster({ ...languageMaster, languageCode: e.target.value })
+                                setlanguageMaster({ ...languageMaster, languageCode: e.target.value })
                             }} />
                     </div>
 
@@ -391,7 +395,7 @@ export default function LanguageMaster() {
                             minLength="1" maxLength="20"
                             value={languageMaster.languageName}
                             onChange={(e) => {
-                                setlanguageMasterMaster({ ...languageMaster, languageName: e.target.value })
+                                setlanguageMaster({ ...languageMaster, languageName: e.target.value })
                             }} />
                     </div>
 
@@ -405,7 +409,7 @@ export default function LanguageMaster() {
                             minLength="1" maxLength="20"
                             value={languageMaster.translationName}
                             onChange={(e) => {
-                                setlanguageMasterMaster({ ...languageMaster, translationName: e.target.value })
+                                setlanguageMaster({ ...languageMaster, translationName: e.target.value })
                             }} />
                     </div>
 
@@ -414,7 +418,7 @@ export default function LanguageMaster() {
                         <div className='mt-1'>
                             <Switch size='default'
                                 checked={languageMaster.isActive == 'Y'}
-                                onChange={(e) => setlanguageMasterMaster({ ...languageMaster, isActive: e == true ? 'Y' : 'N' })} />
+                                onChange={(e) => setlanguageMaster({ ...languageMaster, isActive: e == true ? 'Y' : 'N' })} />
                             <span className='px-2'> {languageMaster.isActive === 'Y' ? 'Active' : 'Disable'} </span>
                         </div>
                     </div> */}
