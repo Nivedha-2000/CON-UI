@@ -440,7 +440,7 @@ function MaterialTypeMaster({ name }) {
                             <label>Material Type Index </label>
                             <small className='text-danger'>{errors.MatTypeIndex ? errors.MatTypeIndex : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Transit days Value'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type Index'
                                value={fields.MatTypeIndex} minLength="1" maxLength="8"
                                onChange={inputOnChange("MatTypeIndex")}                         
                         />

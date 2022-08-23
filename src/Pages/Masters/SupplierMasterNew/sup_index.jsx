@@ -230,7 +230,7 @@ function SupplierMasterNew({ name }) {
     }
      
 
-    const inputOnChange1 = name => e => {
+    const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
         if (name === 'MatTypeIndex'){
@@ -251,34 +251,34 @@ function SupplierMasterNew({ name }) {
 
     }
 
-    const inputOnChange = name => e => {
+    const inputOnChange1 = name => e => {
         let err = {}, validation = true
         let value = e.target.value
         if (name === 'contNo1' || name === 'contNo2' || 'faxNo'){
             const re = /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/;
-            if (e.target.value === '' || re.test(e.target.value)) {
-                setFields({ ...fields, [name]: value });
-                err[name] =  ''
-                setErrors({ ...errors, ...err })
-            }
-            else {
-                err[name] = "Please enter numbers only"
-                validation = false
-                setErrors({ ...errors, ...err })
-            }
+            // if (e.target.value === '' || re.test(e.target.value)) {
+            //     setFields({ ...fields, [name]: value });
+            //     err[name] =  ''
+            //     setErrors({ ...errors, ...err })
+            // }
+            // else {
+            //     err[name] = "Please enter numbers only"
+            //     validation = false
+            //     setErrors({ ...errors, ...err })
+            // }
         }
         else if(name === 'contPerson1'){
             const re = /[^0-9a-zA-Z]/;
-            if (e.target.value === '' || re.test(e.target.value)) {
-                setFields({ ...fields, [name]: value });
-                err[name] =  ''
-                setErrors({ ...errors, ...err })
-            }
-            else {
-                err[name] = "Please enter Alpha Numeric only"
-                validation = false
-                setErrors({ ...errors, ...err })
-            }
+            // if (e.target.value === '' || re.test(e.target.value)) {
+            //     setFields({ ...fields, [name]: value });
+            //     err[name] =  ''
+            //     setErrors({ ...errors, ...err })
+            // }
+            // else {
+            //     err[name] = "Please enter Alpha Numeric only"
+            //     validation = false
+            //     setErrors({ ...errors, ...err })
+            // }
         }
         else {
             setFields({ ...fields, [name]: value })
@@ -712,7 +712,6 @@ function SupplierMasterNew({ name }) {
                                  {supCategoryList.map((v, index) => {
                                  return <option key={index} value={v.code}>{v.codeDesc}</option>
                                  })}
-
                             </select>
                         </div>
                     </div>

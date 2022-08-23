@@ -26,14 +26,20 @@ function App() {
     //   }
     // });
 
-    ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", "app");
-    ItrAuthService.Login({
-      data: {
-        userName: 'santhosh_s@ambattur.com',
-        password: 'Iamadmin@123'
-      }
-    }).then((res) => console.log(res.data));
-    ItrApiService.userApp().then(res => console.log(res.data, 'userApps'));
+
+
+    ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", "app").then(th => {
+      ItrAuthService.Login({
+        data: {
+          userName: 'mathankumar@ambattur.com',
+          password: 'Mathan@123'
+        }
+      }).then((res) => {
+        ItrApiService.userApp().then(res => console.log(res.data, 'userApps'));
+        console.log(res.data);
+      });
+    });
+
 
   }, []);
 

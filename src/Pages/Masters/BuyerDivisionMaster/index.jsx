@@ -425,7 +425,7 @@ function BuyerDivisionMaster({ name }) {
                             <small className='text-danger'>{errors.profitPercent ? errors.profitPercent : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter profit Percent'
-                               value={fields.profitPercent} 
+                               value={fields.profitPercent}  maxLength="20"
                                onChange={inputOnChange("profitPercent")}               
                             onFocus={NUMBER_IS_FOCUS_IN_ZERO("profitPercent")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("profitPercent")}
                         />
