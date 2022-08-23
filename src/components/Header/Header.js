@@ -27,6 +27,7 @@ export default function Header() {
 
   const [visible, setVisible] = useState(false);
   const [shProfileCard, setshProfileCard] = useState(false);
+  const [searchclass, setsearchclass] = useState("");
   const [userApps, setUserApps] = useState([]);
 
   const showhideProfileCard = async () => {
@@ -60,6 +61,7 @@ export default function Header() {
 
   useEffect(() => {
     ItrApiService.userProfile().then(res => {
+      console.log(res, 'profile')
       if (res.Success == true) {
         setUserProfile(res.data);
       }
@@ -73,26 +75,23 @@ export default function Header() {
 
   }, []);
 
-
+  const SearchBox_Event = name => (e) => {
+    let value = e.target.value;
+    if(value.length > 0) setsearchclass("search-box-forms");
+    else setsearchclass("");
+  }
 
   const logOut = async () => {
     let result = await ItrAuthService.logout();
     if (result.Success == true) {
-      // navigate('/');
-      // window.location.href = "http://iam.ithred.info"
-      // window.location.href = "http://172.16.9.252:7001"
       sessionStorage.clear();
       window.location.href = configUrl.appUrl;
       message.success('Logout Successfully');
     }
     else if (result.Success == false) {
       message.success(result.message);
-      // sessionStorage.clear();
     }
   }
-
-  // const [swi,setSwi] = useState(true);
-  // console.log(swi);
 
   return (
     <>
@@ -123,7 +122,7 @@ export default function Header() {
               </li>
             </ul>
             <div class="main-header-center ms-4 d-sm-none d-md-none d-lg-block">
-              <input class="form-control" placeholder="Search With Keywords" type="search" />
+              <input class={`form-control ${searchclass}`} placeholder="Search With Keywords" type="search" name='search' onChange={SearchBox_Event("search")} />
               <button class="btn">
                 <i class="fas fa-search d-none d-md-block"></i>
               </button>

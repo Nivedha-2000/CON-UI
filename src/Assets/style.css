@@ -15934,7 +15934,7 @@ body {
 }
 
 .header-img {
-    background: linear-gradient(rgba(109, 110, 243, 0.7), rgba(109, 110, 243, 0.7)), url(../Assets/images/style/20.jpg);
+    /* background: linear-gradient(rgba(109, 110, 243, 0.7), rgba(109, 110, 243, 0.7)), url(../Assets/images/style/20.jpg); */
     background-size: cover;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;

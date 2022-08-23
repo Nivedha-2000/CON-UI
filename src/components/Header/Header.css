@@ -104,6 +104,10 @@
     width: 525px;
 }
 
+.main-header-left input.search-box-forms {
+    width: 525px;
+}
+
 .header-main .header .search-box input:focus {
     width: 525px;
 }
