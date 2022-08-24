@@ -705,7 +705,7 @@ export default function DefectMasters() {
                         >
                             <option value="" selected> Select Category </option>
                             {defCat.map((cate, index) => {
-                                return <option value={cate}>{cate}</option>
+                                return <option key={index} value={cate}>{cate}</option>
                             })}
                         </select>
                         {/* <p className='text-danger'> {errors.category} </p> */}

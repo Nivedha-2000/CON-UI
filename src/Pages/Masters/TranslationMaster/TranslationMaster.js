@@ -6,8 +6,12 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { useEffect } from 'react';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import { faAdd, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function TranslationMaster() {
+
+    let location = useLocation();
+    let navigate = useNavigate();
 
     const clearFields = () => {
         setTranslationMaster({
@@ -18,7 +22,6 @@ export default function TranslationMaster() {
             translation: "",
             defectName: "",
             defectCode: "",
-            defUser: "",
             hostName: ""
         });
         setTranslationsMaster([]);
@@ -48,13 +51,13 @@ export default function TranslationMaster() {
             appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
-                let defUser = ''
-                for (let data of defList) {
-                    if (data.defectCode == res.data.defectCode) {
-                        defUser = JSON.stringify(data);
-                    }
-                }
-                setTranslationMaster({ ...res.data, defUser: defUser });
+                setTranslationMaster(res.data)
+                // for (let data of defList) {
+                //     if (data.defectCode == res.data.defectCode) {
+                //         defUser = JSON.stringify(data);
+                //     }
+                // }
+                // setTranslationMaster({ ...res.data, defUser: defUser });
             }
             else {
                 setLoader(false);
@@ -78,7 +81,7 @@ export default function TranslationMaster() {
         defectName: "",
         translation: "",
         languageCode: "",
-        defUser: "",
+        // defUser: "",
         hostName: ""
     });
 
@@ -154,7 +157,7 @@ export default function TranslationMaster() {
                 message.success("Translation Master Created Successfully");
                 onClose();
                 clearFields();
-                getDatas(true);
+                getDatas(true, false, langCode);
             }
             else {
                 setLoader(false);
@@ -175,13 +178,13 @@ export default function TranslationMaster() {
         ItrApiService.POST({
             url: `DefectTranslationMaster/SaveDefectTranslationMasterList`,
             appCode: "CNF",
-            data: translationsMaster
+            data: [{...translationMaster}]
         }).then(res => {
             if (res.Success == true) {
                 message.success("Translation Master Updated Successfully");
                 cancel();
                 clearFields();
-                getDatas(false, true);
+                getDatas(false, true, langCode);
             }
             else {
                 message.warning(res.message);
@@ -192,7 +195,6 @@ export default function TranslationMaster() {
     }
 
     const pageSize = 10;
-    // const [pageSize, setPageSize] = useState('10');
 
     // for-list-pagination
     const [pagination, setPagination] = useState({
@@ -206,12 +208,14 @@ export default function TranslationMaster() {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
-    const getDatas = async (onCreate, onUpdate) => {
+
+    const [langCode, setLangCode] = useState('');
+    const getDatas = async (onCreate, onUpdate, langCodes) => {
         await getLanguageData();
         await getDefectsData();
         setLoader(true);
         ItrApiService.GET({
-            url: 'DefectTranslationMaster/GetAllDefectTranslationMaster',
+            url: `DefectTranslationMaster/GetDefectTranslationMasterByLanguageCode?languagecode=${langCodes}`,
             appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
@@ -234,8 +238,23 @@ export default function TranslationMaster() {
         })
     }
 
-    useEffect(() => {
-        getDatas();
+
+    useEffect(async () => {
+        let params = null;
+        let value = sessionStorage.getItem('langCode');
+        if (location.state && location.state.langCode) {
+            params = location.state.langCode
+            setLangCode(location.state.langCode);
+            getDatas(false, false, location.state.langCode);
+        }
+        else if (value) {
+            params = value;
+            setLangCode(value);
+            getDatas(false, false, location.state.langCode);
+        }
+        else {
+            navigate('/masters/translation-master');
+        }
     }, []);
 
 
@@ -249,9 +268,6 @@ export default function TranslationMaster() {
                 return dd;
             }
             if (dd.translation.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.languageCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
@@ -282,11 +298,9 @@ export default function TranslationMaster() {
                     <table className="table table-hover" id='operationTable'>
                         <thead id='table-header'>
                             <tr>
-                                {/* <th scope="col">S.No</th> */}
                                 <th scope="col">Defect Code</th>
                                 <th scope="col">Defect Name</th>
                                 <th scope="col">Translation Name</th>
-                                <th scope='col'>Language Code </th>
                                 <th scope="col" className='text-center'>Action</th>
                             </tr>
                         </thead>
@@ -297,7 +311,6 @@ export default function TranslationMaster() {
                                     <td> {trans?.defectCode ? trans?.defectCode : '-'} </td>
                                     <td> {trans?.defectName ? trans?.defectName : '-'} </td>
                                     <td> {trans?.translation ? trans?.translation : ''} </td>
-                                    <td> {trans?.languageCode ? trans?.languageCode : ''} </td>
                                     <td>
                                         <div className='text-center' onClick={() => { editDefect(trans?.id) }}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
@@ -326,7 +339,7 @@ export default function TranslationMaster() {
 
 
             {/* Add */}
-            <Drawer
+            {/* <Drawer
                 maskClosable={false}
                 width={500}
                 keyboard={false}
@@ -503,11 +516,11 @@ export default function TranslationMaster() {
                         </table>
                     </div>
                 </div>
-            </Drawer>
+            </Drawer> */}
 
 
             {/* Edit */}
-            <Drawer
+            {/* <Drawer
                 width={500}
                 maskClosable={false}
                 keyboard={false}
@@ -676,6 +689,61 @@ export default function TranslationMaster() {
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </Drawer > */}
+
+
+            <Drawer
+                maskClosable={false}
+                keyboard={false}
+                footer={
+                    <>
+                        <div>
+                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={updateTranslationMaster}> Update </button>
+                        </div>
+                        <div>
+                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => { clearFields(); cancel(); }}> Cancel </button>
+                        </div>
+                    </>
+                } title={<h6 className='m-0'> Edit Tranlation Master</h6>} placement="right" onClose={() => { clearFields(); cancel(); }} visible={closeDefect} >
+                <div className='defect-master-add-new'>
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label> Language Name <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{translationMaster.languageCode == '' ? errors.languageCode : ''}</small>
+                        </div>
+                        <input className='form-control form-control-sm mt-1' required
+                            disabled
+                            value={translationMaster.languageCode}
+                        />
+                    </div>
+
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label> Defect Name <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{translationMaster.languageCode == '' ? errors.languageCode : ''}</small>
+                        </div>
+                        <input className='form-control form-control-sm mt-1' required
+                            disabled
+                            value={translationMaster.defectName}
+                        />
+                    </div>
+
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label>Tranlation Name <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{translationMaster.translation == '' ? errors.translation : ''}</small>
+                        </div>
+                        <input className='form-control form-control-sm mt-1'
+                            readOnly={translationMaster.languageCode == "EN" ? true : false}
+                            style={{ fontSize: '13px' }}
+                            placeholder='Enter Translation Name'
+                            value={translationMaster.translation}
+                            onChange={(e) => {
+                                setTranslationMaster({ ...translationMaster, translation: e.target.value })
+                            }}
+                        />
                     </div>
                 </div>
             </Drawer >
