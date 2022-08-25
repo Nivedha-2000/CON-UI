@@ -215,7 +215,7 @@ export default function TranslationMaster() {
         await getDefectsData();
         setLoader(true);
         ItrApiService.GET({
-            url: `DefectTranslationMaster/GetDefectTranslationMasterByLanguageCode?languagecode=${langCodes}`,
+            url: `DefectTranslationMaster/GetAllDefectTranslationMasterEntryByLanguageCode?languagecode=${langCodes}`,
             appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {

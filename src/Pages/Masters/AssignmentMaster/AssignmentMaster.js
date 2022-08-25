@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../DefectMasters/DefectMasters.css';
+import './AssignmentMaster.css';
 import { Tag, Space, Drawer, Switch, Avatar, message, Pagination, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
@@ -506,8 +507,10 @@ export default function AssignmentMaster() {
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label> Audit Type <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{assignmentMaster.audit_Id == '' ? errors.audit_Id : ''}</small>
+                            {/* <small className='text-danger'>{assignmentMaster.audit_Id == '' ? errors.audit_Id : ''}</small> */}
                         </div>
+                        {/* <input className='form-control form-control-sm' value={assignmentMaster.audit_Id} readOnly /> */}
+
                         <select className='form-select form-select-sm'
                             disabled
                             value={assignmentMaster.audit_Id}
@@ -524,8 +527,9 @@ export default function AssignmentMaster() {
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label> Username <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{assignmentMaster.username == '' ? errors.username : ''}</small>
+                            {/* <small className='text-danger'>{assignmentMaster.username == '' ? errors.username : ''}</small> */}
                         </div>
+                        {/* <input className='form-control form-control-sm' value={assignmentMaster.username} readOnly /> */}
                         <select className='form-select form-select-sm'
                             disabled
                             value={assignmentMaster.userNameValue}
@@ -544,8 +548,9 @@ export default function AssignmentMaster() {
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Language Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{assignmentMaster.languageCode == '' ? errors.languageCode : ''}</small>
+                            {/* <small className='text-danger'>{assignmentMaster.languageCode == '' ? errors.languageCode : ''}</small> */}
                         </div>
+                        {/* <input className='form-control form-control-sm' value={assignmentMaster.languageCode} readOnly /> */}
                         <select className='form-select form-select-sm'
                             disabled
                             value={assignmentMaster.languageCode}
