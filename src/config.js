@@ -12,9 +12,9 @@ export const configUrl = () => {
         }
     }
     // devtest
-    else if (process.env.react_app_baseurl == "http://172.16.9.253:5002/api/") {
+    else if (process.env.react_app_baseurl == "https://gateway01.ithred.liv/api/") {
         return {
-            appUrl: 'http://172.16.9.253:83/',
+            appUrl: 'http://iam.ithred.liv/',
         }
     }
     // production
