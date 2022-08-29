@@ -1,1198 +1,1217 @@
 import React, { useState, useEffect } from 'react';
 import '../DefectMasters/DefectMasters.css';
-import { Drawer, Switch, Pagination, Spin, message, Tag } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import { Drawer, Switch, Pagination, Spin, message, Tag, Radio } from 'antd';
+import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { ItrApiService } from '@afiplfeed/itr-ui';
+import PropTypes, { number } from 'prop-types';
+import ApiCall from "../../../services";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { Construction, Deblur } from '@mui/icons-material';
+import { findDOMNode } from 'react-dom';
 
+
+const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo"],
+    initialErrorMessages = {
+        id: 0,
+        aqlType: "",
+        auditFormat: "",
+        unitCode: "",
+        buyerCode: "",
+        active: "",
+
+        noofCtnsFrom: 0,
+        noofCtnsTo: 0,
+        packSamples: 0,
+        maxAllowPackDefects: 0,
+
+        packQtyFrom: 0,
+        packQtyTo: 0,
+        sampleSize: 0,
+        mesurementPcs: 0,
+        maxAllowVisualDefects: 0,
+        maxAllowCriticalDefects: 0,
+        maxAllowSewDefects: 0,
+        maxAllowOthDefects: 0,
+        maxAllowMesurementDefects: 0,
+
+        createdDate: "2022-08-17T09:51:51.057Z",
+        createdBy: "",
+        modifiedDate: "2022-08-17T09:51:51.057Z",
+        modifiedBy: "",
+        isActive: "",
+        hostName: "",
+        aqlpkDetlModels: [
+            {
+                id: 0,
+                aqlHead_ID: 0,
+                noofCtnsFrom: 0,
+                noofCtnsTo: 0,
+                packSamples: 0,
+                maxAllowPackDefects: 0,
+                active: "",
+
+                createdDate: "2022-08-17T09:51:51.057Z",
+                createdBy: "",
+                modifiedDate: "2022-08-17T09:51:51.057Z",
+                modifiedBy: "",
+                isActive: "",
+                hostName: "",
+            }
+        ],
+        aqlvmDetlModels: [
+            {
+                id: 0,
+                aqlHead_ID: 0,
+                packQtyFrom: 0,
+                packQtyTo: 0,
+                sampleSize: 0,
+                mesurementPcs: 0,
+                maxAllowVisualDefects: 0,
+                maxAllowCriticalDefects: 0,
+                maxAllowSewDefects: 0,
+                maxAllowOthDefects: 0,
+                maxAllowMesurementDefects: 0,
+                active: "",
+
+                createdDate: "2022-08-17T09:51:51.057Z",
+                createdBy: "",
+                modifiedDate: "2022-08-17T09:51:51.057Z",
+                modifiedBy: "",
+                isActive: "",
+                hostName: "",
+            }
+        ]
+    },
+    initialFieldValues = {
+        id: 0,
+        aqlType: "",
+        auditFormat: "",
+        unitCode: "",
+        buyerCode: "",
+        active: "Y",
+
+        createdDate: "2022-08-17T09:51:51.057Z",
+        createdBy: "",
+        modifiedDate: "2022-08-17T09:51:51.057Z",
+        modifiedBy: "",
+        isActive: true,
+        hostName: "",
+        aqlpkDetlModels: [
+            // {
+            //     id: 0,
+            //     aqlHead_ID: 0,
+            //     noofCtnsFrom: 0,
+            //     noofCtnsTo: 0,
+            //     packSamples: 0,
+            //     maxAllowPackDefects: 0,
+            //     active: "Y",
+
+            //     createdDate: "2022-08-17T09:51:51.057Z",
+            //     createdBy: "",
+            //     modifiedDate: "2022-08-17T09:51:51.057Z",
+            //     modifiedBy: "",
+            //     isActive: true,
+            //     hostName: "",
+            // }
+        ],
+        aqlvmDetlModels: [
+            // {
+            //     id: 0,
+            //     aqlHead_ID: 0,
+            //     packQtyFrom: 0,
+            //     packQtyTo: 0,
+            //     sampleSize: 0,
+            //     mesurementPcs: 0,
+            //     maxAllowVisualDefects: 0,
+            //     maxAllowCriticalDefects: 0,
+            //     maxAllowSewDefects: 0,
+            //     maxAllowOthDefects: 0,
+            //     maxAllowMesurementDefects: 0,
+            //     active: "Y",
+
+            //     createdDate: "2022-08-17T09:51:51.057Z",
+            //     createdBy: "",
+            //     modifiedDate: "2022-08-17T09:51:51.057Z",
+            //     modifiedBy: "",
+            //     isActive: true,
+            //     hostName: "",
+            // }
+        ]
+    },
+    test = {
+        id: 0,
+        aqlHead_ID: 0,
+        packQtyFrom: 0,
+        packQtyTo: 0,
+        sampleSize: 0,
+        mesurementPcs: 0,
+        maxAllowVisualDefects: 0,
+        maxAllowCriticalDefects: 0,
+        maxAllowSewDefects: 0,
+        maxAllowOthDefects: 0,
+        maxAllowMesurementDefects: 0,
+        active: "Y",
+
+        createdDate: "2022-08-17T09:51:51.057Z",
+        createdBy: "",
+        modifiedDate: "2022-08-17T09:51:51.057Z",
+        modifiedBy: "",
+        isActive: true,
+        hostName: "",
+    },
+    pkDetlModels = {
+        id: 0,
+        aqlHead_ID: 0,
+        noofCtnsFrom: 0,
+        noofCtnsTo: 0,
+        packSamples: 0,
+        maxAllowPackDefects: 0,
+        active: "Y",
+
+        createdDate: "2022-08-17T09:51:51.057Z",
+        createdBy: "",
+        modifiedDate: "2022-08-17T09:51:51.057Z",
+        modifiedBy: "",
+        isActive: true,
+        hostName: "",
+    }
 export default function AqlMaster() {
+    const [loader, setLoader] = useState(false);
+    const [list, setList] = useState([]);
+    const [errors, setErrors] = useState({
+        ...initialErrorMessages
+    })
+    const [fields, setFields] = useState({
+        ...initialFieldValues
+    });
+    const [visualSampling, setVisualSampling] = useState({
+        ...test
+    });
+    const [packAuditSampling, setPackAuditSampling] = useState({
+        ...pkDetlModels
+    });
+    const [aqlList, setAqlList] = useState([]);
+    const [unitCodeList, setUnitCodeList] = useState([]);
+    const [auditFormatList, setAuditFormatList] = useState([]);
+    const [buyDivCodeList, setBuyDivCodeList] = useState([]);
+    const [rowData, setRowData] = useState([]);
+    const [visible, setVisible] = useState(true);
+    const [packQtyvisible, setPackQtyVisible] = useState(true);
+    const [btnvisible, setBtnVisible] = useState(false);
+    const [btnPasvisible, setBtnPasVisible] = useState(false);
+    const [addBtnVisible, setAddBtnVisible] = useState(true);
+    const [addBtnPasVisible, setAddBtnPasVisible] = useState(true);
+    const [editVisible, setEditVisible] = useState(true);
 
 
-    const clearFields = () => {
-        setAqlMaster({
-            ...aqlMaster,
-            id: 0,
-            unitCode: "",
-            aqlType: "",
-            auditFormat: "",
-            buyerCode: "",
-            packQtyFrom: "",
-            packQtyTo: "",
-            sampleSize: "",
-            mesurementPcs: "",
-            packSamples: "",
-            maxAllowVisualDefects: "",
-            maxAllowCriticalDefects: "",
-            maxAllowSewDefects: "",
-            maxAllowOthDefects: "",
-            maxAllowMesurementDefects: "",
-            maxAllowPackDefects: "",
-            active: 'Y',
-            hostName: ""
-        });
-        setErrors({
-            ...errors, unitCode: '', aqlType: '', auditFormat: '', buyerCode: '', packQtyFrom: '', packQtyTo: '', sampleSize: '', measurementPcs: '',
-            packSamples: '', maxAllowVisualDefects: '', maxAllowCriticalDefects: '', maxAllowSewDefects: '', maxAllowOthDefects: '', maxAllowMesurementDefects: '', maxAllowPackDefects: ''
-        });
-        setexists(false);
+    useEffect(() => {
+        // alert(visible);
+        getAqlType();
+        getAuditFormat();
+        getUnitCode();
+        getBuyerDivCode();
+        //  txtdisabled();
+        // console.log(fields.aqlvmDetlModels.length)
+        // console.log(errors.aqlvmDetlModels.length)
+        // debugger;
+    }, []);
+
+    const getAqlType = () => {
+        ApiCall({
+            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.AQLTYPE
+        }).then(resp => {
+            try {
+                setAqlList(resp.data.map(d => ({ code: d.code, codeDesc: d.code })))
+            } catch (e) {
+                message.error("response is not as expected")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+    const getAuditFormat = () => {
+        ApiCall({
+            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.AUDFORMAT
+        }).then(resps => {
+            try {
+                setAuditFormatList(resps.data.map(d => ({ code: d.code, codeDesc: d.code })))
+            } catch (e) {
+                message.error("response is not as expected")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+    const getUnitCode = () => {
+        ApiCall({
+            path: API_URLS.GET_UNIT_MASTER_LIST
+        }).then(resps => {
+            try {
+                setUnitCodeList(resps.data.filter(d => d.active == "Y").map(d => ({ uCode: d.uCode, uCode: d.uCode })))
+            } catch (e) {
+                message.error("response is not as expected")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
     }
 
-    // for-Add-new-defect-master
-    const [visible, setVisible] = useState(false);
-    const showDrawer = () => {
-        setVisible(true);
+    const getBuyerDivCode = () => {
+        // ApiCall({
+        //     path: API_URLS.GET_BUYERDIVISION_MASTER_LIST
+        // }).then(resps => {
+        //     try {
+        //         setBuyDivCodeList(resps.data.filter(d => d.active == "Y").map(d => ({ buyDivCode: d.buyDivCode, buyCode: d.buyCode })))
+        //     } catch (e) {
+        //         message.error("response is not as expected")
+        //     }
+        // }).catch(err => {
+        //     message.error(err.message || err)
+        // })
+
+
+        ItrApiService.GET({
+            url: 'BuyerDivMaster/GetAllBuyerDivInfo',
+            appCode: "ENAPP003"
+        }).then(res => {
+            console.log(res)
+            if (res.Success == true) {
+                //  setLoader(false);
+                setBuyDivCodeList(res.data.filter(d => d.active == "Y").
+                    map(d => ({ buyDivCode: d.buyDivCode, buyCode: d.buyCode })))
+
+            }
+            else {
+                message.warning('Something went wrong');
+                // setLoader(false);
+            }
+        });
+    }
+    function AddVisualSamplingPlan(aqlType, auditFormat, unitCode, buyerCode) {
+        debugger;
+
+        setVisible(false);
+        setPackQtyVisible(false);
+     
+        let err = {}, validation = true
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+
+            } else {
+                validation = true
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+        if (validation) {
+            // setFields([]);
+            //  console.log(API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode);
+            ApiCall({
+                path: API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode,
+            }).then(respp => {
+                let result=respp.data;
+                setFields(result)
+                console.log(fields)
+                //setVisualSampling([]);
+                //  fields.aqlvmDetlModels.push()
+            }).catch(err => {
+                message.error(err.message || err)
+            })
+        }
+    }
+
+    const clearFieldsVisualSam = () => {
+        setVisualSampling({
+            ...test
+        });
+        setErrors({ ...initialErrorMessages });
+    }
+
+    const clearFieldsPackAuditSam = () => {
+        setPackAuditSampling({
+            ...pkDetlModels
+        });
+        setErrors({ ...initialErrorMessages });
+    }
+    function AddVisualSamPlan() {
+
+        let err = {}, validation = true
+        debugger;
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }
+            else if (fields.aqlvmDetlModels[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }
+
+            else {
+                validation = true
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+        debugger;
+        // fields.aqlvmDetlModels.push(visualSampling)
+        // clearFieldsVisualSam();
+
+
+
+        let len = fields.aqlvmDetlModels.length;
+        //  if (fields.aqlvmDetlModels.length > 0) {
+        let packqtyF = 0;
+        let packqtyT = 0;
+
+        if (len > 0) {
+            packqtyF = parseInt(fields.aqlvmDetlModels[len - 1].packQtyTo);
+            let CurPackqtyF = parseInt(visualSampling.packQtyFrom);
+            let CurpackqtyT = parseInt(visualSampling.packQtyTo);
+            if (parseInt(packqtyF, 10) < parseInt(CurPackqtyF, 10) && parseInt(packqtyF, 10) < parseInt(CurpackqtyT, 10)) {
+                //  alert('ture')
+                // visualSampling.id=(len+1)
+                fields.aqlvmDetlModels.push(visualSampling)
+                clearFieldsVisualSam();
+            } else {
+                //  console.log(visualSampling);
+                message.error("Please check pack Qty From and To Qty.....!")
+                //  alert('flase')
+
+            }
+        } else {
+            if (visualSampling.packQtyFrom > 0) {
+                fields.aqlvmDetlModels.filter(f=>f.active=="Y").push(visualSampling)
+                clearFieldsVisualSam();
+            }
+        }
+        //}
+
+
+    }
+
+    function AddPackAuditSamPlan() {
+        let err = {}, validation = true
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            } else {
+                validation = true
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+        debugger;
+        let len = fields.aqlpkDetlModels.length;
+        // if (fields.aqlpkDetlModels.length > 0) {
+        let CartonF = 0;
+        let CartonT = 0;
+      
+        if (len > 0) {
+            CartonF = parseInt(fields.aqlpkDetlModels[len - 1].noofCtnsTo);
+            let CurCartonF = parseInt(packAuditSampling.noofCtnsFrom);
+            let CurCartonT = parseInt(packAuditSampling.noofCtnsTo);
+            if (parseInt(CartonF, 10) < parseInt(CurCartonF, 10) && parseInt(CartonF, 10) < parseInt(CurCartonT, 10)) {
+                fields.aqlpkDetlModels.push(packAuditSampling)
+                clearFieldsPackAuditSam();
+            } else {
+                message.error("Please check Carton From and Carton To Qty.....!")
+            }
+        } else {
+            if (packAuditSampling.noofCtnsFrom > 0) {
+                fields.aqlpkDetlModels.push(packAuditSampling)
+                clearFieldsPackAuditSam();
+            }
+        }
+        //  }
+
+    }
+
+    function UpdateVisualSamPlan() {
+        console.log(fields.aqlvmDetlModels.filter(q => q.id == visualSampling.id)[0]);
+        console.log(visualSampling);
+        // fields.aqlvmDetlModels.filter(q=>q.id ==visualSampling.id)[0].push(visualSampling)
+
+        debugger;
+        let toUpdateData = fields.aqlvmDetlModels.map((item) => {
+            if (item.id === visualSampling.id) {
+                item.aqlHead_ID = visualSampling.aqlHead_ID;
+                item.packQtyFrom = visualSampling.packQtyFrom;
+                item.packQtyTo = visualSampling.packQtyTo;
+                item.sampleSize = visualSampling.sampleSize;
+                item.mesurementPcs = visualSampling.mesurementPcs;
+                item.maxAllowVisualDefects = visualSampling.maxAllowVisualDefects;
+                item.maxAllowCriticalDefects = visualSampling.maxAllowCriticalDefects;
+                item.maxAllowSewDefects = visualSampling.maxAllowSewDefects;
+                item.maxAllowOthDefects = visualSampling.maxAllowOthDefects;
+                item.maxAllowMesurementDefects = visualSampling.maxAllowMesurementDefects;
+                item.active = visualSampling.active;
+                item.createdDate = visualSampling.createdDate;
+                item.createdBy = visualSampling.createdBy;
+                item.modifiedDate = visualSampling.modifiedDate;
+                item.modifiedBy = visualSampling.modifiedBy;
+                item.isActive = visualSampling.isActive;
+                item.hostName = visualSampling.hostName;
+            }
+            return item;
+        });
+        setVisualSampling({ ...toUpdateData });
+    }
+
+    function UpdatePackAuditSamPlan() {
+        debugger;
+        let toUpdatePackAuditSamPlan = fields.aqlpkDetlModels.map((item1) => {
+            if (item1.id === packAuditSampling.id) {
+                item1.aqlHead_ID = packAuditSampling.aqlHead_ID;
+                item1.noofCtnsFrom = packAuditSampling.noofCtnsFrom;
+                item1.noofCtnsTo = packAuditSampling.noofCtnsTo;
+                item1.packSamples = packAuditSampling.packSamples;
+                item1.maxAllowPackDefects = packAuditSampling.maxAllowPackDefects;
+                item1.active = packAuditSampling.active;
+                item1.createdDate = packAuditSampling.createdDate;
+                item1.createdBy = packAuditSampling.createdBy;
+                item1.modifiedDate = packAuditSampling.modifiedDate;
+                item1.modifiedBy = packAuditSampling.modifiedBy;
+                item1.isActive = packAuditSampling.isActive;
+                item1.hostName = packAuditSampling.hostName;
+            }
+            return item1;
+        });
+        setPackAuditSampling({ ...toUpdatePackAuditSamPlan });
+    }
+    const editVisualSampling = (row, packQtyFrom) => {
+       // debugger;
+        setEditVisible(false)
+        setBtnVisible(true);
+        setAddBtnVisible(false);
+        setPackQtyVisible(true);
+        if (row != '') {
+            // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
+            setVisualSampling(fields.aqlvmDetlModels.filter(a => a.id == row)[0]);
+        }
     };
+
+    const removeVisualSampling = (row) => {
+       // alert(row);
+        if (row != '') {
+            // let toUpdateData1 = fields.aqlvmDetlModels.filter(a => a.id != row);
+            // toUpdateData1.active=
+            // console.log(toUpdateData1);
+            // setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+            // fields.aqlvmDetlModels=[];
+            // fields.aqlvmDetlModels.push(toUpdateData1)
+            // console.log(fields);
+
+
+            let toUpdateData1 = fields.aqlvmDetlModels.map((item) => {
+                if (item.id === row) {
+                    item.active = "N";
+                }
+                return item;
+            });
+            setVisualSampling({ ...toUpdateData1 });
+        }
+    }
+
+    const removepkDetl = (row1) => {
+      //  alert(row1);
+        debugger;
+        let toUpdatePackAuditSamPlan1 = fields.aqlpkDetlModels.map((item1) => {
+            if (item1.id === row1) {
+                item1.active = "N";
+            }
+            return item1;
+        });
+        setPackAuditSampling({ ...toUpdatePackAuditSamPlan1 });
+    }
+
+    const editpkDetl = (row1) => {
+        setVisible(true);
+        setBtnPasVisible(true);
+        setAddBtnPasVisible(false);
+
+        if (row1 != '') {
+            // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
+            setPackAuditSampling(fields.aqlpkDetlModels.filter(a => a.id == row1)[0]);
+        }
+    }
+
+    function AqlMastsave() {
+        //console.log(fields.aqlpkDetlModels.filter(d=>d.noofCtnsFrom>0) && fields.aqlvmDetlModels.filter(a=>a.packQtyFrom>0));
+        console.log(fields);
+
+        if (loader) return
+        let err = {}, validation = true
+        debugger;
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+        if (validation) {
+            //   setLoader(true)
+            ApiCall({
+                method: "POST",
+                path: API_URLS.POST_AQLMASTER,
+                data: {
+                    ...fields
+                }
+            }).then(resp => {
+                setLoader(false)
+                message.success(resp.message)
+                onClose();
+            }).catch(err => {
+                setLoader(false)
+                setFields({ ...fields })
+                setErrors({ ...initialErrorMessages })
+                message.error(err.message || err)
+            })
+        }
+    }
+
+    const Defvalidation = name => e => {
+        let value = e.target.value
+        if (name === 'maxAllowCriticalDefects' || name === 'maxAllowCriticalDefects' || name === 'maxAllowSewDefects' || name === 'maxAllowOthDefects') {
+            debugger;
+            let VD=visualSampling.maxAllowVisualDefects;
+            let CD=visualSampling.maxAllowCriticalDefects;
+            let SD=visualSampling.maxAllowSewDefects;
+            let OD=visualSampling.maxAllowOthDefects;
+            let tot=parseInt(CD)+parseInt(SD)+parseInt(OD);
+          if(parseInt(VD,10) < parseInt(tot,10))
+          {
+            setVisualSampling({ ...visualSampling, [name]: '' });
+            alert('Should not be greater than Visual Defect .....! ')
+          }
+        }
+    }
+    const inputOnChange = name => e => {
+        debugger;
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'packQtyFrom') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['packQtyFrom'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['packQtyFrom'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'packQtyTo') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['packQtyTo'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['packQtyTo'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'sampleSize') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['sampleSize'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['sampleSize'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'mesurementPcs') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['mesurementPcs'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['mesurementPcs'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'maxAllowVisualDefects') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['maxAllowVisualDefects'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['maxAllowVisualDefects'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'maxAllowCriticalDefects') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['maxAllowCriticalDefects'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['maxAllowCriticalDefects'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'maxAllowSewDefects') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['maxAllowSewDefects'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['maxAllowSewDefects'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'maxAllowOthDefects') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['maxAllowOthDefects'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['maxAllowOthDefects'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'maxAllowMesurementDefects') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setVisualSampling({ ...visualSampling, [name]: value });
+                err['maxAllowMesurementDefects'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['maxAllowMesurementDefects'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else {
+            setVisualSampling({ ...visualSampling, [name]: value })
+        }
+
+    }
+    const inputOnChange2 = name => e => {
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'noofCtnsFrom') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setPackAuditSampling({ ...packAuditSampling, [name]: value });
+                err['noofCtnsFrom'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['noofCtnsFrom'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'noofCtnsTo') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setPackAuditSampling({ ...packAuditSampling, [name]: value });
+                err['noofCtnsTo'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['noofCtnsTo'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'packSamples') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setPackAuditSampling({ ...packAuditSampling, [name]: value });
+                err['packSamples'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['packSamples'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'maxAllowPackDefects') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setPackAuditSampling({ ...packAuditSampling, [name]: value });
+                err['maxAllowPackDefects'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['maxAllowPackDefects'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else {
+            setPackAuditSampling({ ...packAuditSampling, [name]: value })
+        }
+
+    }
+    const inputOnChange1 = name => e => {
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'transitdays') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setFields({ ...fields, [name]: value });
+                err['transitdays'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['transitdays'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        } else {
+            setFields({ ...fields, [name]: value })
+        }
+
+    }
+
+    const clearFields = () => {
+        setFields({
+            ...initialFieldValues
+        });
+        setVisualSampling({
+            ...test
+        });
+        setPackAuditSampling({
+            ...pkDetlModels
+        })
+      // setFields([]);
+
+        setErrors({ ...initialErrorMessages });
+    }
+
     const onClose = () => {
+        clearFields()
         setVisible(false);
     };
 
-    // for-Edit-new-defect-master
-    const [closeDefect, setCloseDefect] = useState(false);
-    const editDefect = (aqlId) => {
-        setCloseDefect(true);
-        ItrApiService.GET({
-            url: `AQLBaseTable/GetAQLBaseById/${aqlId}`,
-            appCode: "CNF",
-        }).then(res => {
-            if (res.Success == true) {
-                setAqlMaster(res.data);
-            }
-            else {
-                setLoader(false);
-            }
-        });
-    };
-    const cancel = () => {
-        setCloseDefect(false);
-    };
-
-    const [datas, setDatas] = useState([]);
-    const [datas2, setDatas2] = useState([]);
-    const [loader, setLoader] = useState(false);
-
-    const [aqlMaster, setAqlMaster] = useState({
-        id: 0,
-        unitCode: "",
-        aqlType: "",
-        auditFormat: "",
-        buyerCode: "",
-        packQtyFrom: "",
-        packQtyTo: "",
-        sampleSize: "",
-        mesurementPcs: "",
-        packSamples: "",
-        maxAllowVisualDefects: "",
-        maxAllowCriticalDefects: "",
-        maxAllowSewDefects: "",
-        maxAllowOthDefects: "",
-        maxAllowMesurementDefects: "",
-        maxAllowPackDefects: "",
-        active: 'Y',
-        hostName: ""
-    });
-
-
-
-    function test() {
-        // debugger;
-        // let GetMeaPcs = aqlMaster.mesurementPcs;
-        // const data = { ...aqlMaster, premaxAllowMesurementDefects: (premaxAllowMesurementDefects) => premaxAllowMesurementDefects + aqlMaster.maxAllowMesurementDefects }
-        // if (data > GetMeaPcs) {
-        //     alert("not allowed")
-        // }
-
-        // document.getElementById().value;
-        // setAqlMaster({ ...aqlMaster,premaxAllowMesurementDefects: (premaxAllowMesurementDefects)=> premaxAllowMesurementDefects+1})
-    }
-
-    const [errors, setErrors] = useState({
-        unitCode: '', aqlType: '', auditFormat: '', buyerCode: '', qtyFrom: '', qtyTo: '',
-        sampleSize: '', measurementPcs: '', samples: '', visualDef: '', criticalDef: '',
-        sewDef: '', othDef: '', mesDef: '', packDef: ''
-    });
-
-    const [exist, setexists] = useState(false);
-    const [total, setTotal] = useState(0);
-    const [temp, setTemp] = useState(0)
-
-    const createAqlMaster = () => {
-        let { unitCode,
-            aqlType,
-            auditFormat,
-            buyerCode,
-            packQtyFrom,
-            packQtyTo,
-            sampleSize,
-            mesurementPcs,
-            packSamples,
-            maxAllowVisualDefects,
-            maxAllowCriticalDefects,
-            maxAllowSewDefects,
-            maxAllowOthDefects,
-            maxAllowMesurementDefects,
-            maxAllowPackDefects } = aqlMaster;
-
-        if (unitCode == '' || aqlType == '' || auditFormat == '' || buyerCode == '' || packQtyFrom == '' || packQtyTo == '' || sampleSize == '' || mesurementPcs == '' ||
-            packSamples == '' || maxAllowVisualDefects == '' || maxAllowCriticalDefects == '' || maxAllowSewDefects == '' || maxAllowOthDefects == '' || maxAllowMesurementDefects == '' || maxAllowPackDefects == '') {
-            let obj = {
-                unitCode: '', aqlType: '', auditFormat: '', buyerCode: '', qtyFrom: '', qtyTo: '',
-                sampleSize: '', measurementPcs: '', samples: '', visualDef: '', criticalDef: '',
-                sewDef: '', othDef: '', mesDef: '', packDef: ''
-            }
-            if (unitCode == '' || unitCode == '0' || unitCode == undefined) obj = { ...obj, unitCode: 'Unit Code is required' };
-            if (aqlType == '' || aqlType == '0' || aqlType == undefined) obj = { ...obj, aqlType: 'Aql Type is required' };
-            if (auditFormat == '' || auditFormat == '0' || auditFormat == undefined) obj = { ...obj, auditFormat: 'Audit Format is required' };
-            if (buyerCode == '' || buyerCode == '0' || buyerCode == undefined) obj = { ...obj, buyerCode: 'Buyer Code is required' };
-            if (packQtyFrom == '' || packQtyFrom == '0' || packQtyFrom == undefined) obj = { ...obj, packQtyFrom: 'Qty From is required' };
-            if (packQtyTo == '' || packQtyTo == '0' || packQtyTo == undefined) obj = { ...obj, packQtyTo: 'Qty To is required' };
-            if (sampleSize == '' || sampleSize == '0' || sampleSize == undefined) obj = { ...obj, sampleSize: 'Sample Size is required' };
-            if (mesurementPcs == '' || mesurementPcs == '0' || mesurementPcs == undefined) obj = { ...obj, measurementPcs: 'Measurement Pcs is required' };
-            if (packSamples == '' || packSamples == '0' || packSamples == undefined) obj = { ...obj, packSamples: 'Pack Sample is required' };
-            if (maxAllowVisualDefects == '' || maxAllowVisualDefects == '0' || maxAllowVisualDefects == undefined) obj = { ...obj, maxAllowVisualDefects: 'Visual Defects is required' };
-            if (maxAllowCriticalDefects == '' || maxAllowCriticalDefects == '0' || maxAllowCriticalDefects == undefined) obj = { ...obj, maxAllowCriticalDefects: 'CriticalDefects is required' };
-            if (maxAllowSewDefects == '' || maxAllowSewDefects == '0' || maxAllowSewDefects == undefined) obj = { ...obj, maxAllowSewDefects: 'SewDefects is required' };
-            if (maxAllowOthDefects == '' || maxAllowOthDefects == '0' || maxAllowOthDefects == undefined) obj = { ...obj, maxAllowOthDefects: 'Other Defects is required' };
-            if (maxAllowMesurementDefects == '' || maxAllowMesurementDefects == '0' || maxAllowMesurementDefects == undefined) obj = { ...obj, maxAllowMesurementDefects: 'Measurement Defect is required' };
-            if (maxAllowPackDefects == '' || maxAllowPackDefects == '0' || maxAllowPackDefects == undefined) obj = { ...obj, maxAllowPackDefects: 'Pack defects is required' };
-            setErrors(obj);
-        }
-        else {
-
-            if (parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) < parseInt(packQtyTo))) {
-                let from1 = 0;
-                let from2 = 0;
-                let index = datas.map((res) => res.buyerCode).lastIndexOf(aqlMaster.buyerCode);
-                if (index != -1) {
-                    from1 = datas[index].packQtyTo;
-                }
-                let index2 = datas.map((res) => res.buyerCode).indexOf(aqlMaster.buyerCode);
-                if (index2 != -1) {
-                    from2 = datas[index2].packQtyFrom;
-                }
-                if ((parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) < from2 || parseInt(aqlMaster.packQtyFrom) > from1) && (parseInt(aqlMaster.packQtyFrom) < parseInt(aqlMaster.packQtyTo)))) {
-                    if ((parseInt(aqlMaster.packQtyFrom) < from2 && parseInt(aqlMaster.packQtyTo) > from2)) {
-                        message.warning('This range of Pack-Qty From and Pack-Qty To is already exists');
-                    }
-                    else {
-                        setLoader(true);
-                        ItrApiService.POST({
-                            url: 'AQLBaseTable/SaveAQLBase',
-                            appCode: "CNF",
-                            data: {
-                                ...aqlMaster, maxAllowCriticalDefects: parseInt(aqlMaster.maxAllowCriticalDefects),
-                                maxAllowMesurementDefects: parseInt(aqlMaster.maxAllowMesurementDefects), maxAllowOthDefects: parseInt(aqlMaster.maxAllowOthDefects),
-                                maxAllowPackDefects: parseInt(aqlMaster.maxAllowPackDefects), maxAllowSewDefects: parseInt(aqlMaster.maxAllowSewDefects), maxAllowVisualDefects: parseInt(aqlMaster.maxAllowVisualDefects)
-                            }
-                        }).then(res => {
-                            if (res.Success == true) {
-                                setLoader(false);
-                                onClose();
-                                clearFields();
-                                getDatas(true);
-                                message.success("AQL Created Successfully");
-                            }
-                            else {
-                                setLoader(false);
-                                message.warning(res.message);
-                            }
-                        });
-                    }
-                }
-                //             if ((parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) > parseInt(from1))) && (parseInt(aqlMaster.packQtyFrom) < parseInt(aqlMaster.packQtyTo))) {
-                //                 setLoader(true);
-                // 
-                //             } 
-                else {
-                    message.warning('This range of Pack-Qty From and Pack-Qty To is already exists');
-                }
-            } else {
-                message.warning('Pack Qty To should be greater than Pack Qty From')
-            }
-
-
-        }
-    }
-
-    const updateAqlMaster = () => {
-        let { unitCode,
-            aqlType,
-            auditFormat,
-            buyerCode,
-            packQtyFrom,
-            packQtyTo,
-            sampleSize,
-            mesurementPcs,
-            packSamples,
-            maxAllowVisualDefects,
-            maxAllowCriticalDefects,
-            maxAllowSewDefects,
-            maxAllowOthDefects,
-            maxAllowMesurementDefects,
-            maxAllowPackDefects } = aqlMaster;
-
-        if ((unitCode == '' || aqlType == '' || auditFormat == '' || buyerCode == '' || packQtyFrom == '' || packQtyTo == '' || sampleSize == '' || mesurementPcs == '' ||
-            packSamples == '' || maxAllowVisualDefects == '' || ((maxAllowCriticalDefects == '' || maxAllowCriticalDefects == undefined) && maxAllowCriticalDefects != 0) || (maxAllowSewDefects == '' || maxAllowSewDefects == undefined) && maxAllowSewDefects != 0 || ((maxAllowOthDefects == '' || maxAllowOthDefects == undefined) && maxAllowOthDefects != 0) || maxAllowMesurementDefects == '' || maxAllowPackDefects == '')) {
-            let obj = {
-                unitCode: '', aqlType: '', auditFormat: '', buyerCode: '', qtyFrom: '', qtyTo: '',
-                sampleSize: '', measurementPcs: '', samples: '', visualDef: '', criticalDef: '',
-                sewDef: '', othDef: '', mesDef: '', packDef: ''
-            }
-            if (unitCode == '' || unitCode == '0' || unitCode == undefined) obj = { ...obj, unitCode: 'Unit Code is required' };
-            if (aqlType == '' || aqlType == '0' || aqlType == undefined) obj = { ...obj, aqlType: 'Aql Type is required' };
-            if (auditFormat == '' || auditFormat == '0' || auditFormat == undefined) obj = { ...obj, auditFormat: 'Audit Format is required' };
-            if (buyerCode == '' || buyerCode == '0' || buyerCode == undefined) obj = { ...obj, buyerCode: 'Buyer Code is required' };
-            if (packQtyFrom == '' || packQtyFrom == '0' || packQtyFrom == undefined) obj = { ...obj, packQtyFrom: 'Qty From is required' };
-            if (packQtyTo == '' || packQtyTo == '0' || packQtyTo == undefined) obj = { ...obj, packQtyTo: 'Qty To is required' };
-            if (sampleSize == '' || sampleSize == '0' || sampleSize == undefined) obj = { ...obj, sampleSize: 'Sample Size is required' };
-            if (mesurementPcs == '' || mesurementPcs == '0' || mesurementPcs == undefined) obj = { ...obj, measurementPcs: 'Measurement Pcs is required' };
-            if (packSamples == '' || packSamples == '0' || packSamples == undefined) obj = { ...obj, packSamples: 'Pack Sample is required' };
-            if (maxAllowVisualDefects == '' || maxAllowVisualDefects == '0' || maxAllowVisualDefects == undefined) obj = { ...obj, maxAllowVisualDefects: 'Visual Defects is required' };
-            if ((maxAllowCriticalDefects == '' || maxAllowCriticalDefects == undefined) && maxAllowCriticalDefects != 0) obj = { ...obj, maxAllowCriticalDefects: 'CriticalDefects is required' };
-            if ((maxAllowSewDefects == '' || maxAllowSewDefects == undefined) && maxAllowSewDefects != 0) obj = { ...obj, maxAllowSewDefects: 'SewDefects is required' };
-            if ((maxAllowOthDefects == '' || maxAllowOthDefects == undefined) && maxAllowOthDefects != 0) obj = { ...obj, maxAllowOthDefects: 'Other Defects is required' };
-            if (maxAllowMesurementDefects == '' || maxAllowMesurementDefects == '0' || maxAllowMesurementDefects == undefined) obj = { ...obj, maxAllowMesurementDefects: 'Measurement Defect is required' };
-            if (maxAllowPackDefects == '' || maxAllowPackDefects == '0' || maxAllowPackDefects == undefined) obj = { ...obj, maxAllowPackDefects: 'Pack defects is required' };
-            setErrors(obj);
-        }
-        else {
-            if (parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) < parseInt(aqlMaster.packQtyTo))) {
-                let from1 = 0;
-                let from2 = 0;
-                let index = datas.map((res) => res.buyerCode).lastIndexOf(aqlMaster.buyerCode);
-                if (index != -1) {
-                    from1 = datas[index].packQtyTo;
-                }
-                let index2 = datas.map((res) => res.buyerCode).indexOf(aqlMaster.buyerCode);
-                if (index2 != -1) {
-                    from2 = datas[index2].packQtyFrom;
-                }
-                setLoader(true);
-                ItrApiService.POST({
-                    url: `AQLBaseTable/SaveAQLBase`,
-                    appCode: "CNF",
-                    data: {
-                        ...aqlMaster, maxAllowCriticalDefects: parseInt(aqlMaster.maxAllowCriticalDefects),
-                        maxAllowMesurementDefects: parseInt(aqlMaster.maxAllowMesurementDefects), maxAllowOthDefects: parseInt(aqlMaster.maxAllowOthDefects),
-                        maxAllowPackDefects: parseInt(aqlMaster.maxAllowPackDefects), maxAllowSewDefects: parseInt(aqlMaster.maxAllowSewDefects), maxAllowVisualDefects: parseInt(aqlMaster.maxAllowVisualDefects)
-                    }
-                }).then(res => {
-                    if (res.Success == true) {
-                        setLoader(false);
-                        cancel();
-                        clearFields();
-                        getDatas(false, true);
-                        message.success("AQL Updated Successfully");
-                    }
-                    else {
-                        setLoader(false);
-                        message.warning(res.message);
-                    }
-                })
-            }
-            else {
-                message.warning('Pack Qty To should be greater than Pack Qty From')
-            }
-            // if ((parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) < from2 || parseInt(aqlMaster.packQtyFrom) > from1) && (parseInt(aqlMaster.packQtyFrom) < parseInt(aqlMaster.packQtyTo)))) {
-            //     if ((parseInt(aqlMaster.packQtyFrom) < from2 && parseInt(aqlMaster.packQtyTo) > from2)) {
-            //         message.warning('This range of Pack-Qty From and Pack-Qty To is already exists');
-            //     }
-            //     
-            // }
-            // //             if ((parseInt(aqlMaster.packQtyFrom) && (parseInt(aqlMaster.packQtyFrom) > parseInt(from1))) && (parseInt(aqlMaster.packQtyFrom) < parseInt(aqlMaster.packQtyTo))) {
-            // //                 setLoader(true);
-            // // 
-            // //             } 
-            // else {
-            //     message.warning('');
-            //     message.warning('This range of Pack-Qty From and Pack-Qty To is already exists');
-            // }
-        }
-
-
-
-    }
-
-    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
-        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
-            setAqlMaster({ ...aqlMaster, [name]: "" });
-        }
-    }
-
-    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
-        if (e.target.value == "" || e.target.value == undefined) {
-            setAqlMaster({ ...aqlMaster, [name]: 0 });
-        }
-    }
-
-    const pageSize = 10;
-
-    // for-list-pagination
-    const [pagination, setPagination] = useState({
-        totalPage: 0,
-        current: 1,
-        minIndex: 0,
-        maxIndex: 0
-    });
-
-    const handleChange = (page) => {
-        setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
-    };
-
-    const getDatas = (onCreate, onUpdate) => {
-        setLoader(true);
-        ItrApiService.GET({
-            url: 'AQLBaseTable/GetAllAQLBase',
-            appCode: "CNF"
-        }).then(res => {
-            if (res.Success == true) {
-                setLoader(false);
-                setDatas(res.data);
-                setDatas2(res.data);
-                if (onCreate && onCreate == true) {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: (Math.ceil(res.data.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(res.data.length / pageSize) * pageSize, current: Math.ceil(res.data.length / pageSize) });
-                } else if (onUpdate && onUpdate == true) {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize });
-                } else {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: 0, maxIndex: pageSize });
-                }
-                // setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: 0, maxIndex: pageSize });
-            }
-            else {
-                // message.warning('Something went wrong');
-                setLoader(false);
-            }
-        });
-    }
-
-    useEffect(() => {
-        getDatas();
-    }, []);
-
-
-    // table-search
-    const myFunction = (e) => {
-        let val = datas2;
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("masterSearch");
-        let ss = val.filter(dd => {
-            if (dd.aqlType.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.auditFormat.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.unitCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.buyerCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.packQtyFrom.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.packQtyTo.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.sampleSize.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.mesurementPcs.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.packSamples.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.maxAllowCriticalDefects.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.maxAllowMesurementDefects.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.maxAllowOthDefects.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.maxAllowPackDefects.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.maxAllowSewDefects.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-            if (dd.maxAllowVisualDefects.toString().toLowerCase().search(e.target.value.toLowerCase()) != -1) {
-                return dd;
-            }
-        });
-        setDatas(ss);
-        setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("aqlSearch");
-        // filter = input.value.toUpperCase();
-        // table = document.getElementById("aqlTable");
-        // tr = table.getElementsByTagName("tr");
-        // for (i = 0; i < tr.length; i++) {
-        //     td = tr[i].getElementsByTagName("td")[0];
-        //     if (td) {
-        //         txtValue = td.textContent || td.innerText;
-        //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        //             tr[i].style.display = "";
-        //         } else {
-        //             tr[i].style.display = "none";
-        //         }
-        //     }
-        // }
-    }
-
     return (
-        <div className='defect-master-main'>
-            <div className='m-3'>
-                <h6 className='m-0 p-0'>AQL Master</h6>
-                <div className='row align-items-center mt-2'>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1'>
-                        <input type="search" className='form-control' id='aqlSearch' placeholder='Search' onChange={myFunction} />
+        <div class="container-fluid" >``
+            <div class="breadcrumb-header justify-content-between bread-list">
+                <div class="w-100">
+                    <div class="d-flex border-bottom pb-15">
+                        <div class="me-auto ">
+                            <a href="#myCollapse" data-bs-toggle="collapse" aria-expanded="true" class="text-black">
+                                <h4 class="content-title float-start pr-20 border-0">
+                                    <span class="pr-10">
+                                        <img src={breadcrumbIcon} alt="" />
+                                    </span>
+                                    &nbsp; AQL Master
+                                </h4>
+                            </a>
+                        </div>
+                        <div class="pt-15"></div>
                     </div>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
-                        {/* <select className='form-select form-select-sm border-0'>
-                            <option> All Locations </option>
-                        </select> */}
-                    </div>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
-                        <button className='btn-sm btn defect-master-add' onClick={showDrawer}> + Add New </button>
-                    </div>
-                </div>
-                <div className='table-responsive mt-2 defect-master-table'>
-                    <table className="table table-hover" id='aqlTable'>
-                        <thead id='table-header'>
-                            <tr>
-                                <th scope="col">AQL Type</th>
-                                <th scope="col">Audit Format</th>
-                                <th scope="col">Unit Code</th>
-                                <th scope="col">Buyer Code</th>
-                                <th scope="col">Pack-Qty From</th>
-                                <th scope="col">Pack-Qty To</th>
-                                <th scope="col">Sample Size</th>
-                                <th scope="col">Mesurement Pcs</th>
-                                <th scope="col">Pack Samples</th>
-                                <th scope="col">Critical Defect (Max Allowed)</th>
-                                <th scope="col">Mesurement Defect (Max Allowed)</th>
-                                <th scope="col">Other Defect (Max Allowed)</th>
-                                <th scope="col">Packing Defect (Max Allowed)</th>
-                                <th scope="col">Sewing Defect (Max Allowed)</th>
-                                <th scope="col">Visual Defect (Max Allowed)</th>
-                                <th scope="col">Active</th>
-                                <th scope='col'>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {datas.map((aql, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
-                                <tr key={index}>
-                                    <td> {aql?.aqlType ? aql?.aqlType : '-'} </td>
-                                    <td> {aql?.auditFormat ? aql?.auditFormat : '-'} </td>
-                                    <td> {aql?.unitCode ? aql?.unitCode : '-'} </td>
-                                    <td> {aql?.buyerCode ? aql?.buyerCode : '-'} </td>
-                                    <td> {aql?.packQtyFrom} </td>
-                                    <td> {aql?.packQtyTo} </td>
-                                    <td> {aql?.sampleSize ? aql?.sampleSize : '-'} </td>
-                                    <td> {aql?.mesurementPcs ? aql?.mesurementPcs : '-'} </td>
-                                    <td> {aql?.packSamples ? aql?.packSamples : '-'} </td>
-                                    <td> {aql?.maxAllowCriticalDefects ? aql.maxAllowCriticalDefects : '0'} </td>
-                                    <td> {aql?.maxAllowMesurementDefects ? aql?.maxAllowMesurementDefects : '0'} </td>
-                                    <td> {aql?.maxAllowOthDefects ? aql?.maxAllowOthDefects : '0'} </td>
-                                    <td> {aql?.maxAllowPackDefects ? aql?.maxAllowPackDefects : '0'} </td>
-                                    <td> {aql?.maxAllowSewDefects ? aql?.maxAllowSewDefects : '0'} </td>
-                                    <td> {aql?.maxAllowVisualDefects ? aql?.maxAllowVisualDefects : '0'} </td>
-                                    <td>
-                                        <Tag style={{ borderRadius: '4px', backgroundColor: aql?.active == 'Y' ? 'green' : '#FF1414', color: 'white' }}
-                                        >
-                                            {aql?.active == 'Y' ? 'YES' : 'NO'}
-                                        </Tag>
-                                        {/* {aql?.active ? aql?.active : '-'} */}
-                                    </td>
-                                    <td>
-                                        <div className='text-center' onClick={() => { editDefect(aql?.id) }}>
-                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            {/* </>} */}
-                        </tbody>
-                    </table>
-                    {loader && <div className='text-center mt-3'>
-                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                    </div>}
-                </div>
-                <div className='text-end mt-3'>
-                    <Pagination
-                        current={pagination.current}
-                        pageSize={pageSize}
-                        total={datas.length}
-                        onChange={handleChange}
-                        responsive={true}
-                        showSizeChanger={false}
-                        // showTotal={total => `Total ${total} items`}
-                    />
+                    <div class="col-lg"></div>
                 </div>
             </div>
-
-            {/* Add */}
-            <Drawer
-                maskClosable={false}
-                keyboard={false}
-                footer={
-                    <>
-                        <div>
-                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={createAqlMaster}> Save </button>
-                        </div>
-                        <div>
-                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => {
-                                clearFields();
-                                onClose();
-                            }
-                            }> Cancel </button>
-                        </div>
-                    </>
-                } title={< h6 className='m-0' > Add Aql Master</h6 >} placement="right" onClose={() => { clearFields(); onClose() }} visible={visible} >
-                <div className='defect-master-add-new'>
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>AQL Type <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{aqlMaster.aqlType == '' ? errors.aqlType : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter AQL Type'
-                            minLength="1" maxLength="10"
-                            value={aqlMaster.aqlType}
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, aqlType: e.target.value })} />
+            <div class="clear"></div>
+            <div class="row mt-15 dis-sel mt-20">
+                <div class="col-lg">
+                    <label>AQL Type</label>
+                    <small className='text-danger'>{fields.aqlType === '' ? errors.aqlType : ''}</small>
+                    <div class="main-select">
+                        <select name="somename" class="form-control SlectBox main-select" required
+                            value={fields.aqlType}
+                            onChange={inputOnChange1("aqlType")}
+                        >
+                            <option value="">Select AQL Type </option>
+                            {aqlList.map((v, index) => {
+                                return <option key={index} value={v.code}>{v.code}</option>
+                            })}
+                        </select>
                     </div>
+                </div>
+                <div class="col-lg">
+                    <label>Audit Format</label>
+                    <small className='text-danger'>{fields.auditFormat === '' ? errors.auditFormat : ''}</small>
+                    <div class="main-select">
+                        <select name="somename" class="form-control SlectBox main-select" required
+                            value={fields.auditFormat}
+                            onChange={inputOnChange1("auditFormat")}
+                        >
+                            <option value="">Select Audit Format</option>
+                            {/* <option value="I">I</option>
+                            <option value="II">II</option> */}
+                            {auditFormatList.map((v, index) => {
+                                return <option key={index} value={v.code}>{v.code}</option>
+                            })}
 
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Audit Format <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.auditFormat == '' ? errors.auditFormat : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Format'
-                            value={aqlMaster.auditFormat}
-                            minLength="1" maxLength="5"
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, auditFormat: e.target.value })} />
+                        </select>
                     </div>
+                </div>
+                <div class="col-lg">
+                    <label>Unit Code</label>
+                    <small className='text-danger'>{fields.unitCode === '' ? errors.unitCode : ''}</small>
+                    <select name="somename" class="form-control SlectBox main-select" required
+                        value={fields.unitCode}
+                        onChange={inputOnChange1("unitCode")}
+                    >
+                        <option value="">Select Unit Code </option>
+                        {unitCodeList.map((v, index) => {
+                            return <option key={index} value={v.uCode}>{v.uCode}</option>
+                        })}
+                    </select>
+                </div>
+                <div class="col-lg">
+                    <label>Buyer Div Code</label>
+                    <small className='text-danger'>{fields.buyerCode === '' ? errors.buyerCode : ''}</small>
+                    <select name="somename" class="form-control SlectBox main-select" required
+                        value={fields.buyerCode}
+                        onChange={inputOnChange1("buyerCode")}
+                    >
+                        <option value="">Select Buyer Div Code </option>
+                        {buyDivCodeList.map((v, index) => {
+                            return <option key={index} value={v.buyDivCode}>{v.buyDivCode}</option>
+                        })}
+                    </select>
+                </div>
 
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Unit Code <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.unitCode == '' ? errors.unitCode : ''}</small>
+                <div class="col-lg pt-20 ">
+                    <button class="btn btn-secondary search-btn btn-block"
+                        onClick={() => AddVisualSamplingPlan(fields.aqlType, fields.auditFormat, fields.unitCode, fields.buyerCode)}
+                    >Show Result</button>
+                </div>
+            </div>
+            <div class="row mt-25 main-tab pl-15 pr-15">
+                <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                            type="button" role="tab" aria-controls="home" aria-selected="true">Visual Sampling Plan </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1" type="button" role="tab" aria-controls="profile" aria-selected="false">Pack audit Sampling plan</button>
+                    </li>
+                </ul>
+                <div class="tab-content p-15" id="myTabContent">
+                    <div class="tab-pane fade show active mb-70" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row mt-15">
+                            <div className='col-lg'>
+                                <div className='form-group'  >
+                                    <label>Pack-Qty From</label>
+                                    <small className='text-danger'>{fields.aqlvmDetlModels.packQtyFrom === '' ? errors.aqlvmDetlModels.packQtyFrom : ''}</small>
+                                    <input type="text" class="form-control disabled " placeholder='Enter Pack-Qty From' value={visualSampling.packQtyFrom == 0 ? '' : visualSampling.packQtyFrom}
+                                        id="packQtyFrom"
+                                        disabled={packQtyvisible}
+
+                                        onChange={inputOnChange("packQtyFrom")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Pack-Qty To</label>
+                                    <small className='text-danger'>{fields.aqlvmDetlModels.packQtyTo === '' ? errors.aqlvmDetlModels.packQtyTo : ''}</small>
+                                    <input type="text" class="form-control" placeholder='Enter Pack-Qty To' value={visualSampling.packQtyTo == 0 ? '' : visualSampling.packQtyTo}
+                                        id="packQtyTo"
+                                        // disabled={visible}
+                                        disabled={packQtyvisible}
+                                        onChange={inputOnChange("packQtyTo")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Sample Size</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Sample Size' value={visualSampling.sampleSize == 0 ? 0 : visualSampling.sampleSize}
+                                        id="sampleSize" onChange={inputOnChange("sampleSize")} disabled={visible}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Visual Defect</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Visual Defect' value={visualSampling.maxAllowVisualDefects == 0 ? 0 : visualSampling.maxAllowVisualDefects}
+                                        id="maxAllowVisualDefects"
+                                        disabled={visible}
+                                        onChange={inputOnChange("maxAllowVisualDefects")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Critical Defect</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Critical Defect' value={visualSampling.maxAllowCriticalDefects == 0 ? 0 : visualSampling.maxAllowCriticalDefects}
+                                        id="maxAllowCriticalDefects"
+                                        disabled={visible}
+                                        onChange={inputOnChange("maxAllowCriticalDefects")}
+                                        onBlur={Defvalidation("maxAllowCriticalDefects")}
+                                    />
+                                </div>
+                            </div>
+
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter unit Code'
-                            value={aqlMaster.unitCode}
-                            minLength="1" maxLength="10"
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, unitCode: e.target.value })} />
-                    </div>
+                        <div class="row mt-15">
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Sewing Defect</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Sewing Defect' value={visualSampling.maxAllowSewDefects == 0 ? 0 : visualSampling.maxAllowSewDefects}
+                                        id="maxAllowSewDefects"
+                                        disabled={visible}
+                                        onChange={inputOnChange("maxAllowSewDefects")}
+                                        onBlur={Defvalidation("maxAllowSewDefects")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Other Defect</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Other Defect' value={visualSampling.maxAllowOthDefects == 0 ? 0 : visualSampling.maxAllowOthDefects}
+                                        id="maxAllowOthDefects"
+                                        disabled={visible}
+                                        onChange={inputOnChange("maxAllowOthDefects")}
+                                        onBlur={Defvalidation("maxAllowOthDefects")}
+                                    />
+                                </div>
+                            </div>
 
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Buyer Code <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.buyerCode == '' ? errors.buyerCode : ''}</small>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Mesurement Pcs</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Mesurement Pcs' value={visualSampling.mesurementPcs == 0 ? 0 : visualSampling.mesurementPcs}
+                                        id="mesurementPcs"
+                                        disabled={visible}
+                                        onChange={inputOnChange("mesurementPcs")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Mesurement Defect</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Mesurement Defect' value={visualSampling.maxAllowMesurementDefects == 0 ? 0 : visualSampling.maxAllowMesurementDefects}
+                                        id="maxAllowMesurementDefects"
+                                        disabled={visible}
+                                        onChange={inputOnChange("maxAllowMesurementDefects")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'></div>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Code'
-                            value={aqlMaster.buyerCode}
-                            minLength="1" maxLength="20"
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, buyerCode: e.target.value })} />
-                    </div>
+                        <div className='row d-flex my-xl-auto right-content'>
+                            <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
+                                <div class="float-start">
+                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
+                                </div>
+                                <div class="float-start pl-5">
 
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack-Qty-From <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.packQtyFrom == '' ? errors.packQtyFrom : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter PackQtyFrom'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.packQtyFrom}
-                            //  onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packQtyFrom")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, packQtyFrom: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, packQtyFrom: e.target.value })
-                                }
-                                // setAqlMaster({ ...aqlMaster, packQtyFrom: e.target.value })
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack-Qty-To <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.packQtyTo == '' ? errors.packQtyTo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter PackQtyTo'
-                            type="text"
-                            value={aqlMaster.packQtyTo}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyTo")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packQtyTo")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, packQtyTo: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, packQtyTo: e.target.value })
-                                }
-
-
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Sample Size <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.sampleSize == '' ? errors.sampleSize : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Sample Size'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.sampleSize}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, sampleSize: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, sampleSize: e.target.value })
-                                }
-                            }} />
-                        {/* onChange={(e) => setAqlMaster({ ...aqlMaster, sampleSize: e.target.value })} /> */}
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Mesurement Pcs <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.mesurementPcs == '' ? errors.measurementPcs : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MesurementPcs' id='mesurementPcs'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.mesurementPcs}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("mesurementPcs")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("mesurementPcs")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, mesurementPcs: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, mesurementPcs: e.target.value })
-                                }
-                            }} />
-                        {/* onChange={(e) => {
-                                setAqlMaster({ ...aqlMaster, mesurementPcs: e.target.value })
-                            }} /> */}
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack Samples <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.packSamples == '' ? errors.packSamples : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter PackSamples'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.packSamples}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packSamples")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packSamples")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, packSamples: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, packSamples: e.target.value })
-                                }
-                            }} />
-                        {/* onChange={(e) => setAqlMaster({ ...aqlMaster, packSamples: e.target.value })} /> */}
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Visual Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowVisualDefects == '' ? errors.maxAllowVisualDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowVisualDefects'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.maxAllowVisualDefects}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                if (parseInt(aqlMaster.sampleSize) && (parseInt(aqlMaster.sampleSize) >= parseInt(e.target.value))) {
-                                    setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value });
-                                    setTemp(parseInt(e.target.value));
-                                    setTotal(parseInt(e.target.value));
-                                } else if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value });
-                                    setTemp(0);
-                                    setTotal(0);
-                                }
-                                // setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value })
-                            }
-                            }
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Critical Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowCriticalDefects == '' ? errors.maxAllowCriticalDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowCriticalDefects'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.maxAllowCriticalDefects}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowCriticalDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowCriticalDefects")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowCriticalDefects: e.target.value })
-                                } else if (total >= parseInt(e.target.value)) {
-                                    let d1 = aqlMaster.maxAllowSewDefects == '' ? 0 : parseInt(aqlMaster.maxAllowSewDefects),
-                                        d2 = aqlMaster.maxAllowOthDefects == '' ? 0 : parseInt(aqlMaster.maxAllowOthDefects)
-                                    let ckVal = total - (d1 + d2);
-                                    if (ckVal >= parseInt(e.target.value)) {
-                                        setAqlMaster({ ...aqlMaster, maxAllowCriticalDefects: e.target.value })
+                                    {
+                                        addBtnVisible && < button class="btn btn-primary search-btn btn-block" onClick={() => AddVisualSamPlan()}>Add to List</button>
                                     }
-                                }
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Sew Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowSewDefects == '' ? errors.maxAllowSewDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowSewDefects'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.maxAllowSewDefects}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowSewDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowSewDefects")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowSewDefects: e.target.value })
-                                } else if (total >= parseInt(e.target.value)) {
-                                    let d1 = aqlMaster.maxAllowCriticalDefects == '' ? 0 : parseInt(aqlMaster.maxAllowCriticalDefects),
-                                        d2 = aqlMaster.maxAllowOthDefects == '' ? 0 : parseInt(aqlMaster.maxAllowOthDefects)
-                                    let ckVal = total - (d1 + d2);
-                                    if (ckVal >= parseInt(e.target.value)) {
-                                        setAqlMaster({ ...aqlMaster, maxAllowSewDefects: e.target.value })
+                                </div>
+                                <div class="float-start pl-5">
+                                    {
+                                        btnvisible && <button class="btn btn-primary search-btn btn-block" onClick={() => UpdateVisualSamPlan()} >  Update List</button>
                                     }
-                                }
-                                // onChange={(e) => setAqlMaster({ ...aqlMaster, maxAllowSewDefects: e.target.value })} />
-                            }} />
-                    </div>
+                                </div>
 
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Other Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowOthDefects == '' ? errors.maxAllowOthDefects : ''}</small>
+                            </div>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowOthDefects'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.maxAllowOthDefects}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowOthDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowOthDefects")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowOthDefects: e.target.value })
-                                } else if (total >= parseInt(e.target.value)) {
-                                    let d1 = aqlMaster.maxAllowCriticalDefects == '' ? 0 : parseInt(aqlMaster.maxAllowCriticalDefects),
-                                        d2 = aqlMaster.maxAllowSewDefects == '' ? 0 : parseInt(aqlMaster.maxAllowSewDefects)
-                                    let ckVal = total - (d1 + d2);
-                                    if (ckVal >= parseInt(e.target.value)) {
-                                        setAqlMaster({ ...aqlMaster, maxAllowOthDefects: e.target.value })
+                        <div class="clear"></div>
+                        <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                            <div class="table-wrap">
+
+
+                                <table id="example" class="table table-striped edit-np f-l1">
+                                    <thead>
+                                        <tr>
+                                            <th>Edit</th>
+                                            <th>Remove</th>
+                                            <th class="">SlNo</th>
+                                            <th class="">Pack-Qty From</th>
+                                            <th class="">Pack-Qty To</th>
+                                            <th class="">Sample Size</th>
+                                            <th>Critical Defect (Max Allowed)</th>
+                                            <th>Sewing Defect (Max Allowed)</th>
+                                            <th>Other Defect (Max Allowed)</th>
+                                            <th>Visual Defect (Max Allowed)</th>
+                                            <th>Mesurement Pcs</th>
+                                            <th>Mesurement Defect (Max Allowed)</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {/* if(visible=="True") */}
+                                        {
+
+                                            fields.aqlvmDetlModels.filter(f=>f.active=="Y").map((row, index) => (
+                                                <tr key={index}>
+                                                    <td align='center'>
+                                                        <div className='text-center' onClick={() => { editVisualSampling(row?.id, row?.packQtyFrom) }}>
+                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                        </div>
+                                                    </td>
+                                                    <td align='center'>
+                                                        <div className='text-center' onClick={() => { removeVisualSampling(row?.id, row?.packQtyFrom) }}>
+                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                        </div>
+                                                    </td>
+                                                    <td align='center'> {index + 1} </td>
+
+                                                    <td align='center'>{row.packQtyFrom}</td>
+                                                    <td align='center'>{row.packQtyTo}</td>
+                                                    <td align='center'>{row.sampleSize}</td>
+                                                    <td align='center'>{row.maxAllowCriticalDefects}</td>
+                                                    <td align='center'>{row.maxAllowSewDefects}</td>
+                                                    <td align='center'>{row.maxAllowOthDefects}</td>
+                                                    <td align='center'>{row.maxAllowVisualDefects}</td>
+                                                    <td align='center'>{row.mesurementPcs}</td>
+                                                    <td align='center'>{row.maxAllowMesurementDefects}</td>
+
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade mb-50" id="profile1" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row mt-15">
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Carton From</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Carton From' value={packAuditSampling.noofCtnsFrom == 0 ? '' : packAuditSampling.noofCtnsFrom}
+                                        id="noofCtnsFrom" onChange={inputOnChange2("noofCtnsFrom")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Carton To</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Carton To' value={packAuditSampling.noofCtnsTo == 0 ? '' : packAuditSampling.noofCtnsTo}
+                                        id="noofCtnsTo" onChange={inputOnChange2("noofCtnsTo")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Pack Sample</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Pack Sample' value={packAuditSampling.packSamples == 0 ? '' : packAuditSampling.packSamples}
+                                        id="packSamples" onChange={inputOnChange2("packSamples")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'>
+                                <div className='form-group'>
+                                    <label>Pack Defect</label>
+                                    <small className='text-danger'></small>
+                                    <input type="text" class="form-control" placeholder='Enter Pack Defect' value={packAuditSampling.maxAllowPackDefects == 0 ? '' : packAuditSampling.maxAllowPackDefects}
+                                        id="maxAllowPackDefects" onChange={inputOnChange2("maxAllowPackDefects")}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-lg'></div>
+                        </div>
+                        <div className='row d-flex my-xl-auto right-content'>
+                            <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
+                                <div class="float-start">
+                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
+                                </div>
+                                <div class="float-start pl-5">
+                                    {
+                                        addBtnPasVisible && <button class="btn btn-primary search-btn btn-block" onClick={() => AddPackAuditSamPlan()}>Add to List</button>
                                     }
-                                }
-                                // onChange={(e) => setAqlMaster({ ...aqlMaster, maxAllowOthDefects: e.target.value })} />
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Mesurement Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowMesurementDefects == '' ? errors.maxAllowMesurementDefects : ''}</small>
+                                </div>
+                                <div class="float-start pl-5">
+                                    {
+                                        btnPasvisible && <button class="btn btn-primary search-btn btn-block" onClick={() => UpdatePackAuditSamPlan()} >  Update List</button>
+                                    }
+                                </div>
+                                <div class="float-start pl-5">
+                                    <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => AqlMastsave()}>Save</button>
+                                </div>
+                                {/* <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
+                                    <button className='btn-sm btn defect-master-add' > Save </button>
+                                </div> */}
+                            </div>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowMesurementDefects'
-                            type="text"
-                            // min={aqlMaster.mesurementPcs}
-                            value={aqlMaster.maxAllowMesurementDefects}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                if (parseInt(aqlMaster.mesurementPcs) && (parseInt(aqlMaster.mesurementPcs) > parseInt(e.target.value))) {
-                                    setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value });
-                                } else if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value });
-                                }
-                            }}
-                        />
-                    </div>
+                        <div class="clear"></div>
+                        <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                            <div class="table-wrap">
+                                <table id="example" class="table table-striped edit-np f-l1">
+                                    <thead>
+                                        <tr>
+                                            <th align='center'>Edit</th>
+                                            <th align='center'>Remove</th>
+                                            <th >SlNo</th>
+                                            <th >Carton From</th>
+                                            <th >Carton To</th>
+                                            <th >Pack Sample</th>
+                                            <th> Pack Defect (Max Allowed)</th>
 
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Pack Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowPackDefects == '' ? errors.maxAllowPackDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowPackDefects'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.maxAllowPackDefects}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowPackDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowPackDefects")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                if (parseInt(aqlMaster.packSamples) && (parseInt(aqlMaster.packSamples) > parseInt(e.target.value))) {
-                                    setAqlMaster({ ...aqlMaster, maxAllowPackDefects: e.target.value });
-                                } else if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowPackDefects: e.target.value })
-                                }
-                            }}
-                        />
-                    </div>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            fields.aqlpkDetlModels.filter(f=>f.active=="Y").map((row1, index) => (
+                                                <tr key={index}>
+                                                    <td align='center'>
+                                                        <div className='text-center' onClick={() => { editpkDetl(row1?.id) }}>
+                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                        </div>
+                                                    </td>
+                                                    <td align='center'>
+                                                        <div className='text-center' onClick={() => { removepkDetl(row1?.id) }}>
+                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                        </div>
+                                                    </td>
+                                                    <td > {index + 1} </td>
+                                                    <td >{row1.noofCtnsFrom}</td>
+                                                    <td >{row1.noofCtnsTo}</td>
+                                                    <td >{row1.packSamples}</td>
+                                                    <td >{row1.maxAllowPackDefects}</td>
 
-                    <div className='mt-3'>
-                        <label>Active</label>
-                        <div className='mt-1'>
-                            <Switch size='default'
-                                checked={aqlMaster.active == 'Y'}
-                                onChange={(e) => setAqlMaster({ ...aqlMaster, active: e == true ? 'Y' : 'N' })} />
-                            <span className='px-2'> {aqlMaster.active == 'Y' ? 'Active' : 'Disable'} </span>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </Drawer>
-
-
-
-
-            {/* Edit */}
-            <Drawer
-                maskClosable={false}
-                keyboard={false}
-                footer={
-                    <>
-                        <div>
-                            <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={updateAqlMaster}> Update </button>
-                        </div>
-                        <div>
-                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={() => { clearFields(); cancel() }}> Cancel </button>
-                        </div>
-                    </>
-                } title={< h6 className='m-0' > Edit Aql Master</h6 >} placement="right" onClose={() => { clearFields(); cancel() }} visible={closeDefect} >
-                <div className='defect-master-add-new'>
-                    <div className='mt-3'>
-                        <label>AQL Type</label>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter AQL Type'
-                            minLength="1" maxLength="10"
-                            value={aqlMaster.aqlType} disabled
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, aqlType: e.target.value })} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <label>Audit Format</label>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Format'
-                            minLength="1" maxLength="5"
-                            value={aqlMaster.auditFormat} disabled
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, auditFormat: e.target.value })} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <label>Unit Code</label>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Unit Code'
-                            value={aqlMaster.unitCode} disabled
-                            minLength="1" maxLength="10"
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, unitCode: e.target.value })} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <label>BuyerCode</label>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Code'
-                            value={aqlMaster.buyerCode} disabled
-                            minLength="1" maxLength="20"
-                            onChange={(e) => setAqlMaster({ ...aqlMaster, buyerCode: e.target.value })} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack-Qty-From <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.packQtyFrom == '' ? errors.packQtyFrom : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter PackQtyFrom'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.packQtyFrom}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, packQtyFrom: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, packQtyFrom: e.target.value })
-                                }
-                                // setAqlMaster({ ...aqlMaster, packQtyFrom: e.target.value })
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack-Qty-To <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.packQtyTo == '' ? errors.packQtyTo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter PackQtyTo'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.packQtyTo}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, packQtyTo: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, packQtyTo: e.target.value })
-                                }
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Sample Size <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.sampleSize == '' ? errors.sampleSize : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Sample Size'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.sampleSize}
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
-                            minLength="1" maxLength="4"
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, sampleSize: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, sampleSize: e.target.value })
-                                }
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Mesurement Pcs <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.mesurementPcs == '' ? errors.measurementPcs : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MesurementPcs'
-                            type="text"
-                            min="0"
-                            value={aqlMaster.mesurementPcs}
-                            minLength="1" maxLength="4"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("mesurementPcs")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("mesurementPcs")}
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, mesurementPcs: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, mesurementPcs: e.target.value })
-                                }
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Pack Samples <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.packSamples == '' ? errors.packSamples : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter PackSamples'
-                            type="text"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packSamples")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packSamples")}
-                            min="0"
-                            minLength="1" maxLength="4"
-                            value={aqlMaster.packSamples}
-                            onChange={(e) => {
-                                var reg = new RegExp('^[0-9]*$');
-                                if (e.target.value != '' && reg.test(e.target.value) != false) {
-                                    setAqlMaster({ ...aqlMaster, packSamples: parseInt(e.target.value) })
-                                }
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, packSamples: e.target.value })
-                                }
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Visual Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowVisualDefects == '' ? errors.maxAllowVisualDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowVisualDefects'
-                            type="text"
-                            min="0"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
-                            minLength="1" maxLength="4"
-                            value={aqlMaster.maxAllowVisualDefects}
-                            onChange={(e) => {
-                                if (parseInt(aqlMaster.sampleSize) && (parseInt(aqlMaster.sampleSize) >= parseInt(e.target.value))) {
-                                    setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value });
-                                    setTemp(parseInt(e.target.value));
-                                    setTotal(parseInt(e.target.value));
-                                } else if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value });
-                                    setTemp(0);
-                                    setTotal(0);
-                                }
-                                // setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value })
-                            }
-                                // onChange={(e) => setAqlMaster({ ...aqlMaster, maxAllowVisualDefects: e.target.value })} />
-                            }
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Critical Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowCriticalDefects == '' ? errors.maxAllowCriticalDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowCriticalDefects'
-                            type="text"
-                            min="0"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowCriticalDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowCriticalDefects")}
-                            minLength="1" maxLength="4"
-                            value={aqlMaster.maxAllowCriticalDefects}
-                            onChange={(e) => {
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowCriticalDefects: e.target.value })
-                                } else if (total >= parseInt(e.target.value)) {
-                                    let d1 = aqlMaster.maxAllowSewDefects == '' ? 0 : parseInt(aqlMaster.maxAllowSewDefects),
-                                        d2 = aqlMaster.maxAllowOthDefects == '' ? 0 : parseInt(aqlMaster.maxAllowOthDefects)
-                                    let ckVal = total - (d1 + d2);
-                                    if (ckVal >= parseInt(e.target.value)) {
-                                        setAqlMaster({ ...aqlMaster, maxAllowCriticalDefects: e.target.value })
-                                    }
-                                }
-                                // onChange={(e) => setAqlMaster({ ...aqlMaster, maxAllowCriticalDefects: e.target.value })} />
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Sew Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowSewDefects == '' ? errors.maxAllowSewDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowSewDefects'
-                            type="text"
-                            min="0"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowSewDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowSewDefects")}
-                            minLength="1" maxLength="4"
-                            value={aqlMaster.maxAllowSewDefects}
-                            onChange={(e) => {
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowSewDefects: e.target.value })
-                                } else if (total >= parseInt(e.target.value)) {
-                                    let d1 = aqlMaster.maxAllowCriticalDefects == '' ? 0 : parseInt(aqlMaster.maxAllowCriticalDefects),
-                                        d2 = aqlMaster.maxAllowOthDefects == '' ? 0 : parseInt(aqlMaster.maxAllowOthDefects)
-                                    let ckVal = total - (d1 + d2);
-                                    if (ckVal >= parseInt(e.target.value)) {
-                                        setAqlMaster({ ...aqlMaster, maxAllowSewDefects: e.target.value })
-                                    }
-                                }
-                                // onChange={(e) => setAqlMaster({ ...aqlMaster, maxAllowSewDefects: e.target.value })} />
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Other Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowOthDefects == '' ? errors.maxAllowOthDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowOthDefects'
-                            type="text"
-                            min="0"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowOthDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowOthDefects")}
-                            minLength="1" maxLength="4"
-                            value={aqlMaster.maxAllowOthDefects}
-                            onChange={(e) => {
-                                if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowOthDefects: e.target.value })
-                                } else if (total >= parseInt(e.target.value)) {
-                                    let d1 = aqlMaster.maxAllowCriticalDefects == '' ? 0 : parseInt(aqlMaster.maxAllowCriticalDefects),
-                                        d2 = aqlMaster.maxAllowSewDefects == '' ? 0 : parseInt(aqlMaster.maxAllowSewDefects)
-                                    let ckVal = total - (d1 + d2);
-                                    if (ckVal >= parseInt(e.target.value)) {
-                                        setAqlMaster({ ...aqlMaster, maxAllowOthDefects: e.target.value })
-                                    }
-                                }
-                                // onChange={(e) => setAqlMaster({ ...aqlMaster, maxAllowOthDefects: e.target.value })} />
-                            }} />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Mesurement Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowMesurementDefects == '' ? errors.maxAllowMesurementDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowMesurementDefects'
-                            type="text"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowMesurementDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowMesurementDefects")}
-                            minLength="1" maxLength="4"
-                            min="0"
-                            value={aqlMaster.maxAllowMesurementDefects}
-                            onChange={(e) => {
-                                if (parseInt(aqlMaster.mesurementPcs) && (parseInt(aqlMaster.mesurementPcs) > parseInt(e.target.value))) {
-                                    setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value });
-                                } else if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value });
-                                }
-                            }
-                                // setAqlMaster({ ...aqlMaster, maxAllowMesurementDefects: e.target.value })
-                            }
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Max Allow Pack Defects <span className='text-danger'>*  </span></label>
-                            <small className='text-danger'>{aqlMaster.maxAllowPackDefects == '' ? errors.maxAllowPackDefects : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter MaxAllowPackDefects'
-                            type="number"
-                            min="0"
-                            // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowPackDefects")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowPackDefects")}
-                            minLength="1" maxLength="4"
-                            value={aqlMaster.maxAllowPackDefects}
-                            onChange={(e) => {
-                                if (parseInt(aqlMaster.packSamples) && (parseInt(aqlMaster.packSamples) > parseInt(e.target.value))) {
-                                    setAqlMaster({ ...aqlMaster, maxAllowPackDefects: e.target.value });
-                                } else if (e.target.value == '') {
-                                    setAqlMaster({ ...aqlMaster, maxAllowPackDefects: e.target.value })
-                                }
-                            }
-                                // setAqlMaster/({ ...aqlMaster, maxAllowPackDefects: e.target.value })
-                            } />
-                    </div>
-
-                    <div className='mt-3'>
-                        <label>Active</label>
-                        <div className='mt-1'>
-                            <Switch size='default'
-                                checked={aqlMaster.active == 'Y'}
-                                onChange={(e) => setAqlMaster({ ...aqlMaster, active: e == true ? 'Y' : 'N' })} />
-                            <span className='px-2'> {aqlMaster.active == 'Y' ? 'Active' : 'Disable'} </span>
-                        </div>
-                    </div>
-                </div>
-            </Drawer >
+            </div>
         </div >
     )
 }

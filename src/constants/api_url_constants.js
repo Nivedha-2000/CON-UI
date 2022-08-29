@@ -162,6 +162,11 @@ export const API_URLS = {
     GET_PURPOSE_MASTER_EDIT_BY_ID: "PPRPurposeMaster/GetPPRPurpose",
     SAVE_PURPOSE_MASTER_LIST_MASTER: "PPRPurposeMaster/SavePPRPurposeMaster",
 
+    GET_AQLMASTERADD_LIST: "AQLHead/GetAQLHeadByparams",
+    POST_AQLMASTER: "AQLHead/SaveAQLHead"
+
+  
+
 
 }
 
@@ -186,5 +191,7 @@ export const MISCELLANEOUS_TYPES = {
     Catalog: 'Catalog',
     MODULE:'MODULE',
     MENUTYPE:'MENUTYPE',
-    PPRTYPE:'PPRTYPE'
+    PPRTYPE:'PPRTYPE',
+    AQLTYPE:'AQLTYPE',
+    AUDFORMAT:'AUDFORMAT'
 }
