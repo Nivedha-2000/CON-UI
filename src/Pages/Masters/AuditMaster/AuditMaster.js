@@ -10,7 +10,7 @@ export default function AuditMaster() {
 
     const clearFields = () => {
         setAuditMaster({
-            ...auditMaster, auditCode: '', auditName: '', colorCode: '', audit_ID: 0, id: 0, active: 'Y'
+            ...auditMaster, auditCode: '', auditName: '', colorCode: '#000000', audit_ID: 0, id: 0, active: 'Y'
         });
         setErrors({ ...errors, auditCode: '', auditName: '', colorCode: '', });
         setexists(false);
@@ -21,7 +21,7 @@ export default function AuditMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AuditTypeMaster/GetAllAuditType',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -49,7 +49,7 @@ export default function AuditMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `AuditTypeMaster/GetAssigneeDetailByID/${auditId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setAuditMaster(res.data);
@@ -65,12 +65,16 @@ export default function AuditMaster() {
 
 
     const [auditMaster, setAuditMaster] = useState({
+        createdDate: new Date(),
+        createdBy: "",
+        modifiedDate: new Date(),
+        modifiedBy: "",
         id: 0,
         auditCode: "",
         auditName: "",
-        auditMainGroup: "N",
+        auditMainGroup: "Y",
         audit_ID: 0,
-        colorCode: "",
+        colorCode: "#000000",
         active: "Y",
         hostName: "",
     });
@@ -97,8 +101,8 @@ export default function AuditMaster() {
             setLoader(true);
             await ItrApiService.POST({
                 url: 'AuditTypeMaster/SaveAuditType',
-                appCode: "ENAPP003",
-                data: { ...auditMaster, active: true ? 'Y' : 'N' }
+                appCode: "CNF",
+                data: { ...auditMaster, active: true ? 'Y' : 'N', assignmentAuditsModels: [] }
             }).then(res => {
                 if (res.Success == true) {
                     setLoader(false);
@@ -109,7 +113,7 @@ export default function AuditMaster() {
                 }
                 else {
                     setLoader(false);
-                    // message.warning(res.message);
+                    message.warning(res.message);
                 }
             });
         }
@@ -125,7 +129,7 @@ export default function AuditMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: `AuditTypeMaster/SaveAuditType`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: auditMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -135,8 +139,8 @@ export default function AuditMaster() {
                     getDatas(false, true);
                 }
                 else {
-                    message.warning(res.message);
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -160,25 +164,29 @@ export default function AuditMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'AuditTypeMaster/GetAllAuditType',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
-            console.table(res.data);
             if (res.Success == true) {
                 setLoader(false);
+                let loopData = res.data;
+                // let arr = [];
+                // for (let dd of loopData) {
+                //     if (dd.auditMainGroup != 'N') {
+                //         arr = [...arr, dd]
+                //     }
+                // };
                 setDatas(res.data);
                 setDatas2(res.data);
                 if (onCreate && onCreate == true) {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: (Math.ceil(res.data.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(res.data.length / pageSize) * pageSize, current: Math.ceil(res.data.length / pageSize) });
+                    setPagination({ ...pagination, totalPage: loopData.length / pageSize, minIndex: (Math.ceil(loopData.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(loopData.length / pageSize) * pageSize, current: Math.ceil(loopData.length / pageSize) });
                 } else if (onUpdate && onUpdate == true) {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize });
+                    setPagination({ ...pagination, totalPage: loopData.length / pageSize });
                 } else {
-                    setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: 0, maxIndex: pageSize });
+                    setPagination({ ...pagination, totalPage: loopData.length / pageSize, minIndex: 0, maxIndex: pageSize });
                 }
-                // setPagination({ ...pagination, totalPage: res.data.length / pageSize, minIndex: 0, maxIndex: pageSize });
             }
             else {
                 setLoader(false);
-                // message.warning('Something went wrong');
             }
         })
     }
@@ -191,17 +199,14 @@ export default function AuditMaster() {
 
     const myFunction = (e) => {
         let val = datas2;
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("masterSearch");
         let ss = val.filter(dd => {
-            if (dd.operCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.auditCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
-            if (dd.operName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.auditName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
-        console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
     }
@@ -232,19 +237,24 @@ export default function AuditMaster() {
                                 <th scope="col">Audit Code</th>
                                 <th scope="col">Audit Name</th>
                                 <th scope="col">Color</th>
+                                <th scope="col">Main Group</th>
                                 <th scope="col">Active</th>
                                 <th scope="col" className='text-center'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {datas.map((audit, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
-                                <tr key={index} hidden={audit.auditMainGroup == "N" ? true : false}>
+                                <tr key={index}>
                                     <td> {audit?.auditCode ? audit?.auditCode : '-'} </td>
                                     <td> {audit?.auditName ? audit?.auditName : '-'} </td>
                                     <td>
-                                        <Tag style={{ width: '30px', height: '30px', borderRadius: '4px', backgroundColor: audit?.colorCode ? audit?.colorCode : '-' }}
-                                        />
-                                        {/* {audit?.colorCode ? audit?.colorCode : '-'} */}
+                                        <Tag style={{ width: '30px', height: '30px', borderRadius: '4px', backgroundColor: audit?.colorCode ? audit?.colorCode : '-' }} />
+                                    </td>
+                                    <td>
+                                        <Tag style={{ borderRadius: '4px', backgroundColor: audit?.auditMainGroup == 'Y' ? 'green' : '#FF1414', color: 'white' }}
+                                        >
+                                            {audit?.auditMainGroup ? audit?.auditMainGroup == 'Y' ? 'Yes' : 'No' : '-'}
+                                        </Tag>
                                     </td>
                                     <td>
                                         <Tag style={{ borderRadius: '4px', backgroundColor: audit?.active == 'Y' ? 'green' : '#FF1414', color: 'white' }}
@@ -253,7 +263,7 @@ export default function AuditMaster() {
                                         </Tag>
                                     </td>
                                     <td>
-                                        <div className='text-center' onClick={() => { console.log(audit); editDefect(audit?.id) }}>
+                                        <div className='text-center' onClick={() => { editDefect(audit?.id) }}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                         </div>
                                     </td>
@@ -272,6 +282,7 @@ export default function AuditMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>
@@ -306,6 +317,7 @@ export default function AuditMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             value={auditMaster.auditCode}
+                            minLength="1" maxLength="10"
                             placeholder='Enter Audit Code'
                             onChange={(e) => {
                                 setAuditMaster({ ...auditMaster, auditCode: e.target.value })
@@ -321,7 +333,9 @@ export default function AuditMaster() {
                             <label>Audit Name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{auditMaster.auditName == '' ? errors.auditName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Name'
+                        <input className='form-control form-control-sm mt-1'
+                            placeholder='Enter Audit Name'
+                            minLength="1" maxLength="50"
                             value={auditMaster.auditName}
                             onChange={(e) => setAuditMaster({ ...auditMaster, auditName: e.target.value })} required />
                     </div>
@@ -335,6 +349,16 @@ export default function AuditMaster() {
                             type="color"
                             value={auditMaster.colorCode}
                             onChange={(e) => setAuditMaster({ ...auditMaster, colorCode: e.target.value })} required />
+                    </div>
+
+                    <div className='mt-3'>
+                        <label>Audit Main Group</label>
+                        <div className='mt-1'>
+                            <Switch size='default'
+                                checked={auditMaster.auditMainGroup == 'Y'}
+                                onChange={(e) => setAuditMaster({ ...auditMaster, auditMainGroup: e == true ? 'Y' : 'N' })} />
+                            <span className='px-2'> {auditMaster.auditMainGroup === 'Y' ? 'Active' : 'Disable'} </span>
+                        </div>
                     </div>
 
                     <div className='mt-3'>
@@ -374,6 +398,7 @@ export default function AuditMaster() {
                         <input className='form-control form-control-sm mt-1'
                             placeholder='Enter Audit Code'
                             value={auditMaster.auditCode}
+                            readOnly
                             onChange={(e) => {
                                 setAuditMaster({ ...auditMaster, auditCode: e.target.value })
                             }} />
@@ -386,8 +411,7 @@ export default function AuditMaster() {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Audit Name'
                             value={auditMaster.auditName}
-                            readOnly
-                            minLength="1" maxLength="10"
+                            minLength="1" maxLength="50"
                             onChange={(e) => setAuditMaster({ ...auditMaster, auditName: e.target.value })} />
                     </div>
 
@@ -400,6 +424,16 @@ export default function AuditMaster() {
                             value={auditMaster.colorCode}
                             type="color"
                             onChange={(e) => setAuditMaster({ ...auditMaster, colorCode: e.target.value })} />
+                    </div>
+
+                    <div className='mt-3'>
+                        <label>Audit Main Group</label>
+                        <div className='mt-1'>
+                            <Switch size='default'
+                                checked={auditMaster.auditMainGroup == 'Y'}
+                                onChange={(e) => setAuditMaster({ ...auditMaster, auditMainGroup: e == true ? 'Y' : 'N' })} />
+                            <span className='px-2'> {auditMaster.auditMainGroup === 'Y' ? 'Active' : 'Disable'} </span>
+                        </div>
                     </div>
 
                     <div className='mt-3'>

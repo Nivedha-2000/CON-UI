@@ -19,7 +19,9 @@ import StitchTypeMaster from '../Pages/Masters/StitchTypeMaster';
 import ShipmentTolerance from "../Pages/Masters/ShipmentTolerance";
 import PackTypeMaster from '../Pages/Masters/PackTypeMaster';
 import TransitMaster from '../Pages/Masters/TransitMaster';
-
+import LanguageMaster from '../Pages/Masters/LanguageMaster/LanguageMaster';
+import AuditMaster from '../Pages/Masters/AuditMaster/AuditMaster';
+import AssignmentMaster from '../Pages/Masters/AssignmentMaster/AssignmentMaster';
 
 import LocationMaster from '../Pages/Masters/LocationMaster';
 import MaterialTypeMaster from '../Pages/Masters/MaterialTypeMaster';
@@ -56,6 +58,8 @@ import PurposeMaster from '../Pages/Masters/PurposeMaster';
 
 import TabTest from '../Pages/Masters/TabTest'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
+import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMaster';
+import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
@@ -66,24 +70,31 @@ export default function Routing() {
   return (
     <Routes>
       {/* <Route index path='/' element={ <Navigate replace to="/masters/defect-master" /> } /> */}
-      <Route path='/' element={<Dashboard />}>
+      <Route path='' element={<Dashboard />}>
         <Route index path='quality' element={<Home />} />
         <Route path='scheduler' element={<SchedulerTwo />} />
         <Route path='external-audit' element={<ExternalAudit />} />
         <Route path='reports' element={<Reports />} />
         <Route path='quality/defects' element={<Defects />} />
+        <Route path='masters/audit-master' element={<AuditMaster />} />
+        <Route path='masters/assignment-master' element={<AssignmentMaster />} />
+        <Route path='masters/language-master' element={<LanguageMaster />} />
         <Route path='masters/defect-master' element={<DefectMaster />} />
         <Route path='masters/parts-master' element={<PartsMasters />} />
         <Route path='masters/operation-master' element={<OperationMaster />} />
-        <Route path='masters/ftd-operation-master' element={<FTDOperationMaster name="FTD Operation Master" />} />
-        <Route path='masters/pack-type-master' element={<PackTypeMaster name="Pack Type Master" />} />
-        <Route path='masters/stitch-type-master' element={<StitchTypeMaster name="StitchType Master" />} />
-        <Route path='masters/shipment-tolerance-master' element={<ShipmentTolerance name="Shipment Tolerance Master" />} />
         <Route path='masters/sewingline-master' element={<SewingLineMaster />} />
         <Route path='masters/aql-master' element={<AqlMaster />} />
+        <Route path='masters/language-master' element={<LanguageMaster />} />
+        <Route path='masters/defect-translation-master' element={<TranslationMaster />} />
+        <Route path='masters/translation-master' element={<DefectTranslationMaster />} />
+
+
+
+        <Route path='masters/shipment-tolerance-master' element={<ShipmentTolerance name="Shipment Tolerance Master" />} />
+        <Route path='masters/stitch-type-master' element={<StitchTypeMaster name="StitchType Master" />} />
+        <Route path='masters/pack-type-master' element={<PackTypeMaster name="Pack Type Master" />} />
+        <Route path='masters/ftd-operation-master' element={<FTDOperationMaster name="FTD Operation Master" />} />
         <Route path='masters/transit-master' element={<TransitMaster name="Transit Master" />} />
-
-
         <Route path='masters/location-master' element={<LocationMaster name="Location Master" />} />
         <Route path='masters/material-type-master' element={<MaterialTypeMaster name="Material Type Master" />} />
         <Route path='masters/product-type-master' element={<ProductTypeMaster name="Product Type Master" />} />
@@ -102,8 +113,6 @@ export default function Routing() {
         <Route path='masters/supplier-master' element={<SupplierMaster name="Supplier Master" />} />
         <Route path='masters/supplier-master-new' element={<SupplierMasterNew name="Supplier Master" />} />
         <Route path='masters/pdc-master' element={<PDCMaster name="PDC Master" />} />
-
-
         <Route path='masters/material-group-master' element={<MaterialGroupMaster name="Material Group Master" />} />
         <Route path='masters/buyer-product-type-master' element={<BuyerProductTypeMaster name="Buyer Product Type Master" />} />
         <Route path='masters/size-master' element={<SizeMaster name="Size Master" />} />
@@ -113,7 +122,6 @@ export default function Routing() {
         <Route path='masters/company-master' element={<CompanyMaster name='Company Master' />} />
         <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
         <Route path='masters/tab-test' element={<TabTest name='Tab Test' />}></Route>
-        <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master' />} />
         <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master' />} />
         <Route path='masters/menu-rights-master' element={<MenurightsElement name='Menu Rights Master' />} />
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />

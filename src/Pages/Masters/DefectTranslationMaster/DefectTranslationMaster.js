@@ -5,8 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { useEffect } from 'react';
 import { ItrApiService } from '@afiplfeed/itr-ui';
+import { useNavigate } from 'react-router-dom';
 
-export default function LanguageMaster() {
+export default function DefectTranslationMaster() {
+
+    let navigate = useNavigate();
 
     const clearFields = () => {
         setlanguageMaster({
@@ -223,9 +226,9 @@ export default function LanguageMaster() {
                             <option> All Locations </option>
                         </select> */}
                     </div>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
+                    {/* <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
                         <button className='btn-sm btn defect-master-add' onClick={showDrawer}> + Add New </button>
-                    </div>
+                    </div> */}
                 </div>
 
 
@@ -253,7 +256,17 @@ export default function LanguageMaster() {
                                         </Tag>
                                     </td> */}
                                     <td>
-                                        <div className='text-center' onClick={() => { editDefect(lang?.id) }}>
+                                        <div className='text-center'
+                                            onClick={() => {
+                                                navigate('/masters/defect-translation-master', {
+                                                    state: {
+                                                        langCode: lang.languageCode
+                                                    }
+                                                });
+                                                sessionStorage.setItem('langCode', lang.languageCode);
+                                                // editDefect(lang?.id)
+                                            }}
+                                        >
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                         </div>
                                     </td>

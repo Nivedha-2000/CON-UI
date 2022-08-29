@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import '../DefectMasters/DefectMasters.css';
-import {  Tag, Space, Drawer, Switch, Avatar, message, Pagination, Spin } from 'antd';
+import './AssignmentMaster.css';
+import { Tag, Space, Drawer, Switch, Avatar, message, Pagination, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { useEffect } from 'react';
-import { ItrApiService } from '@afiplfeed/itr-ui';
+import { ItrApiService, ItrAuthService } from '@afiplfeed/itr-ui';
 
 export default function AssignmentMaster() {
 
     const clearFields = () => {
         setAssignmentMaster({
-            ...assignmentMaster, usercode: '', username: '', audit_Id: '', id: 0, active: 'Y', emaild: ""
+            ...assignmentMaster, usercode: '', username: '', audit_Id: '', id: 0, active: 'Y', emaild: "", languageCode: "", userNameValue: ""
         });
-        setErrors({ ...errors, usercode: '', username: '', emaild: '' });
+        setErrors({ ...errors, usercode: '', username: '', emaild: '', languageCode: "" });
         setexists(false);
     }
 
@@ -30,11 +31,20 @@ export default function AssignmentMaster() {
     const editDefect = (operationId) => {
         setCloseDefect(true);
         ItrApiService.GET({
-            url: `GarOperMaster/GetGarOprbyId/${operationId}`,
-            appCode: "ENAPP003",
+            url: `AssignmentAudits/GetAssignmentAuditsByID/${operationId}`,
+            appCode: "CNF",
         }).then(res => {
+            console.log(res)
             if (res.Success == true) {
-                setOperationMaster(res.data);
+                let userN = res.data.usercode;
+                let userValue = ""
+                for (let value of users) {
+                    if (value.userCode == userN) {
+                        userValue = JSON.stringify(value);
+                    }
+                }
+                // if (res.data.usercode)
+                setAssignmentMaster({ ...res.data, userNameValue: userValue });
             }
             else {
                 setLoader(false);
@@ -49,13 +59,15 @@ export default function AssignmentMaster() {
     const [assignmentMaster, setAssignmentMaster] = useState({
         isActive: true,
         id: 0,
-        audit_Id: 0,
+        audit_Id: "",
         usercode: "",
         username: "",
         emaild: "",
         unitCode: "D15-2",
-        active: "",
-        hostName: ""
+        languageCode: "",
+        active: true,
+        hostName: "",
+        userNameValue: ''
     });
 
 
@@ -64,7 +76,7 @@ export default function AssignmentMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarPartsMaster/GetAllGarPartData',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -72,7 +84,43 @@ export default function AssignmentMaster() {
             }
             else {
                 setLoader(false);
-                // message.warning('Something went wrong');
+            }
+        });
+    }
+
+    // languageCode
+    const [langList, setLangList] = useState([]);
+    const getLangData = () => {
+        setLoader(true);
+        ItrApiService.GET({
+            url: 'Lang/GetAllLanguageInfo',
+            appCode: "CNF"
+        }).then(res => {
+            if (res.Success == true) {
+                setLoader(false);
+                setLangList(res.data);
+            }
+            else {
+                setLoader(false);
+            }
+        });
+    }
+
+
+    // AuditType
+    const [auditList, setAuditList] = useState([]);
+    const getAuditData = () => {
+        setLoader(true);
+        ItrApiService.GET({
+            url: 'AuditTypeMaster/GetAllAuditType',
+            appCode: "CNF"
+        }).then(res => {
+            if (res.Success == true) {
+                setLoader(false);
+                setAuditList(res.data);
+            }
+            else {
+                setLoader(false);
             }
         });
     }
@@ -80,26 +128,36 @@ export default function AssignmentMaster() {
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
     const [datas2, setDatas2] = useState([]);
-
     const [errors, setErrors] = useState({
         usercode: "",
         username: "",
-        emaild: ""
+        audit_Id: "",
+        emaild: "",
+        languageCode: "",
     })
 
     const [exist, setexists] = useState(false);
 
     const createAssignmentMaster = () => {
-        let { usercode, username, emaild } = assignmentMaster;
-        if (usercode == '' || username == '' || emaild == '') {
-            setErrors({ ...errors, opeCode: 'User Code is required', opeName: 'User Name is required', emaild: 'Email ID is required' })
+        let { audit_Id, username, languageCode } = assignmentMaster;
+        if (audit_Id == '' || username == '' || languageCode == "") {
+            setErrors({ ...errors, audit_Id: 'Audit Type is required', username: 'User Name is required', languageCode: "Language is required" })
         }
         else {
             setLoader(true);
+            let deletedValue = assignmentMaster
+            delete deletedValue.userNameValue;
             ItrApiService.POST({
                 url: 'AssignmentAudits/SaveAssignmentAudits',
-                appCode: "ENAPP003",
-                data: { ...assignmentMaster, active: true ? 'Y' : 'N' }
+                appCode: "CNF",
+                data: {
+                    ...deletedValue, active: true ? 'Y' : 'N',
+                    createdDate: new Date(),
+                    createdBy: "",
+                    modifiedDate: new Date(),
+                    modifiedBy: "",
+                    audit_Id: parseInt(deletedValue.audit_Id)
+                }
             }).then(res => {
                 if (res.Success == true) {
                     setLoader(false);
@@ -110,6 +168,7 @@ export default function AssignmentMaster() {
                 }
                 else {
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -117,17 +176,28 @@ export default function AssignmentMaster() {
 
     // for-Update-Operation-master
     const updateAssignmentMaster = () => {
-
-        let { usercode, username, emaild } = assignmentMaster;
-        if (usercode == '' || username == '' || emaild == '') {
-            setErrors({ ...errors, opeCode: 'User Code is required', opeName: 'User Name is required', emaild: 'Email ID is required' });
+        let { audit_Id, username, languageCode } = assignmentMaster;
+        if (audit_Id == '' || username == '' || languageCode == "") {
+            setErrors({ ...errors, audit_Id: 'Audit Type is required', username: 'User Name is required', languageCode: "Language is required" })
         }
+        // let { usercode, username, emaild } = assignmentMaster;
+        // if (usercode == '' || username == '' || emaild == '') {
+        //     setErrors({ ...errors, opeCode: 'User Code is required', opeName: 'User Name is required', emaild: 'Email ID is required' });
+        // }
         else {
             setLoader(true);
+            let deletedValue = assignmentMaster
+            delete deletedValue.userNameValue;
             ItrApiService.POST({
                 url: `AssignmentAudits/SaveAssignmentAudits`,
-                appCode: "ENAPP003",
-                data: assignmentMaster
+                appCode: "CNF",
+                data: {
+                    ...deletedValue,
+                    createdDate: new Date(),
+                    createdBy: "",
+                    modifiedDate: new Date(),
+                    modifiedBy: "",
+                }
             }).then(res => {
                 if (res.Success == true) {
                     message.success("Assignment Master Updated Successfully");
@@ -136,8 +206,8 @@ export default function AssignmentMaster() {
                     getDatas(false, true);
                 }
                 else {
-                    message.warning(res.message);
                     setLoader(false);
+                    message.warning(res.message);
                 }
             })
         }
@@ -157,13 +227,21 @@ export default function AssignmentMaster() {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
+    const [users, setUsers] = useState([]);
+
+    const getUsers = () => {
+        ItrApiService.GET({
+            url: 'User/GetAll', data: {}, appCode: 'Catalog'
+        }).then(res => { setUsers(res.data.activeUsers); });
+    }
+
+
     const getDatas = (onCreate, onUpdate) => {
         setLoader(true);
         ItrApiService.GET({
             url: 'AssignmentAudits/GetAllAssignmentAudits',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
-            console.table(res.data);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data);
@@ -186,41 +264,29 @@ export default function AssignmentMaster() {
 
     useEffect(() => {
         getDatas();
+        getAuditData()
         getPartsData();
+        getLangData();
+        getUsers()
     }, []);
 
 
     const myFunction = (e) => {
         let val = datas2;
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("masterSearch");
         let ss = val.filter(dd => {
-            if (dd.operCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.audit_Name.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
-            if (dd.operName.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+            if (dd.username.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
+                return dd;
+            }
+            if (dd.languageCode.toLowerCase().search(e.target.value.toLowerCase()) != -1) {
                 return dd;
             }
         });
         console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
-        // var input, filter, table, tr, td, i, txtValue;
-        // input = document.getElementById("operationSearch");
-        // filter = input.value.toUpperCase();
-        // table = document.getElementById("operationTable");
-        // tr = table.getElementsByTagName("tr");
-        // for (i = 0; i < tr.length; i++) {
-        //     td = tr[i].getElementsByTagName("td")[0];
-        //     if (td) {
-        //         txtValue = td.textContent || td.innerText;
-        //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        //             tr[i].style.display = "";
-        //         } else {
-        //             tr[i].style.display = "none";
-        //         }
-        //     }
-        // }
     }
 
     return (
@@ -246,9 +312,9 @@ export default function AssignmentMaster() {
                     <table className="table table-hover" id='operationTable'>
                         <thead id='table-header'>
                             <tr>
-                                <th scope="col">User Code</th>
+                                <th scope="col">Audit Type</th>
                                 <th scope="col">Username</th>
-                                <th scope="col">Email ID</th>
+                                <th scope="col">Language</th>
                                 <th scope="col">Active</th>
                                 <th scope="col" className='text-center'>Action</th>
                             </tr>
@@ -256,9 +322,10 @@ export default function AssignmentMaster() {
                         <tbody>
                             {datas.map((assign, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
                                 <tr key={index}>
-                                    <td> {assign?.usercode ? assign?.usercode : '-'} </td>
+                                    <td> {assign?.audit_Name ? assign?.audit_Name : '-'} </td>
                                     <td> {assign?.username ? assign?.username : '-'} </td>
-                                    <td> {assign?.emaild ? assign?.emaild : '-'} </td>
+                                    {/* <td> {assign?.emaild ? assign?.emaild : '-'} </td> */}
+                                    <td> {assign?.languageCode ? assign?.languageCode : ''} </td>
                                     <td>
                                         <Tag style={{ borderRadius: '4px', backgroundColor: assign?.active == 'Y' ? 'green' : '#FF1414', color: 'white' }}
                                         >
@@ -266,7 +333,14 @@ export default function AssignmentMaster() {
                                         </Tag>
                                     </td>
                                     <td>
-                                        <div className='text-center' onClick={() => { console.log(assign); editDefect(assign?.id) }}>
+                                        <div className='text-center' onClick={() => {
+                                            for (let value of datas) {
+                                                if (value.userCode == assign.usercode) {
+                                                    setAssignmentMaster({ ...assignmentMaster, userNameValue: JSON.stringify(value) })
+                                                }
+                                            }
+                                            editDefect(assign?.id)
+                                        }}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                         </div>
                                     </td>
@@ -285,6 +359,7 @@ export default function AssignmentMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>
@@ -312,7 +387,7 @@ export default function AssignmentMaster() {
                 }} visible={visible} >
                 <div className='defect-master-add-new'>
 
-                    <div className='mt-3'>
+                    {/* <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>User Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{assignmentMaster.usercode == '' ? errors.usercode : ''}</small>
@@ -323,22 +398,45 @@ export default function AssignmentMaster() {
                             onChange={(e) => {
                                 setAssignmentMaster({ ...assignmentMaster, usercode: e.target.value })
                             }} />
+                    </div> */}
+
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label> Audit Type <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{assignmentMaster.audit_Id == '' ? errors.audit_Id : ''}</small>
+                        </div>
+                        <select className='form-select form-select-sm'
+                            value={assignmentMaster.audit_Id}
+                            onChange={(e) => { setAssignmentMaster({ ...assignmentMaster, audit_Id: e.target.value }); console.log(e.target.value) }} required
+                        >
+                            <option value="" selected disabled> -- Please Select-- </option>
+                            {auditList.map((data, index) => {
+                                // console.log(data)
+                                return <option key={index} hidden={data.auditMainGroup == "N" ? true : false} value={data.id}> {data.auditName} </option>
+                            })}
+                        </select>
                     </div>
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Username <span className='text-danger'>*  </span> </label>
+                            <label> Username <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{assignmentMaster.username == '' ? errors.username : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1'
-                            placeholder='Enter Username'
-                            value={assignmentMaster.username}
+                        <select className='form-select form-select-sm'
+                            value={assignmentMaster.userNameValue}
                             onChange={(e) => {
-                                setAssignmentMaster({ ...assignmentMaster, username: e.target.value })
-                            }} />
+                                let vs = JSON.parse(e.target.value);
+                                setAssignmentMaster({ ...assignmentMaster, username: vs.displayName, usercode: vs.userCode, emaild: vs.emailID, userNameValue: e.target.value })
+                            }} required
+                        >
+                            <option value="" selected disabled> -- Please Select-- </option>
+                            {users && users.map((data, index) => {
+                                return <option hidden={data.department != 'QA'} key={index} value={JSON.stringify(data)}> {data.displayName} </option>
+                            })}
+                        </select>
                     </div>
 
-                    <div className='mt-3'>
+                    {/* <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Email ID <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{assignmentMaster.emaild == '' ? errors.emaild : ''}</small>
@@ -346,15 +444,31 @@ export default function AssignmentMaster() {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Email ID'
                             value={assignmentMaster.emaild}
                             onChange={(e) => setAssignmentMaster({ ...assignmentMaster, emaild: e.target.value })} required />
+                    </div> */}
+
+                    <div className='mt-3'>
+                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <label>Language Code <span className='text-danger'>*  </span> </label>
+                            <small className='text-danger'>{assignmentMaster.languageCode == '' ? errors.languageCode : ''}</small>
+                        </div>
+                        <select className='form-select form-select-sm'
+                            value={assignmentMaster.languageCode}
+                            onChange={(e) => setAssignmentMaster({ ...assignmentMaster, languageCode: e.target.value })} required
+                        >
+                            <option value="" selected disabled> -- Please Select-- </option>
+                            {langList.map((data, index) => {
+                                return <option key={index} value={data.languageCode}> {data.languageName} </option>
+                            })}
+                        </select>
                     </div>
 
                     <div className='mt-3'>
                         <label>Assignment Status</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                checked={assignmentMaster.active == 'Y'}
-                                onChange={(e) => setAssignmentMaster({ ...assignmentMaster, active: e == true ? 'Y' : 'N' })} />
-                            <span className='px-2'> {assignmentMaster.active === 'Y' ? 'Active' : 'Disable'} </span>
+                                checked={assignmentMaster.active}
+                                onChange={(e) => setAssignmentMaster({ ...assignmentMaster, active: e })} />
+                            <span className='px-2'> {assignmentMaster.active ? 'Active' : 'Disable'} </span>
                         </div>
                     </div>
                 </div>
@@ -377,41 +491,76 @@ export default function AssignmentMaster() {
                 } title={<h6 className='m-0'> Edit Assignment</h6>} placement="right" onClose={() => { clearFields(); cancel(); }} visible={closeDefect} >
                 <div className='defect-master-add-new'>
 
+                    {/* <div className='mt-3'>
+    <div className='d-flex flex-wrap align-items-center justify-content-between'>
+        <label>User Code <span className='text-danger'>*  </span> </label>
+        <small className='text-danger'>{assignmentMaster.usercode == '' ? errors.usercode : ''}</small>
+    </div>
+    <input className='form-control form-control-sm mt-1'
+        placeholder='Enter User Code'
+        value={assignmentMaster.usercode}
+        onChange={(e) => {
+            setAssignmentMaster({ ...assignmentMaster, usercode: e.target.value })
+        }} />
+</div> */}
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>User Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{assignmentMaster.usercode == '' ? errors.usercode : ''}</small>
+                            <label> Audit Type <span className='text-danger'>*  </span> </label>
+                            {/* <small className='text-danger'>{assignmentMaster.audit_Id == '' ? errors.audit_Id : ''}</small> */}
                         </div>
-                        <input className='form-control form-control-sm mt-1'
-                            value={assignmentMaster.usercode}
-                            placeholder='Enter Username'
-                            onChange={(e) => {
-                                setAssignmentMaster({ ...assignmentMaster, usercode: e.target.value })
-                            }} />
+                        {/* <input className='form-control form-control-sm' value={assignmentMaster.audit_Id} readOnly /> */}
+
+                        <select className='form-select form-select-sm'
+                            disabled
+                            value={assignmentMaster.audit_Id}
+                            onChange={(e) => { setAssignmentMaster({ ...assignmentMaster, audit_Id: e.target.value }); console.log(e.target.value) }} required
+                        >
+                            <option value="" selected disabled> -- Please Select-- </option>
+                            {auditList.map((data, index) => {
+                                // console.log(data)
+                                return <option key={index} hidden={data.auditMainGroup == "N" ? true : false} value={data.id}> {data.auditName} </option>
+                            })}
+                        </select>
                     </div>
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Username <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{assignmentMaster.username == '' ? errors.username : ''}</small>
+                            <label> Username <span className='text-danger'>*  </span> </label>
+                            {/* <small className='text-danger'>{assignmentMaster.username == '' ? errors.username : ''}</small> */}
                         </div>
-                        <input className='form-control form-control-sm mt-1'
-                            value={assignmentMaster.username}
-                            placeholder='Enter Username'
+                        {/* <input className='form-control form-control-sm' value={assignmentMaster.username} readOnly /> */}
+                        <select className='form-select form-select-sm'
+                            disabled
+                            value={assignmentMaster.userNameValue}
                             onChange={(e) => {
-                                setAssignmentMaster({ ...assignmentMaster, username: e.target.value })
-                            }} />
+                                let vs = JSON.parse(e.target.value);
+                                setAssignmentMaster({ ...assignmentMaster, username: vs.displayName, usercode: vs.userCode, emaild: vs.emailID, userNameValue: e.target.value })
+                            }} required
+                        >
+                            <option value="" selected disabled> -- Please Select-- </option>
+                            {users.map((data, index) => {
+                                return <option hidden={data.department != 'QA'} key={index} value={JSON.stringify(data)}> {data.displayName} </option>
+                            })}
+                        </select>
                     </div>
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Email ID <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{assignmentMaster.emaild == '' ? errors.emaild : ''}</small>
+                            <label>Language Code <span className='text-danger'>*  </span> </label>
+                            {/* <small className='text-danger'>{assignmentMaster.languageCode == '' ? errors.languageCode : ''}</small> */}
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter EmailID'
-                            value={assignmentMaster.emaild}
-                            readOnly
-                            onChange={(e) => setAssignmentMaster({ ...assignmentMaster, emaild: e.target.value })} />
+                        {/* <input className='form-control form-control-sm' value={assignmentMaster.languageCode} readOnly /> */}
+                        <select className='form-select form-select-sm'
+                            disabled
+                            value={assignmentMaster.languageCode}
+                            onChange={(e) => setAssignmentMaster({ ...assignmentMaster, languageCode: e.target.value })} required
+                        >
+                            <option value="" selected disabled> -- Please Select-- </option>
+                            {langList.map((data, index) => {
+                                return <option key={index} value={data.languageCode}> {data.languageName} </option>
+                            })}
+                        </select>
                     </div>
 
                     <div className='mt-3'>
@@ -419,8 +568,8 @@ export default function AssignmentMaster() {
                         <div className='mt-1'>
                             <Switch size='default'
                                 checked={assignmentMaster.active == 'Y'}
-                                onChange={(e) => { setAssignmentMaster({ ...assignmentMaster, active: e == true ? 'Y' : 'N' }) }} />
-                            <span className='px-2'> {assignmentMaster.active == 'Y' ? 'Active' : 'Disable'} </span>
+                                onChange={(e) => setAssignmentMaster({ ...assignmentMaster, active: e == true ? 'Y' : 'N' })} />
+                            <span className='px-2'> {assignmentMaster.active === 'Y' ? 'Active' : 'Disable'} </span>
                         </div>
                     </div>
                 </div>

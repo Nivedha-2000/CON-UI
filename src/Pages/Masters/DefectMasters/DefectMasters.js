@@ -47,9 +47,8 @@ export default function DefectMasters() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `DefectMaster/GetDefectbyId/${defectId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
-            console.log(res.data, 'editdata')
             if (res.Success == true) {
                 setDefectMaster(res.data);
             }
@@ -83,9 +82,6 @@ export default function DefectMasters() {
         profArr: [],
         active: 'Y'
     });
-
-    console.log(defectMaster.isActive);
-
 
     const [errors, setErrors] = useState({
         defectName: '',
@@ -143,9 +139,7 @@ export default function DefectMasters() {
                 appCode: 'ENAPP003',
                 url: `DefectMaster/IsCheckDefectCode?defectcode=${defectMaster.defectCode}`
             }).then(res => {
-                console.log(res)
                 if (res.Success == true) {
-                    console.log(res.data.alertinfo.indexOf("not"), "  ", exist)
                     if (res.data.alertinfo.indexOf("not") == -1 && !exist) {
                         // setexists(true);
                         setFocus(true)
@@ -154,10 +148,9 @@ export default function DefectMasters() {
                     else {
                         ItrApiService.POST({
                             url: 'DefectMaster/SaveDefectMaster',
-                            appCode: "ENAPP003",
+                            appCode: "CNF",
                             data: data
                         }).then(res => {
-                            console.log(res.data, 'create')
                             if (res.Success == true) {
                                 // setDatas(res.data)
                                 message.success("Defects added successfull");
@@ -176,10 +169,9 @@ export default function DefectMasters() {
                 } else {
                     ItrApiService.POST({
                         url: 'DefectMaster/SaveDefectMaster',
-                        appCode: "ENAPP003",
+                        appCode: "CNF",
                         data: data
                     }).then(res => {
-                        console.log(res.data, 'create')
                         if (res.Success == true) {
                             // setDatas(res.data)
                             message.success("Defects added successfull");
@@ -190,7 +182,6 @@ export default function DefectMasters() {
                         }
                         else {
                             setLoader(false);
-                            // message.warning(res.message);
                         }
                     });
                 }
@@ -249,7 +240,7 @@ export default function DefectMasters() {
             setLoader(true);
             ItrApiService.POST({
                 url: `DefectMaster/SaveDefectMaster`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: defectMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -287,7 +278,7 @@ export default function DefectMasters() {
     const getDefectCat = () => {
         ItrApiService.GET({
             url: 'DefectMaster/GetAllDefectMasterWithCategory',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -305,15 +296,13 @@ export default function DefectMasters() {
         setLoader(true);
         ItrApiService.GET({
             url: 'DefectMaster/GetAllDefectMaster',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
-            console.log(res.data);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data);
                 setDatas2(res.data);
                 // for (let defProfile of res.data) {
-                //     console.log(defProfile.defectProfile);
                 //     let getArray = defProfile.defectProfile.split('')
                 // }
                 if (onCreate && onCreate == true) {
@@ -361,7 +350,6 @@ export default function DefectMasters() {
                 return dd;
             }
         });
-        console.log("------->", ss);
         setDatas(ss);
         setPagination({ ...pagination, totalPage: ss.length / pageSize, minIndex: 0, maxIndex: pageSize });
         //         filter = input.value.toUpperCase();
@@ -486,6 +474,7 @@ export default function DefectMasters() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>
@@ -610,7 +599,6 @@ export default function DefectMasters() {
                             <Select mode="multiple" style={{ width: '100%' }} placeholder="Select Defect Profile"
                                 value={defectMaster.profArr}
                                 onChange={(e) => {
-                                    console.log(e)
                                     setDefectMaster({
                                         ...defectMaster, defectProfile: e.join(','),
                                         profArr: [...e]
@@ -629,7 +617,7 @@ export default function DefectMasters() {
                             <label>Defect Status <span className='text-danger'>*</span> </label>
                             <div className='mt-1'>
                                 <Switch size='default' checked={defectMaster.active == 'Y'}
-                                    onChange={(e) => { setDefectMaster({ ...defectMaster, active: e == true ? 'Y' : 'N' }); console.log(e) }}
+                                    onChange={(e) => { setDefectMaster({ ...defectMaster, active: e == true ? 'Y' : 'N' }); }}
                                 />
                                 <span className='px-2'> {defectMaster.active === 'Y' ? 'Active' : 'Disable'} </span>
                             </div>
@@ -717,7 +705,7 @@ export default function DefectMasters() {
                         >
                             <option value="" selected> Select Category </option>
                             {defCat.map((cate, index) => {
-                                return <option value={cate}>{cate}</option>
+                                return <option key={index} value={cate}>{cate}</option>
                             })}
                         </select>
                         {/* <p className='text-danger'> {errors.category} </p> */}

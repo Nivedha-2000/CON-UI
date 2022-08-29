@@ -31,7 +31,7 @@ export default function OperationMaster() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `GarOperMaster/GetGarOprbyId/${operationId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
                 setOperationMaster(res.data);
@@ -61,7 +61,7 @@ export default function OperationMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarPartsMaster/GetAllGarPartData',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -104,7 +104,7 @@ export default function OperationMaster() {
                     else {
                         ItrApiService.POST({
                             url: 'GarOperMaster/SaveGarOperation',
-                            appCode: "ENAPP003",
+                            appCode: "CNF",
                             data: { ...operationMaster, active: true ? 'Y' : 'N' }
                         }).then(res => {
                             if (res.Success == true) {
@@ -124,7 +124,7 @@ export default function OperationMaster() {
                 else {
                     ItrApiService.POST({
                         url: 'GarOperMaster/SaveGarOperation',
-                        appCode: "ENAPP003",
+                        appCode: "CNF",
                         data: { ...operationMaster, active: true ? 'Y' : 'N' }
                     }).then(res => {
                         if (res.Success == true) {
@@ -157,7 +157,7 @@ export default function OperationMaster() {
             setLoader(true);
             ItrApiService.POST({
                 url: `GarOperMaster/SaveGarOperation`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: operationMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -192,7 +192,7 @@ export default function OperationMaster() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarOperMaster/GetAllGarOperationMaster',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             // console.table(res.data);
             if (res.Success == true) {
@@ -316,6 +316,7 @@ export default function OperationMaster() {
                         total={datas.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>
@@ -355,7 +356,9 @@ export default function OperationMaster() {
                             }}>
                             <option value="" selected> Select Part Name </option>
                             {partsList && partsList.map((parts, index) => {
-                                return <option key={index} value={parts.id}> {parts.partName} </option>
+                                if (parts.active == 'Y') {
+                                    return <option key={index} value={parts.id}> {parts.partName} </option>
+                                }
                             })}
                         </select>
                         {/* <input className='form-control form-control-sm mt-1' placeholder='Enter Part Name'

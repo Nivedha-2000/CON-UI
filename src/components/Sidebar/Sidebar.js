@@ -28,7 +28,7 @@ import {
   faHandHoldingHeart,
   faArrowsLeftRight,
   faFlagCheckered,
-  faBarcode, faShuttleVan
+  faBarcode, faShuttleVan, faLanguage, faA, faAddressCard
 } from '@fortawesome/free-solid-svg-icons';
 import QualityLogo from '../../Assets/images/QualityLogo.png';
 import Configuration from '../../Assets/images/ConfigurationApp.png';
@@ -67,7 +67,7 @@ export default function Sidebar() {
                 </NavLink>
               </Menu.Item>
             </Menu> */}
-            <Menu defaultSelectedKeys={['1']} defaultActiveFirst={true} mode="inline" >
+            <Menu defaultSelectedKeys={['1']} defaultActiveFirst={true} mode="inline" className='mb-5' >
               <SubMenu key="5" title="Administrator" icon={<img src={production} width="20" />} >
                 <Menu.Item key="5-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-buyer-rights-master">
@@ -87,77 +87,52 @@ export default function Sidebar() {
               </SubMenu>
 
               <SubMenu key="1" title="Quality Assurance" icon={<img src={QualityLogo} width="20" />} >
-                <Menu.Item key="1-1" icon={<FontAwesomeIcon icon={faShield} size="lg" />}>
+                <Menu.Item key="1-1" icon={<FontAwesomeIcon icon={faA} size="lg" />}>
+                  <NavLink to="masters/audit-master">
+                    <span className='mx-2'> Audit Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="1-2" icon={<FontAwesomeIcon icon={faAddressCard} size="lg" />}>
+                  <NavLink to="masters/assignment-master">
+                    <span className='mx-2'> Assignment Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="1-3" icon={<FontAwesomeIcon icon={faLanguage} size="lg" />}>
+                  <NavLink to="masters/language-master">
+                    <span className='mx-2'> Language Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="1-4" icon={<FontAwesomeIcon icon={faLanguage} size="lg" />}>
+                  <NavLink to="masters/translation-master">
+                    <span className='mx-2'> Defect Translation Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="1-5" icon={<FontAwesomeIcon icon={faShield} size="lg" />}>
                   <NavLink to="masters/defect-master">
                     <span className='mx-2'> Defect Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="1-2" icon={<FontAwesomeIcon icon={faToolbox} size="lg" />}>
+                <Menu.Item key="1-6" icon={<FontAwesomeIcon icon={faToolbox} size="lg" />}>
                   <NavLink to="masters/parts-master">
                     <span className='mx-2'> Parts Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="1-3" icon={<FontAwesomeIcon icon={faHandHoldingHeart} size="lg" />}>
+                <Menu.Item key="1-7" icon={<FontAwesomeIcon icon={faHandHoldingHeart} size="lg" />}>
                   <NavLink to="masters/operation-master">
                     <span className='mx-2'> Operation Master</span>
                   </NavLink>
                 </Menu.Item>
-                {/* <Menu.Item key="1-31" icon={<FontAwesomeIcon icon={faHandHolding} size="lg" />}>
-                  <NavLink to="masters/ftd-operation-master">
-                    <span className='mx-2'> FTD Operation Master</span>
-                  </NavLink>
-                </Menu.Item> */}
-                <Menu.Item key="1-4" icon={<FontAwesomeIcon icon={faArrowsLeftRight} size="lg" />}>
+                <Menu.Item key="1-8" icon={<FontAwesomeIcon icon={faArrowsLeftRight} size="lg" />}>
                   <NavLink to="masters/sewingline-master">
                     <span className='mx-2'> Sewing Line Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="1-5" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
+                <Menu.Item key="1-9" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
                   <NavLink to="masters/aql-master">
                     <span className='mx-2'> AQL Master</span>
                   </NavLink>
                 </Menu.Item>
-                {/* <Menu.Item key="1-42" icon={<FontAwesomeIcon icon={faBarcode} size="lg" />}>
-                  <NavLink to="masters/stitch-type-master">
-                    <span className='mx-2'> Stitch Master</span>
-                  </NavLink>
-                </Menu.Item> */}
               </SubMenu>
-              {/* <SubMenu key="4" icon={<FontAwesomeIcon icon={faFile} size="lg" />} title={
-                <span className='mx-2'>Masters</span>
-              }>
-                <Menu.Item key="4-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/defect-master">
-                    <span className='mx-2'> Defect Master</span>
-                  </NavLink>
-                </Menu.Item>
-                <Menu.Item key="4-2" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/parts-master">
-                    <span className='mx-2'> Parts Master</span>
-                  </NavLink>
-                </Menu.Item>
-                <Menu.Item key="4-3" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/operation-master">
-                    <span className='mx-2'> Operation Master</span>
-                  </NavLink>
-                </Menu.Item>
-                <Menu.Item key="4-4" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/sewingline-master">
-                    <span className='mx-2'> Sewing Line Master</span>
-                  </NavLink>
-                </Menu.Item>
-                <Menu.Item key="4-5" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/aql-master">
-                    <span className='mx-2'> AQL Master</span>
-                  </NavLink>
-                </Menu.Item>
-              </SubMenu> */}
-              {/* <Menu.Item key="1" icon={<FontAwesomeIcon icon={faTableColumns} />}>
-                <NavLink to="home">
-                  <span className='mx-2'>Quality</span>
-                </NavLink>
-              </Menu.Item> */}
-
 
               <SubMenu key="2" title="Pre-Production " icon={<img src={production} width="20" />} >
                 <Menu.Item key="2-31" icon={<FontAwesomeIcon icon={faHandHolding} size="lg" />}>
@@ -186,7 +161,6 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
               </SubMenu>
-
 
               <SubMenu key="3" title="Product Development" icon={<img src={production} width="20" />} >
                 <Menu.Item key="3-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
@@ -239,6 +213,7 @@ export default function Sidebar() {
                     <span className='mx-2'> Line Cost Master</span>
                   </NavLink>
                 </Menu.Item>
+
                 <Menu.Item key="3-11" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/pdc-master">
                     <span className='mx-2'> PDC Master</span>
@@ -276,6 +251,7 @@ export default function Sidebar() {
                     <span className='mx-2'> Buyer Master</span>
                   </NavLink>
                 </Menu.Item>
+
                 <Menu.Item key="3-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/purpose-master">
                     <span className='mx-2'> Purpose Master</span>
@@ -286,7 +262,6 @@ export default function Sidebar() {
                     <span className='mx-2'> Material Master</span>
                   </NavLink>
                 </Menu.Item>
-
 
                 {/* <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-buyer-rights-master">
@@ -310,7 +285,7 @@ export default function Sidebar() {
                 </Menu.Item> */}
               </SubMenu>
 
-              <SubMenu key="4" title="Corporate Group" icon={<img src={production} width="20" />} >
+              <SubMenu key="4" title="Corporate Group" className='mb-5' icon={<img src={production} width="20" />} >
                 <Menu.Item key="4-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/location-master">
                     <span className='mx-2'> Location Master</span>
@@ -401,27 +376,14 @@ export default function Sidebar() {
     <Menu.Item key="8" icon={<img src={HandOver} width="25" />}>
       <span className='mx-2'>Handover</span>
     </Menu.Item> */}
-              {/* <SubMenu key="sub1" title="User">
-      <Menu.Item key="3">Tom</Menu.Item>
-      <Menu.Item key="4">Bill</Menu.Item>
-      <Menu.Item key="5">Alex</Menu.Item>
-    </SubMenu>
-    <SubMenu key="sub2" title="Team">
-      <Menu.Item key="6">Team 1</Menu.Item>
-      <Menu.Item key="8">Team 2</Menu.Item>
-    </SubMenu> */}
             </Menu>
           </Sider>
           <Layout className="site-layout">
             <Content>
               <div className="site-layout-background" style={{ padding: '10px 10px' }}>
                 <Outlet />
-                {/* <Routes>
-                  <Route path="scheduler" element={<Scheduler />} />
-                </Routes> */}
               </div>
             </Content>
-            {/* <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer> */}
           </Layout>
         </Layout>
       </div>

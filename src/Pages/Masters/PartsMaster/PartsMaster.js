@@ -38,7 +38,7 @@ export default function PartsMasters() {
         setCloseDefect(true);
         ItrApiService.GET({
             url: `GarPartsMaster/GetGarPartsbyId/${partsId}`,
-            appCode: "ENAPP003",
+            appCode: "CNF",
         }).then(res => {
             console.log(res.data);
             if (res.Success == true) {
@@ -99,7 +99,7 @@ export default function PartsMasters() {
                     else {
                         ItrApiService.POST({
                             url: 'GarPartsMaster/SaveGarParts',
-                            appCode: "ENAPP003",
+                            appCode: "CNF",
                             data: { ...partsMaster, id: 0 }
                         }).then(res => {
                             console.log(partsMaster)
@@ -120,7 +120,7 @@ export default function PartsMasters() {
                 else {
                     ItrApiService.POST({
                         url: 'GarPartsMaster/SaveGarParts',
-                        appCode: "ENAPP003",
+                        appCode: "CNF",
                         data: partsMaster
                     }).then(res => {
                         if (res.Success == true) {
@@ -161,7 +161,7 @@ export default function PartsMasters() {
         setLoader(true);
         ItrApiService.GET({
             url: 'GarPartsMaster/GetAllGarPartData',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -192,7 +192,6 @@ export default function PartsMasters() {
             url: 'ProductType/GetProductTypeDropDown',
             appCode: "ENAPP002"
         }).then(res => {
-            console.log(res.data)
             if (res.Success == true) {
                 setLoader(false);
                 setPartsProductType(res.data.result.data);
@@ -233,7 +232,7 @@ export default function PartsMasters() {
             setLoader(true);
             ItrApiService.POST({
                 url: `GarPartsMaster/SaveGarParts`,
-                appCode: "ENAPP003",
+                appCode: "CNF",
                 data: partsMaster
             }).then(res => {
                 if (res.Success == true) {
@@ -345,6 +344,7 @@ export default function PartsMasters() {
                         total={partsList.length}
                         onChange={handleChange}
                         responsive={true}
+                        showSizeChanger={false}
                     />
                 </div>
             </div>

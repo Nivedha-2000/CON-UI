@@ -13,34 +13,30 @@ function App() {
   let navigate = useNavigate();
 
   useEffect(async () => {
+    const delQuery = new URLSearchParams(window.location.search);
+    const getAppCode = delQuery.get('appCode');
+    sessionStorage.setItem('appCode', getAppCode);
 
-    // const { react_app_baseurl, react_app_env, react_app_site } = process.env
-    // await ItrApiService.CONFIG(react_app_env, "http://gateway01.ithred.info/api/", react_app_site).then(res => {
-    //   // debugger
-    //   console.log(res);
-    //   if (res.directLogin == true && res.tokenState == true) {
-    //     navigate('/masters/defect-master');
-    //   }
-    //   else {
-    //     window.location.replace(configUrl.appUrl);
-    //   }
-    // });
-
-
-
-    ItrApiService.CONFIG("prod", "http://gateway01.ithred.info/api/", "app").then(th => {
-      ItrAuthService.Login({
-        data: {
-          userName: 'mathankumar@ambattur.com',
-          password: 'Mathan@123'
+    const { react_app_baseurl, react_app_env, react_app_site } = process.env
+    await ItrApiService.CONFIG(react_app_env, react_app_baseurl, react_app_site).then(res => {
+      // ItrAuthService.Login({
+      //   data: {
+      //     userName: 'mathankumar@ambattur.com',
+      //     password: 'Mathan@123'
+      //   }
+      // }).then(() => {
+      //   ItrApiService.userApp().then(res => console.log(res));
+      if (res.directLogin == true && res.tokenState == true) {
+        navigate('/masters/defect-master');
+      }
+      else {
+        if (sessionStorage.getItem('userInfo') === null) {
+          window.location.replace(configUrl().appUrl);
         }
-      }).then((res) => {
-        ItrApiService.userApp().then(res => console.log(res.data, 'userApps'));
-        console.log(res.data);
-      });
+      }
     });
-
-
+    // 
+    // });
   }, []);
 
   return (
