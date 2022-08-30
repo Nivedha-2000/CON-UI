@@ -294,7 +294,7 @@ export default function AqlMaster() {
 
         setVisible(false);
         setPackQtyVisible(false);
-     
+
         let err = {}, validation = true
         requiredFields.forEach(f => {
             if (fields[f] === "") {
@@ -312,7 +312,7 @@ export default function AqlMaster() {
             ApiCall({
                 path: API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode,
             }).then(respp => {
-                let result=respp.data;
+                let result = respp.data;
                 setFields(result)
                 console.log(fields)
                 //setVisualSampling([]);
@@ -383,7 +383,7 @@ export default function AqlMaster() {
             }
         } else {
             if (visualSampling.packQtyFrom > 0) {
-                fields.aqlvmDetlModels.filter(f=>f.active=="Y").push(visualSampling)
+                fields.aqlvmDetlModels.filter(f => f.active == "Y").push(visualSampling)
                 clearFieldsVisualSam();
             }
         }
@@ -408,7 +408,7 @@ export default function AqlMaster() {
         // if (fields.aqlpkDetlModels.length > 0) {
         let CartonF = 0;
         let CartonT = 0;
-      
+
         if (len > 0) {
             CartonF = parseInt(fields.aqlpkDetlModels[len - 1].noofCtnsTo);
             let CurCartonF = parseInt(packAuditSampling.noofCtnsFrom);
@@ -482,7 +482,7 @@ export default function AqlMaster() {
         setPackAuditSampling({ ...toUpdatePackAuditSamPlan });
     }
     const editVisualSampling = (row, packQtyFrom) => {
-       // debugger;
+        // debugger;
         setEditVisible(false)
         setBtnVisible(true);
         setAddBtnVisible(false);
@@ -494,7 +494,7 @@ export default function AqlMaster() {
     };
 
     const removeVisualSampling = (row) => {
-       // alert(row);
+        // alert(row);
         if (row != '') {
             // let toUpdateData1 = fields.aqlvmDetlModels.filter(a => a.id != row);
             // toUpdateData1.active=
@@ -516,7 +516,7 @@ export default function AqlMaster() {
     }
 
     const removepkDetl = (row1) => {
-      //  alert(row1);
+        //  alert(row1);
         debugger;
         let toUpdatePackAuditSamPlan1 = fields.aqlpkDetlModels.map((item1) => {
             if (item1.id === row1) {
@@ -577,16 +577,15 @@ export default function AqlMaster() {
         let value = e.target.value
         if (name === 'maxAllowCriticalDefects' || name === 'maxAllowCriticalDefects' || name === 'maxAllowSewDefects' || name === 'maxAllowOthDefects') {
             debugger;
-            let VD=visualSampling.maxAllowVisualDefects;
-            let CD=visualSampling.maxAllowCriticalDefects;
-            let SD=visualSampling.maxAllowSewDefects;
-            let OD=visualSampling.maxAllowOthDefects;
-            let tot=parseInt(CD)+parseInt(SD)+parseInt(OD);
-          if(parseInt(VD,10) < parseInt(tot,10))
-          {
-            setVisualSampling({ ...visualSampling, [name]: '' });
-            alert('Should not be greater than Visual Defect .....! ')
-          }
+            let VD = visualSampling.maxAllowVisualDefects;
+            let CD = visualSampling.maxAllowCriticalDefects;
+            let SD = visualSampling.maxAllowSewDefects;
+            let OD = visualSampling.maxAllowOthDefects;
+            let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
+            if (parseInt(VD, 10) < parseInt(tot, 10)) {
+                setVisualSampling({ ...visualSampling, [name]: '' });
+                alert('Should not be greater than Visual Defect .....! ')
+            }
         }
     }
     const inputOnChange = name => e => {
@@ -806,7 +805,7 @@ export default function AqlMaster() {
         setPackAuditSampling({
             ...pkDetlModels
         })
-      // setFields([]);
+        // setFields([]);
 
         setErrors({ ...initialErrorMessages });
     }
@@ -1071,7 +1070,7 @@ export default function AqlMaster() {
                                         {/* if(visible=="True") */}
                                         {
 
-                                            fields.aqlvmDetlModels.filter(f=>f.active=="Y").map((row, index) => (
+                                            fields.aqlvmDetlModels.filter(f => f.active == "Y").map((row, index) => (
                                                 <tr key={index}>
                                                     <td align='center'>
                                                         <div className='text-center' onClick={() => { editVisualSampling(row?.id, row?.packQtyFrom) }}>
@@ -1184,7 +1183,7 @@ export default function AqlMaster() {
                                     </thead>
                                     <tbody>
                                         {
-                                            fields.aqlpkDetlModels.filter(f=>f.active=="Y").map((row1, index) => (
+                                            fields.aqlpkDetlModels.filter(f => f.active == "Y").map((row1, index) => (
                                                 <tr key={index}>
                                                     <td align='center'>
                                                         <div className='text-center' onClick={() => { editpkDetl(row1?.id) }}>
