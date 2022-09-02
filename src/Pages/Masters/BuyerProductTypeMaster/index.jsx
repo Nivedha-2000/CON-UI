@@ -242,6 +242,7 @@ function BuyerProductTypeMaster({ name }) {
             }
         }  else {
             setFields({ ...fields, [name]: value })
+            console.log(fields)
         }
 
     }

@@ -281,7 +281,8 @@ function SeasonMaster({ name }) {
                             <small className='text-danger'>{fields.seasonCode === '' ? errors.seasonCode : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter season Code'
-                            value={fields.seasonCode} maxLength="10"
+                            value={fields.seasonCode} maxLength="3"
+                            disabled={fields.id != 0}
                             id="seasonCode"
                             onChange={inputOnChange("seasonCode")} 
                             required />

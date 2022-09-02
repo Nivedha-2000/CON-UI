@@ -412,7 +412,8 @@ function StyleDivisionMaster({ name }) {
                         </div>
                         <select className='form-select form-select-sm mt-1' required
                                 value={fields.fashionGroup}
-                                onChange={inputOnChange("fashionGroup")}                            
+                                onChange={inputOnChange("fashionGroup")}        
+                                disabled={fields.id != 0}                    
                         >
                             <option value=""> Select fashion Group</option>
                             {fashionGroupList.map((v, index) => {
@@ -428,7 +429,8 @@ function StyleDivisionMaster({ name }) {
                         </div>
                         <select className='form-select form-select-sm mt-1' required
                                 value={fields.productType}
-                                onChange={inputOnChange("productType")}                            
+                                onChange={inputOnChange("productType")}      
+                                disabled={fields.id != 0}                      
                         >
                             <option value=""> Select product Type </option>
                             {productTypeList.map((v, index) => {
@@ -446,6 +448,7 @@ function StyleDivisionMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter style Division '
                             value={fields.styleDivision} maxLength="50"
                             id="styleDivision"
+                            disabled={fields.id != 0}
                             onChange={inputOnChange("styleDivision")} 
                             required />
                     </div>
@@ -457,7 +460,8 @@ function StyleDivisionMaster({ name }) {
                         </div>
                         <select className='form-select form-select-sm mt-1' required
                                 value={fields.subProductType}
-                                onChange={inputOnChange("subProductType")}                            
+                                onChange={inputOnChange("subProductType")}  
+                                disabled={fields.id != 0}                          
                         >
                             <option value=""> Select Sub product Type </option>
                             <option value="LADIESDRESS"> LADIES DRESS </option>

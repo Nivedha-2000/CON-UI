@@ -272,7 +272,7 @@ function VerticalGroupMaster({ name }) {
                             <label>Vertical Group code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.vGcode === '' ? errors.vGcode : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Vertical Group code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Vertical Group code' disabled={fields.id != 0}
                             value={fields.vGcode} maxLength="10"
                             id="vGcode"
                             onChange={inputOnChange("vGcode")} 

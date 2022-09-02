@@ -371,7 +371,7 @@ function UserDefinedMaster({ name }) {
                             <label>Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.type === '' ? errors.type : ''}</small>
                         </div>
-                        <select className='form-select form-select-sm mt-1' required
+                        <select className='form-select form-select-sm mt-1' required  disabled={fields.id != 0}
                                 value={fields.type}
                                 onChange={inputOnChange("type")}                            
                         >
@@ -387,7 +387,7 @@ function UserDefinedMaster({ name }) {
                             <label>Enter code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.code === '' ? errors.code : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter code'  disabled={fields.id != 0}
                             value={fields.code} maxLength="10"
                             id="code"
                             onChange={inputOnChange("code")} 

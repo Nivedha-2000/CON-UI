@@ -386,7 +386,9 @@ function BuyerDivisionMaster({ name }) {
                             <small className='text-danger'>{errors.buyCode}</small>
                         </div>
                         <select className='form-control form-control-sm mt-1' id="buyer-code" disabled={fields.id != 0}
-                         value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
+                         value={fields.buyCode} 
+                         maxLength="10"
+                         onChange={inputOnChange("buyCode")} required>
                             <option value="" hidden>Select Buyer Code</option>
                             {
                                 buyCodeList.map((t, ind) => (

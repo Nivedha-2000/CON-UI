@@ -55,6 +55,9 @@ import MenurightsElement from '../Pages/Masters/MenuRightsMaster';
 import MenuElement from '../Pages/Masters/MenuMaster';
 import PurposeMaster from '../Pages/Masters/PurposeMaster';
 
+import ProductivityMasters from '../Pages/Masters/ProductivityMasterNew';
+import ProductivityMaster from '../Pages/Masters/ProductivityMaster';
+
 
 import TabTest from '../Pages/Masters/TabTest'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
@@ -126,7 +129,7 @@ export default function Routing() {
         <Route path='masters/menu-rights-master' element={<MenurightsElement name='Menu Rights Master' />} />
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
         <Route path='masters/purpose-master' element={<PurposeMaster name='Purpose Master' />} />
-
+        <Route path='masters/productivity-master' element={<ProductivityMasters name='Productivity Master' />} />
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>
     </Routes>
