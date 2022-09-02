@@ -19,28 +19,25 @@ function App() {
 
     const { react_app_baseurl, react_app_env, react_app_site, react_app_auth_mode, react_app_auth_redirection_type } = process.env
     await ItrApiService.CONFIG(react_app_env, react_app_baseurl, react_app_site).then(res => {
-      if (react_app_auth_mode == "external") {
-        if (res.directLogin == true && res.tokenState == true) {
-          navigate('/masters/defect-master');
+      ItrAuthService.Login({
+        data: {
+          userName: 'santhosh_s@ambattur.com',
+          password: 'Iamadmin@123'
         }
-        else {
-          if (sessionStorage.getItem('userInfo') === null) {
-            window.location.replace(configUrl().appUrl);
+      }).then(() => {
+        ItrApiService.userApp().then(res => console.log(res));
+        if (react_app_auth_mode == "external") {
+          if (res.directLogin == true && res.tokenState == true) {
+            navigate('/masters/defect-master');
           }
+          else {
+            if (sessionStorage.getItem('userInfo') === null) {
+              window.location.replace(configUrl().appUrl);
+            }
+          }
+        } else {
         }
-      } else {
-        
-        ItrAuthService.Login({
-          data: {
-            userName: 'santhosh_s@ambattur.com',
-            password: 'Iamadmin@123'
-          }
-        }).then(() => {
-          ItrApiService.userApp().then(res => console.log(res));
-        });
-
-
-      }
+      });
     });
   }, []);
 

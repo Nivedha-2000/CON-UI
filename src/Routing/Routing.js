@@ -60,6 +60,7 @@ import TabTest from '../Pages/Masters/TabTest'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
 import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMaster';
 import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
+import OffStdMaster from '../Pages/Masters/OffStdMaster/OffStdMaster';
 
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
@@ -87,6 +88,7 @@ export default function Routing() {
         <Route path='masters/language-master' element={<LanguageMaster />} />
         <Route path='masters/defect-translation-master' element={<TranslationMaster />} />
         <Route path='masters/translation-master' element={<DefectTranslationMaster />} />
+        <Route path='masters/off-standard-master' element={<OffStdMaster />} />
 
 
 
