@@ -88,6 +88,10 @@ export const API_URLS = {
     GET_FINYEAR_MASTER_LIST: "FinYearMaster/GetAllFinYearMaster",
     GET_LINECOST_MONTHWISE_LIST: "LineCostMaster/GetFinYearMaster",
     SAVE_LINECOST_MASTER: "LineCostMaster/SaveLineCostMasterList",
+    GET_LINECOST_MASTER_LOCCODEFACTORY_LIST: "LineCostMaster/GetFinYearMasterLocCodeFactCode",
+    GET_LINECOST_LINEGROUB: "LineCostMaster/GetLineGroupOnLineCostMasterLocCodeFactCode",
+    GET_LINECOST_OPERATORE: "LineCostMaster/GetOperatorsOnLineCostMasterLocCodeFactCodeLineGroup",
+    GET_LINECOST_WORKINGHRS:"LineCostMaster/GetWorkingHrsOnLineCostMasterLocCodeFactCodeLineGroupOperators",
 
     // PDC MASTER
     GET_PDC_MONTHWISE_LIST: "PDCostMaster/GetPDCostMasterByFinYearMaster",
@@ -163,7 +167,10 @@ export const API_URLS = {
     SAVE_PURPOSE_MASTER_LIST_MASTER: "PPRPurposeMaster/SavePPRPurposeMaster",
 
     GET_AQLMASTERADD_LIST: "AQLHead/GetAQLHeadByparams",
-    POST_AQLMASTER: "AQLHead/SaveAQLHead"
+    POST_AQLMASTER: "AQLHead/SaveAQLHead",
+
+      //ProductivityMaster
+      SAVE_PRODUCTIVITY_MASTER: "Productivity/SaveProductivityList",
 
   
 
@@ -193,5 +200,8 @@ export const MISCELLANEOUS_TYPES = {
     MENUTYPE:'MENUTYPE',
     PPRTYPE:'PPRTYPE',
     AQLTYPE:'AQLTYPE',
-    AUDFORMAT:'AUDFORMAT'
+    AUDFORMAT:'AUDFORMAT',
+  
+    FABTYPE:'FABTYPE',
+    DLEVEL:'DLEVEL',
 }

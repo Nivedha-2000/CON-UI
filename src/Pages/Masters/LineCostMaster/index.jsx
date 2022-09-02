@@ -1,6 +1,7 @@
 import React, { useRef, useMemo, useCallback, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
+import '../LineCostMaster/table.css';
 import { Drawer, Switch, message, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
@@ -11,7 +12,7 @@ import ApiCall from "../../../services"
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
 
 import MedalCellRenderer from '../LineCostMaster/calculation';
- import '../../../Assets/style.css'
+import '../../../Assets/style.css'
 import bootstrap from 'bootstrap/dist/js/bootstrap'
 // import '../../../Assets/bootstrapstyle.min.css'
 //import 'bootstrap/dist/css/bootstrap.min.css'
@@ -24,9 +25,11 @@ import jquery from '../../../Assets/js/jquerymin'
 
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
 
-// import 'ag-grid-community/styles/ag-grid.css'; 
-// import "ag-grid-community/styles/ag-grid.css"
-// import 'ag-grid-community/styles/ag-theme-alpine.css'; // Optional theme CSS
+// import 'ag-grid-community/styles//ag-grid.css'; // Core grid CSS, always needed
+// import 'ag-grid-community/styles//ag-theme-alpine.css'; // Optional theme CSS
+
+
+
 
 
 const initialErrorMessages = {
@@ -41,6 +44,7 @@ const initialErrorMessages = {
     linecost: 0,
     smv: 0,
 
+
 },
     initialFieldValues = {
         id: 0,
@@ -53,9 +57,8 @@ const initialErrorMessages = {
         workingHrs: 0,
         linecost: 0,
         smv: 0,
-
     },
-    requiredFields = ["transMonth", "transYear", "locCode", "factCode", "lineGroup","locName"]
+    requiredFields = ["transMonth", "transYear", "locCode", "factCode", "lineGroup", "locName"]
 
 function LineCostMaster({ name }) {
     const clearFields = () => {
@@ -137,10 +140,37 @@ function LineCostMaster({ name }) {
     });
 
 
-    const inputOnChange = name => e => {
+    const inputOnChange = (name) => e => {
+        debugger;
         let value = e.target.value
-        if (name == "unitperPack") value = validateInputOnKeyup(e)
+        // if (name == "operators") value = validateInputOnKeyup(e)
         setFields({ ...fields, [name]: value })
+    }
+    const inputOnChange1 = (index, name) => e => {
+        let value = e.target.value
+        console.log(rowData[index])
+        setRowData({ ...rowData[index], [name]: value })
+
+       // setRowData({ ...fields, [name]: value })
+
+
+
+
+
+        // setRowData({ ...rowData[index], [name]: value })
+        //  const index=rowData.findIndex(x=>index)
+        // setRowData(test);
+        // // if (name == "operators") value = validateInputOnKeyup(e)
+        // setRowData({ ...fields, [name]: value })
+    }
+
+    const onNameEdited = (i, event) => {
+        debugger;
+        let textInputValues = [...this.state.textInputValues];
+        textInputValues[i] = event.target.value;
+        this.setRowData({ textInputValues });
+        alert(textInputValues);
+
     }
 
     const [listLoading, setListLoading] = useState(false);
@@ -154,40 +184,7 @@ function LineCostMaster({ name }) {
         ...initialErrorMessages
     })
 
-    const save = () => {
-        if (loader) return
-        let err = {}, validation = true
-        requiredFields.forEach(f => {
-            if (fields[f] === "") {
-                err[f] = "This field is required"
-                validation = false
-            }
-        })
-        setErrors({ ...initialErrorMessages, ...err })
-        if (validation) {
-            setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_LINECOST_MASTER,
-                data: {
-                    ...fields,
-                    packType: fields.packType.trim(),
-                    maxShipPer: 0,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-                message.error(err.message || err)
-            })
-        }
-    }
-
-
+    // this.state.textInputValues[this.state.menuRightsList.indexOf(item)]
 
     const getLocationList = () => {
         ApiCall({
@@ -207,11 +204,11 @@ function LineCostMaster({ name }) {
         debugger;
         setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
 
-      
+
         if (fields.locCode) {
-            console.log(API_URLS.GET_ALLFACTORY_LIST +  `/${fields.locCode}`)
+            console.log(API_URLS.GET_ALLFACTORY_LIST + `/${fields.locCode}`)
             ApiCall({
-                path: API_URLS.GET_ALLFACTORY_LIST + "?locationcode="+ `${fields.locCode}`  //"/" + fields.locCode
+                path: API_URLS.GET_ALLFACTORY_LIST + "?locationcode=" + `${fields.locCode}`  //"/" + fields.locCode
             }).then(respp => {
                 try {
                     setFoctoryList(respp.data)
@@ -227,23 +224,23 @@ function LineCostMaster({ name }) {
         }
     }
 
-    
+
 
     const getFinyearList = () => {
-       
+
         if (fields.locCode) {
-            ApiCall({ 
+            ApiCall({
                 path: API_URLS.GET_FINYEAR_MASTER_LIST
             }).then(resp => {
                 try {
                     setFinyearList(resp.data.filter(a => a.locCode == fields.locCode))
-                } catch(er) {
+                } catch (er) {
                     message.error("Response data is not as expected")
                 }
             })
-            .catch(err => {
-                message.error(err.message || err)
-            })
+                .catch(err => {
+                    message.error(err.message || err)
+                })
         } else {
             setFinyearList([])
         }
@@ -271,7 +268,7 @@ function LineCostMaster({ name }) {
                 console.log(respp)
                 if (Array.isArray(respp.data)) {
                     console.log(respp.data)
-                    // setList(respp.data)
+                    //setList(respp.data)
                     setRowData(respp.data)
                 } else {
                     message.error("Response data is expected as array")
@@ -295,10 +292,10 @@ function LineCostMaster({ name }) {
 
     useEffect(() => {
         getLocationList()
-      //  getFinyearList()
+        //  getFinyearList()
     }, []);
 
-  
+
 
     const [tableProps, setTableProps] = useState({
         page: 0,
@@ -324,7 +321,8 @@ function LineCostMaster({ name }) {
     //     },   
     //     {
     //         name: "operators",
-    //         label: "operators"
+    //         label: "operators",
+    //         editable: true
     //     },  
     //     {
     //         name: "workingHrs",
@@ -401,10 +399,10 @@ function LineCostMaster({ name }) {
         }
     ]);
 
-   // function change(testParam) {
+    // function change(testParam) {
     const change = (testParam) => {
         debugger;
-        setRowData({ ...rowData,testParam })
+        setRowData({ ...rowData, testParam })
         const test = rowData;
         // const index=test.findIndex(x=>)
         test[0] = testParam;
@@ -416,7 +414,7 @@ function LineCostMaster({ name }) {
         console.log(rowData);
         const test = rowData;
         test[0] = testParam;
-        
+
     }
     // const operatorschange = (operParam) => {
     //     debugger;
@@ -457,7 +455,7 @@ function LineCostMaster({ name }) {
         })
 
         setErrors({ ...initialErrorMessages, ...err })
-     
+
         if ((fields.locName != "")) {
             let validation = 'false';
             const dataset = [];
@@ -595,7 +593,7 @@ function LineCostMaster({ name }) {
                                 </div>
 
                                 <div class="col-lg-auto">
-                                    <button class="btn btn-success search-btn btn-block ml-10 p-6"  onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.factCode, fields.lineGroup)}>
+                                    <button class="btn btn-success search-btn btn-block ml-10 p-6" onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.factCode, fields.lineGroup)}>
                                         <i class="fe fe-plus fs-10 pe-auto">ADD</i>
                                     </button>
 
@@ -603,8 +601,8 @@ function LineCostMaster({ name }) {
 
 
                             </div>
-
-                            {/* <div class="table-responsive pb-10 bg-white mt-20">
+                            {/* 
+                            <div class="table-responsive pb-10 bg-white mt-20">
                                 <CustomTableContainer
                                     columns={tableColumns}
                                     data={list}
@@ -633,7 +631,7 @@ function LineCostMaster({ name }) {
 
                             <div class="table-responsive pb-10 bg-white mt-20">
 
-                                <div className="ag-theme-alpine" style={{ width: 1183, height: 700 }}>
+                                {/* <div className="ag-theme-alpine" style={{ width: 1183, height: 700 }}>
                                     <AgGridReact
                                         ref={gridRef} // Ref for accessing Grid's API
 
@@ -647,56 +645,64 @@ function LineCostMaster({ name }) {
 
                                         onCellClicked={cellClickedListener} // Optional - registering for Grid Event
                                     />
-                                </div>
+                                </div> */}
 
+                                <div className="table-responsive pb-10 bg-white mt-20">
+                                    <table id="example-1" class="table table-striped tbl-wht   text-md-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>SlNo</th>
+                                                <th>Month</th>
+                                                <th>Operators </th>
+                                                <th>WorkingHrs </th>
+                                                <th>LineCost $ </th>
+                                                {/* <th>OT Amount </th> */}
+                                                <th>Incentive </th>
 
-                                {/* <table id="example-1" class="table table-striped tbl-wht   text-md-nowrap ">
-                                    <thead>
-                                        <tr>
-                                            <th>SlNo</th>
-                                            <th>Financial Year</th>
-                                            <th>Operators </th>
-                                            <th>WorkingHrs </th>
-                                            <th>LineCost $ </th>
-                                            <th>OT Amount </th>
-                                            <th>Incentive </th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {list.map((linecost, index) => (
-                                            <tr key={index}>
-                                                <td> {index + 1} </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.transMonth} id="transMonth" onChange={inputOnChange("transMonth")} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.operators} name="operators" id="operators" onChange={inputOnChange("operators")} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.workingHrs} name="workingHrs" id="workingHrs" onChange={inputOnChange("workingHrs")} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.linecost} name="linecost" id="linecost" onChange={inputOnChange("linecost")} />
-
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control form-control-sm mt-1"
-                                                        value={linecost.smv} name="smv" id="smv" onChange={inputOnChange("smv")} />
-
-                                                </td>
-                                                <td>
-                                                    {linecost.operators}
-                                                </td>
                                             </tr>
-                                        ))
-                                        }
-                                    </tbody>
-                                </table> */}
+                                        </thead>
+                                        <tbody>
+                                            {rowData.map((linecost, index) => (
+                                                <tr key={index}>
+                                                    <td> {index + 1} </td>
+                                                    <td>
+                                                        {linecost.transMonth}
+                                                        {/* <input type="text" className="form-control form-control-sm mt-1"
+                                                        value={linecost.transMonth} id="transMonth" onChange={inputOnChange("transMonth")} /> */}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.operators} name={index} onChange={inputOnChange1(index, "operators")} />
+                                                        {/* <input type="text" className="form-control form-control-sm mt-1"   onChange={onNameEdited.bind(this, index)}
+                                                            value={linecost.operators} name="operators" onChange={inputOnChange("operators")} /> */}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.workingHrs} name={index} onChange={inputOnChange1(index, "workingHrs")} />
+                                                        {/* <input type="text" className="form-control form-control-sm mt-1"
+                                                            value={linecost.workingHrs} name="workingHrs" onChange={inputOnChange("workingHrs")} /> */}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.linecost} name={index} onChange={inputOnChange1("linecost")} />
+
+                                                        {/* <input type="text" className="form-control form-control-sm mt-1"
+                                                            value={linecost.linecost} name="linecost" onChange={inputOnChange("linecost")} /> */}
+
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.smv} name={index} onChange={inputOnChange1("smv")} />
+
+                                                        {/* <input type="text" className="form-control form-control-sm mt-1"
+                                                            value={linecost.smv} name="smv" onChange={inputOnChange("smv")} /> */}
+
+                                                    </td>
+                                                    {/* <td>
+                                                        {linecost.operators}
+                                                    </td> */}
+                                                </tr>
+                                            ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -704,7 +710,7 @@ function LineCostMaster({ name }) {
 
 
                         <div class=" ">
-                            <button class="btn btn-primary search-btn btn-block  " onClick={()=> onClose()}>Cancel</button>
+                            <button class="btn btn-primary search-btn btn-block  " onClick={() => onClose()}>Cancel</button>
                         </div>
                         <div class="">
                             <button class="btn btn-success search-btn btn-block ml-10" onClick={() => postLineCostsave()}>Save</button>
@@ -713,10 +719,6 @@ function LineCostMaster({ name }) {
                 </div>
             </div>
         </>
-
-
-
-
     )
 }
 

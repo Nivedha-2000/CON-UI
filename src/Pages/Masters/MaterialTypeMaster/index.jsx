@@ -157,6 +157,7 @@ function MaterialTypeMaster({ name }) {
             }
         }  else {
             setFields({ ...fields, [name]: value })
+            
         }
 
     }
@@ -398,9 +399,10 @@ function MaterialTypeMaster({ name }) {
                             <label>Type Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Type === '' ? errors.Type : ''}</small>
                         </div>
-                        <select className='form-select form-select-sm mt-1' required
+                        <select className='form-select form-select-sm mt-1' required disabled={fields.id != 0}
                                 value={fields.Type}
-                                onChange={inputOnChange("Type")}                            
+                                onChange={inputOnChange("Type")}      
+                                maxLength="1"                      
                         >
                             <option value=""> Select Material Type</option>
                             {/* {MaterialTypeList.map((v, index) => {
@@ -417,7 +419,7 @@ function MaterialTypeMaster({ name }) {
                             <label>Material Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Mattype === '' ? errors.Mattype : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type' disabled={fields.id != 0}
                             value={fields.Mattype} maxLength="20"
                             id="Material-Type"
                             onChange={inputOnChange("Mattype")} 

@@ -274,6 +274,7 @@ function BusinessGroupMaster({ name }) {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Business Group code'
                             value={fields.bGcode} maxLength="10"
+                            disabled={fields.id != 0}
                             id="bGcode"
                             onChange={inputOnChange("bGcode")} 
                             required />

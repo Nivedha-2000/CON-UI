@@ -353,6 +353,7 @@ function SupplierMasterNew({ name }) {
       const back = () =>{
         setShowResults(true)
         setShowForm(false)
+        onClose()
       } 
 
       
@@ -706,7 +707,8 @@ function SupplierMasterNew({ name }) {
                             <select name="somename" class="form-control SlectBox main-select"
                                 required
                                 value={fields.supCategory}
-                                onChange={inputOnChange("supCategory")}      
+                                onChange={inputOnChange("supCategory")}     
+                                disabled={fields.id != 0}     
                                 >
                                 <option value=""> Supplier Category </option>
                                  {supCategoryList.map((v, index) => {
@@ -723,6 +725,7 @@ function SupplierMasterNew({ name }) {
                             value={fields.supCode} maxLength="10"
                             id="supCode"
                             onChange={inputOnChange("supCode")} 
+                            disabled={fields.id != 0}    
                             required 
                         />
                     </div>
@@ -730,7 +733,7 @@ function SupplierMasterNew({ name }) {
                             <label>Supplier Name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.supName === '' ? errors.supName : ''}</small>
                         <input type="text" class="form-control" placeholder='Enter Supplier name'
-                            value={fields.supName} maxLength="50"
+                            value={fields.supName} maxLength="100"
                             id="supName"
                             onChange={inputOnChange("supName")} 
                             required
@@ -771,6 +774,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.address1 ? errors.address1 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Address 1'
                                     value={fields.address1} 
+                                    maxLength="100"
                                     onChange={inputOnChange("address1")}           
                                     />
                                 </div>
@@ -779,6 +783,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.address2 ? errors.address2 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Address 2'
                                     value={fields.address2} 
+                                    maxLength="100"
                                     onChange={inputOnChange("address2")}           
                                     />
                                 </div>
@@ -787,6 +792,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.address3 ? errors.address3 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Address 3'
                                     value={fields.address3} 
+                                    maxLength="100"
                                     onChange={inputOnChange("address3")}           
                                     
                                     />
@@ -796,6 +802,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.city ? errors.city : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter city'
                                     value={fields.city} 
+                                    maxLength="50"
                                     onChange={inputOnChange("city")}                 
                                     
                                     />
@@ -807,6 +814,7 @@ function SupplierMasterNew({ name }) {
                                 <select name="somename" class="form-control SlectBox main-select"
                                     required
                                     value={fields.epType}
+                                    maxLength="10"
                                     onChange={inputOnChange("epType")}                
                                     >
                                     <option value=""> Select EP Type</option>
@@ -820,6 +828,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.pinCode ? errors.pinCode : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter pinCode'
                                     value={fields.pinCode} 
+                                    maxLength="15"
                                     onChange={inputOnChange("pinCode")}             
                                     
                                     />
@@ -837,6 +846,7 @@ function SupplierMasterNew({ name }) {
                                         <select name="somename" class="form-control SlectBox main-select"
                                         required
                                         value={fields.country}
+                                        maxLength="50"
                                         onChange={inputOnChange("country")}          
                                         >
                                        <option value=""> Select country</option>
@@ -856,6 +866,7 @@ function SupplierMasterNew({ name }) {
                                     <select name="somename" class="form-control SlectBox main-select"
                                     required
                                     value={fields.enterprise}
+                                    maxLength="10"
                                     onChange={inputOnChange("enterprise")}                
                                     >
                                     <option value=""> Select Enter prise</option>
@@ -880,6 +891,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.panNo ? errors.panNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="PAN No"
                                        value={fields.panNo} 
+                                       maxLength="50"
                                        onChange={inputOnChange("panNo")}   
                                     />
                                 </div>
@@ -888,6 +900,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.cinNo ? errors.cinNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="CIN No"
                                     value={fields.cinNo} 
+                                    maxLength="50"
                                     onChange={inputOnChange("cinNo")}    
                                     />
                                 </div>
@@ -896,6 +909,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.tinNo ? errors.tinNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="TIN  No"
                                       value={fields.tinNo} 
+                                      maxLength="50"
                                       onChange={inputOnChange("tinNo")}   
                                     />
                                 </div>
@@ -904,6 +918,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.arnNo ? errors.arnNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="ARN No"
                                       value={fields.arnNo} 
+                                      maxLength="30"
                                       onChange={inputOnChange("arnNo")}    
                                     />
                                 </div>
@@ -912,6 +927,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.gstNo ? errors.gstNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="GST No"
                                      value={fields.gstNo} 
+                                     maxLength="30"
                                      onChange={inputOnChange("gstNo")}  
                                     />
                                 </div>
@@ -949,6 +965,7 @@ function SupplierMasterNew({ name }) {
                             <small className='text-danger'>{errors.emailId1 ? errors.emailId1 : ''}</small>
                                     <input type="text" class="form-control" placeholder="Enter emailId 1"
                                        value={fields.emailId1} 
+                                       maxLength="50"
                                        onChange={inputOnChange("emailId1")}        
                                     />
                                 </div>
@@ -957,6 +974,7 @@ function SupplierMasterNew({ name }) {
                             <small className='text-danger'>{errors.emailId2 ? errors.emailId2 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter emailId 2'
                                value={fields.emailId2} 
+                               maxLength="50"
                                onChange={inputOnChange("emailId2")}             
                                     />
                                 </div>
@@ -965,6 +983,7 @@ function SupplierMasterNew({ name }) {
                             <small className='text-danger'>{errors.contPerson1 ? errors.contPerson1 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Contact Person 1'
                                value={fields.contPerson1} 
+                               maxLength="50"
                                onChange={inputOnChange("contPerson1")}         
                                     />
                                 </div>
@@ -973,6 +992,7 @@ function SupplierMasterNew({ name }) {
                             <small className='text-danger'>{errors.contPerson2 ? errors.contPerson2 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Contact Person 2'
                                value={fields.contPerson2} 
+                               maxLength="50"
                                onChange={inputOnChange("contPerson2")}           
                                     />
                                 </div>
@@ -981,6 +1001,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.contNo1 ? errors.contNo1 : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Contact No 1'
                                     value={fields.contNo1} 
+                                    maxLength="25"
                                     onChange={inputOnChange("contNo1")}             
                                     />
                                 </div>
@@ -989,6 +1010,7 @@ function SupplierMasterNew({ name }) {
                                      <small className='text-danger'>{errors.contNo2 ? errors.contNo2 : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Contact No 2'
                                     value={fields.contNo2} 
+                                    maxLength="25"
                                     onChange={inputOnChange("contNo2")}                   
                                     />
                                 </div>
@@ -997,6 +1019,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.faxNo ? errors.faxNo : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Fax No '
                                     value={fields.faxNo} 
+                                    maxLength="25"
                                     onChange={inputOnChange("faxNo")}                         
                                     />
                                 </div>
@@ -1005,6 +1028,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.acctCode ? errors.acctCode : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter GL Account Code '
                                     value={fields.acctCode} 
+                                    maxLength="18"
                                     onChange={inputOnChange("acctCode")}                           
                                     />
                                 </div>
@@ -1013,6 +1037,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.strRegNo ? errors.strRegNo : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Str Reg No '
                                     value={fields.strRegNo} 
+                                    maxLength="25"
                                     onChange={inputOnChange("strRegNo")}                               
                                     />
                                 </div>
@@ -1021,6 +1046,7 @@ function SupplierMasterNew({ name }) {
                                     <small className='text-danger'>{errors.requestBy ? errors.requestBy : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Requested By '
                                     value={fields.requestBy} 
+                                    maxLength="50"
                                     onChange={inputOnChange("requestBy")}                                     
                                     />
                                 </div>
