@@ -144,10 +144,10 @@ class MenuElement extends Component {
                 displayIndex: this.state.displayindex,
                 active: this.state.active_status,
                 menuVisible: this.state.menu_visible,
-                createdDate:moment().format('YYYY-MM-DD'),
+                createdDate: moment().format('YYYY-MM-DD'),
                 createdBy: "Admin",
                 modifiedBy: "Admin",//this.state.userInfo.userCode,
-                isActive:false,
+                isActive: false,
                 modifiedDate: moment().format('YYYY-MM-DD'),
                 hostName: ""//this.state.userInfo.displayName
             };
@@ -160,19 +160,19 @@ class MenuElement extends Component {
                 message.success(resp.message)
                 console.log(resp);
                 this.setState({
-                                edit_add: false,
-                                menuId: 0,
-                                parent_menu_id: [],
-                                module: [],
-                                menu_type: [],
-                                menuname: '',
-                                menuurl: '',
-                                menudesc: '',
-                                active_status: 'Y',
-                                menu_visible: "Y",
-                                isparent: '',
-                                displayindex: 0
-                            });
+                    edit_add: false,
+                    menuId: 0,
+                    parent_menu_id: [],
+                    module: [],
+                    menu_type: [],
+                    menuname: '',
+                    menuurl: '',
+                    menudesc: '',
+                    active_status: 'Y',
+                    menu_visible: "Y",
+                    isparent: '',
+                    displayindex: 0
+                });
                 // onClose();
                 //getDatas();
             }).catch(err => {
@@ -257,10 +257,10 @@ class MenuElement extends Component {
                 displayIndex: this.state.displayindex,
                 menuVisible: this.state.menu_visible,
                 active: this.state.active_status,
-                createdDate:moment().format('YYYY-MM-DD'),
+                createdDate: moment().format('YYYY-MM-DD'),
                 createdBy: "Admin",
-                modifiedBy:"Admin",
-                isActive:false,
+                modifiedBy: "Admin",
+                isActive: false,
                 modifiedDate: moment().format('YYYY-MM-DD'),
                 // createdBy: this.state.userInfo.userCode,
                 // modifyBy: this.state.userInfo.userCode,
@@ -279,18 +279,18 @@ class MenuElement extends Component {
                 console.log(resp);
                 this.setState({
                     edit_add: false,
-                                menuId: 0,
-                                parent_menu_id: [],
-                                module: [],
-                                menu_type: [],
-                                menuname: '',
-                                menuurl: '',
-                                menudesc: '',
-                                active_status: 'Y',
-                                menu_visible: 'Y',
-                                isparent: '',
-                                displayindex: 0
-                            });
+                    menuId: 0,
+                    parent_menu_id: [],
+                    module: [],
+                    menu_type: [],
+                    menuname: '',
+                    menuurl: '',
+                    menudesc: '',
+                    active_status: 'Y',
+                    menu_visible: 'Y',
+                    isparent: '',
+                    displayindex: 0
+                });
                 // onClose();
                 //getDatas();
             }).catch(err => {
@@ -411,17 +411,17 @@ class MenuElement extends Component {
             path: API_URLS.GET_MENU_MASTER_EDIT_BY_ID + "/" + id
         }).then(response => {
             try {
-debugger;
+                debugger;
                 let dataval = response.data;
-               // alert(dataval.parentMenuName);
+                // alert(dataval.parentMenuName);
                 console.log(response.data);
                 this.setState({
                     module: [{ value: dataval.appName, label: dataval.appName }]
                     , parent_menu_id: [{
                         value: dataval.parantMenuId, label:
-                            (dataval.parantMenuId == 0 ? dataval.menuName : this.state.menulists.filter(f=>f.menuId==dataval.parantMenuId).map(d =>  d.menuName)[0])
+                            (dataval.parantMenuId == 0 ? dataval.menuName : this.state.menulists.filter(f => f.menuId == dataval.parantMenuId).map(d => d.menuName)[0])
                     }],
-                  //  parentmenutypedropdown.push({ value: item.menuId, label: item.menuName });
+                    //  parentmenutypedropdown.push({ value: item.menuId, label: item.menuName });
                     menu_type: [{ value: dataval.menuType, label: dataval.menuType }],
                     menuname: dataval.menuName, menuurl: dataval.menuUrl,
                     menudesc: dataval.menuDescription, displayindex: dataval.displayIndex,

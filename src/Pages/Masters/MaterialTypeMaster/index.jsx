@@ -157,6 +157,7 @@ function MaterialTypeMaster({ name }) {
             }
         }  else {
             setFields({ ...fields, [name]: value })
+            
         }
 
     }
@@ -321,7 +322,17 @@ function MaterialTypeMaster({ name }) {
     }
 
     //console.log(fields)
-
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+        setFields({ ...fields, [name]: "" })
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            setFields({ ...fields, [name]: 0 })
+        }
+    }
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
@@ -367,7 +378,10 @@ function MaterialTypeMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer
+             maskClosable={false}
+             keyboard={false}
+            footer={
                 <>
                     <div>
                         {
@@ -398,9 +412,10 @@ function MaterialTypeMaster({ name }) {
                             <label>Type Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Type === '' ? errors.Type : ''}</small>
                         </div>
-                        <select className='form-select form-select-sm mt-1' required
+                        <select className='form-select form-select-sm mt-1' required disabled={fields.id != 0}
                                 value={fields.Type}
-                                onChange={inputOnChange("Type")}                            
+                                onChange={inputOnChange("Type")}      
+                                maxLength="1"                      
                         >
                             <option value=""> Select Material Type</option>
                             {/* {MaterialTypeList.map((v, index) => {
@@ -417,7 +432,7 @@ function MaterialTypeMaster({ name }) {
                             <label>Material Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Mattype === '' ? errors.Mattype : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type' disabled={fields.id != 0}
                             value={fields.Mattype} maxLength="20"
                             id="Material-Type"
                             onChange={inputOnChange("Mattype")} 
@@ -442,7 +457,9 @@ function MaterialTypeMaster({ name }) {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type Index'
                                value={fields.MatTypeIndex} minLength="1" maxLength="8"
-                               onChange={inputOnChange("MatTypeIndex")}                         
+                               onChange={inputOnChange("MatTypeIndex")}   
+                               onFocus={NUMBER_IS_FOCUS_IN_ZERO("MatTypeIndex")} 
+                               onBlur={NUMBER_IS_FOCUS_OUT_ZERO("MatTypeIndex")}                      
                         />
                     </div> 
 

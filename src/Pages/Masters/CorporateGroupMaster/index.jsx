@@ -276,6 +276,7 @@ function CorporateGroupMaster({ name }) {
                             value={fields.cGcode} maxLength="10"
                             id="cGcode"
                             onChange={inputOnChange("cGcode")} 
+                            disabled={fields.id != 0}
                             required />
                     </div>
 

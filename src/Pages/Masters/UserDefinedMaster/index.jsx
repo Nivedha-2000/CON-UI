@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
 import {faCopy} from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["fashionGroup", "productType","styleDivision","subProductType","avgSAM"],
+const requiredFields = ["type", "code","typeDesc","codeDesc","indexkey"],
     initialErrorMessages = {
         type: "",
         code: "",
@@ -171,8 +171,7 @@ function UserDefinedMaster({ name }) {
                 getDatas()
             }).catch(err => {
                 setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
+             
                 setFields({...fields})
                 setErrors({ ...initialErrorMessages })
                 message.error(err.message || err)
@@ -292,6 +291,17 @@ function UserDefinedMaster({ name }) {
         }
     }
 
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+        setFields({ ...fields, [name]: "" })
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            setFields({ ...fields, [name]: 0 })
+        }
+    }
     //console.log(fields)
 
     return (
@@ -339,7 +349,10 @@ function UserDefinedMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer 
+              maskClosable={false}
+              keyboard={false}
+            footer={
                 <>
                     <div>
                         {
@@ -371,7 +384,7 @@ function UserDefinedMaster({ name }) {
                             <label>Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.type === '' ? errors.type : ''}</small>
                         </div>
-                        <select className='form-select form-select-sm mt-1' required
+                        <select className='form-select form-select-sm mt-1' required  disabled={fields.id != 0}
                                 value={fields.type}
                                 onChange={inputOnChange("type")}                            
                         >
@@ -387,10 +400,11 @@ function UserDefinedMaster({ name }) {
                             <label>Enter code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.code === '' ? errors.code : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter code'  disabled={fields.id != 0}
                             value={fields.code} maxLength="10"
                             id="code"
                             onChange={inputOnChange("code")} 
+                            autoComplete="off"
                             required />
                     </div>
                   
@@ -403,6 +417,7 @@ function UserDefinedMaster({ name }) {
                             value={fields.typeDesc} maxLength="50"
                             id="typeDesc"
                             onChange={inputOnChange("typeDesc")} 
+                            autoComplete="off"
                             required />
                     </div>
                     <div className='mt-3'>
@@ -414,6 +429,7 @@ function UserDefinedMaster({ name }) {
                             value={fields.codeDesc} maxLength="50"
                             id="codeDesc"
                             onChange={inputOnChange("codeDesc")} 
+                            autoComplete="off"
                             required />
                     </div>
                   
@@ -425,7 +441,9 @@ function UserDefinedMaster({ name }) {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter index key '
                                value={fields.indexkey} minLength="1" maxLength="10"
-                               onChange={inputOnChange("indexkey")}                         
+                               onChange={inputOnChange("indexkey")}         
+                               onFocus={NUMBER_IS_FOCUS_IN_ZERO("indexkey")} 
+                               onBlur={NUMBER_IS_FOCUS_OUT_ZERO("indexkey")}                
                         />
                     </div> 
 

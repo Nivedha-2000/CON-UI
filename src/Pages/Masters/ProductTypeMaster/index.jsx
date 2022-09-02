@@ -295,7 +295,10 @@ function ProductTypeMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer
+             maskClosable={false}
+             keyboard={false}
+            footer={
                 <>
                     <div>
                         {
@@ -326,7 +329,7 @@ function ProductTypeMaster({ name }) {
                             <label>Product Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.productType === '' ? errors.productType : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Product Type'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Product Type' disabled={fields.id != 0}
                             value={fields.productType} maxLength="20"
                             id="Product-Type"
                             onChange={inputOnChange("productType")} 

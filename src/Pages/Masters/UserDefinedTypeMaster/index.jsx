@@ -302,7 +302,10 @@ function UserDefinedTypeMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer
+             maskClosable={false}
+             keyboard={false}
+            footer={
                 <>
                     <div>
                         {
@@ -333,7 +336,7 @@ function UserDefinedTypeMaster({ name }) {
                             <label>Enter code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.miscType === '' ? errors.miscType : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter code' disabled={fields.id != 0}
                             value={fields.miscType} maxLength="10"
                             id="miscType"
                             onChange={inputOnChange("miscType")} 

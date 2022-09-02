@@ -252,12 +252,26 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
 
-                <Menu.Item key="4-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />} />
+                <Menu.Item key="3-35" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/tna-master">
+                    <span className='mx-2'> TNA Master</span>
+                  </NavLink>
+                </Menu.Item>
+
+                <Menu.Item key="3-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/purpose-master">
                     <span className='mx-2'> Purpose Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />} />
+
+                <Menu.Item key="3-31" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/productivity-master">
+                    <span className='mx-2'> Productivity Master</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/tab-test">
                     <span className='mx-2'> Material Master</span>
                   </NavLink>

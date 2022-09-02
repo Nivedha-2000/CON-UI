@@ -55,13 +55,16 @@ import MenurightsElement from '../Pages/Masters/MenuRightsMaster';
 import MenuElement from '../Pages/Masters/MenuMaster';
 import PurposeMaster from '../Pages/Masters/PurposeMaster';
 
+import ProductivityMasters from '../Pages/Masters/ProductivityMasterNew';
+import ProductivityMaster from '../Pages/Masters/ProductivityMaster';
+
 
 import TabTest from '../Pages/Masters/TabTest'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
 import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMaster';
 import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
 import OffStdMaster from '../Pages/Masters/OffStdMaster/OffStdMaster';
-
+import TNAMaster from '../Pages/Masters/TNAMaster';
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
 export default function Routing() {
@@ -128,7 +131,8 @@ export default function Routing() {
         <Route path='masters/menu-rights-master' element={<MenurightsElement name='Menu Rights Master' />} />
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
         <Route path='masters/purpose-master' element={<PurposeMaster name='Purpose Master' />} />
-
+        <Route path='masters/productivity-master' element={<ProductivityMasters name='Productivity Master' />} />
+        <Route path='masters/tna-master' element={<TNAMaster name='TNA Master'/>}/>
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>
     </Routes>
