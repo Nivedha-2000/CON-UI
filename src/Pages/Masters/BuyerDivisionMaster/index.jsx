@@ -1,30 +1,38 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["buyDivCode", "buyCode","divName","profitPercent"],
+const requiredFields = ["buyDivCode", "buyCode", "divName", "profitPercent"],
     initialErrorMessages = {
         buyDivCode: "",
         buyCode: "",
         divName: "",
-        profitPercent: 0,  
+        profitPercent: 0,
         Active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         buyDivCode: "",
         buyCode: "",
         divName: "",
-        profitPercent: 0,  
+        profitPercent: 0,
+        Active: 'Y'
+    },
+    test = {
+        id: 0,
+        buyDivCode: "",
+        buyCode: "",
+        divName: "",
+        profitPercent: 0,
         Active: 'Y'
     };
 
@@ -44,6 +52,11 @@ function BuyerDivisionMaster({ name }) {
         ...initialErrorMessages
     })
 
+    const [fieldsTemp, setFieldsTemp] = useState({
+        ...test
+    });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
     const clearFields = () => {
         setFields({
             ...initialFieldValues
@@ -58,6 +71,9 @@ function BuyerDivisionMaster({ name }) {
 
     const showDrawer = () => {
         setVisible(true);
+
+        setSaveVisible(true)
+        setUpdateVisible(false)
     };
 
 
@@ -74,8 +90,8 @@ function BuyerDivisionMaster({ name }) {
     useEffect(() => {
         getDatas()
         getBuyerList()
-       // getLocationMaster()
-      //  getShipModeType();
+        // getLocationMaster()
+        //  getShipModeType();
     }, []);
 
     const handleChange = (page) => {
@@ -96,7 +112,7 @@ function BuyerDivisionMaster({ name }) {
         })
     }
 
-    
+
 
     const getDatas = () => {
         setListLoading(true)
@@ -117,28 +133,27 @@ function BuyerDivisionMaster({ name }) {
 
     const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
         if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
-            setprofitPercentList({ ...profitPercentList, [name]: "" });
+        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+        setFields({ ...fields, [name]: "" })
         }
     }
-
-
     const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
         if (e.target.value == "" || e.target.value == undefined) {
-            setprofitPercentList({ ...profitPercentList, [name]: 0 });
+            setFields({ ...fields, [name]: 0 })
         }
     }
 
-   
-    
+
+
 
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'profitPercent'){
+        if (name === 'profitPercent') {
             const re = /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['profitPercent'] =  ''
+                err['profitPercent'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
@@ -146,51 +161,109 @@ function BuyerDivisionMaster({ name }) {
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        }
+        else if (name === 'buyDivCode') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
             setFields({ ...fields, [name]: value })
         }
 
     }
-    const save = () => {
+    const save = async (buyDivCode, Type) => {
         if (loader) return
         let err = {}, validation = true
-        debugger;
+
         requiredFields.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            // if (fields.transitdays==0){
-            //     err['transitdays'] = "Should be greater than zero."
-            //     validation = false
-            // }
-        
+        })
         setErrors({ ...initialErrorMessages, ...err })
-
         if (validation) {
             setLoader(true)
-            
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_BUYERDIVISION_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
+            debugger;
+
+            // ApiCall({
+            //     path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_BUYDIVCODE + "/" + fields.buyDivCode,
+            // }).then(resp => {
+            //     if (!resp.data) {
+            //         alert("Not Avaliable")
+            //     } else {
+            //         alert("Already Extits")
+            //     }
+            // }).catch(err => {
+            //     setListLoading(false)
+            //     message.error(err.message || err)
+            // })
+
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_BUYERDIVISION_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+
+                    //  fields['ftdOprName'] = tempOprName
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+                debugger;
+                let { data } = (buyDivCode && await getDataById(buyDivCode))
+                console.log(data);
+                if (!data) {
+                    message.error("Data not found")
+                    return
                 }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+                if (!data) {
+                    ApiCall({
+                        method: "POST",
+                        path: API_URLS.SAVE_BUYERDIVISION_MASTER,
+                        data: {
+                            ...fields,
+                            hostName: getHostName()
+                        }
+                    }).then(resp => {
+                        setLoader(false)
+                        message.success(resp.message)
+                        onClose()
+                        getDatas()
+                    }).catch(err => {
+                        setLoader(false)
+
+                        //  fields['ftdOprName'] = tempOprName
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        message.error(err.message || err)
+                    })
+                } else {
+                    debugger;
+                    if (data.buyDivCode.toUpperCase() === buyDivCode.toUpperCase()) {
+                        message.error("Buyer Div Code Already Exits...!")
+                        setLoader(false)
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        
+                    } else {
+                        message.error("Buyer Div Code Already Exits...!")
+                    }
+                }
+            }
+
+
+
         }
     }
 
@@ -213,21 +286,21 @@ function BuyerDivisionMaster({ name }) {
     const tableColumns = [
         {
             name: "buyCode",
-            label: "buyer Code"
-        },   
+            label: "Buyer Code"
+        },
         {
             name: "buyDivCode",
-            label: "buyer Division Code"
-        },  
+            label: "Buyer Division Code"
+        },
         {
             name: "divName",
-            label: "division Name"
-        },  
+            label: "Division Name"
+        },
         {
             name: "profitPercent",
-            label: "profit Percent"
-        },     
-     
+            label: "Profit Percent"
+        },
+
         {
             name: "active",
             label: "Active",
@@ -245,7 +318,7 @@ function BuyerDivisionMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <div onClick={() => edit(value, 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
@@ -260,16 +333,22 @@ function BuyerDivisionMaster({ name }) {
         }
     ]
 
-    const getDataById = id => {
-       // console.log(API_URLS.GET_MATERIALTYPE_BY_ID + "/" + id)
+    const getDataById = buyDivCode => {
+    
         return ApiCall({
-            path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_ID + "/" + id,
+            path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_ID + "/" + buyDivCode,
+        })
+    }
+
+    const getDataByDivCode = BuyDivCode => {
+        return ApiCall({
+            path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_BUYDIVCODE + "/" + BuyDivCode,
         })
     }
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -277,26 +356,30 @@ function BuyerDivisionMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (id, type) => {
+    const edit = async (buyDivCode, type) => {
+        debugger;
         try {
+
             setLoader(true)
             setVisible(true);
-            console.log(id);
-            let { data } = (id && await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            console.log(buyDivCode);
+            let { data } = (buyDivCode && await getDataById(buyDivCode))
             console.log(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            
-            const tableId = type === 'clone' ? 0 : id
+
+            const tableId = type === 'clone' ? "" : buyDivCode
             console.log(data.active);
             setFields({
-                id: tableId,                    
+                id: tableId,
                 buyDivCode: data.buyDivCode,
                 buyCode: data.buyCode,
                 divName: data.divName,
-                profitPercent: data.profitPercent,  
+                profitPercent: data.profitPercent,
                 Active: data.active
             })
             setLoader(false)
@@ -353,10 +436,21 @@ function BuyerDivisionMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer 
+              maskClosable={false}
+              keyboard={false}
+            footer={
                 <>
                     <div>
                         {
+                            saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.buyDivCode, 'save')}> Save </button>
+
+                        }{
+                            updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.buyDivCode, 'update')}> Update </button>
+                        }
+
+
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -364,31 +458,29 @@ function BuyerDivisionMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
                             let _id = Number(fields.id)
-                            if(_id === 0)add()
+                            if (_id === 0) add()
                             else edit(_id)
                         }}> Cancel </button>
                     </div>
                 </>
             } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={() => {
-                clearFields();
+           
                 onClose();
             }} visible={visible} >
                 <div className='defect-master-add-new'>
-                   
-                <div className='mt-3'>
+
+                    <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Buyer Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{errors.buyCode}</small>
                         </div>
                         <select className='form-control form-control-sm mt-1' id="buyer-code" disabled={fields.id != 0}
-                         value={fields.buyCode} 
-                         maxLength="10"
-                         onChange={inputOnChange("buyCode")} required>
+                            value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
                             <option value="" hidden>Select Buyer Code</option>
                             {
                                 buyCodeList.map((t, ind) => (
@@ -397,16 +489,17 @@ function BuyerDivisionMaster({ name }) {
                             }
                         </select>
                     </div>
-           
-                   <div className='mt-3'>
+
+                    <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Buyer Div Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Div Code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Div Code' disabled={fields.id != 0}
                             value={fields.buyDivCode} maxLength="10"
                             id="Buyer-Div-Code"
-                            onChange={inputOnChange("buyDivCode")} 
+                            onChange={inputOnChange("buyDivCode")}
+                            autoComplete="off"
                             required />
                     </div>
 
@@ -418,7 +511,8 @@ function BuyerDivisionMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Buyer Division Name'
                             value={fields.divName} maxLength="50"
                             id="Material-Desc"
-                            onChange={inputOnChange("divName")} 
+                            onChange={inputOnChange("divName")}
+                            autoComplete="off"
                             required />
                     </div>
                     <div className='mt-3'>
@@ -427,18 +521,20 @@ function BuyerDivisionMaster({ name }) {
                             <small className='text-danger'>{errors.profitPercent ? errors.profitPercent : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter profit Percent'
-                               value={fields.profitPercent}  maxLength="20"
-                               onChange={inputOnChange("profitPercent")}               
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("profitPercent")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("profitPercent")}
+                            value={fields.profitPercent}
+                            onChange={inputOnChange("profitPercent")}
+                            maxLength="10"
+                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("profitPercent")} 
+                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("profitPercent")}
                         />
-                    </div> 
+                    </div>
 
                     <div className='mt-3'>
                         <label>{fields.Active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.Active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, Active: e ? 'Y' : 'N' })} />
+                                checked={fields.Active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, Active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>

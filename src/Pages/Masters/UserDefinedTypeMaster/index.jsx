@@ -302,7 +302,10 @@ function UserDefinedTypeMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer
+             maskClosable={false}
+             keyboard={false}
+            footer={
                 <>
                     <div>
                         {

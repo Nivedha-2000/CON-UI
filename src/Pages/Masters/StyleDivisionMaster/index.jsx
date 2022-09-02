@@ -317,6 +317,17 @@ function StyleDivisionMaster({ name }) {
     }
 
     //console.log(fields)
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+        setFields({ ...fields, [name]: "" })
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            setFields({ ...fields, [name]: 0 })
+        }
+    }
 
     return (
         <div className='defect-master-main'>
@@ -363,7 +374,10 @@ function StyleDivisionMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer footer={
+            <Drawer
+             maskClosable={false}
+             keyboard={false}
+            footer={
                 <>
                     <div>
                         {
@@ -478,7 +492,9 @@ function StyleDivisionMaster({ name }) {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter avg SAM'
                                value={fields.avgSAM} minLength="1" maxLength="10"
-                               onChange={inputOnChange("avgSAM")}                         
+                               onChange={inputOnChange("avgSAM")}     
+                               onFocus={NUMBER_IS_FOCUS_IN_ZERO("avgSAM")} 
+                               onBlur={NUMBER_IS_FOCUS_OUT_ZERO("avgSAM")}                    
                         />
                     </div> 
 
