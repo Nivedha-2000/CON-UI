@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const requiredFields = ["buyCode", "buyDivCode", "productType"],
     initialErrorMessages = {
@@ -20,7 +20,7 @@ const requiredFields = ["buyCode", "buyDivCode", "productType"],
         active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         buyCode: "",
         buyDivCode: "",
         productType: "",
@@ -29,18 +29,15 @@ const requiredFields = ["buyCode", "buyDivCode", "productType"],
     };
 
 function BuyerProductTypeMaster({ name }) {
-    const [visible, setVisible] = useState(false);
-    // const [locationName, setLocationName] = useState([]);
-    // const [buyercodelist, setbuyercodelist] = useState([]);
-    // const [buyerdivcodelist, setbuyerdivcodelist] = useState([]);
+    const [visible, setVisible] = useState(false);   
     const [ProductTypeList, setProductTypeList] = useState([]);
     const [buyerList, setBuyerList] = useState([]);
-    const [buyerDivisionList, setBuyerDivisionList] = useState([]);
-    // const [shipmodeList, setShipmodeList] = useState([]);
+    const [buyerDivisionList, setBuyerDivisionList] = useState([]);   
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
     const [listLoading, setListLoading] = useState(false);
+    const [buyerCodeVisible, setBuyerCodeVisible] = useState(false);
     const [loader, setLoader] = useState(false);
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
@@ -81,7 +78,7 @@ function BuyerProductTypeMaster({ name }) {
 
     //     getDatas()
     //     // getLocationMaster()
-        
+
     //     // getShipModeType();
     // }, []);
     useEffect(() => {
@@ -100,45 +97,8 @@ function BuyerProductTypeMaster({ name }) {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
-    // const getLocationMaster = async () => {
-    //     ApiCall({
-    //         path: API_URLS.GET_LOCATION_MASTER_LIST
-    //     }).then(res => {
-    //         if (res.Success === true) {
-    //             setLocationName(res.data.filter(d=>d.active=="Y"))
-    //         }
-    //         else {
-    //             setLoader(false);
-    //         }
-    //     });
-    // }
-    // const getBuyerCode = () => {
-    //     ApiCall({
-    //         path: API_URLS.GET_BUYCODE_DROPDOWN 
-    //     }).then(resp => {
-    //         try {
-    //             setbuyercodelist(resp.data.map(d => ({ code: d.buyCode, codeDesc: d.buyCode })))
-    //         } catch (e) {
-    //             message.error("response is not as expected")
-    //         }
-    //     }).catch(err => {
-    //         message.error(err.message || err)
-    //     })
-    // }
-    // const getBuyerDivCode = () => {
-    //     ApiCall({
-    //         path: API_URLS.GET_BUYDIVCODE_DROPDOWN + `/${fields.buyCode}`
-    //     }).then(resp => {
-    //         try {
-    //             setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
-    //         } catch (e) {
-    //             message.error("response is not as expected")
-    //         }
-    //     }).catch(err => {
-    //         message.error(err.message || err)
-    //     })
-    // }
- const getBuyerList = () => {
+  
+    const getBuyerList = () => {
         ApiCall({
             path: API_URLS.GET_BUYER_DROPDOWN
         }).then(resp => {
@@ -155,47 +115,28 @@ function BuyerProductTypeMaster({ name }) {
     const getBuyerDivisionDropDown = () => {
         setFields({ ...fields, buyDivCode: fields.id == 0 ? "" : fields.buyDivCode })
         if (fields.buyCode) {
-            ApiCall({ 
+            ApiCall({
                 path: API_URLS.GET_BUYER_DIVISION_DROPDOWN + `/${fields.buyCode}`
             }).then(resp => {
                 try {
                     setBuyerDivisionList(resp.data)
-                } catch(er) {
+                } catch (er) {
                     message.error("Response data is not as expected")
                 }
             })
-            .catch(err => {
-                message.error(err.message || err)
-            })
+                .catch(err => {
+                    message.error(err.message || err)
+                })
         } else {
             setBuyerDivisionList([])
         }
     }
 
-    // const getBuyerDivCode = () => {
-    //     setFields({ ...fields, buyDivcode: fields.id == 0 ? "" : fields.buyDivcode })
-    //     if (fields.buyCode) {
-    //         ApiCall({ 
-    //             path: API_URLS.GET_BUYDIVCODE_DROPDOWN + `/${fields.buyCode}`
-    //         }).then(resp => {
-    //             try {
-    //                 setbuyerdivcodelist(resp.data)
-    //             } catch(er) {
-    //                 message.error("Response data is not as expected")
-    //             }
-    //         })
-    //         .catch(err => {
-    //             message.error(err.message || err)
-    //         })
-    //     } else {
-    //         setbuyerdivcodelist([])
-    //     }
-    // }
-
+    
 
     const getProductType = () => {
         ApiCall({
-            path: API_URLS.GET_PRODUCT_TYPE_DROPDOWN 
+            path: API_URLS.GET_PRODUCT_TYPE_DROPDOWN
         }).then(resp => {
             try {
                 setProductTypeList(resp.data.map(d => ({ code: d.productType, codeDesc: d.productType })))
@@ -228,11 +169,11 @@ function BuyerProductTypeMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'transitdays'){
+        if (name === 'transitdays') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['transitdays'] =  ''
+                err['transitdays'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
@@ -240,9 +181,8 @@ function BuyerProductTypeMaster({ name }) {
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        } else {
             setFields({ ...fields, [name]: value })
-            console.log(fields)
         }
 
     }
@@ -255,17 +195,15 @@ function BuyerProductTypeMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            if (fields.transitdays==0){
-                err['transitdays'] = "Should be greater than zero."
-                validation = false
-            }
-        
+        })        
+
         setErrors({ ...initialErrorMessages, ...err })
+
+        //getDataById(fields.buyCode, fields.buyDivCode, fields.productType)
 
         if (validation) {
             setLoader(true)
-            
+
             ApiCall({
                 method: "POST",
                 path: API_URLS.SAVE_BUYPRODTYPE_MASTER,
@@ -278,11 +216,12 @@ function BuyerProductTypeMaster({ name }) {
                 message.success(resp.message)
                 onClose()
                 getDatas()
+                setBuyerCodeVisible(false)
             }).catch(err => {
                 setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
+
+                //  fields['ftdOprName'] = tempOprName
+                setFields({ ...fields })
                 setErrors({ ...initialErrorMessages })
                 message.error(err.message || err)
             })
@@ -308,21 +247,17 @@ function BuyerProductTypeMaster({ name }) {
     const tableColumns = [
         {
             name: "buyCode",
-            label: "buyerCode",           
+            label: "buyerCode",
 
         },
         {
             name: "buyDivCode",
-            label: "buyDivCode",           
+            label: "buyDivCode",
         },
         {
             name: "productType",
-            label: "productType",           
-        },
-        // {
-        //     name: "transitdays",
-        //     label: "transitdays"
-        // },      
+            label: "productType",
+        },            
         {
             name: "active",
             label: "Active",
@@ -340,8 +275,8 @@ function BuyerProductTypeMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                            <div onClick={() => edit(tm.rowData[0],tm.rowData[1],tm.rowData[2], 'edit')}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[0], tm.rowData[1], tm.rowData[2], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div onClick={() => edit(value, 'clone')}>
@@ -355,15 +290,15 @@ function BuyerProductTypeMaster({ name }) {
         }
     ]
 
-    const getDataById = (buyCode,buyDivCode,productType) => {
+    const getDataById = (buyCode, buyDivCode, productType) => {
         return ApiCall({
-            path: API_URLS.GET_BUYPRODTYPE_MASTER_BY_ID + "/" + buyCode + "/" + buyDivCode+ "/" + productType,
+            path: API_URLS.GET_BUYPRODTYPE_MASTER_BY_ID + "/" + buyCode + "/" + buyDivCode + "/" + productType,
         })
     }
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -371,22 +306,21 @@ function BuyerProductTypeMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (buyCode,buyDivCode,productType, type) => {
+    const edit = async (buyCode, buyDivCode, productType, type) => {
         try {
             setLoader(true)
             setVisible(true);
-            let { data } = (buyCode && await getDataById(buyCode,buyDivCode,productType))
+            setBuyerCodeVisible(true);
+            let { data } = (buyCode && await getDataById(buyCode, buyDivCode, productType))
             if (!data) {
                 message.error("Data not found")
                 return
             }
             const tableId = type === 'clone' ? 0 : 0
-            setFields({
-               // id: tableId,                    
+            setFields({                             
                 buyCode: data.buyCode,
                 buyDivCode: data.buyDivCode,
-                productType: data.productType,
-                // transitdays: data.transitdays,     
+                productType: data.productType,                    
                 active: data.active
             })
             setLoader(false)
@@ -459,7 +393,7 @@ function BuyerProductTypeMaster({ name }) {
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
                             let _id = Number(fields.id)
-                            if(_id === 0)add()
+                            if (_id === 0) add()
                             else edit(_id)
                         }}> Cancel </button>
                     </div>
@@ -469,13 +403,13 @@ function BuyerProductTypeMaster({ name }) {
                 onClose();
             }} visible={visible} >
                 <div className='defect-master-add-new'>
-                  
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Buyer Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{errors.buyCode}</small>
                         </div>
-                        <select className='form-control form-control-sm mt-1' id="buyer-code" value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
+                        <select className='form-control form-control-sm mt-1' disabled={buyerCodeVisible}  id="buyer-code" value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
                             <option value="" hidden>Select Buyer Code</option>
                             {
                                 buyerList.map((t, ind) => (
@@ -490,7 +424,7 @@ function BuyerProductTypeMaster({ name }) {
                             <label>Buyer Division Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{errors.buyDivCode}</small>
                         </div>
-                        <select className='form-control form-control-sm mt-1' id="buyer-div-code" value={fields.buyDivCode} onChange={inputOnChange("buyDivCode")} required>
+                        <select className='form-control form-control-sm mt-1' disabled={buyerCodeVisible} id="buyer-div-code" value={fields.buyDivCode} onChange={inputOnChange("buyDivCode")} required>
                             <option value="" hidden>Select Buyer Division Code</option>
                             {
                                 buyerDivisionList.map((t, ind) => (
@@ -506,8 +440,8 @@ function BuyerProductTypeMaster({ name }) {
                             <small className='text-danger'>{fields.productType === '' ? errors.productType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.productType}
-                                onChange={inputOnChange("productType")}                            
+                            value={fields.productType} disabled={buyerCodeVisible}
+                            onChange={inputOnChange("productType")}
                         >
                             <option value=""> Select Product Type</option>
                             {ProductTypeList.map((v, index) => {
@@ -519,8 +453,8 @@ function BuyerProductTypeMaster({ name }) {
                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                                checked={fields.active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>

@@ -543,7 +543,7 @@ function HandOverTaskMaster({ name }) {
                             <label>Menu Name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.menuName === '' ? errors.menuName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Task Index Value'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Menu Name '
                                value={fields.menuName} minLength="1" maxLength="50"
                                onChange={inputOnChange("menuName")}                            
                         />

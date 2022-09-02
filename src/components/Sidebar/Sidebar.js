@@ -252,6 +252,12 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
 
+                <Menu.Item key="3-35" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/tna-master">
+                    <span className='mx-2'> TNA Master</span>
+                  </NavLink>
+                </Menu.Item>
+
                 <Menu.Item key="3-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/purpose-master">
                     <span className='mx-2'> Purpose Master</span>
