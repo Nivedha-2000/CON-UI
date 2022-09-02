@@ -57,7 +57,7 @@ class MenurightsElement extends Component {
 
     state = {
         menuRightsList: [],
-        moduleLists: [],
+        modulelists: [],
         LocationItem: [],
         RoleTypeList: [],
         UnitCodeList: [],
@@ -305,7 +305,18 @@ class MenurightsElement extends Component {
         //     message.error(err.message || err)
         // })
 
-
+        ApiCall({
+            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.MODULE
+        }).then(resp => {
+            try {
+                this.setState({ modulelists: resp.data });
+                /// alert(modulelists);
+            } catch (e) {
+                message.error("response is not as expected")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
 
 
 
@@ -449,11 +460,14 @@ class MenurightsElement extends Component {
         //     options1.push({ value: item.buyerCode, label: item.buyerName });
         // }
 
+       
+        // moduleListOptions.push({ value: "PDM", label: "PDM" });
+        // moduleListOptions.push({ value: "QAM TAB", label: "QAM TAB" });
+        // moduleListOptions.push({ value: "QAM WEB", label: "QAM WEB" });
         const moduleListOptions = [];
-        moduleListOptions.push({ value: "PDM", label: "PDM" });
-        //  for (const item of this.state.UDMasterList.filter(f => f.active == "Y" && f.type == "MODULE")) {
-        //      moduleListOptions.push({ value: item.code, label: item.code });
-        //  }
+         for (const item of this.state.modulelists.filter(f => f.active == "Y" && f.type == "MODULE")) {
+             moduleListOptions.push({ value: item.code, label: item.code });
+         }
 
         const locationItemOptions = [];
         for (const item of this.state.LocationItem) {
