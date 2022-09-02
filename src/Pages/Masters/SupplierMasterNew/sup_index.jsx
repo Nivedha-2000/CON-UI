@@ -361,6 +361,28 @@ function SupplierMasterNew({ name }) {
 
     const tableColumns = [
         {
+            name: "supCategory",
+            label: "Action",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return (
+                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                           {/* </div> 
+                           <div onClick={() => edit(tm.rowData[0],tm.rowData[1],tm.rowData[2], 'edit')}> 
+                           */}
+                            <div onClick={() => edit(tm.rowData[1],tm.rowData[2],tm.rowData[3], 'edit')}>
+                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                            </div>
+                            {/* <div onClick={() => edit(value, 'clone')}>
+                                <FontAwesomeIcon icon={faCopy} color="#919191" />
+                            </div> */}
+                        </div>
+
+                    )
+                }
+            }
+        },
+        {
             name: "supplierId",
             label: "supplier Id"
         },   
@@ -388,114 +410,114 @@ function SupplierMasterNew({ name }) {
             name: "address3",
             label: "address3"
         },   
-        // {
-        //     name: "city",
-        //     label: "city"
-        // },   
-        // {
-        //     name: "pinCode",
-        //     label: "pinCode"
-        // },   
-        // {
-        //     name: "country",
-        //     label: "country"
-        // },   
-        // {
-        //     name: "tngstNo",
-        //     label: "tngstNo"
-        // },   
-        // {
-        //     name: "tinNo",
-        //     label: "tinNo"
-        // },   
-        // {
-        //     name: "cstNo",
-        //     label: "cstNo"
-        // },   
-        // {
-        //     name: "panNo",
-        //     label: "panNo"
-        // },   
-        // {
-        //     name: "cinNo",
-        //     label: "cinNo"
-        // },   
-        // {
-        //     name: "emailId1",
-        //     label: "emailId1"
-        // },   
-        // {
-        //     name: "emailId2",
-        //     label: "emailId2"
-        // },   
-        // {
-        //     name: "contPerson1",
-        //     label: "contPerson1"
-        // },  
-        // {
-        //     name: "contPerson2",
-        //     label: "contPerson2"
-        // },  
-        // {
-        //     name: "contNo1",
-        //     label: "contNo1"
-        // },  
-        // {
-        //     name: "contNo2",
-        //     label: "contNo2"
-        // },  
-        // {
-        //     name: "faxNo",
-        //     label: "faxNo"
-        // },  
-        // {
-        //     name: "acctCode",
-        //     label: "acctCode"
-        // },  
-        // {
-        //     name: "tdsType",
-        //     label: "tdsType"
-        // },  
-        // {
-        //     name: "tdsCategory",
-        //     label: "tdsCategory"
-        // },  
-        // {
-        //     name: "strRegNo",
-        //     label: "strRegNo"
-        // },  
-        // {
-        //     name: "requestBy",
-        //     label: "requestBy"
-        // },  
-        // {
-        //     name: "arnNo",
-        //     label: "arnNo"
-        // },  
-        // {
-        //     name: "gstNo",
-        //     label: "gstNo"
-        // },  
-        // {
-        //     name: "supplierNo",
-        //     label: "supplierNo"
-        // },  
-        // {
-        //     name: "supplierGroup",
-        //     label: "supplierGroup"
-        // },  
-        // {
-        //     name: "paymentType",
-        //     label: "paymentType"
-        // },  
-        // {
-        //     name: "enterprise",
-        //     label: "enterprise"
-        // },  
-        // {
-        //     name: "epType",
-        //     label: "epType"
-        // },  
+        {
+            name: "city",
+            label: "city"
+        },   
+        {
+            name: "pinCode",
+            label: "pinCode"
+        },   
+        {
+            name: "country",
+            label: "country"
+        },   
+        {
+            name: "tngstNo",
+            label: "tngstNo"
+        },   
+        {
+            name: "tinNo",
+            label: "tinNo"
+        },   
+        {
+            name: "cstNo",
+            label: "cstNo"
+        },   
+        {
+            name: "panNo",
+            label: "panNo"
+        },   
+        {
+            name: "cinNo",
+            label: "cinNo"
+        },   
+        {
+            name: "emailId1",
+            label: "emailId1"
+        },   
+        {
+            name: "emailId2",
+            label: "emailId2"
+        },   
+        {
+            name: "contPerson1",
+            label: "contPerson1"
+        },  
+        {
+            name: "contPerson2",
+            label: "contPerson2"
+        },  
+        {
+            name: "contNo1",
+            label: "contNo1"
+        },  
+        {
+            name: "contNo2",
+            label: "contNo2"
+        },  
+        {
+            name: "faxNo",
+            label: "faxNo"
+        },  
+        {
+            name: "acctCode",
+            label: "acctCode"
+        },  
+        {
+            name: "tdsType",
+            label: "tdsType"
+        },  
+        {
+            name: "tdsCategory",
+            label: "tdsCategory"
+        },  
+        {
+            name: "strRegNo",
+            label: "strRegNo"
+        },  
+        {
+            name: "requestBy",
+            label: "requestBy"
+        },  
+        {
+            name: "arnNo",
+            label: "arnNo"
+        },  
+        {
+            name: "gstNo",
+            label: "gstNo"
+        },  
+        {
+            name: "supplierNo",
+            label: "supplierNo"
+        },  
+        {
+            name: "supplierGroup",
+            label: "supplierGroup"
+        },  
+        {
+            name: "paymentType",
+            label: "paymentType"
+        },  
+        {
+            name: "enterprise",
+            label: "enterprise"
+        },  
+        {
+            name: "epType",
+            label: "epType"
+        },  
          {
             name: "active",
             label: "Active",
@@ -506,29 +528,8 @@ function SupplierMasterNew({ name }) {
                     </div>
                 }
             }
-        },
-        {
-            name: "supCategory",
-            label: "Action",
-            options: {
-                customBodyRender: (value, tm) => {
-                    return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                           {/* </div> 
-                           <div onClick={() => edit(tm.rowData[0],tm.rowData[1],tm.rowData[2], 'edit')}> 
-                           */}
-                            <div onClick={() => edit(tm.rowData[0],tm.rowData[1],tm.rowData[2], 'edit')}>
-                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                            </div>
-                            {/* <div onClick={() => edit(value, 'clone')}>
-                                <FontAwesomeIcon icon={faCopy} color="#919191" />
-                            </div> */}
-                        </div>
-
-                    )
-                }
-            }
         }
+       
     ]
 
     const getDataById = (supplierId,supCategory,supCode) => {
