@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
 import {faCopy} from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["fashionGroup", "productType","styleDivision","subProductType","avgSAM"],
+const requiredFields = ["type", "code","typeDesc","codeDesc","indexkey"],
     initialErrorMessages = {
         type: "",
         code: "",
@@ -171,8 +171,7 @@ function UserDefinedMaster({ name }) {
                 getDatas()
             }).catch(err => {
                 setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
+             
                 setFields({...fields})
                 setErrors({ ...initialErrorMessages })
                 message.error(err.message || err)
@@ -405,6 +404,7 @@ function UserDefinedMaster({ name }) {
                             value={fields.code} maxLength="10"
                             id="code"
                             onChange={inputOnChange("code")} 
+                            autoComplete="off"
                             required />
                     </div>
                   
@@ -417,6 +417,7 @@ function UserDefinedMaster({ name }) {
                             value={fields.typeDesc} maxLength="50"
                             id="typeDesc"
                             onChange={inputOnChange("typeDesc")} 
+                            autoComplete="off"
                             required />
                     </div>
                     <div className='mt-3'>
@@ -428,6 +429,7 @@ function UserDefinedMaster({ name }) {
                             value={fields.codeDesc} maxLength="50"
                             id="codeDesc"
                             onChange={inputOnChange("codeDesc")} 
+                            autoComplete="off"
                             required />
                     </div>
                   
