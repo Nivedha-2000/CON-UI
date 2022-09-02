@@ -772,7 +772,7 @@ function SupplierMasterNew({ name }) {
                             <div class="row mt-15">
                                 <div class="col-lg-3">
                                     <label>address1 </label>
-                                    <small className='text-danger'>{errors.address1 ? errors.address1 : ''}</small>
+                                    <small className='text-danger'>{fields.address1 === '' ? errors.address1 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Address 1'
                                     value={fields.address1} 
                                     maxLength="100"
@@ -781,7 +781,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>address2 </label>
-                                    <small className='text-danger'>{errors.address2 ? errors.address2 : ''}</small>
+                                    <small className='text-danger'>{fields.address2 ? errors.address2 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Address 2'
                                     value={fields.address2} 
                                     maxLength="100"
@@ -790,7 +790,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Address 3</label>
-                                    <small className='text-danger'>{errors.address3 ? errors.address3 : ''}</small>
+                                    <small className='text-danger'>{fields.address3 ? errors.address3 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Address 3'
                                     value={fields.address3} 
                                     maxLength="100"
@@ -800,7 +800,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>City</label>
-                                    <small className='text-danger'>{errors.city ? errors.city : ''}</small>
+                                    <small className='text-danger'>{fields.city === '' ? errors.city : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter city'
                                     value={fields.city} 
                                     maxLength="50"
@@ -826,7 +826,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Pin code</label>
-                                    <small className='text-danger'>{errors.pinCode ? errors.pinCode : ''}</small>
+                                    <small className='text-danger'>{fields.pinCode === '' ? errors.pinCode : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter pinCode'
                                     value={fields.pinCode} 
                                     maxLength="15"
@@ -889,7 +889,7 @@ function SupplierMasterNew({ name }) {
                             <div class="row mt-15">
                                 <div class="col-lg-3">
                                     <label>PAN No</label>
-                                    <small className='text-danger'>{errors.panNo ? errors.panNo : ''}</small>
+                                    <small className='text-danger'>{fields.panNo ? errors.panNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="PAN No"
                                        value={fields.panNo} 
                                        maxLength="50"
@@ -898,7 +898,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>CIN No</label>
-                                    <small className='text-danger'>{errors.cinNo ? errors.cinNo : ''}</small>
+                                    <small className='text-danger'>{fields.cinNo ? errors.cinNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="CIN No"
                                     value={fields.cinNo} 
                                     maxLength="50"
@@ -907,7 +907,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>TIN No</label>
-                                    <small className='text-danger'>{errors.tinNo ? errors.tinNo : ''}</small>
+                                    <small className='text-danger'>{fields.tinNo ? errors.tinNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="TIN  No"
                                       value={fields.tinNo} 
                                       maxLength="50"
@@ -916,7 +916,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>ARN No</label>
-                                    <small className='text-danger'>{errors.arnNo ? errors.arnNo : ''}</small>
+                                    <small className='text-danger'>{fields.arnNo ? errors.arnNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="ARN No"
                                       value={fields.arnNo} 
                                       maxLength="30"
@@ -925,7 +925,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>GST No</label>
-                                    <small className='text-danger'>{errors.gstNo ? errors.gstNo : ''}</small>
+                                    <small className='text-danger'>{fields.gstNo ? errors.gstNo : ''}</small>
                                     <input type="text" class="form-control" placeholder="GST No"
                                      value={fields.gstNo} 
                                      maxLength="30"
@@ -934,7 +934,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>TDS Type</label>
-                                    <small className='text-danger'>{errors.tdsType ? errors.tdsType : ''}</small>
+                                    <small className='text-danger'>{fields.tdsType ? errors.tdsType : ''}</small>
                                     <Radio.Group onChange={inputOnChange("tdsType")} value={fields.tdsType}>
                                     <Radio value={1}>Company</Radio>
                                     <Radio value={2}>Otherthan Company</Radio>
@@ -942,7 +942,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>TDS Category</label>
-                                    <small className='text-danger'>{errors.tdsCategory ? errors.tdsCategory : ''}</small>
+                                    <small className='text-danger'>{fields.tdsCategory ? errors.tdsCategory : ''}</small>
                                     <Radio.Group onChange={inputOnChange("tdsCategory")} value={fields.tdsCategory}>
                                     <Radio value={1}>Firms Firms</Radio>
                                     <Radio value={2}>Individual</Radio>
@@ -963,7 +963,7 @@ function SupplierMasterNew({ name }) {
                         <div class="row mt-15">
                                 <div class="col-lg-3">
                                 <label>Email Id 1  </label>
-                            <small className='text-danger'>{errors.emailId1 ? errors.emailId1 : ''}</small>
+                            <small className='text-danger'>{fields.emailId1 ? errors.emailId1 : ''}</small>
                                     <input type="text" class="form-control" placeholder="Enter emailId 1"
                                        value={fields.emailId1} 
                                        maxLength="50"
@@ -972,7 +972,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                 <label>Email Id 2 </label>
-                            <small className='text-danger'>{errors.emailId2 ? errors.emailId2 : ''}</small>
+                            <small className='text-danger'>{fields.emailId2 ? errors.emailId2 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter emailId 2'
                                value={fields.emailId2} 
                                maxLength="50"
@@ -981,7 +981,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                 <label>Contact Person 1  </label>
-                            <small className='text-danger'>{errors.contPerson1 ? errors.contPerson1 : ''}</small>
+                            <small className='text-danger'>{fields.contPerson1 ? errors.contPerson1 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Contact Person 1'
                                value={fields.contPerson1} 
                                maxLength="50"
@@ -990,7 +990,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                 <label>Contact Person 2 </label>
-                            <small className='text-danger'>{errors.contPerson2 ? errors.contPerson2 : ''}</small>
+                            <small className='text-danger'>{fields.contPerson2 ? errors.contPerson2 : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter Contact Person 2'
                                value={fields.contPerson2} 
                                maxLength="50"
@@ -999,7 +999,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Contact No 1 </label>
-                                    <small className='text-danger'>{errors.contNo1 ? errors.contNo1 : ''}</small>
+                                    <small className='text-danger'>{fields.contNo1 ? errors.contNo1 : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Contact No 1'
                                     value={fields.contNo1} 
                                     maxLength="25"
@@ -1008,7 +1008,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Contact No 2 </label>
-                                     <small className='text-danger'>{errors.contNo2 ? errors.contNo2 : ''}</small>
+                                     <small className='text-danger'>{fields.contNo2 ? errors.contNo2 : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Contact No 2'
                                     value={fields.contNo2} 
                                     maxLength="25"
@@ -1017,7 +1017,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Fax No  </label>
-                                    <small className='text-danger'>{errors.faxNo ? errors.faxNo : ''}</small>
+                                    <small className='text-danger'>{fields.faxNo ? errors.faxNo : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Fax No '
                                     value={fields.faxNo} 
                                     maxLength="25"
@@ -1026,7 +1026,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>GL Account Code  </label>
-                                    <small className='text-danger'>{errors.acctCode ? errors.acctCode : ''}</small>
+                                    <small className='text-danger'>{fields.acctCode === '' ? errors.acctCode : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter GL Account Code '
                                     value={fields.acctCode} 
                                     maxLength="18"
@@ -1035,7 +1035,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Str Reg No  </label>
-                                    <small className='text-danger'>{errors.strRegNo ? errors.strRegNo : ''}</small>
+                                    <small className='text-danger'>{fields.strRegNo ? errors.strRegNo : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Str Reg No '
                                     value={fields.strRegNo} 
                                     maxLength="25"
@@ -1044,7 +1044,7 @@ function SupplierMasterNew({ name }) {
                                 </div>
                                 <div class="col-lg-3">
                                     <label>Requested By  </label>
-                                    <small className='text-danger'>{errors.requestBy ? errors.requestBy : ''}</small>
+                                    <small className='text-danger'>{fields.requestBy === '' ? errors.requestBy : ''}</small>
                                     <input type="text" class="form-control"  placeholder='Enter Requested By '
                                     value={fields.requestBy} 
                                     maxLength="50"

@@ -133,8 +133,8 @@ function BuyerDivisionMaster({ name }) {
 
     const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
         if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
-        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
-        setFields({ ...fields, [name]: "" })
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            setFields({ ...fields, [name]: "" })
         }
     }
     const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
@@ -255,7 +255,7 @@ function BuyerDivisionMaster({ name }) {
                         setLoader(false)
                         setFields({ ...fields })
                         setErrors({ ...initialErrorMessages })
-                        
+
                     } else {
                         message.error("Buyer Div Code Already Exits...!")
                     }
@@ -334,7 +334,7 @@ function BuyerDivisionMaster({ name }) {
     ]
 
     const getDataById = buyDivCode => {
-    
+
         return ApiCall({
             path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_ID + "/" + buyDivCode,
         })
@@ -436,21 +436,21 @@ function BuyerDivisionMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer 
-              maskClosable={false}
-              keyboard={false}
-            footer={
-                <>
-                    <div>
-                        {
-                            saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.buyDivCode, 'save')}> Save </button>
+            <Drawer
+                
+                keyboard={false}
+                footer={
+                    <>
+                        <div>
+                            {
+                                saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.buyDivCode, 'save')}> Save </button>
 
-                        }{
-                            updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.buyDivCode, 'update')}> Update </button>
-                        }
+                            }{
+                                updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.buyDivCode, 'update')}> Update </button>
+                            }
 
 
-                        {/* {
+                            {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -459,25 +459,23 @@ function BuyerDivisionMaster({ name }) {
                                     </div>
                                 )
                         } */}
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
-                            let _id = Number(fields.id)
-                            if (_id === 0) add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={() => {
-           
-                onClose();
-            }} visible={visible} >
+                        </div>
+                        <div>
+                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
+                                let _id = Number(fields.id)
+                                if (_id === 0) add()
+                                else edit(_id)
+                            }}> Cancel </button>
+                        </div>
+                    </>
+                // } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
+                    } title={< h6 className='m-0' > {`${fields.id == 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
                 <div className='defect-master-add-new'>
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Buyer Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{errors.buyCode}</small>
+                            <small className='text-danger'>{fields.buyCode === '' ? errors.buyCode : ''}</small>
                         </div>
                         <select className='form-control form-control-sm mt-1' id="buyer-code" disabled={fields.id != 0}
                             value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
@@ -524,7 +522,7 @@ function BuyerDivisionMaster({ name }) {
                             value={fields.profitPercent}
                             onChange={inputOnChange("profitPercent")}
                             maxLength="10"
-                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("profitPercent")} 
+                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("profitPercent")}
                             onBlur={NUMBER_IS_FOCUS_OUT_ZERO("profitPercent")}
                         />
                     </div>
