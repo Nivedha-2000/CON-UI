@@ -272,7 +272,7 @@ function BusinessGroupMaster({ name }) {
                             <label>Business Group code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.bGcode === '' ? errors.bGcode : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Business Group code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Business Group code'
                             value={fields.bGcode} maxLength="10"
                             disabled={fields.id != 0}
                             id="bGcode"
@@ -285,7 +285,7 @@ function BusinessGroupMaster({ name }) {
                             <label>Business Group  name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.bgName === '' ? errors.bgName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Business Group  name'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Business Group  name'
                             value={fields.bgName} maxLength="50"
                             id="bgName"
                             onChange={inputOnChange("bgName")} 

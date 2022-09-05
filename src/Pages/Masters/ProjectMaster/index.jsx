@@ -273,7 +273,7 @@ function ProjectMaster({ name }) {
                             <label>Project code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.pcode === '' ? errors.pcode : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Project code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Project code'
                             value={fields.pcode} maxLength="10"
                             id="pcode"
                             disabled={fields.id != 0}
@@ -286,7 +286,7 @@ function ProjectMaster({ name }) {
                             <label>Project name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.pName === '' ? errors.pName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Project name'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Project name'
                             value={fields.pName} maxLength="50"
                             id="pName"
                             onChange={inputOnChange("pName")} 

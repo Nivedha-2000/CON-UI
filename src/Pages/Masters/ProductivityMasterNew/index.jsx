@@ -422,85 +422,18 @@ export default function ProductivityMasters() {
             let len1 = Prodfields.length;
             fields.id = len + 1;
             if (parseInt(fields.scaleUpEffPer) != 0) {
-                if (parseInt(ProductivityList.length) != 0) {
-                    let toUpdateData = ProductivityList.filter(f => f.locCode == fields.locCode && f.factCode == fields.factCode && f.lineGroup == fields.lineGroup
-                        && f.noOfOperators == fields.noOfOperators && f.workingHrs == fields.workingHrs && f.productType == fields.productType
-                        && f.subProductType == fields.subProductType && f.plaidType == fields.plaidType && f.difficultyLevel == fields.difficultyLevel
-                        && f.startdate == fields.startdate && f.enddate == fields.enddate
+                fields.scaleUpDay = len + 1;
 
-                    )
-                    //  console.log(toUpdateData)
+                console.log( API_URLS.GetProductivityByStartdateEnddateParamertersList + "?loccode=" + fields.locCode + "&pactcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType  + "&difficultylevel=" + fields.difficultyLevel  + "&workinghrs=" + fields.workingHrs+ "&scaleupday=" + fields.scaleUpDay + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate)
 
-                    if (parseInt(toUpdateData.length) != 0) {
-                        let toUpdateData1 = toUpdateData.map((item) => {
-                            if (
-                                item.locCode != fields.locCode && item.factCode != fields.factCode && item.lineGroup != fields.lineGroup
-                                && item.noOfOperators != fields.noOfOperators && item.workingHrs != fields.workingHrs && item.productType != fields.productType
-                                && item.subProductType != fields.subProductType && item.plaidType != fields.plaidType && item.difficultyLevel != fields.difficultyLevel
-                                && item.startdate != fields.startdate && item.enddate != fields.enddate
-                            ) {
-                                alert('error')
-                            } else {
-                                fields.scaleUpDay = len + 1;
-                                setProductivityList([...ProductivityList, fields])
-                                setFields({ ...fields, scaleUpEffPer: 0 })
-                            }
-                            return item;
-                        })
-                    } else {
-                        if (parseInt(ProductivityList.length) != 0) {
-                            let toUpdateData2 = ProductivityList.map((item) => {
-                                // if (
-                                //     item.locCode != fields.locCode && item.factCode != fields.factCode && item.lineGroup != fields.lineGroup
-                                //     && item.noOfOperators != fields.noOfOperators && item.workingHrs != fields.workingHrs && item.productType != fields.productType
-                                //     && item.subProductType != fields.subProductType && item.plaidType != fields.plaidType && item.difficultyLevel != fields.difficultyLevel
-                                //     && item.startdate != fields.startdate && item.enddate != fields.enddate
-                                // ) 
-                                if (item.difficultyLevel != fields.difficultyLevel) {
-                                    let result = ProductivityList.filter(a => a.difficultyLevel != fields.difficultyLevel)
-                                    let peakEff= result.filter(a=>a.peakEff=="Y")
-                                    if(peakEff.length!=0){
-                                        fields.scaleUpDay = len + 1;
-                                        setProductivityList([...ProductivityList, fields])
-                                        setFields({ ...fields, scaleUpEffPer: 0 })
-                                    }else{
-                                        alert("before combination not close peak Eff...!")
-                                    }
+                ItrApiService.GET({
+                    url: API_URLS.GetProductivityByStartdateEnddateParamertersList + "?loccode=" + fields.locCode + "&pactcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType  + "&difficultylevel=" + fields.difficultyLevel  + "&workinghrs=" + fields.workingHrs+ "&scaleupday=" + fields.scaleUpDay + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
+                    appCode: "CNF"
+                }).then(res => {
+                    alert(res)
+                    console.log(res.data)
+                });
 
-                                    // let AA = result.map((aa) => {
-                                    //     if (aa.peakEff==""){
-
-                                    //     }
-                                    // })
-
-                                } else {
-                                    fields.scaleUpDay = len + 1;
-                                    setProductivityList([...ProductivityList, fields])
-                                    setFields({ ...fields, scaleUpEffPer: 0 })
-                                }
-                                return item;
-                            })
-
-                        } else {
-                            fields.scaleUpDay = len + 1;
-                            setProductivityList([...ProductivityList, fields])
-                            setFields({ ...fields, scaleUpEffPer: 0 })
-                        }
-
-
-                    }
-
-                    // ProductivityList.forEach((el) => {
-
-                    // })
-                }
-                else {
-                    fields.scaleUpDay = len + 1;
-                    setProductivityList([...ProductivityList, fields])
-                    setFields({ ...fields, scaleUpEffPer: 0 })
-                }
-
-                // fields.scaleUpDay = len + 1;
                 // setProductivityList([...ProductivityList, fields])
                 // setFields({ ...fields, scaleUpEffPer: 0 })
             } else {
@@ -555,7 +488,7 @@ export default function ProductivityMasters() {
         let err = {}, validation = true
         let value = e.target.value
         setFields({ ...fields, [name]: value })
-        
+
         //  console.log(fields.locCode, fields.factCode, fields.noOfOperators, fields.productType, fields.plaidType, e.target.value)
 
     }
@@ -675,6 +608,28 @@ export default function ProductivityMasters() {
                     <div class="tab-pane fade show active mb-70" id="home" role="tabpanel" aria-labelledby="home-tab">
                         <div class="row mt-15">
 
+
+                        <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                <div className="form-group">
+                                    <label> Start Date </label>
+                                    <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
+                                    <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
+                                        onChange={inputOnChange("startdate")}
+                                    />
+                                    <span className="error"></span>
+                                </div>
+                            </div>
+                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                <div className="form-group">
+                                    <label> End Date </label>
+                                    <small className='text-danger'> {fields.enddate === '' ? errors.enddate : ''}</small>
+                                    <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={fields.enddate}
+                                        // onChange={ToDateChangeHandle("enddate")}
+                                        onChange={inputOnChange("enddate")}
+                                    />
+                                    <span className="error"></span>
+                                </div>
+                            </div>
                             <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                 <label> Location </label>
                                 <small className='text-danger'> {fields.locCode === '' ? errors.locCode : ''}</small>
@@ -856,27 +811,6 @@ export default function ProductivityMasters() {
                                 </div>
                             </div>
 
-                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <div className="form-group">
-                                    <label> Start Date </label>
-                                    <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
-                                    <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
-                                        onChange={inputOnChange("startdate")}
-                                    />
-                                    <span className="error"></span>
-                                </div>
-                            </div>
-                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <div className="form-group">
-                                    <label> End Date </label>
-                                    <small className='text-danger'> {fields.enddate === '' ? errors.enddate : ''}</small>
-                                    <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={fields.enddate}
-                                        // onChange={ToDateChangeHandle("enddate")}
-                                        onChange={inputOnChange("enddate")}
-                                    />
-                                    <span className="error"></span>
-                                </div>
-                            </div>
                             <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                 <label> Scaleup Day </label>
                                 <small className='text-danger'></small>
