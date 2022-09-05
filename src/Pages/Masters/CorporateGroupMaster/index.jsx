@@ -272,7 +272,7 @@ function CorporateGroupMaster({ name }) {
                             <label>Corporate Group code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.cGcode === '' ? errors.cGcode : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Corporate Group code'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Corporate Group code'
                             value={fields.cGcode} maxLength="10"
                             id="cGcode"
                             onChange={inputOnChange("cGcode")} 
@@ -285,7 +285,7 @@ function CorporateGroupMaster({ name }) {
                             <label>Corporate Group  name <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.cgName === '' ? errors.cgName : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Corporate Group  name'
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Corporate Group  name'
                             value={fields.cgName} maxLength="50"
                             id="cgName"
                             onChange={inputOnChange("cgName")} 

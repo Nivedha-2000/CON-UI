@@ -185,19 +185,6 @@ function BuyerDivisionMaster({ name }) {
             setLoader(true)
             debugger;
 
-            // ApiCall({
-            //     path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_BUYDIVCODE + "/" + fields.buyDivCode,
-            // }).then(resp => {
-            //     if (!resp.data) {
-            //         alert("Not Avaliable")
-            //     } else {
-            //         alert("Already Extits")
-            //     }
-            // }).catch(err => {
-            //     setListLoading(false)
-            //     message.error(err.message || err)
-            // })
-
             if (Type == "update") {
                 ApiCall({
                     method: "POST",
@@ -221,45 +208,82 @@ function BuyerDivisionMaster({ name }) {
                 })
             } else {
                 debugger;
-                let { data } = (buyDivCode && await getDataById(buyDivCode))
-                console.log(data);
-                if (!data) {
-                    message.error("Data not found")
-                    return
-                }
-                if (!data) {
-                    ApiCall({
-                        method: "POST",
-                        path: API_URLS.SAVE_BUYERDIVISION_MASTER,
-                        data: {
-                            ...fields,
-                            hostName: getHostName()
-                        }
-                    }).then(resp => {
-                        setLoader(false)
-                        message.success(resp.message)
-                        onClose()
-                        getDatas()
-                    }).catch(err => {
-                        setLoader(false)
-
-                        //  fields['ftdOprName'] = tempOprName
-                        setFields({ ...fields })
-                        setErrors({ ...initialErrorMessages })
-                        message.error(err.message || err)
-                    })
-                } else {
-                    debugger;
-                    if (data.buyDivCode.toUpperCase() === buyDivCode.toUpperCase()) {
-                        message.error("Buyer Div Code Already Exits...!")
-                        setLoader(false)
-                        setFields({ ...fields })
-                        setErrors({ ...initialErrorMessages })
-
-                    } else {
-                        message.error("Buyer Div Code Already Exits...!")
+                ItrApiService.GET({
+                    url: API_URLS.GET_BUYERDIVISIONEMASTER_BY_ID + "/" + buyDivCode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_BUYERDIVISION_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
                     }
-                }
+
+                    else {
+                        setLoader(false);
+                        if (buyDivCode.toUpperCase() === res.data.buyDivCode.toUpperCase()) {
+                            err = "Buyer Code Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+
+
+                //  let { data } = (buyDivCode && await getDataById(buyDivCode))
+                // console.log(data);
+                // if (!data) {
+                //     message.error("Data not found")
+                //     return
+                // }
+                // if (!data) {
+                //     ApiCall({
+                //         method: "POST",
+                //         path: API_URLS.SAVE_BUYERDIVISION_MASTER,
+                //         data: {
+                //             ...fields,
+                //             hostName: getHostName()
+                //         }
+                //     }).then(resp => {
+                //         setLoader(false)
+                //         message.success(resp.message)
+                //         onClose()
+                //         getDatas()
+                //     }).catch(err => {
+                //         setLoader(false)
+
+                //         //  fields['ftdOprName'] = tempOprName
+                //         setFields({ ...fields })
+                //         setErrors({ ...initialErrorMessages })
+                //         message.error(err.message || err)
+                //     })
+                // } else {
+                //     debugger;
+                //     if (data.buyDivCode.toUpperCase() === buyDivCode.toUpperCase()) {
+                //         message.error("Buyer Div Code Already Exits...!")
+                //         setLoader(false)
+                //         setFields({ ...fields })
+                //         setErrors({ ...initialErrorMessages })
+
+                //     } else {
+                //         message.error("Buyer Div Code Already Exits...!")
+                //     }
+                // }
             }
 
 
@@ -334,7 +358,6 @@ function BuyerDivisionMaster({ name }) {
     ]
 
     const getDataById = buyDivCode => {
-
         return ApiCall({
             path: API_URLS.GET_BUYERDIVISIONEMASTER_BY_ID + "/" + buyDivCode,
         })
@@ -437,7 +460,7 @@ function BuyerDivisionMaster({ name }) {
 
             {/* Add */}
             <Drawer
-                
+
                 keyboard={false}
                 footer={
                     <>
@@ -468,8 +491,8 @@ function BuyerDivisionMaster({ name }) {
                             }}> Cancel </button>
                         </div>
                     </>
-                // } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
-                    } title={< h6 className='m-0' > {`${fields.id == 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
+                    // } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
+                } title={< h6 className='m-0' > {`${fields.id == 0 ? "Add New" : "Edit"} Buyer Division Master`}</h6 >} placement="right" onClose={onClose} visible={visible} maskClosable={false} >
                 <div className='defect-master-add-new'>
 
                     <div className='mt-3'>
