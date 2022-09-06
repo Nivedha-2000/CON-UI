@@ -40,7 +40,7 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
 
     },
     initialFieldValues = {
-        // id: 0,
+         id: 0,
         locCode: "",
         factCode: "",
         lineGroup: "",
@@ -112,6 +112,9 @@ export default function ProductivityMasters() {
 
     const [ProductivityListTemp, setProductivityListTemp] = useState([]);
 
+    const [btnVisible, setBtnVisible] = useState(false);
+    const [AddbtnVisible, setAddBtnVisible] = useState(false);
+
 
 
 
@@ -122,6 +125,8 @@ export default function ProductivityMasters() {
         getProductType();
         getFabType();
         getDifficultyLevel();
+        disableDate();
+        
     }, []);
 
     useEffect(() => {
@@ -355,30 +360,39 @@ export default function ProductivityMasters() {
         let err = {}, validation = true
         let value = e.target.value
         setFields({ ...fields, noOfOperators: fields.id == 0 ? "" : fields.noOfOperators })
-        setFields({ ...fields, [name]: value })
+         setFields({ ...fields, [name]: value })
 
-        //    console.log(API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value);
-        if (fields.noOfOperators) {
-            ApiCall({
-                path: API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value//+ "&ToDate=" + "2023-08-25"
-            }).then(resp => {
-                try {
-                    //       console.log(resp.data)
-                    setWorkingHrsList(resp.data)
-                } catch (er) {
-                    message.error("Response data is not as expected")
-                }
-            })
-                .catch(err => {
-                    message.error(err.message || err)
-                })
-        } else {
+        //  console.log(API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value);
+        // if (!fields.noOfOperators==0) {
+        ApiCall({
+            path: API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value//+ "&ToDate=" + "2023-08-25"
+        }).then(resp => {
             setWorkingHrsList([])
-        }
+            setWorkingHrsList(resp.data)
+            // try {
+            //     setWorkingHrsList(resp.data)
+            // } catch (er) {
+            //     message.error("Response data is not as expected")
+            // }
+        })
+            .catch(err => {
+                message.error(err.message || err)
+            })
+        // } else {
+        //     setWorkingHrsList([])
+        // }
 
     }
 
-
+   const disableDate=()=>
+    {
+    var today,dd,mm,yyyy;
+    today=new Date();
+    dd=today.getDate()+1;
+    mm=today.getMonth()+1;
+    yyyy=today.getFullYear();
+    return yyyy+"-"+mm+"-"+dd;
+    }
 
     const inputOnChange = name => e => {
         let err = {}, validation = true
@@ -400,10 +414,35 @@ export default function ProductivityMasters() {
         }
     }
 
+    function ViewList() {
+        let err = {}, validation = true
+
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }
+            else {
+                validation = true
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+
+        ApiCall({
+            path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
+        }).then(resp => {
+            let len = resp.data.filter(f => f.peakEff == "Y");
+            setProductivityList(resp.data)
+            //  setProductivityList([...ProductivityList, fields])
+            setBtnVisible(true);
+        })
+
+    }
+
     function AddProductivityList() {
 
         let err = {}, validation = true
-        debugger;
+
         requiredFields.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
@@ -415,27 +454,28 @@ export default function ProductivityMasters() {
         })
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
-
-
         if (validation == true) {
+
+            setAddBtnVisible(true)
             let len = ProductivityList.length;
             let len1 = Prodfields.length;
             fields.id = len + 1;
             if (parseInt(fields.scaleUpEffPer) != 0) {
                 fields.scaleUpDay = len + 1;
+                // ApiCall({
+                //     path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
+                // }).then(resp => {
+                //     let len = resp.data.filter(f => f.peakEff == "Y");
+                //     setProductivityList(resp.data)
+                //     setProductivityList([...ProductivityList, fields])
+                // })
 
-                console.log( API_URLS.GetProductivityByStartdateEnddateParamertersList + "?loccode=" + fields.locCode + "&pactcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType  + "&difficultylevel=" + fields.difficultyLevel  + "&workinghrs=" + fields.workingHrs+ "&scaleupday=" + fields.scaleUpDay + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate)
+                if (fields.peakEff != 'Y') {
+                    setFields({ ...fields, peakEff: 'N' })
+                }
 
-                ItrApiService.GET({
-                    url: API_URLS.GetProductivityByStartdateEnddateParamertersList + "?loccode=" + fields.locCode + "&pactcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType  + "&difficultylevel=" + fields.difficultyLevel  + "&workinghrs=" + fields.workingHrs+ "&scaleupday=" + fields.scaleUpDay + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
-                    appCode: "CNF"
-                }).then(res => {
-                    alert(res)
-                    console.log(res.data)
-                });
-
-                // setProductivityList([...ProductivityList, fields])
-                // setFields({ ...fields, scaleUpEffPer: 0 })
+                setProductivityList([...ProductivityList, fields])
+                setFields({ ...fields, scaleUpEffPer: 0 })
             } else {
                 alert("Please enter scaleUp Qty....! ")
             }
@@ -462,25 +502,32 @@ export default function ProductivityMasters() {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             if (parseInt(ProductivityList.length) != 0) {
+                debugger;
+                let res = ProductivityList.filter(a => a.peakEff == "Y")
+                if (parseInt(res.length) > 0) {
+                    ApiCall({
+                        method: "POST",
+                        path: API_URLS.SAVE_PRODUCTIVITY_MASTER,
+                        data: ProductivityList   //JSON.stringify(ProductivityList)
 
+                    }).then(resp => {
+                        setLoader(false)
+                        message.success(resp.message)
+                        onClose();
+                        setAddBtnVisible(false)
+                        setBtnVisible(false);
+
+                    }).catch(err => {
+                        setLoader(false)
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        message.error(err.message || err)
+                    })
+                } else {
+                    alert("Please close Peak Effits...!")
+                }
             }
 
-
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_PRODUCTIVITY_MASTER,
-                data: ProductivityList   //JSON.stringify(ProductivityList)
-
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose();
-            }).catch(err => {
-                setLoader(false)
-                setFields({ ...fields })
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
         }
     }
 
@@ -493,6 +540,17 @@ export default function ProductivityMasters() {
 
     }
 
+
+    const editProductivityMaster = (row, LocCode) => {
+         debugger;
+        setBtnVisible(true);
+        setAddBtnVisible(true)
+        console.log(ProductivityList);
+        if (row != '') {
+            // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
+            setFields(ProductivityList.filter(a => a.id == row)[0]);
+        }
+    };
     const onClose = () => {
         clearFields()
         // setVisible(false);
@@ -609,12 +667,15 @@ export default function ProductivityMasters() {
                         <div class="row mt-15">
 
 
-                        <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                 <div className="form-group">
                                     <label> Start Date </label>
                                     <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
                                     <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
-                                        onChange={inputOnChange("startdate")}
+                                        min={disableDate()}
+                                       onChange={inputOnChange("startdate")}
+                                        disabled={AddbtnVisible}
+                                      
                                     />
                                     <span className="error"></span>
                                 </div>
@@ -626,6 +687,7 @@ export default function ProductivityMasters() {
                                     <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={fields.enddate}
                                         // onChange={ToDateChangeHandle("enddate")}
                                         onChange={inputOnChange("enddate")}
+                                        disabled={AddbtnVisible}
                                     />
                                     <span className="error"></span>
                                 </div>
@@ -638,6 +700,7 @@ export default function ProductivityMasters() {
                                         value={fields.locCode}
                                         // onChange={LocationChangeHandle("locCode")}
                                         onChange={inputOnChange("locCode")}
+                                        disabled={AddbtnVisible}
 
                                     // onChange={e => { inputOnChange("locCode"); LocationChangeHandle("locCode") }}
                                     >
@@ -656,6 +719,7 @@ export default function ProductivityMasters() {
                                     <select name="factCode" class="form-control SlectBox main-select" required
                                         value={fields.factCode}
                                         onChange={inputOnChange("factCode")}
+                                        disabled={AddbtnVisible}
                                     // onChange={factCodeChangeHandle("factCode")}
                                     >
                                         <option value="">Select Factory </option>
@@ -675,6 +739,7 @@ export default function ProductivityMasters() {
                                     <select name="lineGroup" class="form-control SlectBox main-select" required
                                         value={fields.lineGroup}
                                         onChange={inputOnChange("lineGroup")}
+                                        disabled={AddbtnVisible}
                                     >
                                         <option value="">Select line Group </option>
                                         {OperatorList.map((v, index) => {
@@ -690,6 +755,7 @@ export default function ProductivityMasters() {
                                 <div class="main-select">
                                     <select name="noOfOperators" class="form-control SlectBox main-select" required
                                         value={fields.noOfOperators}
+                                        disabled={AddbtnVisible}
                                         // onChange={inputOnChange("noOfOperators")}
                                         onChange={OperatorsChangeHandle("noOfOperators")}
                                     >
@@ -707,6 +773,7 @@ export default function ProductivityMasters() {
                                 <div class="main-select">
                                     <select name="workingHrs" class="form-control SlectBox main-select" required
                                         value={fields.workingHrs}
+                                        disabled={AddbtnVisible}
                                         onChange={inputOnChange("workingHrs")}
                                     >
                                         <option value="">Select working Hrs </option>
@@ -727,6 +794,7 @@ export default function ProductivityMasters() {
                                 <div class="main-select">
                                     <select name="productType" class="form-control SlectBox main-select" required
                                         value={fields.productType}
+                                        disabled={AddbtnVisible}
                                         onChange={inputOnChange("productType")}
                                     >
                                         <option value="">Select Product Type </option>
@@ -743,6 +811,7 @@ export default function ProductivityMasters() {
                                 <div class="main-select">
                                     <select name="subProductType" class="form-control SlectBox main-select" required
                                         value={fields.subProductType}
+                                        disabled={AddbtnVisible}
                                         onChange={inputOnChange("subProductType")}
                                     >
                                         <option value="">Select Sub Product Type </option>
@@ -783,6 +852,7 @@ export default function ProductivityMasters() {
                                 <div class="main-select">
                                     <select name="plaidType" class="form-control SlectBox main-select" required
                                         value={fields.plaidType}
+                                        disabled={AddbtnVisible}
                                         onChange={inputOnChange("plaidType")}
                                     >
                                         <option value="">Select Fabric Type </option>
@@ -799,6 +869,7 @@ export default function ProductivityMasters() {
                                 <div class="main-select">
                                     <select name="difficultyLevel" class="form-control SlectBox main-select" required
                                         value={fields.difficultyLevel}
+                                        disabled={AddbtnVisible}
                                         // onChange={inputOnChange("difficultyLevel")}
                                         onChange={difficultyLevelOnChange("difficultyLevel")}
 
@@ -811,31 +882,38 @@ export default function ProductivityMasters() {
                                 </div>
                             </div>
 
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> Scaleup Day </label>
-                                <small className='text-danger'></small>
-                                <div class="main-select">
-                                    <select name="scaleUpDay" class="form-control SlectBox main-select" required
-                                        value={fields.scaleUpDay}
-                                        onChange={inputOnChange("scaleUpDay")}
-                                    >
-                                        <option value="">Select scale UpDay </option>
-                                        {ProductivityList.map((v, index) => {
-                                            return <option key={index} value={v.scaleUpDay}>{v.scaleUpDay}</option>
-                                        })}
-                                    </select>
+                            {
+                                btnVisible &&
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                    <label> Scaleup Day </label>
+                                    <small className='text-danger'></small>
+                                    <div class="main-select">
+                                        <select name="scaleUpDay" class="form-control SlectBox main-select" required disabled="disabled"
+                                            value={fields.scaleUpDay}
+                                            onChange={inputOnChange("scaleUpDay")}
+                                        >
+                                            <option value="">Select scale UpDay </option>
+                                            {ProductivityList.map((v, index) => {
+                                                return <option key={index} value={v.scaleUpDay}>{v.scaleUpDay}</option>
+                                            })}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <div className="form-group">
-                                    <label> Scaleup Qty </label>
-                                    <Input type="text" name="scaleUpEffPer" className="form-control" id="ScaleUpEffPer" placeholder="ScaleUp Eff"
-                                        value={fields.scaleUpEffPer} onChange={inputOnChange("scaleUpEffPer")}
-                                    />
+                            }
 
+                            {
+                                btnVisible &&
+                                <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                    <div className="form-group">
+                                        <label> Scaleup Qty </label>
+                                        <Input type="text" name="scaleUpEffPer" className="form-control" id="ScaleUpEffPer" placeholder="ScaleUp Eff"
+                                            value={fields.scaleUpEffPer} onChange={inputOnChange("scaleUpEffPer")}
+                                        />
+
+                                    </div>
                                 </div>
-                            </div>
+                            }
 
                             {/* <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                 <label> Peak Eff </label>
@@ -852,17 +930,20 @@ export default function ProductivityMasters() {
                                 </div>
                             </div> */}
 
-                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <div className="form-group">
-                                    <label> Peak Eff </label>
-                                    <select className="form-control" name="peakEff" id='peakEff' value={fields.peakEff} onChange={inputOnChange("peakEff")} >
-                                        <option value="">- Peak Eff -</option>
-                                        <option value="Y">YES</option>
-                                        <option value="N" selected={true}>NO</option>
-                                    </select>
+                            {
+                                btnVisible &&
+                                <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                    <div className="form-group">
+                                        <label> Peak Eff </label>
+                                        <select className="form-control" name="peakEff" id='peakEff' value={fields.peakEff} onChange={inputOnChange("peakEff")} >
+                                            <option value="">- Peak Eff -</option>
+                                            <option value="Y">YES</option>
+                                            <option value="N" selected={true}>NO</option>
+                                        </select>
 
+                                    </div>
                                 </div>
-                            </div>
+                            }
 
                             {/* <div className='col-lg'>
                                 <div className='form-group'  >
@@ -978,16 +1059,22 @@ export default function ProductivityMasters() {
                                     <button class="btn btn-primary search-btn btn-block  ">Reset</button>
                                 </div> */}
                                 <div class="float-start pl-5">
-                                    < button class="btn btn-primary search-btn btn-block" onClick={() => AddProductivityList()}>Add to List</button>
-                                    {/* {
-                                        addBtnVisible && < button class="btn btn-primary search-btn btn-block" onClick={() => AddVisualSamPlan()}>Add to List</button>
-                                    } */}
+                                    {
+                                        < button class="btn btn-primary search-btn btn-block" onClick={() => ViewList()}>View</button>
+                                    }
+
+                                </div>
+
+                                <div class="float-start pl-5">
+                                    {
+                                        btnVisible && < button class="btn btn-primary search-btn btn-block" onClick={() => AddProductivityList()}>Add to List</button>
+                                    }
                                 </div>
                                 <div class="float-start pl-5">
-                                    <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMastersave()}>Save</button>
-                                    {/* {
-                                        btnvisible && <button class="btn btn-primary search-btn btn-block" onClick={() => UpdateVisualSamPlan()} >  Update List</button>
-                                    } */}
+                                    {
+                                        btnVisible &&
+                                        <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMastersave()}>Save</button>
+                                    }
                                 </div>
 
                             </div>
@@ -1027,7 +1114,7 @@ export default function ProductivityMasters() {
                                                     <td align='center'>
                                                         <div className='text-center' >
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191"
-                                                                onClick={() => { editVisualSampling(row?.id, row?.packQtyFrom) }}
+                                                                onClick={() => { editProductivityMaster(row?.id, row?.locCode) }}
                                                             />
                                                         </div>
                                                     </td>

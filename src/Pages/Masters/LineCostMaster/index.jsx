@@ -129,6 +129,8 @@ function LineCostMaster({ name }) {
     const gridRef = useRef(); // Optional - for accessing Grid's API
     const [rowData, setRowData] = useState([]); // Set rowData to Array of Objects, one Object per Row
 
+    const [rowDataTemp, setRowDataTemp] = useState([])
+
     const onClose = () => {
         clearFields()
         setVisible(false);
@@ -147,14 +149,22 @@ function LineCostMaster({ name }) {
         setFields({ ...fields, [name]: value })
     }
     const inputOnChange1 = (index, name) => e => {
+        debugger;
         let value = e.target.value
-        console.log(rowData[index])
-        setRowData({ ...rowData[index], [name]: value })
+        let res = rowData[index];
+        setFields(res)
+        console.log(fields)
+        setFields({ ...fields, [name]: value })
+        console.log(fields)
 
-       // setRowData({ ...fields, [name]: value })
+
+        setRowDataTemp({ ...rowDataTemp[0], [name]: value })
+      //  console.log(rowDataTemp)
 
 
+        //  setRowData({ ...rowData[index], [name]: value })
 
+        // setRowData({ ...fields, [name]: value })
 
 
         // setRowData({ ...rowData[index], [name]: value })
@@ -671,24 +681,24 @@ function LineCostMaster({ name }) {
                                                         value={linecost.transMonth} id="transMonth" onChange={inputOnChange("transMonth")} /> */}
                                                     </td>
                                                     <td>
-                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.operators} name={index} onChange={inputOnChange1(index, "operators")} />
+                                                        <input type="text" className="form-control-sm mt-1" value={linecost.operators} name={index} onChange={inputOnChange1(index, "operators")} />
                                                         {/* <input type="text" className="form-control form-control-sm mt-1"   onChange={onNameEdited.bind(this, index)}
                                                             value={linecost.operators} name="operators" onChange={inputOnChange("operators")} /> */}
                                                     </td>
                                                     <td>
-                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.workingHrs} name={index} onChange={inputOnChange1(index, "workingHrs")} />
+                                                        <input type="text" className="form-control-sm mt-1" value={linecost.workingHrs} name={index} onChange={inputOnChange1(index, "workingHrs")} />
                                                         {/* <input type="text" className="form-control form-control-sm mt-1"
                                                             value={linecost.workingHrs} name="workingHrs" onChange={inputOnChange("workingHrs")} /> */}
                                                     </td>
                                                     <td>
-                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.linecost} name={index} onChange={inputOnChange1("linecost")} />
+                                                        <input type="text" className="form-control-sm mt-1" value={linecost.linecost} name={index} onChange={inputOnChange1("linecost")} />
 
                                                         {/* <input type="text" className="form-control form-control-sm mt-1"
                                                             value={linecost.linecost} name="linecost" onChange={inputOnChange("linecost")} /> */}
 
                                                     </td>
                                                     <td>
-                                                        <input type="text" className="form-control-sm mt-1" defaultValue={linecost.smv} name={index} onChange={inputOnChange1("smv")} />
+                                                        <input type="text" className="form-control-sm mt-1" value={linecost.smv} name={index} onChange={inputOnChange1("smv")} />
 
                                                         {/* <input type="text" className="form-control form-control-sm mt-1"
                                                             value={linecost.smv} name="smv" onChange={inputOnChange("smv")} /> */}
