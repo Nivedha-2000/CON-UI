@@ -99,6 +99,7 @@ function BusinessGroupMaster({ name }) {
         let value = e.target.value
     //    if (name == "unitperPack") value = validateInputOnKeyup(e)
         setFields({ ...fields, [name]: value })
+        
     }
 
     const [listLoading, setListLoading] = useState(false);
