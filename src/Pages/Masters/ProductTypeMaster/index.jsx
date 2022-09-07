@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const requiredFields = ["productType"],
     initialErrorMessages = {
@@ -17,7 +17,7 @@ const requiredFields = ["productType"],
         active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         productType: "",
         active: 'Y'
     };
@@ -25,8 +25,8 @@ const requiredFields = ["productType"],
 function ProductTypeMaster({ name }) {
     const [visible, setVisible] = useState(false);
     const [productTypeList, setproductTypeList] = useState([]);
-   // const [Mattype, setMattypeList] = useState([]);
-   // const [MatDesc, setMatDescList] = useState([]);
+    // const [Mattype, setMattypeList] = useState([]);
+    // const [MatDesc, setMatDescList] = useState([]);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
@@ -35,7 +35,9 @@ function ProductTypeMaster({ name }) {
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
-    })
+    });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
 
     const clearFields = () => {
         setFields({
@@ -51,6 +53,8 @@ function ProductTypeMaster({ name }) {
 
     const showDrawer = () => {
         setVisible(true);
+        setSaveVisible(true)
+        setUpdateVisible(false)
     };
 
 
@@ -93,11 +97,11 @@ function ProductTypeMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'MatTypeIndex'){
+        if (name === 'MatTypeIndex') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['MatTypeIndex'] =  ''
+                err['MatTypeIndex'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
@@ -105,12 +109,16 @@ function ProductTypeMaster({ name }) {
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        }
+        else if (name === 'productType') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
             setFields({ ...fields, [name]: value })
         }
 
     }
-    const save = () => {
+    const save = async (productType, Type) => {
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -119,37 +127,67 @@ function ProductTypeMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            // if (fields.transitdays==0){
-            //     err['transitdays'] = "Should be greater than zero."
-            //     validation = false
-            // }
-        
+        })
         setErrors({ ...initialErrorMessages, ...err })
-
         if (validation) {
             setLoader(true)
-            
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_PRODUCTTYPE_MASTER_LIST,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_PRODUCTTYPE_MASTER_LIST,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+
+                ItrApiService.GET({
+                    url: API_URLS.GET_PRODUCTTYPE_BY_ID + "/" + productType,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_PRODUCTTYPE_MASTER_LIST,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (productType.toUpperCase() === res.data.productType.toUpperCase()) {
+                            err = "Product Type Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -173,7 +211,7 @@ function ProductTypeMaster({ name }) {
         {
             name: "productType",
             label: "Product Type"
-        },   
+        },
         {
             name: "active",
             label: "Active",
@@ -191,7 +229,7 @@ function ProductTypeMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <div onClick={() => edit(value, 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
@@ -206,15 +244,15 @@ function ProductTypeMaster({ name }) {
         }
     ]
 
-    const getDataById = id => {
+    const getDataById = productType => {
         return ApiCall({
-            path: API_URLS.GET_PRODUCTTYPE_BY_ID + "/" + id,
+            path: API_URLS.GET_PRODUCTTYPE_BY_ID + "/" + productType,
         })
     }
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -222,22 +260,21 @@ function ProductTypeMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (id, type) => {
+    const edit = async (productType, type) => {
         try {
             setLoader(true)
             setVisible(true);
-           
-            let { data } = (id && await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            let { data } = (productType && await getDataById(productType))
             console.log(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            
-            const tableId = type === 'clone' ? 0 : id
-           
+            const tableId = type === 'clone' ? 0 : productType
             setFields({
-                id: tableId,                    
+                id: tableId,
                 productType: data.productType,
                 active: data.active
             })
@@ -296,12 +333,18 @@ function ProductTypeMaster({ name }) {
 
             {/* Add */}
             <Drawer
-             maskClosable={false}
-             keyboard={false}
-            footer={
-                <>
-                    <div>
-                        {
+                maskClosable={false}
+                keyboard={false}
+                footer={
+                    <>
+                        <div>
+                            {
+                                saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.productType, 'save')}> Save </button>
+
+                            }{
+                                updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.productType, 'update')}> Update </button>
+                            }
+                            {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -309,22 +352,22 @@ function ProductTypeMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
-                            let _id = Number(fields.id)
-                            if(_id === 0)add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Product Type Master`}</h6 >} placement="right" onClose={() => {
-                clearFields();
-                onClose();
-            }} visible={visible} >
+                        } */}
+                        </div>
+                        <div>
+                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
+                                let _id = Number(fields.id)
+                                if (_id === 0) add()
+                                else edit(_id)
+                            }}> Cancel </button>
+                        </div>
+                    </>
+                } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Product Type Master`}</h6 >} placement="right" onClose={() => {
+                    clearFields();
+                    onClose();
+                }} visible={visible} >
                 <div className='defect-master-add-new'>
-                   <div className='mt-3'>
+                    <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Product Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.productType === '' ? errors.productType : ''}</small>
@@ -332,7 +375,7 @@ function ProductTypeMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Product Type' disabled={fields.id != 0}
                             value={fields.productType} maxLength="20"
                             id="Product-Type"
-                            onChange={inputOnChange("productType")} 
+                            onChange={inputOnChange("productType")}
                             required />
                     </div>
 
@@ -362,8 +405,8 @@ function ProductTypeMaster({ name }) {
                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                                checked={fields.active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>

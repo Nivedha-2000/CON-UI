@@ -268,7 +268,6 @@ function LineCostMaster({ name }) {
                 validation = true
             }
         })
-
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             console.log(API_URLS.GET_LINECOST_MONTHWISE_LIST + "?Finyear=" + transYear + "&LocCode=" + locCode + "&FactCode=" + factCode + "&LineGroup=" + lineGroup);

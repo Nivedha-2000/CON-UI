@@ -48,7 +48,7 @@ const initialErrorMessages = {
         pdcPer: 0,
 
     },
-    requiredFields = [ "transYear", "locCode", "buyDivCode"]
+    requiredFields = ["transYear", "locCode", "buyDivCode"]
 
 function PDCMaster({ name }) {
     const clearFields = () => {
@@ -145,16 +145,36 @@ function PDCMaster({ name }) {
         })
     }
 
-    const getFactCodeDropDown = () => {
-        // alert(fields.locCode);
-        setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
+    // const getFactCodeDropDown = () => {
+    //     // alert(fields.locCode);
+    //     setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
+    //     if (fields.locCode) {
+    //         ApiCall({
+    //             path: API_URLS.GET_ALLFACTORY_LIST + `/${fields.locCode}`  //"/" + fields.locCode
+    //         }).then(respp => {
+    //             try {
+    //                 alert(respp.data);
+    //                 setFoctoryList(respp.data)
+    //             } catch (er) {
+    //                 message.error("Response data is not as expected")
+    //             }
+    //         })
+    //             .catch(err => {
+    //                 message.error(err.message || err)
+    //             })
+    //     } else {
+    //         setFoctoryList([])
+    //     }
+    // }
+
+    const getFinyearList = () => {
+
         if (fields.locCode) {
             ApiCall({
-                path: API_URLS.GET_ALLFACTORY_LIST + `/${fields.locCode}`  //"/" + fields.locCode
-            }).then(respp => {
+                path: API_URLS.GET_FINYEAR_MASTER_LIST
+            }).then(resp => {
                 try {
-                    alert(respp.data);
-                    setFoctoryList(respp.data)
+                    setFinyearList(resp.data.filter(a => a.locCode == fields.locCode))
                 } catch (er) {
                     message.error("Response data is not as expected")
                 }
@@ -162,26 +182,6 @@ function PDCMaster({ name }) {
                 .catch(err => {
                     message.error(err.message || err)
                 })
-        } else {
-            setFoctoryList([])
-        }
-    }
-
-    const getFinyearList = () => {
-       
-        if (fields.locCode) {
-            ApiCall({ 
-                path: API_URLS.GET_FINYEAR_MASTER_LIST
-            }).then(resp => {
-                try {
-                    setFinyearList(resp.data.filter(a => a.locCode == fields.locCode))
-                } catch(er) {
-                    message.error("Response data is not as expected")
-                }
-            })
-            .catch(err => {
-                message.error(err.message || err)
-            })
         } else {
             setFinyearList([])
         }
@@ -236,9 +236,9 @@ function PDCMaster({ name }) {
 
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
-            console.log(API_URLS.GET_PDC_MONTHWISE_LIST + "?Finyear=" + transYear + "&locCode=" + locCode + "&buyDivCode=" + buyDivCode );
+            console.log(API_URLS.GET_PDC_MONTHWISE_LIST + "?Finyear=" + transYear + "&locCode=" + locCode + "&buyDivCode=" + buyDivCode);
             ApiCall({
-                path: API_URLS.GET_PDC_MONTHWISE_LIST + "?Finyear=" + transYear + "&locCode=" + locCode + "&buyDivCode=" + buyDivCode ,
+                path: API_URLS.GET_PDC_MONTHWISE_LIST + "?Finyear=" + transYear + "&locCode=" + locCode + "&buyDivCode=" + buyDivCode,
             }).then(respp => {
                 console.log(respp)
                 if (Array.isArray(respp.data)) {
@@ -254,7 +254,7 @@ function PDCMaster({ name }) {
 
         }
     }
-   
+
     useEffect(() => {
         getBuyerList()
         getLocationList()
@@ -266,11 +266,11 @@ function PDCMaster({ name }) {
         }
     }, [fields.buyCode])
 
-    useEffect(() => {
-        if (fields.locCode) {
-            getFactCodeDropDown(fields.locCode)
-        }
-    }, [fields.locCode])
+    // useEffect(() => {
+    //     if (fields.locCode) {
+    //         getFactCodeDropDown(fields.locCode)
+    //     }
+    // }, [fields.locCode])
     useEffect(() => {
         if (fields.locCode) {
             getFinyearList(fields.locCode)
@@ -479,7 +479,7 @@ function PDCMaster({ name }) {
                                 </div> */}
 
                                 <div class="col-lg-4">
-
+                               
                                     <button class="btn btn-success search-btn btn-block ml-2 " onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.buyDivCode)}>
                                         ADD
                                         {/* <i class="fe fe-plus fs-10 pe-auto">ADD</i> */}
@@ -491,7 +491,7 @@ function PDCMaster({ name }) {
 
                             <div class="table-responsive pb-10 bg-white mt-20">
 
-                                <div className="ag-theme-alpine" style={{ width: 1183, height: 700 }}>
+                                {/* <div className="ag-theme-alpine" style={{ width: 1183, height: 700 }}>
                                     <AgGridReact
                                         ref={gridRef} // Ref for accessing Grid's API
 
@@ -505,6 +505,45 @@ function PDCMaster({ name }) {
 
                                         onCellClicked={cellClickedListener} // Optional - registering for Grid Event
                                     />
+                                </div> */}
+
+                                <div className="table-responsive pb-10 bg-white mt-20">
+                                    <table id="example-1" class="table table-striped tbl-wht   text-md-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>SlNo</th>
+                                                <th>Location</th>
+                                                <th>Month</th>
+                                                <th>Buyer Div Code </th>
+                                                <th>PCDper </th>
+                                               
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {rowData.map((pcdcost, index) => (
+                                                <tr key={index}>
+                                                    <td> {index + 1} </td>
+                                                    <td>{pcdcost.locCode}</td>
+                                                    <td>{pcdcost.transMonth}</td>
+                                                    <td>{pcdcost.buyDivCode}</td>
+                                                    {/* <td>
+                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.locCode} name={index} onChange={inputOnChange(index, "locCode")} />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.transMonth} name={index} onChange={inputOnChange(index, "transMonth")} />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.buyDivCode} name={index} onChange={inputOnChange("buyDivCode")} />
+                                                    </td> */}
+                                                    <td>
+                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.pdcPer} name="pdcPer" onChange={inputOnChange("pdcPer")} />
+                                                    </td>
+                                                </tr>
+                                            ))
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -513,7 +552,7 @@ function PDCMaster({ name }) {
 
 
                         <div class=" ">
-                            <button class="btn btn-primary search-btn btn-block  " onClick={()=>onClose()}>Cancel</button>
+                            <button class="btn btn-primary search-btn btn-block  " onClick={() => onClose()}>Cancel</button>
                         </div>
                         <div class="">
                             <button class="btn btn-success search-btn btn-block ml-10" onClick={() => postPDCsave()}>Save</button>

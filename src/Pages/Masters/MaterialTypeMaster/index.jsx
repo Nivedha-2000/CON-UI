@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["Type", "Mattype","MatTypeIndex","MatDesc"],
+const requiredFields = ["Type", "Mattype", "MatTypeIndex", "MatDesc"],
     initialErrorMessages = {
         Type: "",
         Mattype: "",
         MatDesc: "",
-        MatTypeIndex: 0,  
-        Allow: 0,   
+        MatTypeIndex: 0,
+        Allow: 0,
         Active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         Type: "",
         Mattype: "",
         MatDesc: "",
-        MatTypeIndex: 0,  
-        Allow: 0,   
+        MatTypeIndex: 0,
+        Allow: 0,
         Active: 'Y'
     };
 
@@ -43,7 +43,9 @@ function MaterialTypeMaster({ name }) {
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
-    })
+    });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
 
     const clearFields = () => {
         setFields({
@@ -59,6 +61,8 @@ function MaterialTypeMaster({ name }) {
 
     const showDrawer = () => {
         setVisible(true);
+        setSaveVisible(true)
+        setUpdateVisible(false)
     };
 
 
@@ -75,8 +79,8 @@ function MaterialTypeMaster({ name }) {
     useEffect(() => {
         getMaterialType();
         getDatas()
-       // getLocationMaster()
-      //  getShipModeType();
+        // getLocationMaster()
+        //  getShipModeType();
     }, []);
 
     const handleChange = (page) => {
@@ -88,7 +92,7 @@ function MaterialTypeMaster({ name }) {
             path: API_URLS.GET_LOCATION_MASTER_LIST
         }).then(res => {
             if (res.Success === true) {
-                setLocationName(res.data.filter(d=>d.active=="Y"))
+                setLocationName(res.data.filter(d => d.active == "Y"))
             }
             else {
                 setLoader(false);
@@ -97,7 +101,7 @@ function MaterialTypeMaster({ name }) {
     }
     const getMaterialType = () => {
         ApiCall({
-            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN  + MISCELLANEOUS_TYPES.MatType
+            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.MatType
         }).then(resp => {
             try {
                 setMaterialTypeList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
@@ -141,13 +145,14 @@ function MaterialTypeMaster({ name }) {
 
 
     const inputOnChange = name => e => {
+        debugger;
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'MatTypeIndex'){
+        if (name === 'MatTypeIndex') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['MatTypeIndex'] =  ''
+                err['MatTypeIndex'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
@@ -155,13 +160,18 @@ function MaterialTypeMaster({ name }) {
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        }
+        else if (name === 'Mattype') {
+            debugger;
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
             setFields({ ...fields, [name]: value })
-            
+
         }
 
     }
-    const save = () => {
+    const save = async (Mattype, Type) => {
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -170,37 +180,68 @@ function MaterialTypeMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            // if (fields.transitdays==0){
-            //     err['transitdays'] = "Should be greater than zero."
-            //     validation = false
-            // }
-        
+        })
         setErrors({ ...initialErrorMessages, ...err })
-
         if (validation) {
             setLoader(true)
-            
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_MATERIALTYPE_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_MATERIALTYPE_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+
+                ItrApiService.GET({
+                    url: API_URLS.GET_MATERIALTYPE_BY_ID + "/" + Mattype,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_MATERIALTYPE_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (Mattype.toUpperCase() === res.data.mattype.toUpperCase()) {
+                            err = "Mat type Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -224,24 +265,24 @@ function MaterialTypeMaster({ name }) {
         {
             name: "type",
             label: "Type"
-        },   
+        },
         {
             name: "mattype",
             label: "mattype"
-        },  
+        },
         {
             name: "matDesc",
             label: "matDesc"
-        },  
+        },
         {
             name: "matTypeIndex",
             label: "matTypeIndex"
-        },     
+        },
         {
             name: "allow",
             label: "Allow"
-        },   
-        
+        },
+
         {
             name: "active",
             label: "Active",
@@ -259,7 +300,7 @@ function MaterialTypeMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <div onClick={() => edit(value, 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
@@ -274,16 +315,15 @@ function MaterialTypeMaster({ name }) {
         }
     ]
 
-    const getDataById = id => {
-       // console.log(API_URLS.GET_MATERIALTYPE_BY_ID + "/" + id)
+    const getDataById = mattype => {
         return ApiCall({
-            path: API_URLS.GET_MATERIALTYPE_BY_ID + "/" + id,
+            path: API_URLS.GET_MATERIALTYPE_BY_ID + "/" + mattype,
         })
     }
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -291,27 +331,29 @@ function MaterialTypeMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (id, type) => {
+    const edit = async (mattype, type) => {
         try {
             setLoader(true)
             setVisible(true);
-            console.log(id);
-            let { data } = (id && await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            console.log(mattype);
+            let { data } = (mattype && await getDataById(mattype))
             console.log(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            
-            const tableId = type === 'clone' ? 0 : id
+
+            const tableId = type === 'clone' ? 0 : mattype
             console.log(data.active);
             setFields({
-                id: tableId,                    
+                id: tableId,
                 Type: data.type,
                 Mattype: data.mattype,
                 MatDesc: data.matDesc,
-                MatTypeIndex: data.matTypeIndex,  
-                Allow: data.allow,   
+                MatTypeIndex: data.matTypeIndex,
+                Allow: data.allow,
                 Active: data.active
             })
             setLoader(false)
@@ -324,8 +366,8 @@ function MaterialTypeMaster({ name }) {
     //console.log(fields)
     const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
         if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
-        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
-        setFields({ ...fields, [name]: "" })
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            setFields({ ...fields, [name]: "" })
         }
     }
     const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
@@ -379,12 +421,19 @@ function MaterialTypeMaster({ name }) {
 
             {/* Add */}
             <Drawer
-             maskClosable={false}
-             keyboard={false}
-            footer={
-                <>
-                    <div>
-                        {
+                maskClosable={false}
+                keyboard={false}
+                footer={
+                    <>
+                        <div>
+                            {
+                                saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.Mattype, 'save')}> Save </button>
+                            }
+                            {
+                                updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.Mattype, 'update')}> Update </button>
+                            }
+
+                            {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -392,20 +441,20 @@ function MaterialTypeMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
-                            let _id = Number(fields.id)
-                            if(_id === 0)add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Material Type Master`}</h6 >} placement="right" onClose={() => {
-                clearFields();
-                onClose();
-            }} visible={visible} >
+                        } */}
+                        </div>
+                        <div>
+                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
+                                let _id = Number(fields.id)
+                                if (_id === 0) add()
+                                else edit(_id)
+                            }}> Cancel </button>
+                        </div>
+                    </>
+                } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Material Type Master`}</h6 >} placement="right" onClose={() => {
+                    clearFields();
+                    onClose();
+                }} visible={visible} >
                 <div className='defect-master-add-new'>
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -413,21 +462,21 @@ function MaterialTypeMaster({ name }) {
                             <small className='text-danger'>{fields.Type === '' ? errors.Type : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required disabled={fields.id != 0}
-                                value={fields.Type}
-                                onChange={inputOnChange("Type")}      
-                                maxLength="1"                      
+                            value={fields.Type}
+                            onChange={inputOnChange("Type")}
+                            maxLength="1"
                         >
                             <option value=""> Select Material Type</option>
                             {/* {MaterialTypeList.map((v, index) => {
                                 return <option key={index} value={v.code}>{v.codeDesc}</option>
                             })} */}
-                             <option value="F"> F </option>
-                             <option value="T"> T </option>
-                             <option value="O"> O </option>
+                            <option value="F"> F </option>
+                            <option value="T"> T </option>
+                            <option value="O"> O </option>
                         </select>
                     </div>
-           
-                   <div className='mt-3'>
+
+                    <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Material Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.Mattype === '' ? errors.Mattype : ''}</small>
@@ -435,7 +484,8 @@ function MaterialTypeMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type' disabled={fields.id != 0}
                             value={fields.Mattype} maxLength="20"
                             id="Material-Type"
-                            onChange={inputOnChange("Mattype")} 
+                            onChange={inputOnChange("Mattype")}
+                            autoComplete="off"
                             required />
                     </div>
 
@@ -447,7 +497,8 @@ function MaterialTypeMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type Description'
                             value={fields.MatDesc} maxLength="40"
                             id="Material-Desc"
-                            onChange={inputOnChange("MatDesc")} 
+                            onChange={inputOnChange("MatDesc")}
+                            autoComplete="off"
                             required />
                     </div>
                     <div className='mt-3'>
@@ -456,19 +507,19 @@ function MaterialTypeMaster({ name }) {
                             <small className='text-danger'>{errors.MatTypeIndex ? errors.MatTypeIndex : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Material Type Index'
-                               value={fields.MatTypeIndex} minLength="1" maxLength="8"
-                               onChange={inputOnChange("MatTypeIndex")}   
-                               onFocus={NUMBER_IS_FOCUS_IN_ZERO("MatTypeIndex")} 
-                               onBlur={NUMBER_IS_FOCUS_OUT_ZERO("MatTypeIndex")}                      
+                            value={fields.MatTypeIndex} minLength="1" maxLength="8"
+                            onChange={inputOnChange("MatTypeIndex")}
+                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("MatTypeIndex")}
+                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("MatTypeIndex")}
                         />
-                    </div> 
+                    </div>
 
                     <div className='mt-3'>
                         <label>{fields.Active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.Active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, Active: e ? 'Y' : 'N' })} />
+                                checked={fields.Active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, Active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>

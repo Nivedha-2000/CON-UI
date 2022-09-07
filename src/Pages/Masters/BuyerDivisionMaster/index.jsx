@@ -111,9 +111,6 @@ function BuyerDivisionMaster({ name }) {
             message.error(err.message || err)
         })
     }
-
-
-
     const getDatas = () => {
         setListLoading(true)
         ApiCall({
@@ -142,10 +139,6 @@ function BuyerDivisionMaster({ name }) {
             setFields({ ...fields, [name]: 0 })
         }
     }
-
-
-
-
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
@@ -232,7 +225,6 @@ function BuyerDivisionMaster({ name }) {
                             message.error(err.message || err)
                         })
                     }
-
                     else {
                         setLoader(false);
                         if (buyDivCode.toUpperCase() === res.data.buyDivCode.toUpperCase()) {
