@@ -40,7 +40,7 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
 
     },
     initialFieldValues = {
-         id: 0,
+        id: 0,
         locCode: "",
         factCode: "",
         lineGroup: "",
@@ -114,6 +114,9 @@ export default function ProductivityMasters() {
 
     const [btnVisible, setBtnVisible] = useState(false);
     const [AddbtnVisible, setAddBtnVisible] = useState(false);
+    const [btnSaveVisible, setBtnSaveVisible] = useState(false);
+
+    const [headerFleids, setheaderFleids] = useState(false);
 
 
 
@@ -126,7 +129,7 @@ export default function ProductivityMasters() {
         getFabType();
         getDifficultyLevel();
         disableDate();
-        
+
     }, []);
 
     useEffect(() => {
@@ -360,7 +363,7 @@ export default function ProductivityMasters() {
         let err = {}, validation = true
         let value = e.target.value
         setFields({ ...fields, noOfOperators: fields.id == 0 ? "" : fields.noOfOperators })
-         setFields({ ...fields, [name]: value })
+        setFields({ ...fields, [name]: value })
 
         //  console.log(API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value);
         // if (!fields.noOfOperators==0) {
@@ -384,14 +387,13 @@ export default function ProductivityMasters() {
 
     }
 
-   const disableDate=()=>
-    {
-    var today,dd,mm,yyyy;
-    today=new Date();
-    dd=today.getDate()+1;
-    mm=today.getMonth()+1;
-    yyyy=today.getFullYear();
-    return yyyy+"-"+mm+"-"+dd;
+    function disableDate() {
+        var today, dd, mm, yyyy;
+        today = new Date();
+        dd = today.getDate() + 1;
+        mm = today.getMonth() + 1;
+        yyyy = today.getFullYear();
+        return yyyy + "-" + mm + "-" + dd;
     }
 
     const inputOnChange = name => e => {
@@ -433,8 +435,9 @@ export default function ProductivityMasters() {
         }).then(resp => {
             let len = resp.data.filter(f => f.peakEff == "Y");
             setProductivityList(resp.data)
-            //  setProductivityList([...ProductivityList, fields])
             setBtnVisible(true);
+            setheaderFleids(true);
+            setBtnSaveVisible(false)
         })
 
     }
@@ -455,29 +458,37 @@ export default function ProductivityMasters() {
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
         if (validation == true) {
-
             setAddBtnVisible(true)
             let len = ProductivityList.length;
             let len1 = Prodfields.length;
             fields.id = len + 1;
-            if (parseInt(fields.scaleUpEffPer) != 0) {
-                fields.scaleUpDay = len + 1;
-                // ApiCall({
-                //     path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
-                // }).then(resp => {
-                //     let len = resp.data.filter(f => f.peakEff == "Y");
-                //     setProductivityList(resp.data)
-                //     setProductivityList([...ProductivityList, fields])
-                // })
-
-                if (fields.peakEff != 'Y') {
-                    setFields({ ...fields, peakEff: 'N' })
+            if (ProductivityList.length > 0) {
+                let count = ProductivityList.filter(a => a.peakEff == "Y").length;
+                if (count > 0) {
+                    alert("Already this commination Peak Eff Closed..!")
+                } else {
+                    if (parseInt(fields.scaleUpEffPer) != 0) {
+                        fields.scaleUpDay = len + 1;
+                        if (fields.peakEff != 'Y') {
+                            setFields({ ...fields, peakEff: 'N' })
+                        }
+                        setProductivityList([...ProductivityList, fields])
+                        setFields({ ...fields, scaleUpEffPer: 0 })
+                    } else {
+                        alert("Please enter scaleUp Qty....! ")
+                    }
                 }
-
-                setProductivityList([...ProductivityList, fields])
-                setFields({ ...fields, scaleUpEffPer: 0 })
             } else {
-                alert("Please enter scaleUp Qty....! ")
+                if (parseInt(fields.scaleUpEffPer) != 0) {
+                    fields.scaleUpDay = len + 1;
+                    if (fields.peakEff != 'Y') {
+                        setFields({ ...fields, peakEff: 'N' })
+                    }
+                    setProductivityList([...ProductivityList, fields])
+                    setFields({ ...fields, scaleUpEffPer: 0 })
+                } else {
+                    alert("Please enter scaleUp Qty....! ")
+                }
             }
 
 
@@ -516,6 +527,8 @@ export default function ProductivityMasters() {
                         onClose();
                         setAddBtnVisible(false)
                         setBtnVisible(false);
+                        setheaderFleids(false);
+                        setBtnSaveVisible(false)
 
                     }).catch(err => {
                         setLoader(false)
@@ -531,6 +544,40 @@ export default function ProductivityMasters() {
         }
     }
 
+    function ProductivityMasterUpdate() {
+        debugger;
+        let toUpdateData = ProductivityList.map((item) => {
+            if (item.locCode === fields.locCode && item.scaleUpDay === fields.scaleUpDay) {
+                item.startdate = fields.startdate;
+                item.enddate = fields.enddate;
+                item.locCode = fields.locCode;
+                item.factCode = fields.factCode;
+                item.lineGroup = fields.lineGroup;
+                item.noOfOperators = fields.noOfOperators;
+                item.workingHrs = fields.workingHrs;
+                item.plaidType = fields.plaidType;
+                item.subProductType = fields.subProductType;
+                item.productType = fields.productType;
+                item.difficultyLevel = fields.difficultyLevel;
+                item.scaleUpDay = fields.scaleUpDay;
+                item.scaleUpEffPer = fields.scaleUpEffPer;
+                item.peakEff = fields.peakEff;
+                item.createdDate = fields.createdDate;
+                item.createdBy = fields.createdBy;
+                item.modifiedDate = fields.modifiedDate;
+                item.modifiedBy = fields.modifiedBy;
+                item.isActive = fields.isActive;
+                item.hostName = fields.hostName;
+            }
+            return item;
+        });
+
+
+        setProductivityList(toUpdateData);
+        setBtnVisible(true);
+
+
+    }
     const difficultyLevelOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
@@ -541,14 +588,19 @@ export default function ProductivityMasters() {
     }
 
 
-    const editProductivityMaster = (row, LocCode) => {
-         debugger;
-        setBtnVisible(true);
+    const editProductivityMaster = (LocCode, scaleUpDay) => {
+        debugger;
+
+        setBtnSaveVisible(true)
+        setBtnVisible(false);
+        setheaderFleids(true);
         setAddBtnVisible(true)
-        console.log(ProductivityList);
-        if (row != '') {
-            // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
-            setFields(ProductivityList.filter(a => a.id == row)[0]);
+
+
+        //   console.log(ProductivityList);
+        if (LocCode != '') {
+            //  console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay));
+            setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
         }
     };
     const onClose = () => {
@@ -673,9 +725,9 @@ export default function ProductivityMasters() {
                                     <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
                                     <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
                                         min={disableDate()}
-                                       onChange={inputOnChange("startdate")}
+                                        onChange={inputOnChange("startdate")}
                                         disabled={AddbtnVisible}
-                                      
+
                                     />
                                     <span className="error"></span>
                                 </div>
@@ -883,7 +935,7 @@ export default function ProductivityMasters() {
                             </div>
 
                             {
-                                btnVisible &&
+                                headerFleids &&
                                 <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                     <label> Scaleup Day </label>
                                     <small className='text-danger'></small>
@@ -903,7 +955,7 @@ export default function ProductivityMasters() {
                             }
 
                             {
-                                btnVisible &&
+                                headerFleids &&
                                 <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                     <div className="form-group">
                                         <label> Scaleup Qty </label>
@@ -931,7 +983,7 @@ export default function ProductivityMasters() {
                             </div> */}
 
                             {
-                                btnVisible &&
+                                headerFleids &&
                                 <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                     <div className="form-group">
                                         <label> Peak Eff </label>
@@ -1077,6 +1129,13 @@ export default function ProductivityMasters() {
                                     }
                                 </div>
 
+                                <div class="float-start pl-5">
+                                    {
+                                        btnSaveVisible &&
+                                        <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMasterUpdate()}>Update</button>
+                                    }
+                                </div>
+
                             </div>
                         </div>
                         <div class="clear"></div>
@@ -1114,7 +1173,7 @@ export default function ProductivityMasters() {
                                                     <td align='center'>
                                                         <div className='text-center' >
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191"
-                                                                onClick={() => { editProductivityMaster(row?.id, row?.locCode) }}
+                                                                onClick={() => { editProductivityMaster(row?.locCode, row?.scaleUpDay) }}
                                                             />
                                                         </div>
                                                     </td>

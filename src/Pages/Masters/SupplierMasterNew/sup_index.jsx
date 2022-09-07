@@ -124,8 +124,10 @@ function SupplierMasterNew({ name }) {
     const [showForm, setShowForm] = React.useState(false);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
-    })
+    });
 
+    const [btnUpdateVisible, setbtnUpdateVisible] = useState(false);
+    const [btnSaveVisible, setbtnSaveVisible] = useState(true);
     const clearFields = () => {
         setFields({
             ...initialFieldValues
@@ -345,6 +347,8 @@ function SupplierMasterNew({ name }) {
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
+        setbtnSaveVisible(true)
+        setbtnUpdateVisible(false)
     }
 
     const close = () => {
@@ -404,14 +408,14 @@ function SupplierMasterNew({ name }) {
             name: "address1",
             label: "address1"
         },
-        {
-            name: "address2",
-            label: "address2"
-        },
-        {
-            name: "address3",
-            label: "address3"
-        },
+        // {
+        //     name: "address2",
+        //     label: "address2"
+        // },
+        // {
+        //     name: "address3",
+        //     label: "address3"
+        // },
         {
             name: "city",
             label: "city"
@@ -424,98 +428,98 @@ function SupplierMasterNew({ name }) {
             name: "country",
             label: "country"
         },
-        {
-            name: "tngstNo",
-            label: "tngstNo"
-        },
-        {
-            name: "tinNo",
-            label: "tinNo"
-        },
-        {
-            name: "cstNo",
-            label: "cstNo"
-        },
-        {
-            name: "panNo",
-            label: "panNo"
-        },
-        {
-            name: "cinNo",
-            label: "cinNo"
-        },
-        {
-            name: "emailId1",
-            label: "emailId1"
-        },
-        {
-            name: "emailId2",
-            label: "emailId2"
-        },
-        {
-            name: "contPerson1",
-            label: "contPerson1"
-        },
-        {
-            name: "contPerson2",
-            label: "contPerson2"
-        },
-        {
-            name: "contNo1",
-            label: "contNo1"
-        },
-        {
-            name: "contNo2",
-            label: "contNo2"
-        },
-        {
-            name: "faxNo",
-            label: "faxNo"
-        },
+        // {
+        //     name: "tngstNo",
+        //     label: "tngstNo"
+        // },
+        // {
+        //     name: "tinNo",
+        //     label: "tinNo"
+        // },
+        // {
+        //     name: "cstNo",
+        //     label: "cstNo"
+        // },
+        // {
+        //     name: "panNo",
+        //     label: "panNo"
+        // },
+        // {
+        //     name: "cinNo",
+        //     label: "cinNo"
+        // },
+        // {
+        //     name: "emailId1",
+        //     label: "emailId1"
+        // },
+        // {
+        //     name: "emailId2",
+        //     label: "emailId2"
+        // },
+        // {
+        //     name: "contPerson1",
+        //     label: "contPerson1"
+        // },
+        // {
+        //     name: "contPerson2",
+        //     label: "contPerson2"
+        // },
+        // {
+        //     name: "contNo1",
+        //     label: "contNo1"
+        // },
+        // {
+        //     name: "contNo2",
+        //     label: "contNo2"
+        // },
+        // {
+        //     name: "faxNo",
+        //     label: "faxNo"
+        // },
         {
             name: "acctCode",
-            label: "acctCode"
+            label: "GL Account Code"
         },
-        {
-            name: "tdsType",
-            label: "tdsType"
-        },
-        {
-            name: "tdsCategory",
-            label: "tdsCategory"
-        },
-        {
-            name: "strRegNo",
-            label: "strRegNo"
-        },
+        // {
+        //     name: "tdsType",
+        //     label: "tdsType"
+        // },
+        // {
+        //     name: "tdsCategory",
+        //     label: "tdsCategory"
+        // },
+        // {
+        //     name: "strRegNo",
+        //     label: "strRegNo"
+        // },
         {
             name: "requestBy",
-            label: "requestBy"
+            label: "Requested By"
         },
-        {
-            name: "arnNo",
-            label: "arnNo"
-        },
-        {
-            name: "gstNo",
-            label: "gstNo"
-        },
-        {
-            name: "supplierNo",
-            label: "supplierNo"
-        },
-        {
-            name: "supplierGroup",
-            label: "supplierGroup"
-        },
-        {
-            name: "paymentType",
-            label: "paymentType"
-        },
-        {
-            name: "enterprise",
-            label: "enterprise"
-        },
+        // {
+        //     name: "arnNo",
+        //     label: "arnNo"
+        // },
+        // {
+        //     name: "gstNo",
+        //     label: "gstNo"
+        // },
+        // {
+        //     name: "supplierNo",
+        //     label: "supplierNo"
+        // },
+        // {
+        //     name: "supplierGroup",
+        //     label: "supplierGroup"
+        // },
+        // {
+        //     name: "paymentType",
+        //     label: "paymentType"
+        // },
+        // {
+        //     name: "enterprise",
+        //     label: "enterprise"
+        // },
         {
             name: "epType",
             label: "epType"
@@ -558,6 +562,8 @@ function SupplierMasterNew({ name }) {
             setShowForm(true)
             setLoader(true)
             setVisible(true);
+            setbtnSaveVisible(false)
+            setbtnUpdateVisible(true)
             let { data } = (supCategory && await getDataById(supplierId, supCategory, supCode))
             //let { data } = (await getDataById(id))
             if (!data) {
@@ -1087,7 +1093,15 @@ function SupplierMasterNew({ name }) {
                                 <button class="btn btn-primary search-btn btn-block  " onClick={close}>Cancel</button>
                             </div>
                             <div class="">
-                                <button class="btn btn-success search-btn btn-block ml-10" onClick={save}>Save</button>
+                                { btnSaveVisible &&
+                                    <button class="btn btn-success search-btn btn-block ml-10" onClick={save}>Save</button>
+                                }
+                            </div>
+                            <div class="">
+                                {
+                                    btnUpdateVisible &&
+                                    <button class="btn btn-success search-btn btn-block ml-10" onClick={save}>Update</button>
+                                }
                             </div>
                             <div class="">
                                 <button class="btn btn-primary search-btn btn-block ml-10" onClick={back}>Back</button>
