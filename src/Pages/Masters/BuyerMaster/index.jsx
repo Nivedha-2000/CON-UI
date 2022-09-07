@@ -93,6 +93,8 @@ function BuyerMaster({ name }) {
     const [listLoading, setListLoading] = useState(false);
     const [loader, setLoader] = useState(false);
     const [list, setList] = useState([]);
+    const [duplicateCheck, setDuplicateCheck] = useState([]);
+
     const [listTest, setListTest] = useState({
         ...Test
     });
@@ -118,6 +120,7 @@ function BuyerMaster({ name }) {
 
     const close = () => {
         clearFields()
+        setBuyerCodeVisible(false);
         setShowResults(true)
         setShowForm(false)
     }
@@ -175,7 +178,23 @@ function BuyerMaster({ name }) {
         })
     }
 
+    const GetdDuplicate = (value) => {
+        //alert(API_URLS.GET_ALL_TNA_DPND_ACTIVITY_PARAMS + "?BuyCode=" + AddTnamodels.buyCode + "&BuydivCode=" + AddTnamodels.buydivCode + "&Deptcode=" + value);
+        ApiCall({
+            path: API_URLS.GET_BUYER_MASTER_BY_ID + "/" + value,
+        }).then(resp => {
+            try {
+                setDuplicateCheck(resp.data)
+                console.log(resp.data)
+            } catch (er) {
+                message.error("Response data is not as expected")
+            }
+        })
+            .catch(err => {
+                message.error(err.message || err)
+            })
 
+    }
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
@@ -214,45 +233,8 @@ function BuyerMaster({ name }) {
         setErrors({ ...initialErrorMessages, ...err })
 
 
-
-        if (type === "update") {
-            if (validation) {
-                setLoader(true)
-
-                ApiCall({
-                    method: "POST",
-                    path: API_URLS.SAVE_BUYER_MASTER,
-                    data: {
-                        ...fields,
-                        hostName: getHostName()
-                    }
-                }).then(resp => {
-                    setLoader(false)
-                    message.success(resp.message)
-                    onClose()
-                    getDatas()
-                    setShowResults(true)
-                    setShowForm(false)
-                    setSavevisible(true)
-                    setUpdatevisible(false)
-                    setBuyerCodeVisible(false);
-                }).catch(err => {
-                    setLoader(false)
-
-                    //  fields['ftdOprName'] = tempOprName
-                    setFields({ ...fields })
-                    setErrors({ ...initialErrorMessages })
-                    message.error(err.message || err)
-                })
-            }
-        }
-        else {
-
-            let { data } = (buyCode && await getDataById(buyCode))
-            //setListTest(data);
-            //alert(listTest.length);
-
-            if (!data) {
+        if (validation) {
+            if (type === "update") {
                 if (validation) {
                     setLoader(true)
 
@@ -260,8 +242,7 @@ function BuyerMaster({ name }) {
                         method: "POST",
                         path: API_URLS.SAVE_BUYER_MASTER,
                         data: {
-                            ...fields,
-                            hostName: getHostName()
+                            ...fields
                         }
                     }).then(resp => {
                         setLoader(false)
@@ -270,6 +251,9 @@ function BuyerMaster({ name }) {
                         getDatas()
                         setShowResults(true)
                         setShowForm(false)
+                        setSavevisible(true)
+                        setUpdatevisible(false)
+                        setBuyerCodeVisible(false);
                     }).catch(err => {
                         setLoader(false)
 
@@ -281,15 +265,62 @@ function BuyerMaster({ name }) {
                 }
             }
             else {
-                if (buyCode.toUpperCase() === data.buyCode.toUpperCase()) {
-                    err = "Buyer Code Already Available"
-                    message.error(err)
-                }
+
+
+                //  GetdDuplicate(buyCode);
+
+                // {
+                //  let ds = {duplicateCheck.filter(f => f.buyCode = buyCode)}
+                // }
+                //duplicateCheck.count();
+                //alert(ds);
+                // let { data } = (buyCode && await getDataById(buyCode))
+                //console.log('test'+ data)
+                //setListTest(data);
+                //alert(listTest.length);
+
+
+                ItrApiService.GET({
+                    url: API_URLS.GET_BUYER_MASTER_BY_ID + "/" + buyCode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_BUYER_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                            setShowResults(true)
+                            setShowForm(false)
+                        }).catch(err => {
+                            setLoader(false)
+
+                            //  fields['ftdOprName'] = tempOprName
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+                            err = "Buyer Code Already Available"
+                            message.error(err)
+                        }
+                    }
+                });
+
+
             }
-            // }
+
         }
-
-
     }
     const Update = () => {
         if (loader) return

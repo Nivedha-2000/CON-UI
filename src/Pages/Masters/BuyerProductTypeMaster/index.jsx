@@ -29,15 +29,17 @@ const requiredFields = ["buyCode", "buyDivCode", "productType"],
     };
 
 function BuyerProductTypeMaster({ name }) {
-    const [visible, setVisible] = useState(false);   
+    const [visible, setVisible] = useState(false);
     const [ProductTypeList, setProductTypeList] = useState([]);
     const [buyerList, setBuyerList] = useState([]);
-    const [buyerDivisionList, setBuyerDivisionList] = useState([]);   
+    const [buyerDivisionList, setBuyerDivisionList] = useState([]);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
     const [listLoading, setListLoading] = useState(false);
     const [buyerCodeVisible, setBuyerCodeVisible] = useState(false);
+    const [Savevisible, setSavevisible] = React.useState(true);
+    const [updatevisible, setUpdatevisible] = React.useState(false);
     const [loader, setLoader] = useState(false);
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
@@ -54,6 +56,9 @@ function BuyerProductTypeMaster({ name }) {
     const onClose = () => {
         clearFields()
         setVisible(false);
+        setSavevisible(true)
+        setUpdatevisible(false)
+        setBuyerCodeVisible(false); 
     };
 
     const showDrawer = () => {
@@ -97,7 +102,7 @@ function BuyerProductTypeMaster({ name }) {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
-  
+
     const getBuyerList = () => {
         ApiCall({
             path: API_URLS.GET_BUYER_DROPDOWN
@@ -132,7 +137,7 @@ function BuyerProductTypeMaster({ name }) {
         }
     }
 
-    
+
 
     const getProductType = () => {
         ApiCall({
@@ -186,7 +191,10 @@ function BuyerProductTypeMaster({ name }) {
         }
 
     }
-    const save = () => {
+    // const save = () => {
+    const Save = async (buyCode, buyDivCode, productType, type) => {
+        debugger;
+        //  alert(buyCode, buyDivCode, productType, type);
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -195,36 +203,112 @@ function BuyerProductTypeMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })        
+        })
 
         setErrors({ ...initialErrorMessages, ...err })
 
         //getDataById(fields.buyCode, fields.buyDivCode, fields.productType)
 
+        // if (validation) {
+        //     setLoader(true)
+
+        //     ApiCall({
+        //         method: "POST",
+        //         path: API_URLS.SAVE_BUYPRODTYPE_MASTER,
+        //         data: {
+        //             ...fields,
+        //             hostName: getHostName()
+        //         }
+        //     }).then(resp => {
+        //         setLoader(false)
+        //         message.success(resp.message)
+        //         onClose()
+        //         getDatas()
+        //         setBuyerCodeVisible(false)
+        //     }).catch(err => {
+        //         setLoader(false)
+
+        //         //  fields['ftdOprName'] = tempOprName
+        //         setFields({ ...fields })
+        //         setErrors({ ...initialErrorMessages })
+        //         message.error(err.message || err)
+        //     })
+        // }
+
         if (validation) {
-            setLoader(true)
+            if (type === "update") {
+                if (validation) {
+                    setLoader(true)
 
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_BUYPRODTYPE_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
+                    ApiCall({
+                        method: "POST",
+                        path: API_URLS.SAVE_BUYPRODTYPE_MASTER,
+                        data: {
+                            ...fields,
+                            hostName: getHostName()
+                        }
+                    }).then(resp => {
+                        setLoader(false)
+                        message.success(resp.message)
+                        onClose()
+                        getDatas()
+                        setSavevisible(true)
+                        setUpdatevisible(false)
+                        setBuyerCodeVisible(false);
+                    }).catch(err => {
+                        setLoader(false)
+
+                        //  fields['ftdOprName'] = tempOprName
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        message.error(err.message || err)
+                    })
                 }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-                setBuyerCodeVisible(false)
-            }).catch(err => {
-                setLoader(false)
+            }
+            else {
+                ItrApiService.GET({
+                    url: API_URLS.GET_BUYPRODTYPE_MASTER_BY_ID + "/" + buyCode + "/" + buyDivCode + "/" + productType,
+                    appCode: "CNF"
+                }).then(res => {
+                    //  alert(res.Success);
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_BUYPRODTYPE_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                            setSavevisible(true)
+                            setUpdatevisible(false)
+                            setBuyerCodeVisible(false);
+                        }).catch(err => {
+                            setLoader(false)
 
-                //  fields['ftdOprName'] = tempOprName
-                setFields({ ...fields })
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+                            //  fields['ftdOprName'] = tempOprName
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+
+                        setLoader(false);
+                        // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+                        err = "Buyer Product Type Already Available"
+                        message.error(err)
+                        // }
+                    }
+                });
+
+
+            }
+
         }
     }
 
@@ -257,7 +341,7 @@ function BuyerProductTypeMaster({ name }) {
         {
             name: "productType",
             label: "productType",
-        },            
+        },
         {
             name: "active",
             label: "Active",
@@ -310,19 +394,21 @@ function BuyerProductTypeMaster({ name }) {
         try {
             setLoader(true)
             setVisible(true);
-            setBuyerCodeVisible(true);
             let { data } = (buyCode && await getDataById(buyCode, buyDivCode, productType))
             if (!data) {
                 message.error("Data not found")
                 return
             }
             const tableId = type === 'clone' ? 0 : 0
-            setFields({                             
+            setFields({
                 buyCode: data.buyCode,
                 buyDivCode: data.buyDivCode,
-                productType: data.productType,                    
+                productType: data.productType,
                 active: data.active
             })
+            setBuyerCodeVisible(true);
+            setSavevisible(false);
+            setUpdatevisible(true);
             setLoader(false)
         } catch (err) {
             setLoader(false)
@@ -380,15 +466,27 @@ function BuyerProductTypeMaster({ name }) {
             <Drawer footer={
                 <>
                     <div>
-                        {
+                        {/* {Savevisible &&
                             !loader ?
-                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
-                                : (
-                                    <div className="text-center">
-                                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                                    </div>
-                                )
+                            <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' > onClick={() => Save(fields.buyCode, fields.buyDivCode, fields.productType, 'Save')} Save</button>
+
+                            : (
+                                <div className="text-center">
+                                    <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                                </div>
+                            )
                         }
+                        {updatevisible &&
+                            !loader ?
+                            <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' > onClick={() => Save(fields.buyCode, fields.buyDivCode, fields.productType, 'Update')} Update</button>
+                            : (
+                                <div className="text-center">
+                                    <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                                </div>
+                            )
+                        } */}
+                        {Savevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.buyCode, fields.buyDivCode, fields.productType, 'save')}>Save</button>}
+                        {updatevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.buyCode, fields.buyDivCode, fields.productType, 'update')}>Update</button>}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
@@ -409,7 +507,7 @@ function BuyerProductTypeMaster({ name }) {
                             <label>Buyer Code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{errors.buyCode}</small>
                         </div>
-                        <select className='form-control form-control-sm mt-1' disabled={buyerCodeVisible}  id="buyer-code" value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
+                        <select className='form-control form-control-sm mt-1' disabled={buyerCodeVisible} id="buyer-code" value={fields.buyCode} onChange={inputOnChange("buyCode")} required>
                             <option value="" hidden>Select Buyer Code</option>
                             {
                                 buyerList.map((t, ind) => (

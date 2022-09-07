@@ -480,7 +480,7 @@ function TNAMaster({ name }) {
         })
     }
 
-    
+
     const getDatas = () => {
         setListLoading(true)
         ApiCall({
@@ -543,14 +543,13 @@ function TNAMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value//.||name === 'weightage'||name === 'preNotifyDays'||name === 'l1EscalateDays'||name === 'l2EscalateDays'
-        if (name === 'duration' || name === 'weightage' || name === 'preNotifyDays' || name === 'l1EscalateDays' || name === 'l2EscalateDays') {
+        if (name === 'weightage' || name === 'preNotifyDays' || name === 'l1EscalateDays' || name === 'l2EscalateDays') {
             const re = /^[0-9\b]+$/;
-            // alert(re);   
+            // alert(re);   /^[+-]?\d*(?:[.,]\d*)?$/
             debugger;
             if (e.target.value === '' || re.test(e.target.value)) {
                 //alert(e.target.value);
-                setAddTnamodels({ ...AddTnamodels, [name]: value });
-                err['duration'] = ''
+                setAddTnamodels({ ...AddTnamodels, [name]: value });               
                 err['weightage'] = ''
                 err['preNotifyDays'] = ''
                 err['l1EscalateDays'] = ''
@@ -565,7 +564,26 @@ function TNAMaster({ name }) {
                 message.error(typeof err == "string" ? err : "Please enter numbers only");
                 setErrors({ ...errors, ...err })
             }
-        } 
+        }
+        else  if (name === 'duration') {
+            const re = /^[-0-9\b]+$/;
+            // alert(re);   /^[+-]?\d*(?:[.,]\d*)?$/
+            debugger;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                //alert(e.target.value);
+                setAddTnamodels({ ...AddTnamodels, [name]: value });
+                err['duration'] = ''               
+                setErrors({ ...initialErrorMessages, ...err })
+            }
+            else {
+                // alert(e.target.value);
+                err[name] = "Please enter numbers only"
+                validation = false
+                // setErrors({ ...errors, ...err })
+                message.error(typeof err == "string" ? err : "Please enter numbers only");
+                setErrors({ ...errors, ...err })
+            }
+        }
         // else {
         //     setAddTnamodels({ ...AddTnamodels, [name]: value })
 
@@ -601,7 +619,6 @@ function TNAMaster({ name }) {
         // }
         else if (name === 'dependDeptCode') {
             GetdependActivityDropDown(e.target.value);
-
         }
         else if (name === 'dependActvity') {
             GetdependSubActivityDropDown(e.target.value);
@@ -623,7 +640,7 @@ function TNAMaster({ name }) {
                 setBuyerTypeVisible(false);
             }
             GetdependActCodeDropDown(e.target.value);
-        } 
+        }
         else {
             setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
@@ -802,7 +819,7 @@ function TNAMaster({ name }) {
         // }
 
         //  setErrors({ ...initialErrorMessages, ...err })
-       // alert(fields.length);
+        // alert(fields.length);
         if (fields.length == 0) {
             message.error(typeof err == "string" ? err : "Atleast Add one row");
             return
@@ -832,7 +849,7 @@ function TNAMaster({ name }) {
                                 item.activity = item.activity,
                                 item.subActivity = item.subActivity,
                                 item.criticalActivity = item.criticalActivity,
-                                item.tnaSeqNo = item.tnaSeqNo,
+                                item.tnaSeqNo = 0,
                                 item.duration = item.duration,
                                 item.dependActCode = item.dependActCode,
                                 item.dependDeptCode = item.dependDeptCode,
@@ -1785,13 +1802,13 @@ function TNAMaster({ name }) {
                     <div class="row mt-15 dis-sel mt-20">
                         <div class="col-lg-2">
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                <label>Buyer<span className='text-danger'>*  </span> </label>
+                                <label>Buyer <span className='text-danger'>*  </span> </label>
 
                             </div>
                             <select disabled={EditVisible} className='form-control form-control-sm mt-1' id="buyer-code" value={AddTnamodels.buyCode} onChange={inputOnChange("buyCode")} required>
                                 <option value="" hidden>Select Buyer Code</option>
                                 {
-                                    buyerList.filter(f => f.active =="Y").map((t, ind) => (
+                                    buyerList.filter(f => f.active == "Y").map((t, ind) => (
                                         <option key={ind} value={t.buyCode}>{t.buyCode}</option>
                                     ))
                                 }
@@ -1844,7 +1861,7 @@ function TNAMaster({ name }) {
                         </div>
                         <div class="col-lg-2">
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                <label>activity Type<span className='text-danger'>*  </span> </label>
+                                <label>Activity Type<span className='text-danger'>*  </span> </label>
 
                             </div>
                             <select disabled={EditVisible} className='form-select form-select-sm mt-1' required
@@ -1951,7 +1968,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>SubActivity<span className='text-danger'>  </span> </label>
+                                            <label>Sub Activity<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.subActivity === '' ? errors.subActivity : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter Sub Activity'
@@ -1966,13 +1983,13 @@ function TNAMaster({ name }) {
                                             <small className='text-danger'>{errors.duration === '' ? errors.duration : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter Days'
-                                            value={AddTnamodels.duration} minLength="1" maxLength="2"
+                                            value={AddTnamodels.duration} minLength="1" maxLength="3"
                                             onChange={inputOnChange("duration")}
                                         />
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>weightage<span className='text-danger'>  </span> </label>
+                                            <label>Weightage<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.weightage === '' ? errors.weightage : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter weightage'
@@ -1983,7 +2000,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>dependActCode<span className='text-danger'>  </span> </label>
+                                            <label>Depend ActCode<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependActCode === '' ? errors.dependActCode : ''}</small>
                                         </div>
                                         <select className='form-control form-control-sm mt-1' disabled={packQtyvisible} id="dependActCode" value={fields.dependActCode} onChange={inputOnChange("dependActCode")} required>
@@ -2007,7 +2024,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>dependDeptCode<span className='text-danger'>  </span> </label>
+                                            <label>Depend DeptCode<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependDeptCode === '' ? errors.dependDeptCode : ''}</small>
                                         </div>
                                         <select className='form-select form-select-sm mt-1' required
@@ -2022,7 +2039,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>dependActvity<span className='text-danger'>  </span> </label>
+                                            <label>Depend Actvity<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependActvity === '' ? errors.dependActvity : ''}</small>
                                         </div>
                                         <select className='form-control form-control-sm mt-1' id="dependActvity" disabled={packQtyvisible} value={fields.dependActvity} onChange={inputOnChange("dependActvity")} required>
@@ -2040,7 +2057,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>dependSubActvity<span className='text-danger'>  </span> </label>
+                                            <label>Depend SubActvity<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependSubActvity === '' ? errors.dependSubActvity : ''}</small>
                                         </div>
                                         <select className='form-control form-control-sm mt-1' id="dependSubActvity" disabled={packQtyvisible} value={fields.dependSubActvity} onChange={inputOnChange("dependSubActvity")} required>
@@ -2141,7 +2158,7 @@ function TNAMaster({ name }) {
                                 <div class="row mt-15">
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>valueAddtype<span className='text-danger'>  </span> </label>
+                                            <label>Value Addtype<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.valueAddtype === '' ? errors.valueAddtype : ''}</small>
                                         </div>
                                         <select className='form-select form-select-sm mt-1' required
@@ -2200,7 +2217,7 @@ function TNAMaster({ name }) {
                                 <div class="row mt-15">
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>preNotifyDays<span className='text-danger'>*  </span> </label>
+                                            <label>PreNotify Days<span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.preNotifyDays === '' ? errors.preNotifyDays : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter preNotifyDays'
@@ -2210,7 +2227,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>notifyRoleId<span className='text-danger'>*  </span> </label>
+                                            <label>Notify Role<span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.notifyRoleId === '' ? errors.notifyRoleId : ''}</small>
                                         </div>
                                         <select className='form-select form-select-sm mt-1' required
@@ -2224,7 +2241,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>l1EscalateDays<span className='text-danger'>  </span> </label>
+                                            <label>L1Escalate Days<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l1EscalateDays === '' ? errors.l1EscalateDays : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter l1EscalateDays'
@@ -2234,7 +2251,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>l1EscalateRole<span className='text-danger'>  </span> </label>
+                                            <label>L1Escalate Role<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l1EscalateRole === '' ? errors.l1EscalateRole : ''}</small>
                                         </div>
                                         <select className='form-select form-select-sm mt-1' required
@@ -2248,7 +2265,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>l2EscalateDays<span className='text-danger'>  </span> </label>
+                                            <label>L2Escalate Days<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l2EscalateDays === '' ? errors.l2EscalateDays : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter l2EscalateDays'
@@ -2258,7 +2275,7 @@ function TNAMaster({ name }) {
                                     </div>
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>l2EscalateRole<span className='text-danger'>  </span> </label>
+                                            <label>L2Escalate Role<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
                                         </div>
                                         <select mode="multiple" className='form-select form-select-sm mt-1' required
@@ -2345,9 +2362,9 @@ function TNAMaster({ name }) {
                                     <table id="example" class="table table-striped edit-np f-l1">
                                         <thead>
                                             <tr>
-                                                <th>Action</th>
-                                                <th class="">SlNo</th>
-                                                <th class="">Stage</th>
+                                                <th>ACTION</th>
+                                                <th class="">SLNO</th>
+                                                <th class="">STAGE</th>
                                                 <th class="">ORDER CATEGORY</th>
                                                 {/* <th class="">ACT TYPE</th>
                                                 <th>LOCATION</th> */}
