@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["buyDivCode", "productType", "fit", "gender","sizecode", "sizename", "sizeIndex", "inSeamIndex"],
+const requiredFields = ["buyDivCode", "productType", "fit", "gender", "sizecode", "sizename", "sizeIndex", "inSeamIndex"],
     initialErrorMessages = {
         buyDivCode: "",
         productType: "",
@@ -20,11 +20,11 @@ const requiredFields = ["buyDivCode", "productType", "fit", "gender","sizecode",
         sizecode: "",
         sizename: "",
         sizeIndex: "",
-        inSeamIndex: 0,     
+        inSeamIndex: 0,
         active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         buyDivCode: "",
         productType: "",
         fit: "",
@@ -32,7 +32,7 @@ const requiredFields = ["buyDivCode", "productType", "fit", "gender","sizecode",
         sizecode: "",
         sizename: "",
         sizeIndex: "",
-        inSeamIndex: 0,     
+        inSeamIndex: 0,
         active: 'Y'
     };
 
@@ -45,6 +45,9 @@ function SizeMaster({ name }) {
     const [FitList, setFitList] = useState([]);
     const [GenderList, setGenderList] = useState([]);
     const [shipmodeList, setShipmodeList] = useState([]);
+    const [buyerCodeVisible, setBuyerCodeVisible] = useState(false);
+    const [Savevisible, setSavevisible] = React.useState(true);
+    const [updatevisible, setUpdatevisible] = React.useState(false);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
@@ -65,6 +68,7 @@ function SizeMaster({ name }) {
     const onClose = () => {
         clearFields()
         setVisible(false);
+        setBuyerCodeVisible(false);
     };
 
     const showDrawer = () => {
@@ -82,73 +86,99 @@ function SizeMaster({ name }) {
         maxIndex: 0
     });
 
-    useEffect(() => {       
-        getDatas();       
+    useEffect(() => {
+        getDatas();
         getBuyerDivCode();
-        getProductType();    
-        getGender(); 
-        getFit(); 
+        getProductType();
+        getGender();
+        getFit();
     }, []);
 
     const handleChange = (page) => {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
+    // const getProductType = () => {
+    //     ApiCall({
+    //         path: API_URLS.GET_PRODUCT_TYPE_DROPDOWN
+    //     }).then(resp => {
+    //         // setProductTypeList(resp.data.map(d => ({ code: d.productType, codeDesc: d.productType })))
+    //         try {
+    //             setProductTypeList(resp.data.map(d => ({ code: d.productType, codeDesc: d.productType })))
+    //         } catch (e) {
+    //             message.error("response is not as expected")
+    //         }
+    //     }).catch(err => {
+    //         message.error(err.message || err)
+    //     })
+    // }
+
     const getProductType = () => {
         ApiCall({
-            path: API_URLS.GET_PRODUCT_TYPE_DROPDOWN 
+            path: API_URLS.GET_PRODUCT_TYPE_DROPDOWN
         }).then(resp => {
-            try {
-                setProductTypeList(resp.data.map(d => ({ code: d.productType, codeDesc: d.productType })))
-            } catch (e) {
-                message.error("response is not as expected")
-            }
+            //  try {
+            setProductTypeList(resp.data.map(d => ({ code: d.productType, codeDesc: d.productType })))
+            // } catch (e) {
+            //     message.error("response is not as expected")
+            // }
         }).catch(err => {
             message.error(err.message || err)
         })
     }
-   
+
     const getFit = () => {
         ApiCall({
             path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FIT
         }).then(resp => {
-            try {
-                setFitList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
-            } catch (e) {
-                message.error("response is not as expected")
-            }
+            setFitList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            // try {
+            //     setFitList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            // } catch (e) {
+            //     message.error("response is not as expected")
+            // }
         }).catch(err => {
             message.error(err.message || err)
         })
     }
 
     const getGender = () => {
-        ApiCall({
-            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.GENDER
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.GENDER,
+            appCode: "CNF"
         }).then(resp => {
-            try {
-                setGenderList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
-                console.log(data);
-            } catch (e) {
-                message.error("response is not as expected")
-            }
+            setGenderList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+
+        // ApiCall({
+        //     path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.GENDER
+        // }).then(resp => {
+        //     // setGenderList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        //     // try {
+        //     setGenderList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        //     console.log(data);
+        //     // } catch (e) {
+        //     //     message.error("response is not as expected")
+        //     // }
+        // }).catch(err => {
+        //     message.error(err.message || err)
+        // })
+    }
+    const getBuyerDivCode = () => {
+        ApiCall({
+            path: API_URLS.GET_BUYDIVCODE_DROPDOWN
+        }).then(resp => {
+            //  setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
+            // try {
+            setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
+            // } catch (e) {
+            //     message.error("response is not as expected")
+            // }
         }).catch(err => {
             message.error(err.message || err)
         })
     }
-    const getBuyerDivCode = () => {
-            ApiCall({
-                path: API_URLS.GET_BUYDIVCODE_DROPDOWN 
-            }).then(resp => {
-                try {
-                    setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
-                } catch (e) {
-                    message.error("response is not as expected")
-                }
-            }).catch(err => {
-                message.error(err.message || err)
-            })
-        }
     const getDatas = () => {
         setListLoading(true)
         ApiCall({
@@ -170,11 +200,11 @@ function SizeMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'inSeamIndex'){
+        if (name === 'inSeamIndex') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['inSeamIndex'] =  ''
+                err['inSeamIndex'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
@@ -182,7 +212,7 @@ function SizeMaster({ name }) {
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        } else {
             setFields({ ...fields, [name]: value })
         }
 
@@ -196,17 +226,17 @@ function SizeMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            if (fields.transitdays==0){
-                err['transitdays'] = "Should be greater than zero."
-                validation = false
-            }
-        
+        })
+        if (fields.transitdays == 0) {
+            err['transitdays'] = "Should be greater than zero."
+            validation = false
+        }
+
         setErrors({ ...initialErrorMessages, ...err })
 
         if (validation) {
             setLoader(true)
-            
+
             ApiCall({
                 method: "POST",
                 path: API_URLS.SAVE_SIZE_MASTER,
@@ -221,15 +251,106 @@ function SizeMaster({ name }) {
                 getDatas()
             }).catch(err => {
                 setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
+
+                //  fields['ftdOprName'] = tempOprName
+                setFields({ ...fields })
                 setErrors({ ...initialErrorMessages })
                 message.error(err.message || err)
             })
         }
     }
 
+    const Save = async (buyDivCode, productType, fit, gender, sizecode, type) => {
+        debugger;
+        //  alert(buyCode, buyDivCode, productType, type);
+        if (loader) return
+        let err = {}, validation = true
+        debugger;
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }
+        })
+
+        setErrors({ ...initialErrorMessages, ...err })
+
+        if (validation) {
+            if (type === "update") {
+                if (validation) {
+                    setLoader(true)
+
+                    ApiCall({
+                        method: "POST",
+                        path: API_URLS.SAVE_SIZE_MASTER,
+                        data: {
+                            ...fields,
+                            hostName: getHostName()
+                        }
+                    }).then(resp => {
+                        setLoader(false)
+                        message.success(resp.message)
+                        onClose()
+                        getDatas()
+                        setSavevisible(true);
+                        setUpdatevisible(false);
+                        setBuyerCodeVisible(false);
+                    }).catch(err => {
+                        setLoader(false)
+
+                        //  fields['ftdOprName'] = tempOprName
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        message.error(err.message || err)
+                    })
+                }
+            }
+            else {
+                ItrApiService.GET({
+                    url: API_URLS.GET_SIZE_MASTER_BY_ID + "/" + buyDivCode + "/" + productType + "/" + fit + "/" + gender + "/" + sizecode,
+                    appCode: "CNF"
+                }).then(res => {
+                    //  alert(res.Success);
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_SIZE_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                            setSavevisible(true);
+                            setUpdatevisible(false);
+                            setBuyerCodeVisible(false);
+                        }).catch(err => {
+                            setLoader(false)
+
+                            //  fields['ftdOprName'] = tempOprName
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+
+                        setLoader(false);
+                        // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+                        err = "This Combinations Already Available"
+                        message.error(err)
+                        // }
+                    }
+                });
+
+
+            }
+
+        }
+    }
     const [tableProps, setTableProps] = useState({
         page: 0,
         rowsPerPage: 10,
@@ -249,37 +370,37 @@ function SizeMaster({ name }) {
     const tableColumns = [
         {
             name: "buyDivCode",
-            label: "BuyDivCode",          
+            label: "BuyDivCode",
         },
         {
             name: "productType",
-            label: "ProductType",          
+            label: "ProductType",
         },
         {
             name: "fit",
-            label: "Fit",          
+            label: "Fit",
         },
         {
             name: "gender",
-            label: "Gender",          
+            label: "Fashion Group",
         },
         {
             name: "sizecode",
-            label: "Sizecode",          
+            label: "Sizecode",
         },
         {
             name: "sizename",
-            label: "Sizename",          
+            label: "Sizename",
         },
         {
             name: "sizeIndex",
-            label: "SizeIndex",          
+            label: "SizeIndex",
         },
-        
+
         {
             name: "inSeamIndex",
             label: "InSeamIndex"
-        },      
+        },
         {
             name: "active",
             label: "Active",
@@ -297,8 +418,8 @@ function SizeMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                            <div onClick={() => edit(tm.rowData[0],tm.rowData[1],tm.rowData[2],tm.rowData[3],tm.rowData[4], 'edit')}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[0], tm.rowData[1], tm.rowData[2], tm.rowData[3], tm.rowData[4], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div onClick={() => edit(value, 'clone')}>
@@ -312,15 +433,15 @@ function SizeMaster({ name }) {
         }
     ]
 
-    const getDataById = (buyDivCode,productType,fit,gender,sizecode) => {
+    const getDataById = (buyDivCode, productType, fit, gender, sizecode) => {
         return ApiCall({
-            path: API_URLS.GET_SIZE_MASTER_BY_ID + "/" + buyDivCode + "/" + productType+ "/" + fit+ "/" + gender+ "/" + sizecode,
+            path: API_URLS.GET_SIZE_MASTER_BY_ID + "/" + buyDivCode + "/" + productType + "/" + fit + "/" + gender + "/" + sizecode,
         })
     }
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -328,28 +449,31 @@ function SizeMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (buyDivCode,productType,fit,gender,sizecode, type) => {
+    const edit = async (buyDivCode, productType, fit, gender, sizecode, type) => {
         try {
-            setLoader(true)
+            setLoader(true);
             setVisible(true);
-            let { data } = (buyDivCode && await getDataById(buyDivCode,productType,fit,gender,sizecode))
+            let { data } = (buyDivCode && await getDataById(buyDivCode, productType, fit, gender, sizecode))
             if (!data) {
                 message.error("Data not found")
                 return
             }
             const tableId = type === 'clone' ? 0 : 0
             setFields({
-               // id: tableId,                    
+                // id: tableId,                    
                 buyDivCode: data.buyDivCode,
                 productType: data.productType,
                 fit: data.fit,
-                gender: data.gender,   
+                gender: data.gender,
                 sizecode: data.sizecode,
                 sizename: data.sizename,
                 sizeIndex: data.sizeIndex,
-                inSeamIndex: data.inSeamIndex,     
+                inSeamIndex: data.inSeamIndex,
                 active: data.active
             })
+            setBuyerCodeVisible(true);
+            setSavevisible(false);
+            setUpdatevisible(true);
             setLoader(false)
         } catch (err) {
             setLoader(false)
@@ -407,7 +531,7 @@ function SizeMaster({ name }) {
             <Drawer footer={
                 <>
                     <div>
-                        {
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -415,12 +539,14 @@ function SizeMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
+                        {Savevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.buyDivCode, fields.productType, fields.fit, fields.gender, fields.sizecode, 'save')}>Save</button>}
+                        {updatevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.buyDivCode, fields.productType, fields.fit, fields.gender, fields.sizecode, 'update')}>Update</button>}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
                             let _id = Number(fields.id)
-                            if(_id === 0)add()
+                            if (_id === 0) add()
                             else edit(_id)
                         }}> Cancel </button>
                     </div>
@@ -437,8 +563,8 @@ function SizeMaster({ name }) {
                             <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.buyDivCode}
-                                onChange={inputOnChange("buyDivCode")}                            
+                            value={fields.buyDivCode} disabled={buyerCodeVisible}
+                            onChange={inputOnChange("buyDivCode")}
                         >
                             <option value=""> Select Buyer Division</option>
                             {buyerdivcodelist.map((v, index) => {
@@ -446,15 +572,15 @@ function SizeMaster({ name }) {
                             })}
                         </select>
                     </div>
-                             
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Product Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.productType === '' ? errors.productType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.productType}
-                                onChange={inputOnChange("productType")}                            
+                            value={fields.productType} disabled={buyerCodeVisible}
+                            onChange={inputOnChange("productType")}
                         >
                             <option value=""> Select Product Type</option>
                             {ProductTypeList.map((v, index) => {
@@ -469,8 +595,8 @@ function SizeMaster({ name }) {
                             <small className='text-danger'>{fields.fit === '' ? errors.fit : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.fit}
-                                onChange={inputOnChange("fit")}                            
+                            value={fields.fit} disabled={buyerCodeVisible}
+                            onChange={inputOnChange("fit")}
                         >
                             <option value=""> Select Fit</option>
                             {FitList.map((v, index) => {
@@ -481,12 +607,12 @@ function SizeMaster({ name }) {
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Gender <span className='text-danger'>*  </span> </label>
+                            <label>Fashion Group<span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.gender === '' ? errors.gender : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.gender}
-                                onChange={inputOnChange("gender")}                            
+                            value={fields.gender} disabled={buyerCodeVisible}
+                            onChange={inputOnChange("gender")}
                         >
                             <option value=""> Select Gender</option>
                             {GenderList.map((v, index) => {
@@ -501,10 +627,10 @@ function SizeMaster({ name }) {
                             <small className='text-danger'>{errors.sizecode ? errors.sizecode : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Size Code Value'
-                               value={fields.sizecode} minLength="1" maxLength="10"
-                               onChange={inputOnChange("sizecode")}                            
+                            value={fields.sizecode} minLength="1" maxLength="10" disabled={buyerCodeVisible}
+                            onChange={inputOnChange("sizecode")}
                         />
-                    </div>      
+                    </div>
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -512,21 +638,21 @@ function SizeMaster({ name }) {
                             <small className='text-danger'>{errors.sizename ? errors.sizename : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Size Name Value'
-                               value={fields.sizename} minLength="1" maxLength="15"
-                               onChange={inputOnChange("sizename")}                            
+                            value={fields.sizename} minLength="1" maxLength="15"
+                            onChange={inputOnChange("sizename")}
                         />
-                    </div>           
-           
+                    </div>
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Size Index </label>
                             <small className='text-danger'>{errors.sizeIndex ? errors.sizeIndex : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Size Index Value'
-                               value={fields.sizeIndex} minLength="1" maxLength="5"
-                               onChange={inputOnChange("sizeIndex")}                            
+                            value={fields.sizeIndex} minLength="1" maxLength="10"
+                            onChange={inputOnChange("sizeIndex")}
                         />
-                    </div>      
+                    </div>
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -534,19 +660,19 @@ function SizeMaster({ name }) {
                             <small className='text-danger'>{errors.inSeamIndex ? errors.inSeamIndex : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter InSeam Index Value'
-                               value={fields.inSeamIndex} minLength="1" maxLength="10"
-                               onChange={inputOnChange("inSeamIndex")}                            
+                            value={fields.inSeamIndex} minLength="1" maxLength="10"
+                            onChange={inputOnChange("inSeamIndex")}
                         />
-                    </div>      
+                    </div>
 
-                  
+
 
                     <div className='mt-3'>
                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                                checked={fields.active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>

@@ -1,38 +1,34 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const requiredFields = ["roleId", "roleDesc"],
     initialErrorMessages = {
         roleId: "",
         roleDesc: "",
-        // toLocation: "",
-        // transitdays: 0,     
         active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         roleId: "",
         roleDesc: "",
-        // toLocation: "",
-        // transitdays: 0,       
         active: 'Y'
     };
 
 function RoleMaster({ name }) {
     const [visible, setVisible] = useState(false);
-    const [locationName, setLocationName] = useState([]);
-    const [orginLocationList, setOrginLocationList] = useState([]);
-    const [shipmodeList, setShipmodeList] = useState([]);
+    const [roleidVisible, setRoleidVisible] = useState(false);
+    const [Savevisible, setSavevisible] = React.useState(true);
+    const [updatevisible, setUpdatevisible] = React.useState(false);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
@@ -53,6 +49,9 @@ function RoleMaster({ name }) {
     const onClose = () => {
         clearFields()
         setVisible(false);
+        setSavevisible(true)
+        setUpdatevisible(false)
+        setRoleidVisible(false);
     };
 
     const showDrawer = () => {
@@ -71,56 +70,12 @@ function RoleMaster({ name }) {
     });
 
     useEffect(() => {
-        getOrginLocationType();
         getDatas()
-        getLocationMaster()
-        
-        getShipModeType();
     }, []);
 
     const handleChange = (page) => {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
-
-    const getLocationMaster = async () => {
-        ApiCall({
-            path: API_URLS.GET_LOCATION_MASTER_LIST
-        }).then(res => {
-            if (res.Success === true) {
-                setLocationName(res.data.filter(d=>d.active=="Y"))
-            }
-            else {
-                setLoader(false);
-            }
-        });
-    }
-    const getOrginLocationType = () => {
-        ApiCall({
-            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.COUNTRY
-        }).then(resp => {
-            try {
-                setOrginLocationList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
-            } catch (e) {
-                message.error("response is not as expected")
-            }
-        }).catch(err => {
-            message.error(err.message || err)
-        })
-    }
-    const getShipModeType = () => {
-        ApiCall({
-            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.SHIPMODE
-        }).then(resp => {
-            try {
-                setShipmodeList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
-            } catch (e) {
-                message.error("response is not as expected")
-            }
-        }).catch(err => {
-            message.error(err.message || err)
-        })
-    }
-
     const getDatas = () => {
         setListLoading(true)
         ApiCall({
@@ -140,26 +95,57 @@ function RoleMaster({ name }) {
 
 
     const inputOnChange = name => e => {
-        let err = {}, validation = true
         let value = e.target.value
-        if (name === 'transitdays'){
-            const re = /^[0-9\b]+$/;
-            if (e.target.value === '' || re.test(e.target.value)) {
-                setFields({ ...fields, [name]: value });
-                err['transitdays'] =  ''
-                setErrors({ ...errors, ...err })
-            }
-            else {
-                err['transitdays'] = "Please enter numbers only"
-                validation = false
-                setErrors({ ...errors, ...err })
-            }
-        }  else {
+        if (name === 'roleId') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else if (name === 'roleDesc') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
             setFields({ ...fields, [name]: value })
         }
-
     }
-    const save = () => {
+    // const save = () => {
+    //     if (loader) return
+    //     let err = {}, validation = true
+    //     debugger;
+    //     requiredFields.forEach(f => {
+    //         if (fields[f] === "") {
+    //             err[f] = "This field is required"
+    //             validation = false
+    //         }
+    //     })
+    //     setErrors({ ...initialErrorMessages, ...err })
+
+    //     if (validation) {
+    //         setLoader(true)
+
+    //         ApiCall({
+    //             method: "POST",
+    //             path: API_URLS.SAVE_ROLE_MASTER,
+    //             data: {
+    //                 ...fields,
+    //                 hostName: getHostName()
+    //             }
+    //         }).then(resp => {
+    //             setLoader(false)
+    //             message.success(resp.message)
+    //             onClose()
+    //             getDatas()
+    //         }).catch(err => {
+    //             setLoader(false)
+
+    //             //  fields['ftdOprName'] = tempOprName
+    //             setFields({ ...fields })
+    //             setErrors({ ...initialErrorMessages })
+    //             message.error(err.message || err)
+    //         })
+    //     }
+    // }
+    const Save = async (roleId, type) => {
+        debugger;
+        //  alert(buyCode, buyDivCode, productType, type);
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -168,40 +154,85 @@ function RoleMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            if (fields.transitdays==0){
-                err['transitdays'] = "Should be greater than zero."
-                validation = false
-            }
-        
-        setErrors({ ...initialErrorMessages, ...err })
+        })
 
+        setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
-            setLoader(true)
-            
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_ROLE_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
+            if (type === "update") {
+                if (validation) {
+                    setLoader(true)
+
+                    ApiCall({
+                        method: "POST",
+                        path: API_URLS.SAVE_ROLE_MASTER,
+                        data: {
+                            ...fields,
+                            hostName: getHostName()
+                        }
+                    }).then(resp => {
+                        setLoader(false)
+                        message.success(resp.message)
+                        onClose()
+                        getDatas()
+                        setSavevisible(true)
+                        setUpdatevisible(false)
+                        setRoleidVisible(false);
+                    }).catch(err => {
+                        setLoader(false)
+
+                        //  fields['ftdOprName'] = tempOprName
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        message.error(err.message || err)
+                    })
                 }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+            }
+            else {
+                ItrApiService.GET({
+                    url: API_URLS.GET_ROLE_MASTER_BY_ID + "/" + roleId,
+                    appCode: "CNF"
+                }).then(res => {
+                    //  alert(res.Success);
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_ROLE_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                            setSavevisible(true)
+                            setUpdatevisible(false)
+                            setRoleidVisible(false);
+                        }).catch(err => {
+                            setLoader(false)
+
+                            //  fields['ftdOprName'] = tempOprName
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+
+                        setLoader(false);
+                        // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+                        err = "Role ID Already Available"
+                        message.error(err)
+                        // }
+                    }
+                });
+
+
+            }
+
         }
     }
-
     const [tableProps, setTableProps] = useState({
         page: 0,
         rowsPerPage: 10,
@@ -221,13 +252,13 @@ function RoleMaster({ name }) {
     const tableColumns = [
         {
             name: "roleId",
-            label: "roleId",         
+            label: "roleId",
 
         },
         {
             name: "roleDesc",
             label: "roleDescription",
-            
+
         },
         // {
         //     name: "toLocation",
@@ -261,7 +292,7 @@ function RoleMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <div onClick={() => edit(value, 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
@@ -284,8 +315,8 @@ function RoleMaster({ name }) {
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
-            clearFields()
+            setVisible(true);
+            clearFields();
             setLoader(false)
         } catch (err) {
             setLoader(false)
@@ -302,11 +333,14 @@ function RoleMaster({ name }) {
                 return
             }
             const tableId = type === 'clone' ? 0 : 0
-            setFields({                             
+            setFields({
                 roleId: data.roleId,
-                roleDesc: data.roleDesc,                   
+                roleDesc: data.roleDesc,
                 active: data.active
             })
+            setRoleidVisible(true);
+            setSavevisible(false);
+            setUpdatevisible(true);
             setLoader(false)
         } catch (err) {
             setLoader(false)
@@ -364,7 +398,7 @@ function RoleMaster({ name }) {
             <Drawer footer={
                 <>
                     <div>
-                        {
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -372,12 +406,14 @@ function RoleMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
+                        {Savevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.roleId, 'save')}>Save</button>}
+                        {updatevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.roleId, 'update')}>Update</button>}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
                             let _id = Number(fields.id)
-                            if(_id === 0)add()
+                            if (_id === 0) add()
                             else edit(_id)
                         }}> Cancel </button>
                     </div>
@@ -393,11 +429,11 @@ function RoleMaster({ name }) {
                             <label>Role ID <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.roleId === '' ? errors.roleId : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter Role Description'
-                               value={fields.roleId} minLength="1" maxLength="10"
-                               onChange={inputOnChange("roleId")}                            
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter Role ID'
+                            value={fields.roleId} minLength="1" maxLength="5" disabled={roleidVisible}
+                            onChange={inputOnChange("roleId")}
                         />
-                      
+
                     </div>
 
                     <div className='mt-3'>
@@ -406,10 +442,10 @@ function RoleMaster({ name }) {
                             <small className='text-danger'>{fields.roleDesc === '' ? errors.roleDesc : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Role Description'
-                               value={fields.roleDesc} minLength="1" maxLength="50"
-                               onChange={inputOnChange("roleDesc")}                            
+                            value={fields.roleDesc} minLength="1" maxLength="25"
+                            onChange={inputOnChange("roleDesc")}
                         />
-                      
+
                     </div>
 
                     {/* <div className='mt-3'>
@@ -444,8 +480,8 @@ function RoleMaster({ name }) {
                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                                checked={fields.active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>
