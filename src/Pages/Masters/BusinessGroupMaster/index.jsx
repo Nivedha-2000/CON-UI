@@ -99,6 +99,7 @@ function BusinessGroupMaster({ name }) {
         let value = e.target.value
     //    if (name == "unitperPack") value = validateInputOnKeyup(e)
         setFields({ ...fields, [name]: value })
+        
     }
 
     const [listLoading, setListLoading] = useState(false);
@@ -249,7 +250,7 @@ function BusinessGroupMaster({ name }) {
                     <div>
                         {
                             !loader ?
-                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Submit" : "Update"} </button>
+                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Save" : "Update"} </button>
                                 : (
                                     <div className="text-center">
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
