@@ -236,19 +236,21 @@ function SupplierMasterNew({ name }) {
         debugger;
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'MatTypeIndex') {
+        if (name === 'acctCode') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['MatTypeIndex'] = ''
+                err['acctCode'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['MatTypeIndex'] = "Please enter numbers only"
+                err['acctCode'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        } else {
+        }
+        
+        else {
             setFields({ ...fields, [name]: value })
         }
 
