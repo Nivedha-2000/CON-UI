@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["fashionGroup", "productType","styleDivision","subProductType","avgSAM"],
+const requiredFields = ["fashionGroup", "productType", "styleDivision", "subProductType", "avgSAM"],
     initialErrorMessages = {
-        id: 0,   
+        id: 0,
         fashionGroup: "",
         productType: "",
         styleDivision: "",
-        subProductType: "",  
-        avgSAM: 0,   
+        subProductType: "",
+        avgSAM: 0,
         Active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         fashionGroup: "",
         productType: "",
         styleDivision: "",
-        subProductType: "",  
-        avgSAM: 0,   
+        subProductType: "",
+        avgSAM: 0,
         Active: 'Y'
     };
 
@@ -48,7 +48,9 @@ function StyleDivisionMaster({ name }) {
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
-    })
+    });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
 
     const clearFields = () => {
         setFields({
@@ -64,6 +66,8 @@ function StyleDivisionMaster({ name }) {
 
     const showDrawer = () => {
         setVisible(true);
+        setSaveVisible(true)
+        setUpdateVisible(false)
     };
 
 
@@ -80,15 +84,15 @@ function StyleDivisionMaster({ name }) {
     useEffect(() => {
         getProductType();
         getDatas();
-       // getLocationMaster()
-       getFashionGroup();
+        // getLocationMaster()
+        getFashionGroup();
     }, []);
 
     const handleChange = (page) => {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
-   
+
     const getProductType = () => {
         ApiCall({
             path: API_URLS.GET_PRODUCTTYPE_MASTER_LIST
@@ -138,24 +142,28 @@ function StyleDivisionMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'avgSAM'){
-            const re =/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
+        if (name === 'profitPercent') {
+            const re = /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['avgSAM'] =  ''
+                err['profitPercent'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['avgSAM'] = "Please enter numbers only"
+                err['profitPercent'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        }
+        else if (name === 'fashionGroup' || name === 'productType' || name === 'styleDivision' || name === 'subProductType') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
             setFields({ ...fields, [name]: value })
         }
 
     }
-    const save = () => {
+    const save = async (fashionGroup, productType, styleDivision, subProductType, Type) => {
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -164,37 +172,74 @@ function StyleDivisionMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            // if (fields.transitdays==0){
-            //     err['transitdays'] = "Should be greater than zero."
-            //     validation = false
-            // }
-        
+        })
+        // if (fields.transitdays==0){
+        //     err['transitdays'] = "Should be greater than zero."
+        //     validation = false
+        // }
+
         setErrors({ ...initialErrorMessages, ...err })
 
         if (validation) {
             setLoader(true)
-            
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_STYLEDIV_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_STYLEDIV_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+
+                debugger;
+                ItrApiService.GET({
+                    url: API_URLS.GET_STYLEDIV_MASTER_BY_ID + "/" + fashionGroup + "/" + productType + "/" + styleDivision + "/" + subProductType,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_STYLEDIV_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (fashionGroup.toUpperCase() === res.data.fashionGroup.toUpperCase() && productType.toUpperCase() === res.data.productType.toUpperCase() && styleDivision.toUpperCase() === res.data.styleDivision.toUpperCase() && subProductType.toUpperCase() === res.data.subProductType.toUpperCase()) {
+                            err = "Fashion Group Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -218,24 +263,24 @@ function StyleDivisionMaster({ name }) {
         {
             name: "fashionGroup",
             label: "Fashion Group"
-        },   
+        },
         {
             name: "productType",
             label: "Product Type"
-        },  
+        },
         {
             name: "styleDivision",
             label: "Style Division"
-        },  
+        },
         {
             name: "subProductType",
             label: "Sub Product Type"
-        },     
+        },
         {
             name: "avgSAM",
             label: "Avg SAM"
-        },   
-        
+        },
+
         {
             name: "active",
             label: "Active",
@@ -253,8 +298,8 @@ function StyleDivisionMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                            <div onClick={() => edit(tm.rowData[0],tm.rowData[1],tm.rowData[2],tm.rowData[3], 'edit')}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[0], tm.rowData[1], tm.rowData[2], tm.rowData[3], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div onClick={() => edit(value, 'clone')}>
@@ -268,16 +313,16 @@ function StyleDivisionMaster({ name }) {
         }
     ]
 
-    const getDataById = (fashionGroup,productType,styleDivision,subProductType) => {
-       // console.log(API_URLS.GET_MATERIALTYPE_BY_ID + "/" + id)
+    const getDataById = (fashionGroup, productType, styleDivision, subProductType) => {
+        // console.log(API_URLS.GET_MATERIALTYPE_BY_ID + "/" + id)
         return ApiCall({
-            path: API_URLS.GET_STYLEDIV_MASTER_BY_ID + "/" + fashionGroup  + "/" + productType + "/" + styleDivision + "/" + subProductType,
+            path: API_URLS.GET_STYLEDIV_MASTER_BY_ID + "/" + fashionGroup + "/" + productType + "/" + styleDivision + "/" + subProductType,
         })
     }
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -285,28 +330,29 @@ function StyleDivisionMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (fashionGroup,productType,styleDivision,subProductType, type) => {
-      //  console.log(fashionGroup,productType,styleDivision,subProductType)
+    const edit = async (fashionGroup, productType, styleDivision, subProductType, type) => {
+        //  console.log(fashionGroup,productType,styleDivision,subProductType)
         try {
             setLoader(true)
             setVisible(true);
-          
-            let { data } = (fashionGroup && await getDataById(fashionGroup,productType,styleDivision,subProductType))
-          //  console.log(data);
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            let { data } = (fashionGroup && await getDataById(fashionGroup, productType, styleDivision, subProductType))
+            //  console.log(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            
-           
-           // console.log(data.active);
+
+
+            // console.log(data.active);
             setFields({
-                                   
+
                 fashionGroup: data.fashionGroup,
                 productType: data.productType,
                 styleDivision: data.styleDivision,
-                subProductType: data.subProductType,  
-                avgSAM: data.avgSAM,   
+                subProductType: data.subProductType,
+                avgSAM: data.avgSAM,
                 Active: data.active
             })
             setLoader(false)
@@ -319,8 +365,8 @@ function StyleDivisionMaster({ name }) {
     //console.log(fields)
     const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
         if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
-        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
-        setFields({ ...fields, [name]: "" })
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            setFields({ ...fields, [name]: "" })
         }
     }
     const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
@@ -375,33 +421,41 @@ function StyleDivisionMaster({ name }) {
 
             {/* Add */}
             <Drawer
-             maskClosable={false}
-             keyboard={false}
-            footer={
-                <>
-                    <div>
-                        {
-                            !loader ?
-                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
-                                : (
-                                    <div className="text-center">
-                                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                                    </div>
-                                )
-                        }
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
-                            let _id = Number(fields.id)
-                            if(_id === 0)add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Style Division Master`}</h6 >} placement="right" onClose={() => {
-                clearFields();
-                onClose();
-            }} visible={visible} >
+                maskClosable={false}
+                keyboard={false}
+                footer={
+                    <>
+                        <div>
+                            {
+                                saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.fashionGroup, fields.productType, fields.styleDivision, fields.subProductType, 'save')}> Save </button>
+
+                            }{
+                                updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.fashionGroup, fields.productType, fields.styleDivision, fields.subProductType, 'update')}> Update </button>
+                            }
+
+
+                            {/* {
+                                !loader ?
+                                    <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
+                                    : (
+                                        <div className="text-center">
+                                            <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                                        </div>
+                                    )
+                            } */}
+                        </div>
+                        <div>
+                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
+                                let _id = Number(fields.id)
+                                if (_id === 0) add()
+                                else edit(_id)
+                            }}> Cancel </button>
+                        </div>
+                    </>
+                } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Style Division Master`}</h6 >} placement="right" onClose={() => {
+                    clearFields();
+                    onClose();
+                }} visible={visible} >
                 <div className='defect-master-add-new'>
                     {/* <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -425,9 +479,9 @@ function StyleDivisionMaster({ name }) {
                             <small className='text-danger'>{fields.fashionGroup === '' ? errors.fashionGroup : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.fashionGroup}
-                                onChange={inputOnChange("fashionGroup")}        
-                                disabled={fields.id != 0}                    
+                            value={fields.fashionGroup}
+                            onChange={inputOnChange("fashionGroup")}
+                            disabled={fields.id != 0}
                         >
                             <option value=""> Select fashion Group</option>
                             {fashionGroupList.map((v, index) => {
@@ -435,16 +489,16 @@ function StyleDivisionMaster({ name }) {
                             })}
                         </select>
                     </div>
-                  
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Product Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.productType === '' ? errors.productType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.productType}
-                                onChange={inputOnChange("productType")}      
-                                disabled={fields.id != 0}                      
+                            value={fields.productType}
+                            onChange={inputOnChange("productType")}
+                            disabled={fields.id != 0}
                         >
                             <option value=""> Select product Type </option>
                             {productTypeList.map((v, index) => {
@@ -452,9 +506,9 @@ function StyleDivisionMaster({ name }) {
                             })}
                         </select>
                     </div>
-                  
-           
-                   <div className='mt-3'>
+
+
+                    <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Style Division <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.styleDivision === '' ? errors.styleDivision : ''}</small>
@@ -463,7 +517,7 @@ function StyleDivisionMaster({ name }) {
                             value={fields.styleDivision} maxLength="50"
                             id="styleDivision"
                             disabled={fields.id != 0}
-                            onChange={inputOnChange("styleDivision")} 
+                            onChange={inputOnChange("styleDivision")}
                             required />
                     </div>
 
@@ -473,37 +527,37 @@ function StyleDivisionMaster({ name }) {
                             <small className='text-danger'>{fields.subProductType === '' ? errors.subProductType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.subProductType}
-                                onChange={inputOnChange("subProductType")}  
-                                disabled={fields.id != 0}                          
+                            value={fields.subProductType}
+                            onChange={inputOnChange("subProductType")}
+                            disabled={fields.id != 0}
                         >
                             <option value=""> Select Sub product Type </option>
                             <option value="LADIESDRESS"> LADIES DRESS </option>
-                             <option value="CARGOSHORT"> CARGO SHORT </option>
-                             <option value="SHORTS5PKT"> SHORTS 5 PKT </option>
+                            <option value="CARGOSHORT"> CARGO SHORT </option>
+                            <option value="SHORTS5PKT"> SHORTS 5 PKT </option>
                         </select>
                     </div>
 
-                  
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Avg SAM </label>
                             <small className='text-danger'>{errors.avgSAM ? errors.avgSAM : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter avg SAM'
-                               value={fields.avgSAM} minLength="1" maxLength="10"
-                               onChange={inputOnChange("avgSAM")}     
-                               onFocus={NUMBER_IS_FOCUS_IN_ZERO("avgSAM")} 
-                               onBlur={NUMBER_IS_FOCUS_OUT_ZERO("avgSAM")}                    
+                            value={fields.avgSAM} minLength="1" maxLength="10"
+                            onChange={inputOnChange("avgSAM")}
+                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("avgSAM")}
+                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("avgSAM")}
                         />
-                    </div> 
+                    </div>
 
                     <div className='mt-3'>
                         <label>{fields.Active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.Active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, Active: e ? 'Y' : 'N' })} />
+                                checked={fields.Active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, Active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>

@@ -148,17 +148,19 @@ function LineCostMaster({ name }) {
         // if (name == "operators") value = validateInputOnKeyup(e)
         setFields({ ...fields, [name]: value })
     }
+ 
+
     const inputOnChange1 = (index, name) => e => {
         debugger;
         let value = e.target.value
         let res = rowData[index];
-        setFields(res)
-        console.log(fields)
-        setFields({ ...fields, [name]: value })
+        setFields( arr => [...fields, `${arr.length}`]);
+      
+      //  setFields({ fields, [name]: value })
         console.log(fields)
 
 
-        setRowDataTemp({ ...rowDataTemp[0], [name]: value })
+    //    setRowDataTemp({ ...rowDataTemp[0], [name]: value })
       //  console.log(rowDataTemp)
 
 

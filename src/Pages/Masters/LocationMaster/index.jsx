@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import { Drawer, Switch, message, Spin,Input, Table, Button } from 'antd';
+import { Drawer, Switch, message, Spin, Input, Table, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 
 import { ColumnProps } from "antd/lib/table";
 import { render } from "react-dom";
-
+import { ItrApiService } from '@afiplfeed/itr-ui';
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
 import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import ApiCall from "../../../services"
@@ -39,6 +39,8 @@ function LacationMaster({ name }) {
     const add = () => {
         try {
             setVisible(true);
+            setSaveVisible(true)
+            setUpdateVisible(false)
             clearFields()
         } catch (err) {
             setLoader(false)
@@ -46,24 +48,28 @@ function LacationMaster({ name }) {
         }
     };
 
-    const getDataById = id => {
+    const getDataById = locCode => {
         return ApiCall({
-            path: API_URLS.GET_LOCATION_MASTER_BY_ID + "/" + id,
+            path: API_URLS.GET_LOCATION_MASTER_BY_ID + "/" + locCode,
         })
     }
 
-    const edit = async id => {
+    const edit = async locCode => {
+
         try {
             setLoader(true)
             setVisible(true);
-            let { data } = (await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            debugger;
+            let { data } = (locCode && await getDataById(locCode))
             data = Array.isArray(data) ? data[0] : data
             if (!data) {
                 message.error("Data not found")
                 return
             }
             setFields({
-                id,
+                //  id,
                 locCode: data.locCode,
                 locName: data.locName,
                 active: data.active,
@@ -101,8 +107,12 @@ function LacationMaster({ name }) {
 
     const inputOnChange = name => e => {
         let value = e.target.value
-    //    if (name == "unitperPack") value = validateInputOnKeyup(e)
-        setFields({ ...fields, [name]: value })
+        if (name === 'locCode') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        } else {
+            setFields({ ...fields, [name]: value })
+        }
+
     }
 
     const [listLoading, setListLoading] = useState(false);
@@ -112,10 +122,13 @@ function LacationMaster({ name }) {
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
-    })
+    });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
 
-    const save = () => {
+    const save = async (locCode, Type) => {
         if (loader) return
+        debugger;
         let err = {}, validation = true
         requiredFields.forEach(f => {
             if (fields[f] === "") {
@@ -123,33 +136,63 @@ function LacationMaster({ name }) {
                 validation = false
             }
         })
-        // if (fields.unitperPack && /[^\d]/g.test(fields.unitperPack)) {
-        //     err.unitperPack = "Enter numbers only"
-        //     validation = false
-        // }
-        // if (fields.unitperPack && parseInt(fields.unitperPack) == 0) {
-        //     err.unitperPack = "Should be greater than zero"
-        //     validation = false
-        // }
+
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_LOCATION_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-                message.error(err.message || err)
-            })
+
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_LOCATION_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    message.error(err.message || err)
+                })
+            } else {
+                ItrApiService.GET({
+                    url: API_URLS.GET_LOCATION_MASTER_BY_ID + "/" + locCode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_LOCATION_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (locCode.toUpperCase() === res.data.locCode.toUpperCase()) {
+                            err = "Location Code Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -173,21 +216,9 @@ function LacationMaster({ name }) {
         })
     }
 
-    // const onInputChange = (key, index) => (
-    //     e: React.ChangeEvent<HTMLInputElement>
-    //   ) => {
-    //     const newData = [...tableData];
-    //     newData[index][key] = Number(e.target.value);
-    //     setTotal(newData, index);
-    //     setTableData(newData);
-    //   };
-    
-   
-   
-
     useEffect(() => {
         getDatas()
-       // getBuyerList()
+        // getBuyerList()
     }, []);
 
     const tableColumns = [
@@ -210,7 +241,7 @@ function LacationMaster({ name }) {
         {
             name: "locCode",
             label: "Action",
-            
+
             options: {
                 sort: false,
                 customBodyRender: (value, tm) => {
@@ -227,7 +258,7 @@ function LacationMaster({ name }) {
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
-                <h6 className='m-0 p-0' style={{fontWeight: "bold"}}>{name}</h6>
+                <h6 className='m-0 p-0' style={{ fontWeight: "bold" }}>{name}</h6>
 
                 <div className='row align-items-center mt-2'>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
@@ -273,7 +304,15 @@ function LacationMaster({ name }) {
             <Drawer footer={
                 <>
                     <div>
+
                         {
+                            saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.locCode, 'save')}> Save </button>
+                        }
+                        {
+                            updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.locCode, 'update')}> Update </button>
+                        }
+
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Save" : "Update"} </button>
                                 : (
@@ -281,7 +320,7 @@ function LacationMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={e => {
@@ -302,7 +341,7 @@ function LacationMaster({ name }) {
                             value={fields.locCode} maxLength="10"
                             id="location-code"
                             disabled={fields.id != 0}
-                            onChange={inputOnChange("locCode")} 
+                            onChange={inputOnChange("locCode")}
                             required />
                     </div>
 
@@ -314,7 +353,7 @@ function LacationMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter location name'
                             value={fields.locName} maxLength="50"
                             id="location-name"
-                            onChange={inputOnChange("locName")} 
+                            onChange={inputOnChange("locName")}
                             required />
                     </div>
 
