@@ -132,7 +132,7 @@ export default function Routing() {
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
         <Route path='masters/purpose-master' element={<PurposeMaster name='Purpose Master' />} />
         <Route path='masters/productivity-master' element={<ProductivityMasters name='Productivity Master' />} />
-        <Route path='masters/tna-master' element={<TNAMaster name='TNA Master'/>}/>
+        <Route path='masters/tna-master' element={<TNAMaster name='T&A Master'/>}/>
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>
     </Routes>
