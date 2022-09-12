@@ -218,48 +218,6 @@ function CompanyMaster({ name }) {
 
     }
 
-    // const save = () => {
-    //     if (loader) return
-    //     let err = {}, validation = true
-    //     debugger;
-    //     requiredFields.forEach(f => {
-    //         if (fields[f] === "") {
-    //             err[f] = "This field is required"
-    //             validation = false
-    //         }
-    //     })
-    //     if (fields.transitdays == 0) {
-    //         err['transitdays'] = "Should be greater than zero."
-    //         validation = false
-    //     }
-
-    //     setErrors({ ...initialErrorMessages, ...err })
-
-    //     if (validation) {
-    //         setLoader(true)
-
-    //         ApiCall({
-    //             method: "POST",
-    //             path: API_URLS.SAVE_COMPANY_MASTER,
-    //             data: {
-    //                 ...fields,
-    //                 hostName: getHostName()
-    //             }
-    //         }).then(resp => {
-    //             setLoader(false)
-    //             message.success(resp.message)
-    //             onClose()
-    //             getDatas()
-    //         }).catch(err => {
-    //             setLoader(false)
-
-    //             //  fields['ftdOprName'] = tempOprName
-    //             setFields({ ...fields })
-    //             setErrors({ ...initialErrorMessages })
-    //             message.error(err.message || err)
-    //         })
-    //     }
-    // }
 
     const Save = async (entityID, eCode, eName, type) => {
         debugger;
@@ -335,7 +293,7 @@ function CompanyMaster({ name }) {
                                 setShowResults(true)
                                 setShowForm(false)
                             }).catch(err => {
-                                setLoader(false)                               
+                                setLoader(false)
                                 setFields({ ...fields })
                                 setErrors({ ...initialErrorMessages })
                                 message.error(err.message || err)
@@ -626,298 +584,6 @@ function CompanyMaster({ name }) {
                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                     </div>}
 
-                    {/* Add */}
-                    {/* <Drawer footer={
-                <>
-                    <div>
-                        {
-                            !loader ?
-                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
-                                : (
-                                    <div className="text-center">
-                                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                                    </div>
-                                )
-                        }
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
-                            let _id = Number(fields.id)
-                            if(_id === 0)add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} Company `}</h6 >} placement="right" onClose={() => {
-                clearFields();
-                onClose();
-            }} visible={visible} >
-                <div className='defect-master-add-new'>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Unit Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.entityID === '' ? errors.entityID : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter entityID Value'
-                               value={fields.entityID} minLength="1" maxLength="10"
-                               onChange={inputOnChange("entityID")}                            
-                        />
-                    </div>
-                             
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Unit Name <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.eCode === '' ? errors.eCode : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter eCode Value'
-                               value={fields.eCode} minLength="1" maxLength="10"
-                               onChange={inputOnChange("eCode")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>eName </label>
-                            <small className='text-danger'>{errors.eName ? errors.eName : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter eName'
-                               value={fields.eName} minLength="1" maxLength="10"
-                               onChange={inputOnChange("eName")}                            
-                        />
-                    </div>     
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>address1 <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.address1 === '' ? errors.address1 : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter address1'
-                               value={fields.address1} minLength="1" maxLength="10"
-                               onChange={inputOnChange("address1")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>address2 <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.address2 === '' ? errors.address2 : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter address2'
-                               value={fields.address2} minLength="1" maxLength="10"
-                               onChange={inputOnChange("address2")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>address3 </label>
-                            <small className='text-danger'>{errors.address3 ? errors.address3 : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter address3'
-                               value={fields.address3} minLength="1" maxLength="10"
-                               onChange={inputOnChange("address3")}                            
-                        />
-                    </div>      
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>city </label>
-                            <small className='text-danger'>{errors.city ? errors.city : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter city'
-                               value={fields.city} minLength="1" maxLength="15"
-                               onChange={inputOnChange("city")}                            
-                        />
-                    </div>           
-           
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>pinCode </label>
-                            <small className='text-danger'>{errors.pinCode ? errors.pinCode : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter pinCode'
-                               value={fields.pinCode} minLength="1" maxLength="5"
-                               onChange={inputOnChange("pinCode")}                            
-                        />
-                    </div>      
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>country <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.country === '' ? errors.country : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter country'
-                               value={fields.country} minLength="1" maxLength="10"
-                               onChange={inputOnChange("country")}                            
-                        />
-                    </div>
-                             
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>tngstNo <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.tngstNo === '' ? errors.tngstNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter tngstNo'
-                               value={fields.tngstNo} minLength="1" maxLength="10"
-                               onChange={inputOnChange("tngstNo")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>tinNo <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.tinNo === '' ? errors.tinNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter tinNo'
-                               value={fields.tinNo} minLength="1" maxLength="10"
-                               onChange={inputOnChange("tinNo")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>tanNo <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.tanNo === '' ? errors.tanNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter tanNo'
-                               value={fields.tanNo} minLength="1" maxLength="10"
-                               onChange={inputOnChange("tanNo")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>cinNo </label>
-                            <small className='text-danger'>{errors.cinNo ? errors.cinNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter cinNo'
-                               value={fields.cinNo} minLength="1" maxLength="10"
-                               onChange={inputOnChange("cinNo")}                            
-                        />
-                    </div>      
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>cstNo </label>
-                            <small className='text-danger'>{errors.cstNo ? errors.cstNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter cstNo'
-                               value={fields.cstNo} minLength="1" maxLength="15"
-                               onChange={inputOnChange("cstNo")}                            
-                        />
-                    </div>           
-           
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>cstDate </label>
-                            <small className='text-danger'>{errors.cstDate ? errors.cstDate : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter cstDate'
-                               value={fields.cstDate} minLength="1" maxLength="5"
-                               onChange={inputOnChange("cstDate")}                            
-                        />
-                    </div>      
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>panNo </label>
-                            <small className='text-danger'>{errors.panNo ? errors.panNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter panNo'
-                               value={fields.panNo} minLength="1" maxLength="10"
-                               onChange={inputOnChange("panNo")}                            
-                        />
-                    </div>      
-
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>stNo <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.stNo === '' ? errors.stNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter stNo'
-                               value={fields.stNo} minLength="1" maxLength="10"
-                               onChange={inputOnChange("stNo")}                            
-                        />
-                    </div>
-                             
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>areaCode <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.areaCode === '' ? errors.areaCode : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter area Code'
-                               value={fields.areaCode} minLength="1" maxLength="10"
-                               onChange={inputOnChange("areaCode")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>emailId <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.emailId === '' ? errors.emailId : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter emailId'
-                               value={fields.emailId} minLength="1" maxLength="50"
-                               onChange={inputOnChange("emailId")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>contPerson1 <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{fields.contPerson1 === '' ? errors.contPerson1 : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter contPerson1'
-                               value={fields.contPerson1} minLength="1" maxLength="10"
-                               onChange={inputOnChange("contPerson1")}                            
-                        />
-                    </div>
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>contPerson2 </label>
-                            <small className='text-danger'>{errors.contPerson2 ? errors.contPerson2 : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter contPerson2'
-                               value={fields.contPerson2} minLength="1" maxLength="10"
-                               onChange={inputOnChange("contPerson2")}                            
-                        />
-                    </div>      
-
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>contNo </label>
-                            <small className='text-danger'>{errors.contNo ? errors.contNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter contNo'
-                               value={fields.contNo} minLength="1" maxLength="15"
-                               onChange={inputOnChange("contNo")}                            
-                        />
-                    </div>           
-           
-                    <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>gstNo </label>
-                            <small className='text-danger'>{errors.gstNo ? errors.gstNo : ''}</small>
-                        </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter gstNo'
-                               value={fields.gstNo} minLength="1" maxLength="5"
-                               onChange={inputOnChange("gstNo")}                            
-                        />
-                    </div>   
-
-                    <div className='mt-3'>
-                        <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
-                        <div className='mt-1'>
-                            <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
-                        </div>
-                    </div>
-                </div>
-            </Drawer> */}
                 </div >
             }
             {showForm &&
@@ -963,30 +629,13 @@ function CompanyMaster({ name }) {
 
 
                     <div class="row mt-15 dis-sel mt-20">
-                        {/* <div class="col-lg-4">
-                <label>Buyer Code</label>
-                <small className='text-danger'>{fields.supCategory === '' ? errors.supCategory : ''}</small>
-                <div class="main-select">
-                    <select name="somename" class="form-control SlectBox main-select"
-                        required
-                        value={fields.supCategory}
-                        onChange={inputOnChange("supCategory")}      
-                        >
-                        <option value=""> Buyer Code </option>
-                        {supCategoryList.map((v, index) => {
-                        return <option key={index} value={v.code}>{v.codeDesc}</option>
-                        })}
-
-                    </select>
-                </div>
-            </div> */}
                         <div class="col-lg-4">
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                 <label>Entity ID<span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{fields.entityID === '' ? errors.entityID : ''}</small>
                             </div>
                             <input className='form-control form-control-sm mt-1' placeholder='Enter Entity ID'
-                                value={fields.entityID} minLength="1" maxLength="100"
+                                value={fields.entityID} minLength="1" maxLength="3"
                                 onChange={inputOnChange("entityID")} disabled={entityVisible}
                             />
                         </div>
@@ -995,8 +644,8 @@ function CompanyMaster({ name }) {
                                 <label>Entity Code<span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{fields.eCode === '' ? errors.eCode : ''}</small>
                             </div>
-                            <input className='form-control form-control-sm mt-1' placeholder='Enter Entity Type'
-                                value={fields.eCode} minLength="1" maxLength="25"
+                            <input className='form-control form-control-sm mt-1' placeholder='Enter Entity Code'
+                                value={fields.eCode} minLength="1" maxLength="10"
                                 onChange={inputOnChange("eCode")} disabled={entityVisible}
                             />
                         </div>
@@ -1006,31 +655,12 @@ function CompanyMaster({ name }) {
                                 <label>Entity Name<span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{fields.eName === '' ? errors.eName : ''}</small>
                             </div>
-                            <input className='form-control form-control-sm mt-1' placeholder='Enter Entity Code'
-                                value={fields.eName} minLength="1" maxLength="10"
+                            <input className='form-control form-control-sm mt-1' placeholder='Enter Entity Name'
+                                value={fields.eName} minLength="1" maxLength="100"
                                 onChange={inputOnChange("eName")} disabled={entityVisible}
                             />
                         </div>
-                        {/* <div className='mt-3'>
-                <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                    <label>buyType <span className='text-danger'>*  </span> </label>
-                    <small className='text-danger'>{fields.buyType === '' ? errors.buyType : ''}</small>
-                </div>
-                <input className='form-control form-control-sm mt-1' placeholder='Enter buyType'
-                    value={fields.buyType} minLength="1" maxLength="10"
-                    onChange={inputOnChange("address1")}                            
-                />
-            </div> */}
 
-
-                        {/* <div class="d-flex align-content-center pt-40 justify-content-center">
-                <div class=" ">
-                    <button class="btn btn-primary search-btn btn-block  ">Clear All</button>
-                </div>
-                <div class="">
-                    <button class="btn btn-success search-btn btn-block ml-10">Show Result</button>
-                </div>
-            </div> */}
                     </div>
 
                     <div class="row mt-25 main-tab pl-15 pr-15">
@@ -1107,17 +737,15 @@ function CompanyMaster({ name }) {
                                         />
                                     </div>
 
-                                    {/* <div class="col-lg-3">
-                                    <label>Country</label>
-                                    <small className='text-danger'>{fields.country === '' ? errors.country : ''}</small>
-                                    <input type="text" class="form-control" placeholder="Country"/>
-                                </div> */}
-
                                     <div class="col-lg-3">
-                                        <label>Country</label>
-                                        <small className='text-danger'>{fields.country === '' ? errors.country : ''}</small>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Country <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.country === '' ? errors.country : ''}</small>
+                                        </div>
+                                        {/* <label>Country</label>
+                                        <small className='text-danger'>{fields.country === '' ? errors.country : ''}</small> */}
                                         <div class="main-select">
-                                            <select name="somename" class="form-control SlectBox main-select"
+                                            <select name="somename" className='form-control form-control-sm mt-1'
                                                 required
                                                 value={fields.country}
                                                 onChange={inputOnChange("country")}
@@ -1136,11 +764,14 @@ function CompanyMaster({ name }) {
 
                             <div class="tab-pane fade" id="profile1" role="tabpanel" aria-labelledby="profile-tab">
                                 <div class="row mt-15">
-                                    <div class="col-lg-3">
-                                        <label>TNGST No</label>
-                                        <small className='text-danger'>{errors.tngstNo ? errors.tngstNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter TNGST No"
-                                            value={fields.tngstNo}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>TNGST No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.tngstNo === '' ? errors.tngstNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter TNGST No'
+                                            value={fields.tngstNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("tngstNo")}
                                         />
                                     </div>
@@ -1154,36 +785,36 @@ function CompanyMaster({ name }) {
                                             onChange={inputOnChange("tinNo")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>TAN No</label>
-                                        <small className='text-danger'>{errors.tanNo ? errors.tanNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter TAN No"
-                                            value={fields.tanNo}
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>TAN No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.tanNo === '' ? errors.tanNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter TAN No'
+                                            value={fields.tanNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("tanNo")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>CIN No</label>
-                                        <small className='text-danger'>{errors.cinNo ? errors.cinNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter CIN No"
-                                            value={fields.cinNo}
+
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>CIN No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.cinNo === '' ? errors.cinNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter CIN No'
+                                            value={fields.cinNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("cinNo")}
                                         />
                                     </div>
 
-                                    {/* <div class="col-lg-3">
-                                        <label>ARN No</label>
-                                        <small className='text-danger'>{errors.arnNo ? errors.arnNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter ARN No"
-                                            value={fields.arnNo}
-                                            onChange={inputOnChange("arnNo")}
-                                        />
-                                    </div> */}
-                                    <div class="col-lg-3">
-                                        <label>CST No</label>
-                                        <small className='text-danger'>{errors.cstNo ? errors.cstNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter CST No"
-                                            value={fields.cstNo}
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>CST No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.cstNo === '' ? errors.cstNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter CST No'
+                                            value={fields.cstNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("cstNo")}
                                         />
                                     </div>
@@ -1191,29 +822,29 @@ function CompanyMaster({ name }) {
                                     <div class="col-lg-3">
                                         <div className="form-group">
                                             <label> CST Date </label>
-                                            <Input type="date" name="cstDate" className="form-control" id="cstDate" placeholder="cst Date" value={fields.cstDate} onChange={inputOnChange("cstDate")} />
+                                            <Input type="date" name="cstDate" className="form-control form-control-sm mt-1" id="cstDate" placeholder="cst Date" value={fields.cstDate} onChange={inputOnChange("cstDate")} />
                                             {/* <span className="error">{fields.errors["cstDate"]}</span> */}
                                         </div>
-                                        {/* <label>CST Date</label>
-                                        <small className='text-danger'>{errors.cstDate ? errors.cstDate : ''}</small>
-                                        <input type="text" class="form-control" placeholder="CST Date" //ChangeEvent
-                                            value={fields.cstDate}
-                                            onChange={inputOnChange("Enter CST Date")}
-                                        /> */}
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>PAN No</label>
-                                        <small className='text-danger'>{errors.panNo ? errors.panNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder=" Enter PAN No"
-                                            value={fields.panNo}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>PAN No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.panNo === '' ? errors.panNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter PAN No'
+                                            value={fields.panNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("panNo")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>ST No</label>
-                                        <small className='text-danger'>{errors.stNo ? errors.stNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter ST No"
-                                            value={fields.stNo}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>ST No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.stNo === '' ? errors.stNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter ST No'
+                                            value={fields.stNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("stNo")}
                                         />
                                     </div>
@@ -1222,51 +853,79 @@ function CompanyMaster({ name }) {
                             </div>
                             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
                                 <div class="row mt-15">
-                                    <div class="col-lg-3">
-                                        <label>Email Id</label>
-                                        <small className='text-danger'>{errors.emailId ? errors.emailId : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter Email Id"
-                                            value={fields.emailId}
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Email Id <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.emailId === '' ? errors.emailId : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Email Id'
+                                            value={fields.emailId} minLength="1" maxLength="50"
                                             onChange={inputOnChange("emailId")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>Contact Person1</label>
-                                        <small className='text-danger'>{errors.contPerson1 ? errors.contPerson1 : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter Contact Person1"
-                                            value={fields.contPerson1}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Contact Person1 <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.contPerson1 === '' ? errors.contPerson1 : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person1'
+                                            value={fields.contPerson1} minLength="1" maxLength="50"
                                             onChange={inputOnChange("contPerson1")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>Contact Person2</label>
-                                        <small className='text-danger'>{errors.contPerson2 ? errors.contPerson2 : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter Contact Person2"
-                                            value={fields.contPerson2}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Contact Person2 <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.contPerson2 === '' ? errors.contPerson2 : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person2'
+                                            value={fields.contPerson2} minLength="1" maxLength="50"
                                             onChange={inputOnChange("contPerson2")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>Contact No</label>
-                                        <small className='text-danger'>{errors.contNo ? errors.contNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter Contact No"
-                                            value={fields.contNo}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Contact No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.contNo === '' ? errors.contNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
+                                            value={fields.contNo} minLength="1" maxLength="25"
                                             onChange={inputOnChange("contNo")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>Area Code</label>
-                                        <small className='text-danger'>{errors.areaCode ? errors.areaCode : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter Area Code"
-                                            value={fields.areaCode}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Contact No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.contNo === '' ? errors.contNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
+                                            value={fields.contNo} minLength="1" maxLength="25"
+                                            onChange={inputOnChange("contNo")}
+                                        />
+                                    </div>
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Area Code <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.areaCode === '' ? errors.areaCode : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Area Code'
+                                            value={fields.areaCode} minLength="1" maxLength="25"
                                             onChange={inputOnChange("areaCode")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <label>GST No</label>
-                                        <small className='text-danger'>{errors.gstNo ? errors.gstNo : ''}</small>
-                                        <input type="text" class="form-control" placeholder="Enter GST No"
-                                            value={fields.gstNo}
+
+                                    <div className='col-lg-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>GST No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{fields.gstNo === '' ? errors.gstNo : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter GST No'
+                                            value={fields.gstNo} minLength="1" maxLength="30"
                                             onChange={inputOnChange("gstNo")}
                                         />
                                     </div>
