@@ -4,7 +4,7 @@ import '../DefectMasters/DefectMasters.css';
 import { Drawer, Switch, message, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
-
+import { ItrApiService } from '@afiplfeed/itr-ui';
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
 import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import ApiCall from "../../../services"
@@ -14,16 +14,16 @@ import { PDM_APP_CODE } from "../../../constants";
 const initialErrorMessages = {
     seasonCode: "",
     seasonGroup: "",
-    seasonName : "",
+    seasonName: "",
 },
     initialFieldValues = {
         id: 0,
         seasonCode: "",
         seasonGroup: "",
-        seasonName:"",
+        seasonName: "",
         active: "Y",
     },
-    requiredFields = ["seasonCode", "seasonGroup","seasonName"]
+    requiredFields = ["seasonCode", "seasonGroup", "seasonName"]
 
 function SeasonMaster({ name }) {
     const clearFields = () => {
@@ -34,34 +34,40 @@ function SeasonMaster({ name }) {
     }
 
     const [visible, setVisible] = useState(false);
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
     const add = () => {
         try {
             setVisible(true);
             clearFields()
+            setSaveVisible(true)
+            setUpdateVisible(false)
         } catch (err) {
             setLoader(false)
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
 
-    const getDataById = id => {
+    const getDataById = seasonCode => {
         return ApiCall({
-            path: API_URLS.GET_SEASON_MASTER_BY_ID + "/" + id,
+            path: API_URLS.GET_SEASON_MASTER_BY_ID + "/" + seasonCode,
         })
     }
 
-    const edit = async id => {
+    const edit = async seasonCode => {
         try {
             setLoader(true)
             setVisible(true);
-            let { data } = (await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            let { data } = (seasonCode && await getDataById(seasonCode))
             data = Array.isArray(data) ? data[0] : data
             if (!data) {
                 message.error("Data not found")
                 return
             }
             setFields({
-                id,
+                //  id,
                 seasonCode: data.seasonCode,
                 seasonGroup: data.seasonGroup,
                 seasonName: data.seasonName,
@@ -100,8 +106,26 @@ function SeasonMaster({ name }) {
 
     const inputOnChange = name => e => {
         let value = e.target.value
-    //    if (name == "unitperPack") value = validateInputOnKeyup(e)
-        setFields({ ...fields, [name]: value })
+        if (name === 'MatTypeIndex') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setFields({ ...fields, [name]: value });
+                err['MatTypeIndex'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['MatTypeIndex'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'Mattype') {
+            debugger;
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
+            setFields({ ...fields, [name]: value })
+        }
     }
 
     const [listLoading, setListLoading] = useState(false);
@@ -114,7 +138,7 @@ function SeasonMaster({ name }) {
         ...initialErrorMessages
     })
 
-    const save = () => {
+    const save = async (seasonCode, Type) => {
         if (loader) return
         let err = {}, validation = true
         requiredFields.forEach(f => {
@@ -126,22 +150,58 @@ function SeasonMaster({ name }) {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_SEASON_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-                message.error(err.message || err)
-            })
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_SEASON_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    message.error(err.message || err)
+                })
+            } else {
+                ItrApiService.GET({
+                    url: API_URLS.GET_SEASON_MASTER_BY_ID + "/" + seasonCode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_SEASON_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (seasonCode.toUpperCase() === res.data.seasonCode.toUpperCase()) {
+                            err = "Season Code Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -165,12 +225,12 @@ function SeasonMaster({ name }) {
         })
     }
 
-   
-   
+
+
 
     useEffect(() => {
         getDatas()
-       // getBuyerList()
+        // getBuyerList()
     }, []);
 
     const tableColumns = [
@@ -209,7 +269,7 @@ function SeasonMaster({ name }) {
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
-                <h6 className='m-0 p-0' style={{fontWeight: "bold"}}>{name}</h6>
+                <h6 className='m-0 p-0' style={{ fontWeight: "bold" }}>{name}</h6>
 
                 <div className='row align-items-center mt-2'>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
@@ -256,6 +316,13 @@ function SeasonMaster({ name }) {
                 <>
                     <div>
                         {
+                            saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.seasonCode, 'save')}> Save </button>
+                        }
+                        {
+                            updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.seasonCode, 'update')}> Update </button>
+                        }
+
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Save" : "Update"} </button>
                                 : (
@@ -263,7 +330,7 @@ function SeasonMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={e => {
@@ -284,7 +351,7 @@ function SeasonMaster({ name }) {
                             value={fields.seasonCode} maxLength="3"
                             disabled={fields.id != 0}
                             id="seasonCode"
-                            onChange={inputOnChange("seasonCode")} 
+                            onChange={inputOnChange("seasonCode")}
                             required />
                     </div>
 
@@ -296,7 +363,7 @@ function SeasonMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter season Group'
                             value={fields.seasonGroup} maxLength="20"
                             id="seasonGroup"
-                            onChange={inputOnChange("seasonGroup")} 
+                            onChange={inputOnChange("seasonGroup")}
                             required />
                     </div>
 
@@ -308,7 +375,7 @@ function SeasonMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter season Name'
                             value={fields.seasonName} maxLength="25"
                             id="seasonName"
-                            onChange={inputOnChange("seasonName")} 
+                            onChange={inputOnChange("seasonName")}
                             required />
                     </div>
 

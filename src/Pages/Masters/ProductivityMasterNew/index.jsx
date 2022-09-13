@@ -13,6 +13,9 @@ import { findDOMNode } from 'react-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, FormFeedback } from 'reactstrap';
 import { filledInputClasses } from '@mui/material';
 
+import ms from 'ms';
+import moment from 'moment';
+
 
 const requiredFields = ["locCode", "factCode", "productType", "startdate", "enddate"],
     addReq = ["scaleUpDay"],
@@ -84,6 +87,11 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
         // hostName: "",
     }
 
+// const min_date = new Date(+new Date() - minsec);
+// const max_date = new Date(+new Date() + minsec);
+// setMinDate(moment(min_date).format('YYYY-MM-DD'));
+// setMaxDate(moment(max_date).format('YYYY-MM-DD'))
+
 export default function ProductivityMasters() {
     const [loader, setLoader] = useState(false);
     const [list, setList] = useState([]);
@@ -118,8 +126,12 @@ export default function ProductivityMasters() {
 
     const [headerFleids, setheaderFleids] = useState(false);
 
+    const minsec = ms('14d')
 
 
+
+    const [minDate, setMinDate] = useState(null)
+    const [maxDate, setMaxDate] = useState(null)
 
 
 
@@ -129,6 +141,9 @@ export default function ProductivityMasters() {
         getFabType();
         getDifficultyLevel();
         disableDate();
+
+        // setMinDate(moment(min_date).format('YYYY-MM-DD'));
+        // setMaxDate(moment(max_date).format('YYYY-MM-DD'))
 
     }, []);
 
@@ -372,11 +387,6 @@ export default function ProductivityMasters() {
         }).then(resp => {
             setWorkingHrsList([])
             setWorkingHrsList(resp.data)
-            // try {
-            //     setWorkingHrsList(resp.data)
-            // } catch (er) {
-            //     message.error("Response data is not as expected")
-            // }
         })
             .catch(err => {
                 message.error(err.message || err)
@@ -418,7 +428,7 @@ export default function ProductivityMasters() {
 
     function ViewList() {
         let err = {}, validation = true
-
+     
         requiredFields.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
@@ -433,11 +443,41 @@ export default function ProductivityMasters() {
         ApiCall({
             path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
         }).then(resp => {
-            let len = resp.data.filter(f => f.peakEff == "Y");
-            setProductivityList(resp.data)
-            setBtnVisible(true);
-            setheaderFleids(true);
-            setBtnSaveVisible(false)
+
+
+            const current = new Date(resp.data[0].lastSubmittedDate);
+            const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+          //  const lastDt =new Intl.DateimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(resp.data[0].lastSubmittedDate);
+         
+            if ( resp.data[0].data.length>0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
+                setProductivityList(resp.data[0].data)
+                setBtnVisible(true);
+                setheaderFleids(true);
+                setBtnSaveVisible()
+            } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
+                alert("already data is exists. please changes correct date & last Submitted Date is "+date)
+                setProductivityList([]);
+                setBtnVisible(false);
+              
+            } else if (resp.data[0].dateStatus == true && resp.data[0].dataStatus == true) {
+                setProductivityList(resp.data[0].data)
+                setBtnVisible(true);
+                setheaderFleids(true);
+                setBtnSaveVisible(false)
+            } else {
+                alert("Missing date please select correct date & last Submitted Date is " +date)
+                setProductivityList([]);
+                setBtnVisible(false);
+            }
+
+            // console.log(resp.data[0].data)
+            //console.log(resp.data.dataStatus)
+            //console.log(resp.data.dateStatus)
+
+            // setProductivityList(resp.data[0].data)
+            // setBtnVisible(true);
+            // setheaderFleids(true);
+            // setBtnSaveVisible(false)
         })
 
     }
@@ -617,6 +657,18 @@ export default function ProductivityMasters() {
         setErrors({ ...initialErrorMessages });
     }
 
+    const disablePastDate = () => {
+        const today = new Date() ;
+        //const today = String(today1.getDate() - 1).padStart(2, "0");
+        // var today = new Date(),
+        // date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+        const dd = String(today.getDate() ).padStart(2, "0");
+        const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+        const yyyy = today.getFullYear();
+        return yyyy + "-" + mm + "-" + dd;
+    };
+
     return (
         <div class="container-fluid" >
             <div class="breadcrumb-header justify-content-between bread-list">
@@ -724,7 +776,7 @@ export default function ProductivityMasters() {
                                     <label> Start Date </label>
                                     <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
                                     <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
-                                        min={disableDate()}
+                                        min={disablePastDate()}
                                         onChange={inputOnChange("startdate")}
                                         disabled={AddbtnVisible}
 
@@ -740,6 +792,7 @@ export default function ProductivityMasters() {
                                         // onChange={ToDateChangeHandle("enddate")}
                                         onChange={inputOnChange("enddate")}
                                         disabled={AddbtnVisible}
+                                        min={disablePastDate()}
                                     />
                                     <span className="error"></span>
                                 </div>

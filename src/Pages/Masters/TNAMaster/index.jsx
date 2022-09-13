@@ -213,6 +213,7 @@ function TNAMaster({ name }) {
     const onClose = () => {
         clearFields()
         setVisible(false);
+
     };
     const onClick = () => {
         setShowResults(false)
@@ -220,9 +221,16 @@ function TNAMaster({ name }) {
     }
 
     const close = () => {
-        clearFields()
         setShowResults(true)
         setShowForm(false)
+        setEditVisible(false);
+        setPackQtyVisible(false);
+        setBuyerTypeVisible(false);
+        setCloneSave(true);
+        onClose()
+        getDatas()
+        setFields([])
+
     }
     const showDrawer = () => {
         setVisible(true);
@@ -549,7 +557,7 @@ function TNAMaster({ name }) {
             debugger;
             if (e.target.value === '' || re.test(e.target.value)) {
                 //alert(e.target.value);
-                setAddTnamodels({ ...AddTnamodels, [name]: value });               
+                setAddTnamodels({ ...AddTnamodels, [name]: value });
                 err['weightage'] = ''
                 err['preNotifyDays'] = ''
                 err['l1EscalateDays'] = ''
@@ -565,14 +573,14 @@ function TNAMaster({ name }) {
                 setErrors({ ...errors, ...err })
             }
         }
-        else  if (name === 'duration') {
+        else if (name === 'duration') {
             const re = /^[-0-9\b]+$/;
             // alert(re);   /^[+-]?\d*(?:[.,]\d*)?$/
             debugger;
             if (e.target.value === '' || re.test(e.target.value)) {
                 //alert(e.target.value);
                 setAddTnamodels({ ...AddTnamodels, [name]: value });
-                err['duration'] = ''               
+                err['duration'] = ''
                 setErrors({ ...initialErrorMessages, ...err })
             }
             else {
@@ -619,13 +627,17 @@ function TNAMaster({ name }) {
         // }
         else if (name === 'dependDeptCode') {
             GetdependActivityDropDown(e.target.value);
+            setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
         else if (name === 'dependActvity') {
             GetdependSubActivityDropDown(e.target.value);
+            setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
         else if (name === 'activityType') {
+            debugger;
             // alert(e.target.value);
             // alert([name]);
+            edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'SOP') {
                 setPackQtyVisible(true);
@@ -1902,7 +1914,7 @@ function TNAMaster({ name }) {
                         </div> */}
                     </div>
 
-                    <div class="breadcrumb-header justify-content-between bread-list">
+                    {/* <div class="breadcrumb-header justify-content-between bread-list">
                         <div class="w-100">
                             <div class="d-flex border-bottom pb-15">
                                 <div class="me-auto ">
@@ -1914,39 +1926,47 @@ function TNAMaster({ name }) {
                             </div>
                         </div>
                     </div>
-                    <div class="clear"></div>
-                    <div class="row mt-15 dis-sel mt-20">
-                        <div class="col-lg-4">
-                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                <label>Stage<span className='text-danger'>  </span> </label>
-                                <small className='text-danger'>{AddTnamodels.stage === '' ? errors.stage : ''}</small>
-                            </div>
-                            <select className='form-select form-select-sm mt-1' required
-                                value={AddTnamodels.stage} disabled={packQtyvisible}
-                                onChange={inputOnChange("stage")} >
-                                <option value=""> Select Stage</option>
-                                {StageList.map((v, index) => {
-                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                })}
-                            </select>
-                        </div>
-                        <div class="col-lg-4">
-                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                <label>Order Category<span className='text-danger'>  </span> </label>
-                                <small className='text-danger'>{AddTnamodels.orderCategory === '' ? errors.orderCategory : ''}</small>
-                            </div>
-                            <select className='form-select form-select-sm mt-1' required
-                                value={AddTnamodels.orderCategory} disabled={packQtyvisible}
-                                onChange={inputOnChange("orderCategory")} >
-                                <option value=""> Select orderCategory</option>
-                                {orderCatList.map((v, index) => {
-                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                })}
-                            </select>
-                        </div>
-                    </div>
+                    <div class="clear"></div> */}
+
 
                     <div class="row mt-25 main-tab pl-15 pr-15">
+                        <ul class="nav nav-tabs p-25 pl-25" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                    type="button" role="tab" aria-controls="home" aria-selected="true">Sub Header</button>
+                            </li>
+                        </ul>
+                        <div class="row mt-15 dis-sel mt-20">
+                            <div class="col-lg-6">
+                                <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                    <label>Stage<span className='text-danger'>  </span> </label>
+                                    <small className='text-danger'>{AddTnamodels.stage === '' ? errors.stage : ''}</small>
+                                </div>
+                                <select className='form-select form-select-sm mt-1' required
+                                    value={AddTnamodels.stage} disabled={packQtyvisible}
+                                    onChange={inputOnChange("stage")} >
+                                    <option value=""> Select Stage</option>
+                                    {StageList.map((v, index) => {
+                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                    })}
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                    <label>Order Category<span className='text-danger'>  </span> </label>
+                                    <small className='text-danger'>{AddTnamodels.orderCategory === '' ? errors.orderCategory : ''}</small>
+                                </div>
+                                <select className='form-select form-select-sm mt-1' required
+                                    value={AddTnamodels.orderCategory} disabled={packQtyvisible}
+                                    onChange={inputOnChange("orderCategory")} >
+                                    <option value=""> Select orderCategory</option>
+                                    {orderCatList.map((v, index) => {
+                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                    })}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear"></div> 
                         <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
@@ -2323,7 +2343,15 @@ function TNAMaster({ name }) {
                                         <button className="col-sm-2 col-md-2 col-xl-2 p-0 defect-master-add" type="button" onClick={(e) => this.getCancel()}><span className="MuiButton-label">Cancel <i className="zmdi zmdi-close"></i></span><span className="MuiTouchRipple-root"></span></button>
                                     </Form>
                                 </div> */}
-                                    <div className='col-lg-3'>
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>  <span className='text-danger'>  </span> </label>
+                                            <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
+                                        </div>
+                                        <div></div>
+                                        <button class="btn btn-primary search-btn btn-block ml-10" onClick={close}>Back</button>
+                                    </div>
+                                    <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label><span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
@@ -2332,18 +2360,17 @@ function TNAMaster({ name }) {
                                         {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
                                         {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTna()}>Add To List</button>}
                                         {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTna()}> Update To List</button>}
-
                                         {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
 
                                     </div>
-                                    <div className='col-lg-3'>
+                                    <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label><span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
                                         </div>
                                         <div class="clear"></div>
                                         {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTna()}>Add</button> */}
-                                        <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> Save </button>
+                                        <button className='btn-sm btn defect-master-save mt-1 ' onClick={save}> Save </button>
 
                                         {/* <button type="button" className="col-sm-1 col-md-1 float-left col-xl-1 p-0 defect-master-add" onClick={(e) => this.sampleaddmoresave()}></button>  {AddTnamodels.id === 0 ? "Save" : "Update"}*/}
 
