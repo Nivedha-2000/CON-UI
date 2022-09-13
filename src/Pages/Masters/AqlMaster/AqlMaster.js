@@ -307,18 +307,17 @@ export default function AqlMaster() {
         })
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
-            // setFields([]);
-            //  console.log(API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode);
             ApiCall({
                 path: API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode,
             }).then(respp => {
                 let result = respp.data;
                 setFields(result)
                 console.log(fields)
-                //setVisualSampling([]);
-                //  fields.aqlvmDetlModels.push()
+
             }).catch(err => {
+                setFields({ ...fields, aqlvmDetlModels: [], aqlpkDetlModels: [] });
                 message.error(err.message || err)
+
             })
         }
     }
@@ -337,7 +336,7 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages });
     }
     function AddVisualSamPlan() {
-
+        debugger;
         let err = {}, validation = true
         debugger;
         requiredFields.forEach(f => {
@@ -383,7 +382,8 @@ export default function AqlMaster() {
             }
         } else {
             if (visualSampling.packQtyFrom > 0) {
-                fields.aqlvmDetlModels.filter(f => f.active == "Y").push(visualSampling)
+              //  fields.aqlvmDetlModels.filter(f => f.active == "Y").push(visualSampling)
+                fields.aqlvmDetlModels.push(visualSampling)
                 clearFieldsVisualSam();
             }
         }
@@ -554,22 +554,30 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             //   setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.POST_AQLMASTER,
-                data: {
-                    ...fields
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose();
-            }).catch(err => {
-                setLoader(false)
-                setFields({ ...fields })
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+            let len = fields.aqlvmDetlModels.length;
+            let len1 = fields.aqlpkDetlModels.length;
+            if (len > 0 && len1 > 0) {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.POST_AQLMASTER,
+                    data: {
+                        ...fields
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose();
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+                message.error("Please enter any one record visual sampling & pack audit sampling...!")
+            }
+
+
         }
     }
 

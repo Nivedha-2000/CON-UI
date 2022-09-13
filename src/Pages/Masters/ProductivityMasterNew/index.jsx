@@ -428,7 +428,7 @@ export default function ProductivityMasters() {
 
     function ViewList() {
         let err = {}, validation = true
-
+     
         requiredFields.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
@@ -444,13 +444,18 @@ export default function ProductivityMasters() {
             path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
         }).then(resp => {
 
+
+            const current = new Date(resp.data[0].lastSubmittedDate);
+            const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+          //  const lastDt =new Intl.DateimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(resp.data[0].lastSubmittedDate);
+         
             if ( resp.data[0].data.length>0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
                 setProductivityList(resp.data[0].data)
                 setBtnVisible(true);
                 setheaderFleids(true);
                 setBtnSaveVisible()
             } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
-                alert("already data is exists. please changes date...!")
+                alert("already data is exists. please changes correct date & last Submitted Date is "+date)
                 setProductivityList([]);
                 setBtnVisible(false);
               
@@ -460,7 +465,7 @@ export default function ProductivityMasters() {
                 setheaderFleids(true);
                 setBtnSaveVisible(false)
             } else {
-                alert("Missing date please select correct date...!")
+                alert("Missing date please select correct date & last Submitted Date is " +date)
                 setProductivityList([]);
                 setBtnVisible(false);
             }
@@ -653,8 +658,12 @@ export default function ProductivityMasters() {
     }
 
     const disablePastDate = () => {
-        const today = new Date();
-        const dd = String(today.getDate() + 1).padStart(2, "0");
+        const today = new Date() ;
+        //const today = String(today1.getDate() - 1).padStart(2, "0");
+        // var today = new Date(),
+        // date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+        const dd = String(today.getDate() ).padStart(2, "0");
         const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
         const yyyy = today.getFullYear();
         return yyyy + "-" + mm + "-" + dd;
