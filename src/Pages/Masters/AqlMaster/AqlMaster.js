@@ -335,6 +335,10 @@ export default function AqlMaster() {
         });
         setErrors({ ...initialErrorMessages });
     }
+function ResetVisualSamPlan(){
+    clearFieldsVisualSam();
+}
+
     function AddVisualSamPlan() {
         debugger;
         let err = {}, validation = true
@@ -390,6 +394,9 @@ export default function AqlMaster() {
         //}
 
 
+    }
+    function ResetPackAudit(){
+        clearFieldsPackAuditSam();
     }
 
     function AddPackAuditSamPlan() {
@@ -818,6 +825,8 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages });
     }
 
+
+
     const onClose = () => {
         clearFields()
         setVisible(false);
@@ -1035,7 +1044,7 @@ export default function AqlMaster() {
                         <div className='row d-flex my-xl-auto right-content'>
                             <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
                                 <div class="float-start">
-                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
+                                    <button class="btn btn-primary search-btn btn-block  " onClick={() => ResetVisualSamPlan()}>Reset</button>
                                 </div>
                                 <div class="float-start pl-5">
 
@@ -1153,7 +1162,7 @@ export default function AqlMaster() {
                         <div className='row d-flex my-xl-auto right-content'>
                             <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
                                 <div class="float-start">
-                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
+                                    <button class="btn btn-primary search-btn btn-block  " onClick={() => ResetPackAudit()}>Reset</button>
                                 </div>
                                 <div class="float-start pl-5">
                                     {
