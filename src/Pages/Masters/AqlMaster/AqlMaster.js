@@ -12,7 +12,7 @@ import { Construction, Deblur } from '@mui/icons-material';
 import { findDOMNode } from 'react-dom';
 
 
-const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo","sampleSize",
+const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo", "sampleSize", "noofCtnsFrom", "noofCtnsTo",
     //  "sampleSize", "mesurementPcs", "maxAllowVisualDefects", "maxAllowCriticalDefects", "maxAllowSewDefects",
     //     "maxAllowOthDefects", "maxAllowMesurementDefects"
 ],
@@ -168,8 +168,8 @@ const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "pack
     pkDetlModels = {
         id: 0,
         aqlHead_ID: 0,
-        noofCtnsFrom: 0,
-        noofCtnsTo: 0,
+        noofCtnsFrom: "",
+        noofCtnsTo: "",
         packSamples: 0,
         maxAllowPackDefects: 0,
         active: "Y",
@@ -306,7 +306,7 @@ export default function AqlMaster() {
         setBtnVisible(false);
         setAddBtnPasVisible(true)
         setBtnPasVisible(false);
-      
+
         let err = {}, validation = true
         requiredFieldsHeader.forEach(f => {
             if (fields[f] === "") {
@@ -328,7 +328,7 @@ export default function AqlMaster() {
             }).then(respp => {
                 let result = respp.data;
                 setFields(result)
-               
+
 
             }).catch(err => {
                 setFields({ ...fields, aqlvmDetlModels: [], aqlpkDetlModels: [] });
@@ -346,7 +346,7 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages });
     }
 
-    function ClearBtn(){
+    function ClearBtn() {
         clearFields()
         setHeaderDisable(false);
     }
@@ -396,7 +396,7 @@ export default function AqlMaster() {
 
 
 
-        let len = fields.aqlvmDetlModels.length;
+        let len = fields.aqlvmDetlModels.filter(a => a.active == 'Y').length;
         //  if (fields.aqlvmDetlModels.length > 0) {
         let packqtyF = 0;
         let packqtyT = 0;
@@ -406,20 +406,21 @@ export default function AqlMaster() {
             let CurPackqtyF = parseInt(visualSampling.packQtyFrom);
             let CurpackqtyT = parseInt(visualSampling.packQtyTo);
             if (parseInt(packqtyF, 10) < parseInt(CurPackqtyF, 10) && parseInt(packqtyF, 10) < parseInt(CurpackqtyT, 10)) {
-                //  alert('ture')
-                // visualSampling.id=(len+1)
-                fields.aqlvmDetlModels.push(visualSampling)
-                clearFieldsVisualSam();
-            } else {
-                //  console.log(visualSampling);
-                message.error("Please check pack Qty From and To Qty.....!")
-                //  alert('flase')
+                if (visualSampling.sampleSize > 0) {
+                    fields.aqlvmDetlModels.push(visualSampling)
+                    console.log(fields);
+                    clearFieldsVisualSam();
+                } else {
+                    message.error("Please enter sample Size .....!")
+                }
 
+            } else {
+                message.error("This range of Pack-Qty From & Pack-Qty To already exists.....!")
             }
         } else {
-            if (visualSampling.packQtyFrom > 0 && visualSampling.packQtyTo >= visualSampling.packQtyFrom && visualSampling.sampleSize>0) {
-                //  fields.aqlvmDetlModels.filter(f => f.active == "Y").push(visualSampling)
+            if (visualSampling.packQtyFrom > 0 && visualSampling.sampleSize > 0) {
                 fields.aqlvmDetlModels.push(visualSampling)
+                console.log(fields);
                 clearFieldsVisualSam();
             }
         }
@@ -438,17 +439,17 @@ export default function AqlMaster() {
     function AddPackAuditSamPlan() {
         let err = {}, validation = true
         requiredFields.forEach(f => {
-            if (fields[f] === "") {
+            if (packAuditSampling[f] === "") {
                 err[f] = "This field is required"
                 validation = false
+                return false;
             } else {
                 validation = true
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
-        let len = fields.aqlpkDetlModels.length;
-        // if (fields.aqlpkDetlModels.length > 0) {
+        let len = fields.aqlpkDetlModels.filter(a => a.active == 'Y').length;
         let CartonF = 0;
         let CartonT = 0;
 
@@ -459,13 +460,16 @@ export default function AqlMaster() {
             if (parseInt(CartonF, 10) < parseInt(CurCartonF, 10) && parseInt(CartonF, 10) < parseInt(CurCartonT, 10)) {
                 fields.aqlpkDetlModels.push(packAuditSampling)
                 clearFieldsPackAuditSam();
+                console.log(fields)
             } else {
-                message.error("Please check Carton From and Carton To Qty.....!")
+                message.error("This range of Carton From & Carton To already exists.....!")
+                
             }
         } else {
             if (packAuditSampling.noofCtnsFrom > 0) {
-                fields.aqlpkDetlModels.push(packAuditSampling)
                 clearFieldsPackAuditSam();
+                fields.aqlpkDetlModels.push(packAuditSampling)
+                console.log(fields)
             }
         }
         //  }
@@ -532,20 +536,20 @@ export default function AqlMaster() {
         clearFieldsPackAuditSam();
         setCartonFromVisible(false);
     }
-    const editVisualSampling = (row, packQtyFrom) => {
+    const editVisualSampling = (packQtyFrom) => {
         // debugger;
         setEditVisible(false)
         setBtnVisible(true);
         setAddBtnVisible(false);
         setPackQtyVisible(true);
-        if (row != '') {
+        if (packQtyFrom != '') {
             // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
-            setVisualSampling(fields.aqlvmDetlModels.filter(a => a.id == row)[0]);
+            setVisualSampling(fields.aqlvmDetlModels.filter(a => a.packQtyFrom == packQtyFrom)[0]);
         }
     };
 
     const removeVisualSampling = (row) => {
-      debugger;
+        debugger;
         if (row != '') {
             // let toUpdateData1 = fields.aqlvmDetlModels.filter(a => a.id != row);
             // toUpdateData1.active=
@@ -557,7 +561,7 @@ export default function AqlMaster() {
 
 
             let toUpdateData1 = fields.aqlvmDetlModels.map((item) => {
-                if (item.id === row) {
+                if (item.packQtyFrom === row) {
                     item.active = "N";
                 }
                 return item;
@@ -570,12 +574,30 @@ export default function AqlMaster() {
         //  alert(row1);
         debugger;
         let toUpdatePackAuditSamPlan1 = fields.aqlpkDetlModels.map((item1) => {
-            if (item1.id === row1) {
+            if (item1.noofCtnsFrom === row1) {
                 item1.active = "N";
             }
             return item1;
         });
         setPackAuditSampling({ ...toUpdatePackAuditSamPlan1 });
+        console.log(fields)
+        // ApiCall({
+        //     method: "POST",
+        //     path: API_URLS.POST_AQLMASTER,
+        //     data: {
+        //         ...fields
+        //     }
+        // }).then(resp => {
+        //     setLoader(false)
+        //     message.success("Remove Success")
+        //     // onClose();
+        //     // setHeaderDisable(false);
+        // }).catch(err => {
+        //     setLoader(false)
+        //     setFields({ ...fields })
+        //     setErrors({ ...initialErrorMessages })
+        //     message.error(err.message || err)
+        // })
 
     }
 
@@ -586,7 +608,7 @@ export default function AqlMaster() {
 
         if (row1 != '') {
             // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
-            setPackAuditSampling(fields.aqlpkDetlModels.filter(a => a.id == row1)[0]);
+            setPackAuditSampling(fields.aqlpkDetlModels.filter(a => a.noofCtnsFrom == row1)[0]);
         }
     }
 
@@ -619,6 +641,7 @@ export default function AqlMaster() {
                     setLoader(false)
                     message.success(resp.message)
                     onClose();
+                    setHeaderDisable(false);
                 }).catch(err => {
                     setLoader(false)
                     setFields({ ...fields })
@@ -667,7 +690,7 @@ export default function AqlMaster() {
         let value = e.target.value
         debugger;
         if (name === 'maxAllowVisualDefects1') {
-          
+
             let VD = visualSampling.maxAllowVisualDefects === "" ? 0 : visualSampling.maxAllowVisualDefects;
             let CD = visualSampling.maxAllowCriticalDefects === "" ? 0 : visualSampling.maxAllowCriticalDefects;
             let SD = visualSampling.maxAllowSewDefects === "" ? 0 : visualSampling.maxAllowSewDefects;
@@ -691,6 +714,8 @@ export default function AqlMaster() {
                 message.error('Should not be greater than Visual Defect .....! ')
                 return false;
             }
+        } else {
+
         }
     }
 
@@ -1089,7 +1114,7 @@ export default function AqlMaster() {
                                     <label>Sample Size<span className='text-danger'>*  </span></label>
                                     <input type="text" class="form-control" placeholder='Enter Sample Size'
                                         //  value={visualSampling.sampleSize == 0 ? '' : visualSampling.sampleSize}
-                                        value={visualSampling.sampleSize }
+                                        value={visualSampling.sampleSize}
                                         id="sampleSize"
                                         maxLength="4"
                                         onChange={inputOnChange("sampleSize")} disabled={visible}
@@ -1247,12 +1272,12 @@ export default function AqlMaster() {
                                             fields.aqlvmDetlModels.filter(f => f.active == "Y").map((row, index) => (
                                                 <tr key={index}>
                                                     <td align='center'>
-                                                        <div className='text-center' onClick={() => { editVisualSampling(row?.id, row?.packQtyFrom) }}>
+                                                        <div className='text-center' onClick={() => { editVisualSampling(row?.packQtyFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
                                                     <td align='center'>
-                                                        <div className='text-center' onClick={() => { removeVisualSampling(row?.id) }}>
+                                                        <div className='text-center' onClick={() => { removeVisualSampling(row?.packQtyFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
@@ -1284,6 +1309,8 @@ export default function AqlMaster() {
                                     <input type="text" class="form-control" placeholder='Enter Carton From' value={packAuditSampling.noofCtnsFrom == 0 ? '' : packAuditSampling.noofCtnsFrom}
                                         id="noofCtnsFrom"
                                         disabled={cartonFromvisible}
+                                        maxLength="6"
+                                        autoComplete='off'
                                         onChange={inputOnChange2("noofCtnsFrom")}
                                     />
                                     <small className='text-danger'>{packAuditSampling.noofCtnsFrom === '' ? errors.noofCtnsFrom : ''}</small>
@@ -1292,12 +1319,15 @@ export default function AqlMaster() {
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Carton To<span className='text-danger'>*  </span></label>
-                                    <small className='text-danger'></small>
                                     <input type="text" class="form-control" placeholder='Enter Carton To' value={packAuditSampling.noofCtnsTo == 0 ? '' : packAuditSampling.noofCtnsTo}
                                         id="noofCtnsTo"
+                                        autoComplete='off'
                                         disabled={cartonFromvisible}
+                                        maxLength="6"
                                         onChange={inputOnChange2("noofCtnsTo")}
                                     />
+                                    <small className='text-danger'>{packAuditSampling.noofCtnsTo === '' ? errors.noofCtnsTo : ''}</small>
+
                                 </div>
                             </div>
                             <div className='col-lg'>
@@ -1307,6 +1337,8 @@ export default function AqlMaster() {
                                     <input type="text" class="form-control" placeholder='Enter Pack Sample'
                                         value={packAuditSampling.packSamples == 0 ? 0 : packAuditSampling.packSamples}
                                         id="packSamples"
+                                        autoComplete='off'
+                                        maxLength="4"
                                         onBlur={PackDefectvalidation("packSamples")}
                                         onChange={inputOnChange2("packSamples")}
                                     />
@@ -1316,9 +1348,11 @@ export default function AqlMaster() {
                                 <div className='form-group'>
                                     <label>Pack Defect</label>
                                     <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Pack Defect' 
-                                    value={packAuditSampling.maxAllowPackDefects == 0 ? 0 : packAuditSampling.maxAllowPackDefects}
+                                    <input type="text" class="form-control" placeholder='Enter Pack Defect'
+                                        value={packAuditSampling.maxAllowPackDefects == 0 ? 0 : packAuditSampling.maxAllowPackDefects}
                                         id="maxAllowPackDefects"
+                                        autoComplete='off'
+                                        maxLength="4"
                                         onBlur={PackDefectvalidation("maxAllowPackDefects")}
                                         onChange={inputOnChange2("maxAllowPackDefects")}
                                     />
@@ -1370,12 +1404,12 @@ export default function AqlMaster() {
                                             fields.aqlpkDetlModels.filter(f => f.active == "Y").map((row1, index) => (
                                                 <tr key={index}>
                                                     <td align='center'>
-                                                        <div className='text-center' onClick={() => { editpkDetl(row1?.id) }}>
+                                                        <div className='text-center' onClick={() => { editpkDetl(row1?.noofCtnsFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
                                                     <td align='center'>
-                                                        <div className='text-center' onClick={() => { removepkDetl(row1?.id) }}>
+                                                        <div className='text-center' onClick={() => { removepkDetl(row1?.noofCtnsFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
