@@ -12,7 +12,7 @@ import { Construction, Deblur } from '@mui/icons-material';
 import { findDOMNode } from 'react-dom';
 
 
-const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo", "sampleSize", "noofCtnsFrom", "noofCtnsTo",
+const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo", "sampleSize", "noofCtnsFrom", "noofCtnsTo", "packSamples",
     //  "sampleSize", "mesurementPcs", "maxAllowVisualDefects", "maxAllowCriticalDefects", "maxAllowSewDefects",
     //     "maxAllowOthDefects", "maxAllowMesurementDefects"
 ],
@@ -170,7 +170,7 @@ const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "pack
         aqlHead_ID: 0,
         noofCtnsFrom: "",
         noofCtnsTo: "",
-        packSamples: 0,
+        packSamples: "",
         maxAllowPackDefects: 0,
         active: "Y",
 
@@ -203,7 +203,7 @@ export default function AqlMaster() {
     const [rowData, setRowData] = useState([]);
     const [visible, setVisible] = useState(true);
     const [packQtyvisible, setPackQtyVisible] = useState(true);
-    const [cartonFromvisible, setCartonFromVisible] = useState(false);
+    const [cartonFromvisible, setCartonFromVisible] = useState(true);
     const [btnvisible, setBtnVisible] = useState(false);
     const [btnPasvisible, setBtnPasVisible] = useState(false);
     const [addBtnVisible, setAddBtnVisible] = useState(true);
@@ -211,6 +211,7 @@ export default function AqlMaster() {
     const [editVisible, setEditVisible] = useState(true);
 
     const [headerDisable, setHeaderDisable] = useState(false);
+    const [cartonvisible, setCartonVisible] = useState(true);
 
 
     useEffect(() => {
@@ -306,6 +307,7 @@ export default function AqlMaster() {
         setBtnVisible(false);
         setAddBtnPasVisible(true)
         setBtnPasVisible(false);
+        setCartonFromVisible(false);
 
         let err = {}, validation = true
         requiredFieldsHeader.forEach(f => {
@@ -458,12 +460,17 @@ export default function AqlMaster() {
             let CurCartonF = parseInt(packAuditSampling.noofCtnsFrom);
             let CurCartonT = parseInt(packAuditSampling.noofCtnsTo);
             if (parseInt(CartonF, 10) < parseInt(CurCartonF, 10) && parseInt(CartonF, 10) < parseInt(CurCartonT, 10)) {
-                fields.aqlpkDetlModels.push(packAuditSampling)
-                clearFieldsPackAuditSam();
-                console.log(fields)
+                if (packAuditSampling.packSamples > 0) {
+                    fields.aqlpkDetlModels.push(packAuditSampling)
+                    clearFieldsPackAuditSam();
+                    console.log(fields)
+                } else {
+                    message.error("Please enter pack Samples .....!")
+                }
+
             } else {
                 message.error("This range of Carton From & Carton To already exists.....!")
-                
+
             }
         } else {
             if (packAuditSampling.noofCtnsFrom > 0) {
@@ -1311,7 +1318,9 @@ export default function AqlMaster() {
                                         disabled={cartonFromvisible}
                                         maxLength="6"
                                         autoComplete='off'
+
                                         onChange={inputOnChange2("noofCtnsFrom")}
+
                                     />
                                     <small className='text-danger'>{packAuditSampling.noofCtnsFrom === '' ? errors.noofCtnsFrom : ''}</small>
                                 </div>
@@ -1324,7 +1333,9 @@ export default function AqlMaster() {
                                         autoComplete='off'
                                         disabled={cartonFromvisible}
                                         maxLength="6"
+
                                         onChange={inputOnChange2("noofCtnsTo")}
+
                                     />
                                     <small className='text-danger'>{packAuditSampling.noofCtnsTo === '' ? errors.noofCtnsTo : ''}</small>
 
@@ -1333,15 +1344,18 @@ export default function AqlMaster() {
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Pack Sample</label>
-                                    <small className='text-danger'></small>
+
                                     <input type="text" class="form-control" placeholder='Enter Pack Sample'
-                                        value={packAuditSampling.packSamples == 0 ? 0 : packAuditSampling.packSamples}
+                                        value={packAuditSampling.packSamples == 0 ? '' : packAuditSampling.packSamples}
                                         id="packSamples"
                                         autoComplete='off'
                                         maxLength="4"
                                         onBlur={PackDefectvalidation("packSamples")}
                                         onChange={inputOnChange2("packSamples")}
+                                        disabled={visible}
                                     />
+                                    <small className='text-danger'>{packAuditSampling.packSamples === '' ? errors.packSamples : ''}</small>
+
                                 </div>
                             </div>
                             <div className='col-lg'>
@@ -1355,6 +1369,7 @@ export default function AqlMaster() {
                                         maxLength="4"
                                         onBlur={PackDefectvalidation("maxAllowPackDefects")}
                                         onChange={inputOnChange2("maxAllowPackDefects")}
+                                        disabled={visible}
                                     />
                                 </div>
                             </div>
