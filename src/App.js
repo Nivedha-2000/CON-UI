@@ -23,6 +23,8 @@ function App() {
         
         if (res.directLogin == true && res.tokenState == true) {
           console.log("ttt")
+          console.log("gggg")
+
           navigate('/masters/defect-master');
         }
         else {
