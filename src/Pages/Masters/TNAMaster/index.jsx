@@ -211,18 +211,28 @@ function TNAMaster({ name }) {
     }
 
     const onClose = () => {
-        clearFields()
+        clearFields();
         setVisible(false);
+
     };
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
+        //clearFields();
     }
 
     const close = () => {
-        clearFields()
+       // clearFields()
         setShowResults(true)
         setShowForm(false)
+        setEditVisible(false);
+        setPackQtyVisible(false);
+        setBuyerTypeVisible(false);
+        setCloneSave(true);
+       // onClose()
+        getDatas()
+        setFields([])
+
     }
     const showDrawer = () => {
         setVisible(true);
@@ -299,12 +309,14 @@ function TNAMaster({ name }) {
         }
     }
 
-    const GetdependActCodeDropDown = (value) => {
+    const GetdependActCodeDropDown = (buyCode, buydivCode, deptcode, locCode, activityType) => {
+       // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType);
         // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + AddTnamodels.buyCode + "&BuydivCode=" + AddTnamodels.buydivCode + "&Deptcode=" + AddTnamodels.deptcode + "&LocCode=" + AddTnamodels.locCode + "&ActivityType=" + value);       
         ApiCall({
-            path: API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + AddTnamodels.buyCode + "&BuydivCode=" + AddTnamodels.buydivCode + "&Deptcode=" + AddTnamodels.deptcode + "&LocCode=" + AddTnamodels.locCode + "&ActivityType=" + value,
+            path: API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType,
         }).then(resp => {
             try {
+               // alert(resp.data);
                 setdependActCodeList(resp.data)
                 console.log(resp.data)
             } catch (er) {
@@ -549,7 +561,7 @@ function TNAMaster({ name }) {
             debugger;
             if (e.target.value === '' || re.test(e.target.value)) {
                 //alert(e.target.value);
-                setAddTnamodels({ ...AddTnamodels, [name]: value });               
+                setAddTnamodels({ ...AddTnamodels, [name]: value });
                 err['weightage'] = ''
                 err['preNotifyDays'] = ''
                 err['l1EscalateDays'] = ''
@@ -565,14 +577,14 @@ function TNAMaster({ name }) {
                 setErrors({ ...errors, ...err })
             }
         }
-        else  if (name === 'duration') {
+        else if (name === 'duration') {
             const re = /^[-0-9\b]+$/;
             // alert(re);   /^[+-]?\d*(?:[.,]\d*)?$/
             debugger;
             if (e.target.value === '' || re.test(e.target.value)) {
                 //alert(e.target.value);
                 setAddTnamodels({ ...AddTnamodels, [name]: value });
-                err['duration'] = ''               
+                err['duration'] = ''
                 setErrors({ ...initialErrorMessages, ...err })
             }
             else {
@@ -619,13 +631,17 @@ function TNAMaster({ name }) {
         // }
         else if (name === 'dependDeptCode') {
             GetdependActivityDropDown(e.target.value);
+            setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
         else if (name === 'dependActvity') {
             GetdependSubActivityDropDown(e.target.value);
+            setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
         else if (name === 'activityType') {
+            debugger;
             // alert(e.target.value);
             // alert([name]);
+            edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'SOP') {
                 setPackQtyVisible(true);
@@ -639,7 +655,7 @@ function TNAMaster({ name }) {
                 setPackQtyVisible(false);
                 setBuyerTypeVisible(false);
             }
-            GetdependActCodeDropDown(e.target.value);
+            GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
         }
         else {
             setAddTnamodels({ ...AddTnamodels, [name]: value })
@@ -678,7 +694,7 @@ function TNAMaster({ name }) {
                 // alert(AddTnamodels.id);
                 setShowAddtolist(true);
                 setShowUpdatetolist(false);
-                GetdependActCodeDropDown(AddTnamodels.activityType);
+                GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
                 //onChange={inputOnChange("activityType")};
                 // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
                 //console.log(toUpdateData);
@@ -1166,6 +1182,20 @@ function TNAMaster({ name }) {
     //     }
     // }
 
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            // setFields({ ...AddTnamodels, [name]: "" })
+            setAddTnamodels({ ...AddTnamodels, [name]: "" });
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            // setFields({ ...AddTnamodels, [name]: 0 })
+            setAddTnamodels({ ...AddTnamodels, [name]: 0 });
+        }
+    }
+
     const [tableProps, setTableProps] = useState({
         page: 0,
         rowsPerPage: 10,
@@ -1383,7 +1413,7 @@ function TNAMaster({ name }) {
             setVisible(true);
             setShowResults(false)
             setShowForm(true)
-
+            //  clearFields();
             let { data } = (buyCode && await getDataById(buyCode, buydivCode, deptcode, locCode, activityType))
             debugger;
             if (!data) {
@@ -1411,6 +1441,8 @@ function TNAMaster({ name }) {
                         setPackQtyVisible(false);
                         setBuyerTypeVisible(false);
                     }
+                    //alert();
+                    // GetdependActCodeDropDown(data[0].buyCode, data[0].buydivCode, data[0].deptcode, data[0].locCode,data[0].activityType);
                 }
                 //  alert(data);
                 console.log(data)
@@ -1425,6 +1457,38 @@ function TNAMaster({ name }) {
                         locCode: data[0].locCode,
                         activityType: data[0].activityType,
                         mActive: data[0].mActive,
+                        stage: "",
+                        orderCategory: "",
+                        fit: "",
+                        actCode: 0,
+                        activity: "",
+                        subActivity: "",
+                        criticalActivity: "N",
+                        tnaSeqNo: 0,
+                        duration: 0,
+                        dependActCode: 0,
+                        dependDeptCode: "",
+                        dependActvity: "",
+                        dependSubActvity: "",
+                        preNotifyDays: 0,
+                        notifyRoleId: "",
+                        l1EscalateDays: 0,
+                        l1EscalateRole: "",
+                        l2EscalateDays: 0,
+                        l2EscalateRole: "",
+                        category: "NA",
+                        valueAddtype: "",
+                        weightage: 0,
+                        skipped: "N",
+                        remarks: "",
+                        cancel: "Y",
+                        active: 'Y',
+                        hostName: "",
+                        createdDate: "2022-08-22",
+                        createdBy: "AD",
+                        modifiedDate: "2022-08-22",
+                        modifiedBy: "",
+                        isActive: false
                         // orderCategory: data[0].orderCategory,
                         // stage: data[0].stage,
                         // fit: data[0].fit,
@@ -1472,41 +1536,44 @@ function TNAMaster({ name }) {
                         locCode: data[0].locCode,
                         activityType: data[0].activityType,
                         mActive: data[0].mActive,
-                        // orderCategory: data[0].orderCategory,
-                        // stage: data[0].stage,
-                        // fit: data[0].fit,
-                        // actCode: data[0].actCode,
-                        activity: data[0].activity,
-                        // subActivity: data[0].subActivity,
-                        // criticalActivity: data[0].criticalActivity,
-                        // tnaSeqNo: data[0].tnaSeqNo,
-                        duration: data[0].duration,
-                        // dependActCode: data[0].dependActCode,
-                        // dependDeptCode: data[0].dependDeptCode,
-                        // dependActvity: data[0].dependActvity,
-                        // dependSubActvity: data[0].dependSubActvity,
-                        // preNotifyDays: data[0].preNotifyDays,
-                        notifyRoleId: data[0].notifyRoleId,
-                        // l1EscalateDays: data[0].l1EscalateDays,
-                        // l1EscalateRole: data[0].l1EscalateRole,
-                        // l2EscalateDays: data[0].l2EscalateDays,
-                        // l2EscalateRole: data[0].l2EscalateRole,
-                        // category: data[0].category,
-                        // valueAddtype: data[0].valueAddtype,
-                        // weightage: data[0].weightage,
-                        // skipped: data[0].skipped,
-                        // remarks: data[0].remarks,
-                        // cancel: data[0].cancel,
-                        // active: data[0].active,
-                        // hostName: data[0].hostName,
-                        // createdDate: data[0].createdDate,
-                        // createdBy: data[0].createdBy,
-                        // modifiedDate: data[0].modifiedDate,
-                        // modifiedBy: data[0].modifiedBy,
-                        // isActive: data[0].isActive,
+                        stage: "",
+                        orderCategory: "",
+                        fit: "",
+                        actCode: 0,
+                        activity: "",
+                        subActivity: "",
+                        criticalActivity: "N",
+                        tnaSeqNo: 0,
+                        duration: 0,
+                        dependActCode: 0,
+                        dependDeptCode: "",
+                        dependActvity: "",
+                        dependSubActvity: "",
+                        preNotifyDays: 0,
+                        notifyRoleId: "",
+                        l1EscalateDays: 0,
+                        l1EscalateRole: "",
+                        l2EscalateDays: 0,
+                        l2EscalateRole: "",
+                        category: "NA",
+                        valueAddtype: "",
+                        weightage: 0,
+                        skipped: "N",
+                        remarks: "",
+                        cancel: "Y",
+                        active: 'Y',
+                        hostName: "",
+                        createdDate: "2022-08-22",
+                        createdBy: "AD",
+                        modifiedDate: "2022-08-22",
+                        modifiedBy: "",
+                        isActive: false
                     })
                     setEditVisible(true);
+                    GetdependActCodeDropDown(data[0].buyCode, data[0].buydivCode, data[0].deptcode, data[0].locCode, data[0].activityType);
+
                 }
+
             }
 
 
@@ -1530,7 +1597,9 @@ function TNAMaster({ name }) {
             //     imageFileName: data.imageFileName,
             //     active: data.active
             // })
+            //GetdependActCodeDropDown(data[0].activityType);
             setLoader(false)
+
         } catch (err) {
             setLoader(false)
             message.error(typeof err == "string" ? err : "data not found")
@@ -1902,7 +1971,7 @@ function TNAMaster({ name }) {
                         </div> */}
                     </div>
 
-                    <div class="breadcrumb-header justify-content-between bread-list">
+                    {/* <div class="breadcrumb-header justify-content-between bread-list">
                         <div class="w-100">
                             <div class="d-flex border-bottom pb-15">
                                 <div class="me-auto ">
@@ -1914,39 +1983,47 @@ function TNAMaster({ name }) {
                             </div>
                         </div>
                     </div>
-                    <div class="clear"></div>
-                    <div class="row mt-15 dis-sel mt-20">
-                        <div class="col-lg-4">
-                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                <label>Stage<span className='text-danger'>  </span> </label>
-                                <small className='text-danger'>{AddTnamodels.stage === '' ? errors.stage : ''}</small>
-                            </div>
-                            <select className='form-select form-select-sm mt-1' required
-                                value={AddTnamodels.stage} disabled={packQtyvisible}
-                                onChange={inputOnChange("stage")} >
-                                <option value=""> Select Stage</option>
-                                {StageList.map((v, index) => {
-                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                })}
-                            </select>
-                        </div>
-                        <div class="col-lg-4">
-                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                <label>Order Category<span className='text-danger'>  </span> </label>
-                                <small className='text-danger'>{AddTnamodels.orderCategory === '' ? errors.orderCategory : ''}</small>
-                            </div>
-                            <select className='form-select form-select-sm mt-1' required
-                                value={AddTnamodels.orderCategory} disabled={packQtyvisible}
-                                onChange={inputOnChange("orderCategory")} >
-                                <option value=""> Select orderCategory</option>
-                                {orderCatList.map((v, index) => {
-                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                })}
-                            </select>
-                        </div>
-                    </div>
+                    <div class="clear"></div> */}
+
 
                     <div class="row mt-25 main-tab pl-15 pr-15">
+                        <ul class="nav nav-tabs p-25 pl-25" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                    type="button" role="tab" aria-controls="home" aria-selected="true">Sub Header</button>
+                            </li>
+                        </ul>
+                        <div class="row mt-15 dis-sel mt-20">
+                            <div class="col-lg-6">
+                                <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                    <label>Stage<span className='text-danger'>  </span> </label>
+                                    <small className='text-danger'>{AddTnamodels.stage === '' ? errors.stage : ''}</small>
+                                </div>
+                                <select className='form-select form-select-sm mt-1' required
+                                    value={AddTnamodels.stage} disabled={packQtyvisible}
+                                    onChange={inputOnChange("stage")} >
+                                    <option value=""> Select Stage</option>
+                                    {StageList.map((v, index) => {
+                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                    })}
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                    <label>Order Category<span className='text-danger'>  </span> </label>
+                                    <small className='text-danger'>{AddTnamodels.orderCategory === '' ? errors.orderCategory : ''}</small>
+                                </div>
+                                <select className='form-select form-select-sm mt-1' required
+                                    value={AddTnamodels.orderCategory} disabled={packQtyvisible}
+                                    onChange={inputOnChange("orderCategory")} >
+                                    <option value=""> Select orderCategory</option>
+                                    {orderCatList.map((v, index) => {
+                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                    })}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
                         <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
@@ -1985,17 +2062,21 @@ function TNAMaster({ name }) {
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter Days'
                                             value={AddTnamodels.duration} minLength="1" maxLength="3"
                                             onChange={inputOnChange("duration")}
+                                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("duration")}
+                                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("duration")}
                                         />
                                     </div>
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Weightage<span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.weightage === '' ? errors.weightage : ''}</small>
+                                            <small className='text-danger'>{errors.weightage === '' ? errors.weightage : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter weightage'
                                             value={AddTnamodels.weightage} minLength="1" maxLength="3"
                                             disabled={packQtyvisible}
                                             onChange={inputOnChange("weightage")}
+                                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("weightage")}
+                                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("weightage")}
                                         />
                                     </div>
                                     <div class="col-lg-3">
@@ -2003,7 +2084,7 @@ function TNAMaster({ name }) {
                                             <label>Depend ActCode<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependActCode === '' ? errors.dependActCode : ''}</small>
                                         </div>
-                                        <select className='form-control form-control-sm mt-1' disabled={packQtyvisible} id="dependActCode" value={fields.dependActCode} onChange={inputOnChange("dependActCode")} required>
+                                        <select className='form-control form-control-sm mt-1' disabled={packQtyvisible} id="dependActCode" value={AddTnamodels.dependActCode} onChange={inputOnChange("dependActCode")} required>
                                             {/* <option value="" hidden> Select Depend Code</option>
                                             {
                                                 dependActCodeList.map((t, ind) => (
@@ -2042,7 +2123,7 @@ function TNAMaster({ name }) {
                                             <label>Depend Actvity<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependActvity === '' ? errors.dependActvity : ''}</small>
                                         </div>
-                                        <select className='form-control form-control-sm mt-1' id="dependActvity" disabled={packQtyvisible} value={fields.dependActvity} onChange={inputOnChange("dependActvity")} required>
+                                        <select className='form-control form-control-sm mt-1' id="dependActvity" disabled={packQtyvisible} value={AddTnamodels.dependActvity} onChange={inputOnChange("dependActvity")} required>
                                             <option value="" hidden>Select Depend Actvity</option>
                                             {
                                                 dependActivityList.map((t, ind) => (
@@ -2060,7 +2141,7 @@ function TNAMaster({ name }) {
                                             <label>Depend SubActvity<span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.dependSubActvity === '' ? errors.dependSubActvity : ''}</small>
                                         </div>
-                                        <select className='form-control form-control-sm mt-1' id="dependSubActvity" disabled={packQtyvisible} value={fields.dependSubActvity} onChange={inputOnChange("dependSubActvity")} required>
+                                        <select className='form-control form-control-sm mt-1' id="dependSubActvity" disabled={packQtyvisible} value={AddTnamodels.dependSubActvity} onChange={inputOnChange("dependSubActvity")} required>
                                             <option value="" hidden>Select Depend SubActvity</option>
                                             {
                                                 dependSubActivityList.map((t, ind) => (
@@ -2218,11 +2299,13 @@ function TNAMaster({ name }) {
                                     <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>PreNotify Days<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.preNotifyDays === '' ? errors.preNotifyDays : ''}</small>
+                                            <small className='text-danger'>{errors.preNotifyDays === '' ? errors.preNotifyDays : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter preNotifyDays'
                                             value={AddTnamodels.preNotifyDays} minLength="1" maxLength="2"
                                             onChange={inputOnChange("preNotifyDays")}
+                                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("preNotifyDays")}
+                                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("preNotifyDays")}
                                         />
                                     </div>
                                     <div class="col-lg-3">
@@ -2242,11 +2325,13 @@ function TNAMaster({ name }) {
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>L1Escalate Days<span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.l1EscalateDays === '' ? errors.l1EscalateDays : ''}</small>
+                                            <small className='text-danger'>{errors.l1EscalateDays === '' ? errors.l1EscalateDays : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter l1EscalateDays'
                                             value={AddTnamodels.l1EscalateDays} minLength="1" maxLength="1"
                                             onChange={inputOnChange("l1EscalateDays")}
+                                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("l1EscalateDays")}
+                                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("l1EscalateDays")}
                                         />
                                     </div>
                                     <div class="col-lg-2">
@@ -2266,11 +2351,13 @@ function TNAMaster({ name }) {
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>L2Escalate Days<span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.l2EscalateDays === '' ? errors.l2EscalateDays : ''}</small>
+                                            <small className='text-danger'>{errors.l2EscalateDays === '' ? errors.l2EscalateDays : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter l2EscalateDays'
                                             value={AddTnamodels.l2EscalateDays} minLength="1" maxLength="1"
                                             onChange={inputOnChange("l2EscalateDays")}
+                                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("l2EscalateDays")}
+                                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("l2EscalateDays")}
                                         />
                                     </div>
                                     <div class="col-lg-3">
@@ -2323,7 +2410,15 @@ function TNAMaster({ name }) {
                                         <button className="col-sm-2 col-md-2 col-xl-2 p-0 defect-master-add" type="button" onClick={(e) => this.getCancel()}><span className="MuiButton-label">Cancel <i className="zmdi zmdi-close"></i></span><span className="MuiTouchRipple-root"></span></button>
                                     </Form>
                                 </div> */}
-                                    <div className='col-lg-3'>
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>  <span className='text-danger'>  </span> </label>
+                                            <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
+                                        </div>
+                                        <div></div>
+                                        <button class="btn btn-primary search-btn btn-block ml-10" onClick={close}>Back</button>
+                                    </div>
+                                    <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label><span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
@@ -2332,18 +2427,17 @@ function TNAMaster({ name }) {
                                         {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
                                         {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTna()}>Add To List</button>}
                                         {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTna()}> Update To List</button>}
-
                                         {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
 
                                     </div>
-                                    <div className='col-lg-3'>
+                                    <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label><span className='text-danger'>  </span> </label>
                                             <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
                                         </div>
                                         <div class="clear"></div>
                                         {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTna()}>Add</button> */}
-                                        <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> Save </button>
+                                        <button className='btn-sm btn defect-master-save mt-1 ' onClick={save}> Save </button>
 
                                         {/* <button type="button" className="col-sm-1 col-md-1 float-left col-xl-1 p-0 defect-master-add" onClick={(e) => this.sampleaddmoresave()}></button>  {AddTnamodels.id === 0 ? "Save" : "Update"}*/}
 
@@ -2385,6 +2479,7 @@ function TNAMaster({ name }) {
                                                 <th>L2 ESCALATION TIMELINE</th>
                                                 <th>L2 ESCALATION ROLE</th>
                                                 <th>VALUEADD TYPE</th>
+                                                <th>ACTIVE</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -2425,6 +2520,7 @@ function TNAMaster({ name }) {
                                                         <td align='center'>{row.l2EscalateDays}</td>
                                                         <td align='center'>{row.l2EscalateRole}</td>
                                                         <td align='center'>{row.valueAddtype}</td>
+                                                        <td align='center'>{row.active}</td>
                                                     </tr>
                                                 ))
                                             }

@@ -11480,6 +11480,7 @@ textarea.custom-file-input.parsley-error:focus~.custom-file-label {
     padding-left: 0.5rem !important;
     font-size: 0.76562rem !important;
     padding-right: 28px !important;
+    background-color: #fff!important;
 }
 
 .form-select-lg {

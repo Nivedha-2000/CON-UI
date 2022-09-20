@@ -165,7 +165,11 @@ export const API_URLS = {
 
   //ProductivityMaster
   SAVE_PRODUCTIVITY_MASTER: "Productivity/SaveProductivityList",
+  //GetProductivityListByStartdateEnddateParamerters:"Productivity/GetProductivityListByStartdateEnddateParamerters",
+  GetProductivityListByStartdateEnddateParamerters:"Productivity/GetProductivityByStartdateEnddateParamertersListwithStatus",
 
+
+  
   //TNA_MASTER 
   SAVE_TNA_MASTER_LIST: "TNAMaster/SaveTNAMasterList",
   SAVE_TNA_MASTER: "TNAMaster/SaveTNAMaster",

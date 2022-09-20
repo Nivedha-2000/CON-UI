@@ -235,6 +235,7 @@ function BuyerMaster({ name }) {
 
         if (validation) {
             if (type === "update") {
+                debugger;
                 if (validation) {
                     setLoader(true)
 
@@ -242,7 +243,8 @@ function BuyerMaster({ name }) {
                         method: "POST",
                         path: API_URLS.SAVE_BUYER_MASTER,
                         data: {
-                            ...fields
+                            ...fields,
+                            hostName: getHostName()
                         }
                     }).then(resp => {
                         setLoader(false)

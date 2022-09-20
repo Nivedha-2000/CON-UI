@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["type", "code","typeDesc","codeDesc","indexkey"],
+const requiredFields = ["type", "code", "typeDesc", "codeDesc", "indexkey"],
     initialErrorMessages = {
         type: "",
         code: "",
         typeDesc: "",
-        codeDesc: "",  
-        indexkey: 0,   
+        codeDesc: "",
+        indexkey: 0,
         active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         type: "",
         code: "",
         typeDesc: "",
-        codeDesc: "",  
-        indexkey: 0,   
+        codeDesc: "",
+        indexkey: 0,
         active: 'Y'
     };
 
@@ -47,7 +47,9 @@ function UserDefinedMaster({ name }) {
     const [list, setList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
-    })
+    });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
 
     const clearFields = () => {
         setFields({
@@ -63,6 +65,8 @@ function UserDefinedMaster({ name }) {
 
     const showDrawer = () => {
         setVisible(true);
+        setSaveVisible(true)
+        setUpdateVisible(false)
     };
 
 
@@ -79,21 +83,21 @@ function UserDefinedMaster({ name }) {
     useEffect(() => {
         getUDTypes();
         getDatas();
-       // getLocationMaster()
-     //  getFashionGroup();
+        // getLocationMaster()
+        //  getFashionGroup();
     }, []);
 
     const handleChange = (page) => {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
-   
+
     const getUDTypes = () => {
         ApiCall({
             path: API_URLS.GET_UDTYPE_MASTER_LIST
         }).then(resp => {
             try {
-               // console.log(resp.data);
+                // console.log(resp.data);
                 settypeList(resp.data.map(d => ({ code: d.miscType, codeDesc: d.description })))
             } catch (e) {
                 message.error("response is not as expected")
@@ -102,11 +106,11 @@ function UserDefinedMaster({ name }) {
             message.error(err.message || err)
         })
     }
-    
+
     const getDatas = () => {
         setListLoading(true)
         ApiCall({
-            path: API_URLS.GET_UD_MASTER_LIST 
+            path: API_URLS.GET_UD_MASTER_LIST
         }).then(resp => {
             setListLoading(false)
             if (Array.isArray(resp.data)) {
@@ -124,25 +128,31 @@ function UserDefinedMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'indexkey'){
-            //const re =/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
-            const re = /^[0-9\b]+$/;
+        if (name === 'a') {
+            const re = /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['indexkey'] =  ''
+                err['a'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['indexkey'] = "Please enter numbers only"
+                err['a'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        }
+        else if (name === 'type') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else if (name === 'code') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else {
             setFields({ ...fields, [name]: value })
         }
 
     }
-    const save = () => {
+    const save = async (type, code, Type) => {
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -151,31 +161,72 @@ function UserDefinedMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
+        })
         setErrors({ ...initialErrorMessages, ...err })
 
         if (validation) {
             setLoader(true)
-            
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_UD_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-             
-                setFields({...fields})
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_UD_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+
+                ItrApiService.GET({
+                    url: API_URLS.GET_UD_MASTER_BY_ID + "/" + type + "/" + code,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_UD_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+        
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (type.toUpperCase() === res.data.type.toUpperCase() && code.toUpperCase() === res.data.code.toUpperCase()) {
+                            err = "Type & Code Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
+
         }
     }
 
@@ -199,24 +250,24 @@ function UserDefinedMaster({ name }) {
         {
             name: "type",
             label: "type"
-        },   
+        },
         {
             name: "code",
             label: "code"
-        },  
+        },
         {
             name: "typeDesc",
             label: "typeDesc"
-        },  
+        },
         {
             name: "codeDesc",
             label: "codeDesc"
-        },     
+        },
         {
             name: "indexkey",
             label: "indexkey"
-        },   
-        
+        },
+
         {
             name: "active",
             label: "Active",
@@ -234,8 +285,8 @@ function UserDefinedMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                            <div onClick={() => edit(tm.rowData[0],tm.rowData[1], 'edit')}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[0], tm.rowData[1], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div onClick={() => edit(value, 'clone')}>
@@ -249,7 +300,7 @@ function UserDefinedMaster({ name }) {
         }
     ]
 
-    const getDataById = (type,code) => {
+    const getDataById = (type, code) => {
         return ApiCall({
             path: API_URLS.GET_UD_MASTER_BY_ID + "/" + type + "/" + code,
         })
@@ -257,7 +308,7 @@ function UserDefinedMaster({ name }) {
     const add = async () => {
         try {
             setLoader(true)
-            setVisible(true);           
+            setVisible(true);
             clearFields()
             setLoader(false)
         } catch (err) {
@@ -265,24 +316,26 @@ function UserDefinedMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (type,code, type1) => {
+    const edit = async (type, code) => {
         try {
             setLoader(true)
             setVisible(true);
-            let { data } = (type && await getDataById(type,code))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            let { data } = (type && await getDataById(type, code))
             console.log(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            
+
             setFields({
-             type: data.type,
-             code: data.code,
-             typeDesc: data.typeDesc,
-             codeDesc: data.codeDesc,  
-             indexkey: data.indexkey,   
-             active: data.active
+                type: data.type,
+                code: data.code,
+                typeDesc: data.typeDesc,
+                codeDesc: data.codeDesc,
+                indexkey: data.indexkey,
+                active: data.active
             })
             setLoader(false)
         } catch (err) {
@@ -293,8 +346,8 @@ function UserDefinedMaster({ name }) {
 
     const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
         if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
-        //    setprofitPercentList({ ...profitPercentList, [name]: "" });
-        setFields({ ...fields, [name]: "" })
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            setFields({ ...fields, [name]: "" })
         }
     }
     const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
@@ -349,44 +402,52 @@ function UserDefinedMaster({ name }) {
             </div>}
 
             {/* Add */}
-            <Drawer 
-              maskClosable={false}
-              keyboard={false}
-            footer={
-                <>
-                    <div>
-                        {
-                            !loader ?
-                                <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
-                                : (
-                                    <div className="text-center">
-                                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
-                                    </div>
-                                )
-                        }
-                    </div>
-                    <div>
-                        <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
-                            let _id = Number(fields.id)
-                            if(_id === 0)add()
-                            else edit(_id)
-                        }}> Cancel </button>
-                    </div>
-                </>
-            } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} UD Master`}</h6 >} placement="right" onClose={() => {
-                clearFields();
-                onClose();
-            }} visible={visible} >
+            <Drawer
+                maskClosable={false}
+                keyboard={false}
+                footer={
+                    <>
+                        <div>
+                            {
+                                saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.type, fields.code, 'save')}> Save </button>
+
+                            }{
+                                updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.type, fields.code, 'update')}> Update </button>
+                            }
+
+
+                            {/* {
+                                !loader ?
+                                    <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
+                                    : (
+                                        <div className="text-center">
+                                            <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                                        </div>
+                                    )
+                            } */}
+                        </div>
+                        <div>
+                            <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
+                                let _id = Number(fields.id)
+                                if (_id === 0) add()
+                                else edit(_id)
+                            }}> Cancel </button>
+                        </div>
+                    </>
+                } title={< h6 className='m-0' > {`${fields.id === 0 ? "Add New" : "Edit"} UD Master`}</h6 >} placement="right" onClose={() => {
+                    clearFields();
+                    onClose();
+                }} visible={visible} >
                 <div className='defect-master-add-new'>
-                  
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.type === '' ? errors.type : ''}</small>
                         </div>
-                        <select className='form-select form-select-sm mt-1' required  disabled={fields.id != 0}
-                                value={fields.type}
-                                onChange={inputOnChange("type")}                            
+                        <select className='form-select form-select-sm mt-1' required disabled={fields.id != 0}
+                            value={fields.type}
+                            onChange={inputOnChange("type")}
                         >
                             <option value=""> Select  Type </option>
                             {typeList.map((v, index) => {
@@ -400,14 +461,14 @@ function UserDefinedMaster({ name }) {
                             <label>Enter code <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.code === '' ? errors.code : ''}</small>
                         </div>
-                        <input className='form-control form-control-sm mt-1' placeholder='Enter code'  disabled={fields.id != 0}
+                        <input className='form-control form-control-sm mt-1' placeholder='Enter code' disabled={fields.id != 0}
                             value={fields.code} maxLength="10"
                             id="code"
-                            onChange={inputOnChange("code")} 
+                            onChange={inputOnChange("code")}
                             autoComplete="off"
                             required />
                     </div>
-                  
+
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Enter type description <span className='text-danger'>*  </span> </label>
@@ -416,7 +477,7 @@ function UserDefinedMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter type description'
                             value={fields.typeDesc} maxLength="50"
                             id="typeDesc"
-                            onChange={inputOnChange("typeDesc")} 
+                            onChange={inputOnChange("typeDesc")}
                             autoComplete="off"
                             required />
                     </div>
@@ -428,11 +489,11 @@ function UserDefinedMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter code Desc'
                             value={fields.codeDesc} maxLength="50"
                             id="codeDesc"
-                            onChange={inputOnChange("codeDesc")} 
+                            onChange={inputOnChange("codeDesc")}
                             autoComplete="off"
                             required />
                     </div>
-                  
+
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -440,19 +501,19 @@ function UserDefinedMaster({ name }) {
                             <small className='text-danger'>{errors.indexkey ? errors.indexkey : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter index key '
-                               value={fields.indexkey} minLength="1" maxLength="10"
-                               onChange={inputOnChange("indexkey")}         
-                               onFocus={NUMBER_IS_FOCUS_IN_ZERO("indexkey")} 
-                               onBlur={NUMBER_IS_FOCUS_OUT_ZERO("indexkey")}                
+                            value={fields.indexkey} minLength="1" maxLength="10"
+                            onChange={inputOnChange("indexkey")}
+                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("indexkey")}
+                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("indexkey")}
                         />
-                    </div> 
+                    </div>
 
                     <div className='mt-3'>
                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                                checked={fields.active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>
