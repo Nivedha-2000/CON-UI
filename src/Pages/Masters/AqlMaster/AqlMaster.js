@@ -3,7 +3,7 @@ import '../DefectMasters/DefectMasters.css';
 import { Drawer, Switch, Pagination, Spin, message, Tag, Radio } from 'antd';
 import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import PropTypes, { number } from 'prop-types';
 import ApiCall from "../../../services";
@@ -299,15 +299,7 @@ export default function AqlMaster() {
     }
     function AddVisualSamplingPlan(aqlType, auditFormat, unitCode, buyerCode) {
         debugger;
-        setVisible(false);
-        setPackQtyVisible(false);
-        clearFieldsVisualSam();
-        clearFieldsPackAuditSam();
-        setAddBtnVisible(true)
-        setBtnVisible(false);
-        setAddBtnPasVisible(true)
-        setBtnPasVisible(false);
-        setCartonFromVisible(false);
+
 
         let err = {}, validation = true
         requiredFieldsHeader.forEach(f => {
@@ -318,6 +310,15 @@ export default function AqlMaster() {
 
             } else {
                 validation = true
+                setVisible(false);
+                setPackQtyVisible(false);
+                clearFieldsVisualSam();
+                clearFieldsPackAuditSam();
+                setAddBtnVisible(true)
+                setBtnVisible(false);
+                setAddBtnPasVisible(true)
+                setBtnPasVisible(false);
+                setCartonFromVisible(false);
 
             }
         })
@@ -351,6 +352,7 @@ export default function AqlMaster() {
     function ClearBtn() {
         clearFields()
         setHeaderDisable(false);
+
     }
 
     const clearFieldsPackAuditSam = () => {
@@ -367,7 +369,7 @@ export default function AqlMaster() {
     }
 
     function AddVisualSamPlan() {
-        debugger;
+
         let err = {}, validation = true
         debugger;
         requiredFields.forEach(f => {
@@ -376,11 +378,11 @@ export default function AqlMaster() {
                 validation = false
                 return false;
             }
-            // else if (fields[f] === "") {
-            //     err[f] = "This field is required"
-            //     validation = false
-            //     return false;
-            // }
+            else if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+                return false;
+            }
             // else if (fields.aqlvmDetlModels[f] === "") {
             //     err[f] = "This field is required"
             //     validation = false
@@ -395,9 +397,6 @@ export default function AqlMaster() {
         debugger;
         // fields.aqlvmDetlModels.push(visualSampling)
         // clearFieldsVisualSam();
-
-
-
         let len = fields.aqlvmDetlModels.filter(a => a.active == 'Y').length;
         //  if (fields.aqlvmDetlModels.length > 0) {
         let packqtyF = 0;
@@ -409,9 +408,14 @@ export default function AqlMaster() {
             let CurpackqtyT = parseInt(visualSampling.packQtyTo);
             if (parseInt(packqtyF, 10) < parseInt(CurPackqtyF, 10) && parseInt(packqtyF, 10) < parseInt(CurpackqtyT, 10)) {
                 if (visualSampling.sampleSize > 0) {
-                    fields.aqlvmDetlModels.push(visualSampling)
-                    console.log(fields);
-                    clearFieldsVisualSam();
+                    if (CurPackqtyF < CurpackqtyT) {
+                        fields.aqlvmDetlModels.push(visualSampling)
+                        console.log(fields);
+                        clearFieldsVisualSam();
+                    } else {
+                        message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
+                    }
+
                 } else {
                     message.error("Please enter sample Size .....!")
                 }
@@ -420,10 +424,16 @@ export default function AqlMaster() {
                 message.error("This range of Pack-Qty From & Pack-Qty To already exists.....!")
             }
         } else {
+            debugger;
             if (visualSampling.packQtyFrom > 0 && visualSampling.sampleSize > 0) {
-                fields.aqlvmDetlModels.push(visualSampling)
-                console.log(fields);
-                clearFieldsVisualSam();
+                if (visualSampling.packQtyFrom < visualSampling.packQtyTo) {
+                    fields.aqlvmDetlModels.push(visualSampling)
+                    console.log(fields);
+                    clearFieldsVisualSam();
+                } else {
+                    message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
+                }
+
             }
         }
         //}
@@ -461,9 +471,14 @@ export default function AqlMaster() {
             let CurCartonT = parseInt(packAuditSampling.noofCtnsTo);
             if (parseInt(CartonF, 10) < parseInt(CurCartonF, 10) && parseInt(CartonF, 10) < parseInt(CurCartonT, 10)) {
                 if (packAuditSampling.packSamples > 0) {
-                    fields.aqlpkDetlModels.push(packAuditSampling)
-                    clearFieldsPackAuditSam();
-                    console.log(fields)
+                    if (CurCartonF < CurCartonT) {
+                        fields.aqlpkDetlModels.push(packAuditSampling)
+                        clearFieldsPackAuditSam();
+                        console.log(fields)
+                    } else {
+                        message.error("Carton From should be lesser than Carton To .....!")
+                    }
+
                 } else {
                     message.error("Please enter pack Samples .....!")
                 }
@@ -474,9 +489,14 @@ export default function AqlMaster() {
             }
         } else {
             if (packAuditSampling.noofCtnsFrom > 0) {
-                clearFieldsPackAuditSam();
-                fields.aqlpkDetlModels.push(packAuditSampling)
-                console.log(fields)
+                if (packAuditSampling.noofCtnsFrom < packAuditSampling.noofCtnsTo) {
+                    clearFieldsPackAuditSam();
+                    fields.aqlpkDetlModels.push(packAuditSampling)
+                    console.log(fields)
+                } else {
+                    message.error("Carton From should be lesser than Carton To .....!")
+                }
+
             }
         }
         //  }
@@ -573,39 +593,22 @@ export default function AqlMaster() {
                 }
                 return item;
             });
-            setVisualSampling({ ...toUpdateData1 });
+           // setVisualSampling({ ...toUpdateData1 });
+           setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
         }
     }
 
     const removepkDetl = (row1) => {
-        //  alert(row1);
-        debugger;
+        
         let toUpdatePackAuditSamPlan1 = fields.aqlpkDetlModels.map((item1) => {
             if (item1.noofCtnsFrom === row1) {
                 item1.active = "N";
             }
             return item1;
         });
-        setPackAuditSampling({ ...toUpdatePackAuditSamPlan1 });
-        console.log(fields)
-        // ApiCall({
-        //     method: "POST",
-        //     path: API_URLS.POST_AQLMASTER,
-        //     data: {
-        //         ...fields
-        //     }
-        // }).then(resp => {
-        //     setLoader(false)
-        //     message.success("Remove Success")
-        //     // onClose();
-        //     // setHeaderDisable(false);
-        // }).catch(err => {
-        //     setLoader(false)
-        //     setFields({ ...fields })
-        //     setErrors({ ...initialErrorMessages })
-        //     message.error(err.message || err)
-        // })
-
+        setFields({ ...fields, aqlpkDetlModels: toUpdatePackAuditSamPlan1 });        
+        console.log(fields);
+      
     }
 
     const editpkDetl = (row1) => {
@@ -646,7 +649,7 @@ export default function AqlMaster() {
                     }
                 }).then(resp => {
                     setLoader(false)
-                    message.success(resp.message)
+                    message.success("Aql Master Save Successfully")
                     onClose();
                     setHeaderDisable(false);
                 }).catch(err => {
@@ -673,7 +676,7 @@ export default function AqlMaster() {
             //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
             if (parseInt(MP, 10) < parseInt(MAMD, 10)) {
                 setVisualSampling({ ...visualSampling, [name]: '' });
-                alert('Measurement Defect should be less than Measurement Pcs .....! ')
+                message.error('Measurement Defect should be less than Measurement Pcs .....! ')
             }
         }
     }
@@ -687,7 +690,7 @@ export default function AqlMaster() {
             //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
             if (parseInt(PS, 10) < parseInt(MAPD, 10)) {
                 setPackAuditSampling({ ...packAuditSampling, [name]: '' });
-                alert('Pack Defect should be less than Pack Sample .....! ')
+                message.error('Pack Defect should be less than Pack Sample .....! ')
             }
         }
     }
@@ -696,16 +699,19 @@ export default function AqlMaster() {
     const Defvalidation = name => e => {
         let value = e.target.value
         debugger;
-        if (name === 'maxAllowVisualDefects1') {
+        if (name === 'maxAllowVisualDefects') {
 
             let VD = visualSampling.maxAllowVisualDefects === "" ? 0 : visualSampling.maxAllowVisualDefects;
             let CD = visualSampling.maxAllowCriticalDefects === "" ? 0 : visualSampling.maxAllowCriticalDefects;
             let SD = visualSampling.maxAllowSewDefects === "" ? 0 : visualSampling.maxAllowSewDefects;
             let OD = visualSampling.maxAllowOthDefects === "" ? 0 : visualSampling.maxAllowOthDefects;
             let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
-            if (parseInt(VD, 10) < parseInt(tot, 10)) {
-                setVisualSampling({ ...visualSampling, [maxAllowCriticalDefects]: 0 });
-                //setVisualSampling({...visualSampling.maxAllowVisualDefects=0});
+            let VDtepm = parseInt(VD);
+            if (parseInt(VDtepm, 10) < parseInt(tot, 10)) {
+                //    setVisualSampling({ ...visualSampling, [name]: 0 });
+                setVisualSampling({ ...visualSampling, maxAllowCriticalDefects: 0, maxAllowSewDefects: 0, maxAllowOthDefects: 0 });
+                // setVisualSampling({ ...visualSampling, maxAllowSewDefects: 0 });
+                // setVisualSampling({ ...visualSampling, maxAllowOthDefects: 0 });
                 message.error('Should not be less than Critical defect + Sewing Defect + Other Defect .....! ')
                 return false;
             }
@@ -974,12 +980,10 @@ export default function AqlMaster() {
                     <div class="d-flex border-bottom pb-15">
                         <div class="me-auto ">
                             <a href="#myCollapse" data-bs-toggle="collapse" aria-expanded="true" class="text-black">
-                                <h4 class="content-title float-start pr-20 border-0">
-                                    {/* <span class="pr-10">
-                                        <img src={breadcrumbIcon} alt="" />
-                                    </span> */}
+                                {/* <h4 class="content-title float-start pr-20 border-0">
                                     &nbsp; AQL Master
-                                </h4>
+                                </h4> */}
+                                <h6 className='m-0 p-0'>AQL Master</h6>
                             </a>
                         </div>
                         <div class="pt-15"></div>
@@ -1285,7 +1289,7 @@ export default function AqlMaster() {
                                                     </td>
                                                     <td align='center'>
                                                         <div className='text-center' onClick={() => { removeVisualSampling(row?.packQtyFrom) }}>
-                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                            <FontAwesomeIcon icon={faTrashCan} color="#919191" />
                                                         </div>
                                                     </td>
                                                     {/* <td align='center'> {index + 1} </td> */}
@@ -1404,13 +1408,13 @@ export default function AqlMaster() {
                                 <table id="example" class="table table-striped edit-np f-l1">
                                     <thead>
                                         <tr>
-                                            <th align='center'>Edit</th>
-                                            <th align='center'>Remove</th>
+                                            <th >Edit</th>
+                                            <th >Remove</th>
                                             {/* <th >SlNo</th> */}
                                             <th >Carton From</th>
                                             <th >Carton To</th>
                                             <th >Pack Sample</th>
-                                            <th> Pack Defect (Max Allowed)</th>
+                                            <th > Pack Defect (Max Allowed)</th>
 
                                         </tr>
                                     </thead>
@@ -1418,21 +1422,21 @@ export default function AqlMaster() {
                                         {
                                             fields.aqlpkDetlModels.filter(f => f.active == "Y").map((row1, index) => (
                                                 <tr key={index}>
-                                                    <td align='center'>
+                                                    <td >
                                                         <div className='text-center' onClick={() => { editpkDetl(row1?.noofCtnsFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
-                                                    <td align='center'>
+                                                    <td >
                                                         <div className='text-center' onClick={() => { removepkDetl(row1?.noofCtnsFrom) }}>
-                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                            <FontAwesomeIcon icon={faTrashCan} color="#919191" />
                                                         </div>
                                                     </td>
                                                     {/* <td > {index + 1} </td> */}
-                                                    <td >{row1.noofCtnsFrom}</td>
-                                                    <td >{row1.noofCtnsTo}</td>
-                                                    <td >{row1.packSamples}</td>
-                                                    <td >{row1.maxAllowPackDefects}</td>
+                                                    <td align='center'>{row1.noofCtnsFrom}</td>
+                                                    <td align='center'>{row1.noofCtnsTo}</td>
+                                                    <td align='center'>{row1.packSamples}</td>
+                                                    <td align='center'>{row1.maxAllowPackDefects}</td>
 
                                                 </tr>
                                             ))
