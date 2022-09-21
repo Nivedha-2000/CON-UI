@@ -176,6 +176,7 @@ export const API_URLS = {
   GET_TNA_MASTER_EDIT_BY_ID: "TNAMaster/GetTNAMaster",
   GET_ACTIVE_LOCATION_MASTER: "LocationMaster/GetAllActiveLocation",
   GET_ALL_TNA_LIST: "TNAMaster/GetAllTNAMaster",
+  GET_ALL_TNA_DISTINCT_LIST: "TNAMaster/GetTNAMasterBy5ParamsDistinctList",
   GET_ALL_TNA_LIST_WITH_PARAMS: "TNAMaster/GetTNAMasterBy5Params",
   GET_ALL_TNA_DPND_CODE_PARAMS: "TNAMaster/GetTNAMasterSeqNoBy5Params",
   GET_ALL_TNA_DPND_ACTIVITY_PARAMS: "TNAMaster/GetTNAMasterByDeptcode",
