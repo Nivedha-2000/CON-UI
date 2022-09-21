@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faArrowLeft, faSignOut, faCog, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import Avatar from '../../Assets/images/avatar.png';
 import SearchIcon from '../../Assets/icons/search.svg';
 import { Drawer, message, Popover } from 'antd';
@@ -165,7 +165,7 @@ export default function Header() {
             </div>
           </div>
           <div class="main-header-right">
-            
+
             <div className='col-5 col-sm-5 col-md-5 col-lg-5 col-xl-5'>
               <div className='search-box'>
                 <select className='form-select form-select-sm' value={locationCode} onChange={(e) => { setLocationCode(e.target.value); changeLocation(e.target.value) }} >
@@ -190,18 +190,19 @@ export default function Header() {
                   <i class="angle fe fe-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu" style={{ "display": (shProfileCard ? "block" : "none") }}>
-                  <a class="dropdown-item" ><i class="bx bx-user-circle"></i>Profile</a>
-                  <a class="dropdown-item" ><i class="bx bx-cog"></i> Edit Profile</a>
-                  {/* <a class="dropdown-item" ><i class="bx bxs-inbox"></i>Inbox</a>
-                  <a class="dropdown-item" ><i class="bx bx-envelope"></i>Messages</a>
-                  <a class="dropdown-item" ><i class="bx bx-slider-alt"></i>
-                    Account Settings
+                  <a class="dropdown-item" >
+                    {/* <i class="bx bx-user-circle"></i> */}
+                    <FontAwesomeIcon icon={faCircleUser} size="lg" style={{ "fontSize": "20px", "marginRight": "10px", "width": "24px", "textAlign": "center" }} />
+                    Profile
                   </a>
-                  <a class="dropdown-item pos-relative t-siz">
-                    <img src="assets/img/textaa.svg" /> Text size <span class="w-cv"> <span class="s-but">A</span> <span class="n-but">A</span> <span class="l-but">A</span></span>
-                    </a> */}
+                  <a class="dropdown-item" >
+                    {/* <i class="bx bx-cog"></i>  */}
+                    <FontAwesomeIcon icon={faCog} size="lg" style={{ "fontSize": "20px", "marginRight": "10px", "width": "24px", "textAlign": "center" }} />
+                    Edit Profile
+                  </a>
                   <a class="dropdown-item" onClick={logOut}>
-                    <i class="bx bx-log-out"></i>
+                    {/* <i class="bx bx-log-out"></i> */}
+                    <FontAwesomeIcon icon={faSignOut} size="lg" style={{ "fontSize": "20px", "marginRight": "10px", "width": "24px", "textAlign": "center" }} />
                     Sign Out
                   </a>
                 </div>
