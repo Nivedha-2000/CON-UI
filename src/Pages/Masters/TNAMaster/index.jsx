@@ -218,7 +218,6 @@ function TNAMaster({ name }) {
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
-        //clearFields();;
     }
 
     const close = () => {
