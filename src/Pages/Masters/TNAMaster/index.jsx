@@ -146,7 +146,7 @@ const requiredFields = ["buyCode", "buydivCode", "mActive", "deptcode", "activit
         weightage: 0,
         skipped: "N",
         remarks: "",
-        cancel: "Y",
+        cancel: "N",
         active: 'Y',
         hostName: "",
         createdDate: "2022-08-22",
@@ -204,7 +204,7 @@ function TNAMaster({ name }) {
 
     const clearFields = () => {
         setAddTnamodels({
-            ...initialFieldValues
+            ...TnaModels
         });
         // setAddTnamodels([])
         setErrors({ ...initialErrorMessages });
@@ -221,17 +221,21 @@ function TNAMaster({ name }) {
     }
 
     const close = () => {
-       // clearFields()
+        //clearFields()
         setShowResults(true)
         setShowForm(false)
         setEditVisible(false);
         setPackQtyVisible(false);
         setBuyerTypeVisible(false);
         setCloneSave(true);
-       // onClose()
+        onClose()
         getDatas()
         setFields([])
-
+        setShowAddtolist(true);
+        setShowUpdatetolist(false);
+        // setAddTnamodels({
+        //     ...TnaModels
+        // });
     }
     const showDrawer = () => {
         setVisible(true);
@@ -495,7 +499,7 @@ function TNAMaster({ name }) {
     const getDatas = () => {
         setListLoading(true)
         ApiCall({
-            path: API_URLS.GET_ALL_TNA_LIST
+            path: API_URLS.GET_ALL_TNA_DISTINCT_LIST
         }).then(resp => {
             setListLoading(false)
             if (Array.isArray(resp.data)) {
@@ -1282,7 +1286,7 @@ function TNAMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return <div>
-                        {value === "Y" ? "Yes" : "No"}
+                        {value === "Y" ? "Yes" : "Yes"}
                     </div>
                 }
             }
@@ -1449,79 +1453,82 @@ function TNAMaster({ name }) {
                     //alert(type);
                     setFields(data);
                     setAddTnamodels({
-                        id: 0,
-                        buyCode: data[0].buyCode,
-                        buydivCode: data[0].buydivCode,
-                        deptcode: data[0].deptcode,
-                        locCode: data[0].locCode,
-                        activityType: data[0].activityType,
-                        mActive: data[0].mActive,
-                        stage: "",
-                        orderCategory: "",
-                        fit: "",
-                        actCode: 0,
-                        activity: "",
-                        subActivity: "",
-                        criticalActivity: "N",
-                        tnaSeqNo: 0,
-                        duration: 0,
-                        dependActCode: 0,
-                        dependDeptCode: "",
-                        dependActvity: "",
-                        dependSubActvity: "",
-                        preNotifyDays: 0,
-                        notifyRoleId: "",
-                        l1EscalateDays: 0,
-                        l1EscalateRole: "",
-                        l2EscalateDays: 0,
-                        l2EscalateRole: "",
-                        category: "NA",
-                        valueAddtype: "",
-                        weightage: 0,
-                        skipped: "N",
-                        remarks: "",
-                        cancel: "Y",
-                        active: 'Y',
-                        hostName: "",
-                        createdDate: "2022-08-22",
-                        createdBy: "AD",
-                        modifiedDate: "2022-08-22",
-                        modifiedBy: "",
-                        isActive: false
-                        // orderCategory: data[0].orderCategory,
-                        // stage: data[0].stage,
-                        // fit: data[0].fit,
-                        // actCode: data[0].actCode,
-                        // activity: data[0].activity,
-                        // subActivity: data[0].subActivity,
-                        // criticalActivity: data[0].criticalActivity,
-                        // tnaSeqNo: data[0].tnaSeqNo,
-                        // duration: data[0].duration,
-                        // dependActCode: data[0].dependActCode,
-                        // dependDeptCode: data[0].dependDeptCode,
-                        // dependActvity: data[0].dependActvity,
-                        // dependSubActvity: data[0].dependSubActvity,
-                        // preNotifyDays: data[0].preNotifyDays,
-                        // notifyRoleId: data[0].notifyRoleId,
-                        // l1EscalateDays: data[0].l1EscalateDays,
-                        // l1EscalateRole: data[0].l1EscalateRole,
-                        // l2EscalateDays: data[0].l2EscalateDays,
-                        // l2EscalateRole: data[0].l2EscalateRole,
-                        // category: data[0].category,
-                        // valueAddtype: data[0].valueAddtype,
-                        // weightage: data[0].weightage,
-                        // skipped: data[0].skipped,
-                        // remarks: data[0].remarks,
-                        // cancel: data[0].cancel,
-                        // active: data[0].active,
-                        // hostName: data[0].hostName,
-                        // createdDate: data[0].createdDate,
-                        // createdBy: data[0].createdBy,
-                        // modifiedDate: data[0].modifiedDate,
-                        // modifiedBy: data[0].modifiedBy,
-                        // isActive: data[0].isActive,
-                        //active: data[0].active
-                    })
+                        ...TnaModels
+                    });
+                    // setAddTnamodels({
+                    //     id: 0,
+                    //     buyCode: data[0].buyCode,
+                    //     buydivCode: data[0].buydivCode,
+                    //     deptcode: data[0].deptcode,
+                    //     locCode: data[0].locCode,
+                    //     activityType: data[0].activityType,
+                    //     mActive: data[0].mActive,
+                    //     stage: "",
+                    //     orderCategory: "",
+                    //     fit: "",
+                    //     actCode: 0,
+                    //     activity: "",
+                    //     subActivity: "",
+                    //     criticalActivity: "",
+                    //     tnaSeqNo: 0,
+                    //     duration: 0,
+                    //     dependActCode: 0,
+                    //     dependDeptCode: "",
+                    //     dependActvity: "",
+                    //     dependSubActvity: "",
+                    //     preNotifyDays: 0,
+                    //     notifyRoleId: "",
+                    //     l1EscalateDays: 0,
+                    //     l1EscalateRole: "",
+                    //     l2EscalateDays: 0,
+                    //     l2EscalateRole: "",
+                    //     category: "NA",
+                    //     valueAddtype: "",
+                    //     weightage: 0,
+                    //     skipped: "N",
+                    //     remarks: "",
+                    //     cancel: "N",
+                    //     active: 'Y',
+                    //     hostName: "",
+                    //     createdDate: "2022-08-22",
+                    //     createdBy: "AD",
+                    //     modifiedDate: "2022-08-22",
+                    //     modifiedBy: "",
+                    //     isActive: false
+                    //     // orderCategory: data[0].orderCategory,
+                    //     // stage: data[0].stage,
+                    //     // fit: data[0].fit,
+                    //     // actCode: data[0].actCode,
+                    //     // activity: data[0].activity,
+                    //     // subActivity: data[0].subActivity,
+                    //     // criticalActivity: data[0].criticalActivity,
+                    //     // tnaSeqNo: data[0].tnaSeqNo,
+                    //     // duration: data[0].duration,
+                    //     // dependActCode: data[0].dependActCode,
+                    //     // dependDeptCode: data[0].dependDeptCode,
+                    //     // dependActvity: data[0].dependActvity,
+                    //     // dependSubActvity: data[0].dependSubActvity,
+                    //     // preNotifyDays: data[0].preNotifyDays,
+                    //     // notifyRoleId: data[0].notifyRoleId,
+                    //     // l1EscalateDays: data[0].l1EscalateDays,
+                    //     // l1EscalateRole: data[0].l1EscalateRole,
+                    //     // l2EscalateDays: data[0].l2EscalateDays,
+                    //     // l2EscalateRole: data[0].l2EscalateRole,
+                    //     // category: data[0].category,
+                    //     // valueAddtype: data[0].valueAddtype,
+                    //     // weightage: data[0].weightage,
+                    //     // skipped: data[0].skipped,
+                    //     // remarks: data[0].remarks,
+                    //     // cancel: data[0].cancel,
+                    //     // active: data[0].active,
+                    //     // hostName: data[0].hostName,
+                    //     // createdDate: data[0].createdDate,
+                    //     // createdBy: data[0].createdBy,
+                    //     // modifiedDate: data[0].modifiedDate,
+                    //     // modifiedBy: data[0].modifiedBy,
+                    //     // isActive: data[0].isActive,
+                    //     //active: data[0].active
+                    // })
                     setEditVisible(false);
                     setCloneSave(true);
                 }
@@ -1541,7 +1548,7 @@ function TNAMaster({ name }) {
                         actCode: 0,
                         activity: "",
                         subActivity: "",
-                        criticalActivity: "N",
+                        criticalActivity: "",
                         tnaSeqNo: 0,
                         duration: 0,
                         dependActCode: 0,
@@ -1559,7 +1566,7 @@ function TNAMaster({ name }) {
                         weightage: 0,
                         skipped: "N",
                         remarks: "",
-                        cancel: "Y",
+                        cancel: "N",
                         active: 'Y',
                         hostName: "",
                         createdDate: "2022-08-22",
