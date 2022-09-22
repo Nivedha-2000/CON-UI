@@ -166,10 +166,10 @@ export const API_URLS = {
   //ProductivityMaster
   SAVE_PRODUCTIVITY_MASTER: "Productivity/SaveProductivityList",
   //GetProductivityListByStartdateEnddateParamerters:"Productivity/GetProductivityListByStartdateEnddateParamerters",
-  GetProductivityListByStartdateEnddateParamerters:"Productivity/GetProductivityByStartdateEnddateParamertersListwithStatus",
+  GetProductivityListByStartdateEnddateParamerters: "Productivity/GetProductivityByStartdateEnddateParamertersListwithStatus",
+  GetProductivityList: "Productivity/GetProductivityListByLocCodeFactCodeLineGroup",
 
 
-  
   //TNA_MASTER 
   SAVE_TNA_MASTER_LIST: "TNAMaster/SaveTNAMasterList",
   SAVE_TNA_MASTER: "TNAMaster/SaveTNAMaster",
@@ -218,6 +218,4 @@ export const MISCELLANEOUS_TYPES = {
   ACTTYPE:'ACTTYPE',
   INDDEPT:'INDDEPT',
   VALUEADD:'VALUEADD',
-  PARENTGRP:'PARENTGRP',
-
 }
