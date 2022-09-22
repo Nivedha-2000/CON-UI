@@ -659,9 +659,6 @@ function SupplierMasterNew({ name }) {
 
     return (
         <>
-
-
-
             {showResults &&
                 <div className='defect-master-main'>
                     <div className='m-3'>
