@@ -267,7 +267,7 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/tab-test">
+                  <NavLink to="masters/material-master">
                     <span className='mx-2'> Material Master</span>
                   </NavLink>
                 </Menu.Item>

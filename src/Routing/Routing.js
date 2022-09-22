@@ -59,7 +59,7 @@ import ProductivityMasters from '../Pages/Masters/ProductivityMasterNew';
 import ProductivityMaster from '../Pages/Masters/ProductivityMaster';
 
 
-import TabTest from '../Pages/Masters/TabTest'
+import MaterialMaster from '../Pages/Masters/MaterialMaster'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
 import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMaster';
 import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
@@ -126,7 +126,7 @@ export default function Routing() {
         <Route path='masters/unit-master' element={<UnitMaster name='Unit Master' />} />
         <Route path='masters/company-master' element={<CompanyMaster name='Company Master' />} />
         <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
-        <Route path='masters/tab-test' element={<TabTest name='Tab Test' />}></Route>
+        <Route path='masters/material-master' element={<MaterialMaster name='Material Master' />}></Route>
         <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master' />} />
         <Route path='masters/menu-rights-master' element={<MenurightsElement name='Menu Rights Master' />} />
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
