@@ -84,7 +84,7 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         matMastTrimsModels: [],
         matMastPurchaseModels: []
         
-    };
+    },
 
     initialFieldValues = {
         id: 0,
