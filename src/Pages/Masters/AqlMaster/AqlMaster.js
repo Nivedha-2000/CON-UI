@@ -3,7 +3,7 @@ import '../DefectMasters/DefectMasters.css';
 import { Drawer, Switch, Pagination, Spin, message, Tag, Radio } from 'antd';
 import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import PropTypes, { number } from 'prop-types';
 import ApiCall from "../../../services";
@@ -12,7 +12,11 @@ import { Construction, Deblur } from '@mui/icons-material';
 import { findDOMNode } from 'react-dom';
 
 
-const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo"],
+const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo", "sampleSize", "noofCtnsFrom", "noofCtnsTo", "packSamples",
+    //  "sampleSize", "mesurementPcs", "maxAllowVisualDefects", "maxAllowCriticalDefects", "maxAllowSewDefects",
+    //     "maxAllowOthDefects", "maxAllowMesurementDefects"
+],
+    requiredFieldsHeader = ["aqlType", "auditFormat", "unitCode", "buyerCode"],
     initialErrorMessages = {
         id: 0,
         aqlType: "",
@@ -21,20 +25,20 @@ const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "pack
         buyerCode: "",
         active: "",
 
-        noofCtnsFrom: 0,
-        noofCtnsTo: 0,
-        packSamples: 0,
-        maxAllowPackDefects: 0,
+        noofCtnsFrom: "",
+        noofCtnsTo: "",
+        packSamples: "",
+        maxAllowPackDefects: "",
 
-        packQtyFrom: 0,
-        packQtyTo: 0,
-        sampleSize: 0,
-        mesurementPcs: 0,
-        maxAllowVisualDefects: 0,
-        maxAllowCriticalDefects: 0,
-        maxAllowSewDefects: 0,
-        maxAllowOthDefects: 0,
-        maxAllowMesurementDefects: 0,
+        packQtyFrom: "",
+        packQtyTo: "",
+        sampleSize: "",
+        mesurementPcs: "",
+        maxAllowVisualDefects: "",
+        maxAllowCriticalDefects: "",
+        maxAllowSewDefects: "",
+        maxAllowOthDefects: "",
+        maxAllowMesurementDefects: "",
 
         createdDate: "2022-08-17T09:51:51.057Z",
         createdBy: "",
@@ -143,9 +147,9 @@ const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "pack
     test = {
         id: 0,
         aqlHead_ID: 0,
-        packQtyFrom: 0,
-        packQtyTo: 0,
-        sampleSize: 0,
+        packQtyFrom: "",
+        packQtyTo: "",
+        sampleSize: "",
         mesurementPcs: 0,
         maxAllowVisualDefects: 0,
         maxAllowCriticalDefects: 0,
@@ -164,9 +168,9 @@ const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "pack
     pkDetlModels = {
         id: 0,
         aqlHead_ID: 0,
-        noofCtnsFrom: 0,
-        noofCtnsTo: 0,
-        packSamples: 0,
+        noofCtnsFrom: "",
+        noofCtnsTo: "",
+        packSamples: "",
         maxAllowPackDefects: 0,
         active: "Y",
 
@@ -199,11 +203,15 @@ export default function AqlMaster() {
     const [rowData, setRowData] = useState([]);
     const [visible, setVisible] = useState(true);
     const [packQtyvisible, setPackQtyVisible] = useState(true);
+    const [cartonFromvisible, setCartonFromVisible] = useState(true);
     const [btnvisible, setBtnVisible] = useState(false);
     const [btnPasvisible, setBtnPasVisible] = useState(false);
     const [addBtnVisible, setAddBtnVisible] = useState(true);
     const [addBtnPasVisible, setAddBtnPasVisible] = useState(true);
     const [editVisible, setEditVisible] = useState(true);
+
+    const [headerDisable, setHeaderDisable] = useState(false);
+    const [cartonvisible, setCartonVisible] = useState(true);
 
 
     useEffect(() => {
@@ -292,33 +300,44 @@ export default function AqlMaster() {
     function AddVisualSamplingPlan(aqlType, auditFormat, unitCode, buyerCode) {
         debugger;
 
-        setVisible(false);
-        setPackQtyVisible(false);
 
         let err = {}, validation = true
-        requiredFields.forEach(f => {
+        requiredFieldsHeader.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
                 validation = false
+                return false;
 
             } else {
                 validation = true
+                setVisible(false);
+                setPackQtyVisible(false);
+                clearFieldsVisualSam();
+                clearFieldsPackAuditSam();
+                setAddBtnVisible(true)
+                setBtnVisible(false);
+                setAddBtnPasVisible(true)
+                setBtnPasVisible(false);
+                setCartonFromVisible(false);
+
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
+        console.log(validation)
         if (validation) {
-            // setFields([]);
-            //  console.log(API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode);
+            setHeaderDisable(true);
             ApiCall({
                 path: API_URLS.GET_AQLMASTERADD_LIST + "?aqltype=" + aqlType + "&auditformat=" + auditFormat + "&unitcode=" + unitCode + "&buyercode=" + buyerCode,
             }).then(respp => {
                 let result = respp.data;
                 setFields(result)
-                console.log(fields)
-                //setVisualSampling([]);
-                //  fields.aqlvmDetlModels.push()
+
+
             }).catch(err => {
+                setFields({ ...fields, aqlvmDetlModels: [], aqlpkDetlModels: [] });
+
                 message.error(err.message || err)
+
             })
         }
     }
@@ -330,25 +349,45 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages });
     }
 
+    function ClearBtn() {
+        clearFields()
+        setHeaderDisable(false);
+
+    }
+
     const clearFieldsPackAuditSam = () => {
         setPackAuditSampling({
             ...pkDetlModels
         });
         setErrors({ ...initialErrorMessages });
     }
+    function ResetVisualSamPlan() {
+        clearFieldsVisualSam();
+        setAddBtnVisible(true)
+        setBtnVisible(false);
+        setPackQtyVisible(false);
+    }
+
     function AddVisualSamPlan() {
 
         let err = {}, validation = true
         debugger;
         requiredFields.forEach(f => {
-            if (fields[f] === "") {
+            if (visualSampling[f] === "") {
                 err[f] = "This field is required"
                 validation = false
+                return false;
             }
-            else if (fields.aqlvmDetlModels[f] === "") {
+            else if (fields[f] === "") {
                 err[f] = "This field is required"
                 validation = false
+                return false;
             }
+            // else if (fields.aqlvmDetlModels[f] === "") {
+            //     err[f] = "This field is required"
+            //     validation = false
+            //     return false;
+            // }
 
             else {
                 validation = true
@@ -358,54 +397,71 @@ export default function AqlMaster() {
         debugger;
         // fields.aqlvmDetlModels.push(visualSampling)
         // clearFieldsVisualSam();
-
-
-
-        let len = fields.aqlvmDetlModels.length;
+        let len = fields.aqlvmDetlModels.filter(a => a.active == 'Y').length;
         //  if (fields.aqlvmDetlModels.length > 0) {
         let packqtyF = 0;
         let packqtyT = 0;
 
-        if (len > 0) {
+        if (len > 0 && validation == true) {
             packqtyF = parseInt(fields.aqlvmDetlModels[len - 1].packQtyTo);
             let CurPackqtyF = parseInt(visualSampling.packQtyFrom);
             let CurpackqtyT = parseInt(visualSampling.packQtyTo);
             if (parseInt(packqtyF, 10) < parseInt(CurPackqtyF, 10) && parseInt(packqtyF, 10) < parseInt(CurpackqtyT, 10)) {
-                //  alert('ture')
-                // visualSampling.id=(len+1)
-                fields.aqlvmDetlModels.push(visualSampling)
-                clearFieldsVisualSam();
-            } else {
-                //  console.log(visualSampling);
-                message.error("Please check pack Qty From and To Qty.....!")
-                //  alert('flase')
+                if (visualSampling.sampleSize > 0) {
+                    if (CurPackqtyF < CurpackqtyT) {
+                        fields.aqlvmDetlModels.push(visualSampling)
+                        console.log(fields);
+                        clearFieldsVisualSam();
+                    } else {
+                        message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
+                    }
 
+                } else {
+                    message.error("Please enter sample Size .....!")
+                }
+
+            } else {
+                message.error("This range of Pack-Qty From & Pack-Qty To already exists.....!")
             }
         } else {
-            if (visualSampling.packQtyFrom > 0) {
-                fields.aqlvmDetlModels.filter(f => f.active == "Y").push(visualSampling)
-                clearFieldsVisualSam();
+            debugger;
+            if (visualSampling.packQtyFrom > 0 && visualSampling.sampleSize > 0) {
+                if (visualSampling.packQtyFrom < visualSampling.packQtyTo) {
+                    fields.aqlvmDetlModels.push(visualSampling)
+                    console.log(fields);
+                    clearFieldsVisualSam();
+                } else {
+                    message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
+                }
+
             }
         }
         //}
 
 
     }
+    function ResetPackAudit() {
+        clearFieldsPackAuditSam();
+        setAddBtnPasVisible(true)
+        setBtnPasVisible(false);
+        setCartonFromVisible(false);
+
+    }
 
     function AddPackAuditSamPlan() {
         let err = {}, validation = true
         requiredFields.forEach(f => {
-            if (fields[f] === "") {
+            if (packAuditSampling[f] === "") {
                 err[f] = "This field is required"
                 validation = false
+                return false;
             } else {
                 validation = true
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
-        let len = fields.aqlpkDetlModels.length;
-        // if (fields.aqlpkDetlModels.length > 0) {
+        let len = fields.aqlpkDetlModels.filter(a => a.active == 'Y').length;
         let CartonF = 0;
         let CartonT = 0;
 
@@ -414,15 +470,33 @@ export default function AqlMaster() {
             let CurCartonF = parseInt(packAuditSampling.noofCtnsFrom);
             let CurCartonT = parseInt(packAuditSampling.noofCtnsTo);
             if (parseInt(CartonF, 10) < parseInt(CurCartonF, 10) && parseInt(CartonF, 10) < parseInt(CurCartonT, 10)) {
-                fields.aqlpkDetlModels.push(packAuditSampling)
-                clearFieldsPackAuditSam();
+                if (packAuditSampling.packSamples > 0) {
+                    if (CurCartonF < CurCartonT) {
+                        fields.aqlpkDetlModels.push(packAuditSampling)
+                        clearFieldsPackAuditSam();
+                        console.log(fields)
+                    } else {
+                        message.error("Carton From should be lesser than Carton To .....!")
+                    }
+
+                } else {
+                    message.error("Please enter pack Samples .....!")
+                }
+
             } else {
-                message.error("Please check Carton From and Carton To Qty.....!")
+                message.error("This range of Carton From & Carton To already exists.....!")
+
             }
         } else {
             if (packAuditSampling.noofCtnsFrom > 0) {
-                fields.aqlpkDetlModels.push(packAuditSampling)
-                clearFieldsPackAuditSam();
+                if (packAuditSampling.noofCtnsFrom < packAuditSampling.noofCtnsTo) {
+                    clearFieldsPackAuditSam();
+                    fields.aqlpkDetlModels.push(packAuditSampling)
+                    console.log(fields)
+                } else {
+                    message.error("Carton From should be lesser than Carton To .....!")
+                }
+
             }
         }
         //  }
@@ -430,6 +504,8 @@ export default function AqlMaster() {
     }
 
     function UpdateVisualSamPlan() {
+        setAddBtnVisible(true)
+        setBtnVisible(false);
         console.log(fields.aqlvmDetlModels.filter(q => q.id == visualSampling.id)[0]);
         console.log(visualSampling);
         // fields.aqlvmDetlModels.filter(q=>q.id ==visualSampling.id)[0].push(visualSampling)
@@ -458,10 +534,14 @@ export default function AqlMaster() {
             return item;
         });
         setVisualSampling({ ...toUpdateData });
+        clearFieldsVisualSam();
+        setPackQtyVisible(false);
     }
 
     function UpdatePackAuditSamPlan() {
         debugger;
+        setAddBtnPasVisible(true)
+        setBtnPasVisible(false);
         let toUpdatePackAuditSamPlan = fields.aqlpkDetlModels.map((item1) => {
             if (item1.id === packAuditSampling.id) {
                 item1.aqlHead_ID = packAuditSampling.aqlHead_ID;
@@ -480,21 +560,23 @@ export default function AqlMaster() {
             return item1;
         });
         setPackAuditSampling({ ...toUpdatePackAuditSamPlan });
+        clearFieldsPackAuditSam();
+        setCartonFromVisible(false);
     }
-    const editVisualSampling = (row, packQtyFrom) => {
+    const editVisualSampling = (packQtyFrom) => {
         // debugger;
         setEditVisible(false)
         setBtnVisible(true);
         setAddBtnVisible(false);
         setPackQtyVisible(true);
-        if (row != '') {
+        if (packQtyFrom != '') {
             // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
-            setVisualSampling(fields.aqlvmDetlModels.filter(a => a.id == row)[0]);
+            setVisualSampling(fields.aqlvmDetlModels.filter(a => a.packQtyFrom == packQtyFrom)[0]);
         }
     };
 
     const removeVisualSampling = (row) => {
-        // alert(row);
+        debugger;
         if (row != '') {
             // let toUpdateData1 = fields.aqlvmDetlModels.filter(a => a.id != row);
             // toUpdateData1.active=
@@ -506,35 +588,37 @@ export default function AqlMaster() {
 
 
             let toUpdateData1 = fields.aqlvmDetlModels.map((item) => {
-                if (item.id === row) {
+                if (item.packQtyFrom === row) {
                     item.active = "N";
                 }
                 return item;
             });
-            setVisualSampling({ ...toUpdateData1 });
+           // setVisualSampling({ ...toUpdateData1 });
+           setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
         }
     }
 
     const removepkDetl = (row1) => {
-        //  alert(row1);
-        debugger;
+        
         let toUpdatePackAuditSamPlan1 = fields.aqlpkDetlModels.map((item1) => {
-            if (item1.id === row1) {
+            if (item1.noofCtnsFrom === row1) {
                 item1.active = "N";
             }
             return item1;
         });
-        setPackAuditSampling({ ...toUpdatePackAuditSamPlan1 });
+        setFields({ ...fields, aqlpkDetlModels: toUpdatePackAuditSamPlan1 });        
+        console.log(fields);
+      
     }
 
     const editpkDetl = (row1) => {
-        setVisible(true);
+        setCartonFromVisible(true);
         setBtnPasVisible(true);
         setAddBtnPasVisible(false);
 
         if (row1 != '') {
             // console.log(fields.aqlvmDetlModels.filter(a => a.id == row));
-            setPackAuditSampling(fields.aqlpkDetlModels.filter(a => a.id == row1)[0]);
+            setPackAuditSampling(fields.aqlpkDetlModels.filter(a => a.noofCtnsFrom == row1)[0]);
         }
     }
 
@@ -554,40 +638,102 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             //   setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.POST_AQLMASTER,
-                data: {
-                    ...fields
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose();
-            }).catch(err => {
-                setLoader(false)
-                setFields({ ...fields })
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+            let len = fields.aqlvmDetlModels.filter(f => f.active == "Y").length;
+            let len1 = fields.aqlpkDetlModels.filter(f => f.active == "Y").length;
+            if (len > 0 && len1 > 0) {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.POST_AQLMASTER,
+                    data: {
+                        ...fields
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success("Aql Master Save Successfully")
+                    onClose();
+                    setHeaderDisable(false);
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+                message.error("Please add atleast one record in Visual Sampling Plan & Pack Audit Sampling Plan...!")
+            }
+
+
         }
     }
 
-    const Defvalidation = name => e => {
+    const Measurementvalidation = name => e => {
         let value = e.target.value
-        if (name === 'maxAllowCriticalDefects' || name === 'maxAllowCriticalDefects' || name === 'maxAllowSewDefects' || name === 'maxAllowOthDefects') {
+        if (name === 'mesurementPcs' || name === 'maxAllowMesurementDefects') {
             debugger;
-            let VD = visualSampling.maxAllowVisualDefects;
-            let CD = visualSampling.maxAllowCriticalDefects;
-            let SD = visualSampling.maxAllowSewDefects;
-            let OD = visualSampling.maxAllowOthDefects;
-            let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
-            if (parseInt(VD, 10) < parseInt(tot, 10)) {
+            let MP = visualSampling.mesurementPcs;
+            let MAMD = visualSampling.maxAllowMesurementDefects;
+
+            //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
+            if (parseInt(MP, 10) < parseInt(MAMD, 10)) {
                 setVisualSampling({ ...visualSampling, [name]: '' });
-                alert('Should not be greater than Visual Defect .....! ')
+                message.error('Measurement Defect should be less than Measurement Pcs .....! ')
             }
         }
     }
+    const PackDefectvalidation = name => e => {
+        let value = e.target.value
+        if (name === 'packSamples' || name === 'maxAllowPackDefects') {
+            debugger;
+            let PS = packAuditSampling.packSamples;
+            let MAPD = packAuditSampling.maxAllowPackDefects;
+
+            //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
+            if (parseInt(PS, 10) < parseInt(MAPD, 10)) {
+                setPackAuditSampling({ ...packAuditSampling, [name]: '' });
+                message.error('Pack Defect should be less than Pack Sample .....! ')
+            }
+        }
+    }
+
+
+    const Defvalidation = name => e => {
+        let value = e.target.value
+        debugger;
+        if (name === 'maxAllowVisualDefects') {
+
+            let VD = visualSampling.maxAllowVisualDefects === "" ? 0 : visualSampling.maxAllowVisualDefects;
+            let CD = visualSampling.maxAllowCriticalDefects === "" ? 0 : visualSampling.maxAllowCriticalDefects;
+            let SD = visualSampling.maxAllowSewDefects === "" ? 0 : visualSampling.maxAllowSewDefects;
+            let OD = visualSampling.maxAllowOthDefects === "" ? 0 : visualSampling.maxAllowOthDefects;
+            let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
+            let VDtepm = parseInt(VD);
+            if (parseInt(VDtepm, 10) < parseInt(tot, 10)) {
+                //    setVisualSampling({ ...visualSampling, [name]: 0 });
+                setVisualSampling({ ...visualSampling, maxAllowCriticalDefects: 0, maxAllowSewDefects: 0, maxAllowOthDefects: 0 });
+                // setVisualSampling({ ...visualSampling, maxAllowSewDefects: 0 });
+                // setVisualSampling({ ...visualSampling, maxAllowOthDefects: 0 });
+                message.error('Should not be less than Critical defect + Sewing Defect + Other Defect .....! ')
+                return false;
+            }
+        }
+        else if (name === 'maxAllowCriticalDefects' || name === 'maxAllowSewDefects' || name === 'maxAllowOthDefects') {
+            let VD = visualSampling.maxAllowVisualDefects === "" ? 0 : visualSampling.maxAllowVisualDefects;
+            let CD = visualSampling.maxAllowCriticalDefects === "" ? 0 : visualSampling.maxAllowCriticalDefects;
+            let SD = visualSampling.maxAllowSewDefects === "" ? 0 : visualSampling.maxAllowSewDefects;
+            let OD = visualSampling.maxAllowOthDefects === "" ? 0 : visualSampling.maxAllowOthDefects;
+            let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
+            if (parseInt(VD, 10) < parseInt(tot, 10)) {
+                setVisualSampling({ ...visualSampling, [name]: 0 });
+                message.error('Should not be greater than Visual Defect .....! ')
+                return false;
+            }
+        } else {
+
+        }
+    }
+
+
+
     const inputOnChange = name => e => {
         debugger;
         let err = {}, validation = true
@@ -810,24 +956,34 @@ export default function AqlMaster() {
         setErrors({ ...initialErrorMessages });
     }
 
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            setVisualSampling({ ...visualSampling, [name]: "" })
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            setVisualSampling({ ...visualSampling, [name]: 0 })
+        }
+    }
+
     const onClose = () => {
         clearFields()
         setVisible(false);
     };
 
     return (
-        <div class="container-fluid" >``
+        <div class="container-fluid" >
             <div class="breadcrumb-header justify-content-between bread-list">
                 <div class="w-100">
                     <div class="d-flex border-bottom pb-15">
                         <div class="me-auto ">
                             <a href="#myCollapse" data-bs-toggle="collapse" aria-expanded="true" class="text-black">
-                                <h4 class="content-title float-start pr-20 border-0">
-                                    <span class="pr-10">
-                                        <img src={breadcrumbIcon} alt="" />
-                                    </span>
+                                {/* <h4 class="content-title float-start pr-20 border-0">
                                     &nbsp; AQL Master
-                                </h4>
+                                </h4> */}
+                                <h6 className='m-0 p-0'>AQL Master</h6>
                             </a>
                         </div>
                         <div class="pt-15"></div>
@@ -838,27 +994,30 @@ export default function AqlMaster() {
             <div class="clear"></div>
             <div class="row mt-15 dis-sel mt-20">
                 <div class="col-lg">
-                    <label>AQL Type</label>
-                    <small className='text-danger'>{fields.aqlType === '' ? errors.aqlType : ''}</small>
+                    <label>AQL Type <span className='text-danger'>*  </span></label>
+
                     <div class="main-select">
                         <select name="somename" class="form-control SlectBox main-select" required
                             value={fields.aqlType}
                             onChange={inputOnChange1("aqlType")}
+                            disabled={headerDisable}
                         >
                             <option value="">Select AQL Type </option>
                             {aqlList.map((v, index) => {
                                 return <option key={index} value={v.code}>{v.code}</option>
                             })}
                         </select>
+                        <small className='text-danger'>{fields.aqlType === '' ? errors.aqlType : ''}</small>
                     </div>
                 </div>
                 <div class="col-lg">
-                    <label>Audit Format</label>
-                    <small className='text-danger'>{fields.auditFormat === '' ? errors.auditFormat : ''}</small>
+                    <label>Audit Format <span className='text-danger'>*  </span></label>
+
                     <div class="main-select">
                         <select name="somename" class="form-control SlectBox main-select" required
                             value={fields.auditFormat}
                             onChange={inputOnChange1("auditFormat")}
+                            disabled={headerDisable}
                         >
                             <option value="">Select Audit Format</option>
                             {/* <option value="I">I</option>
@@ -868,39 +1027,49 @@ export default function AqlMaster() {
                             })}
 
                         </select>
+                        <small className='text-danger'>{fields.auditFormat === '' ? errors.auditFormat : ''}</small>
                     </div>
                 </div>
                 <div class="col-lg">
-                    <label>Unit Code</label>
-                    <small className='text-danger'>{fields.unitCode === '' ? errors.unitCode : ''}</small>
+                    <label>Unit Code <span className='text-danger'>*  </span></label>
+
                     <select name="somename" class="form-control SlectBox main-select" required
                         value={fields.unitCode}
                         onChange={inputOnChange1("unitCode")}
+                        disabled={headerDisable}
                     >
                         <option value="">Select Unit Code </option>
                         {unitCodeList.map((v, index) => {
                             return <option key={index} value={v.uCode}>{v.uCode}</option>
                         })}
                     </select>
+                    <small className='text-danger'>{fields.unitCode === '' ? errors.unitCode : ''}</small>
                 </div>
                 <div class="col-lg">
-                    <label>Buyer Div Code</label>
-                    <small className='text-danger'>{fields.buyerCode === '' ? errors.buyerCode : ''}</small>
+                    <label>Buyer Div Code<span className='text-danger'>*  </span></label>
+
                     <select name="somename" class="form-control SlectBox main-select" required
                         value={fields.buyerCode}
                         onChange={inputOnChange1("buyerCode")}
+                        disabled={headerDisable}
                     >
                         <option value="">Select Buyer Div Code </option>
                         {buyDivCodeList.map((v, index) => {
                             return <option key={index} value={v.buyDivCode}>{v.buyDivCode}</option>
                         })}
                     </select>
+                    <small className='text-danger'>{fields.buyerCode === '' ? errors.buyerCode : ''}</small>
                 </div>
 
                 <div class="col-lg pt-20 ">
                     <button class="btn btn-secondary search-btn btn-block"
                         onClick={() => AddVisualSamplingPlan(fields.aqlType, fields.auditFormat, fields.unitCode, fields.buyerCode)}
-                    >Show Result</button>
+                    >View</button>
+                </div>
+                <div class="col-lg pt-20 ">
+                    <button class="btn btn-secondary search-btn btn-block"
+                        onClick={() => ClearBtn()}
+                    >Clear</button>
                 </div>
             </div>
             <div class="row mt-25 main-tab pl-15 pr-15">
@@ -910,7 +1079,7 @@ export default function AqlMaster() {
                             type="button" role="tab" aria-controls="home" aria-selected="true">Visual Sampling Plan </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1" type="button" role="tab" aria-controls="profile" aria-selected="false">Pack audit Sampling plan</button>
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1" type="button" role="tab" aria-controls="profile" aria-selected="false">Pack Audit Sampling plan</button>
                     </li>
                 </ul>
                 <div class="tab-content p-15" id="myTabContent">
@@ -918,58 +1087,85 @@ export default function AqlMaster() {
                         <div class="row mt-15">
                             <div className='col-lg'>
                                 <div className='form-group'  >
-                                    <label>Pack-Qty From</label>
-                                    <small className='text-danger'>{fields.aqlvmDetlModels.packQtyFrom === '' ? errors.aqlvmDetlModels.packQtyFrom : ''}</small>
-                                    <input type="text" class="form-control disabled " placeholder='Enter Pack-Qty From' value={visualSampling.packQtyFrom == 0 ? '' : visualSampling.packQtyFrom}
+                                    <label>Pack-Qty From<span className='text-danger'>*  </span></label>
+                                    {/* <small className='text-danger'>{fields.aqlvmDetlModels.packQtyFrom === '' ? errors.aqlvmDetlModels.packQtyFrom : ''}</small> */}
+                                    <input type="text" class="form-control disabled " placeholder='Enter Pack-Qty From'
+                                        value={visualSampling.packQtyFrom}
                                         id="packQtyFrom"
                                         disabled={packQtyvisible}
-
+                                        maxLength="6"
                                         onChange={inputOnChange("packQtyFrom")}
+                                        autoComplete="off"
+                                        onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")}
+                                        onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packQtyFrom")}
                                     />
+                                    <small className='text-danger'>{visualSampling.packQtyFrom === '' ? errors.packQtyFrom : ''}</small>
+
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Pack-Qty To</label>
-                                    <small className='text-danger'>{fields.aqlvmDetlModels.packQtyTo === '' ? errors.aqlvmDetlModels.packQtyTo : ''}</small>
-                                    <input type="text" class="form-control" placeholder='Enter Pack-Qty To' value={visualSampling.packQtyTo == 0 ? '' : visualSampling.packQtyTo}
+                                    <label>Pack-Qty To<span className='text-danger'>*  </span></label>
+                                    <input type="text" class="form-control" placeholder='Enter Pack-Qty To'
+                                        value={visualSampling.packQtyTo}
                                         id="packQtyTo"
+                                        maxLength="6"
                                         // disabled={visible}
                                         disabled={packQtyvisible}
                                         onChange={inputOnChange("packQtyTo")}
+                                        autoComplete="off"
+                                        onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyTo")}
+                                        onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packQtyTo")}
                                     />
+                                    <small className='text-danger'>{visualSampling.packQtyTo === '' ? errors.packQtyTo : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Sample Size</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Sample Size' value={visualSampling.sampleSize == 0 ? 0 : visualSampling.sampleSize}
-                                        id="sampleSize" onChange={inputOnChange("sampleSize")} disabled={visible}
+                                    <label>Sample Size<span className='text-danger'>*  </span></label>
+                                    <input type="text" class="form-control" placeholder='Enter Sample Size'
+                                        //  value={visualSampling.sampleSize == 0 ? '' : visualSampling.sampleSize}
+                                        value={visualSampling.sampleSize}
+                                        id="sampleSize"
+                                        maxLength="4"
+                                        onChange={inputOnChange("sampleSize")} disabled={visible}
+                                        autoComplete="off"
+                                    // onFocus={NUMBER_IS_FOCUS_IN_ZERO("sampleSize")}
+                                    // onBlur={NUMBER_IS_FOCUS_OUT_ZERO("sampleSize")}
                                     />
+                                    <small className='text-danger'>{visualSampling.sampleSize === '' ? errors.sampleSize : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Visual Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Visual Defect' value={visualSampling.maxAllowVisualDefects == 0 ? 0 : visualSampling.maxAllowVisualDefects}
+                                    <input type="text" class="form-control" placeholder='Enter Visual Defect'
+                                        value={visualSampling.maxAllowVisualDefects == '' ? 0 : visualSampling.maxAllowVisualDefects}
                                         id="maxAllowVisualDefects"
                                         disabled={visible}
+                                        maxLength="4"
                                         onChange={inputOnChange("maxAllowVisualDefects")}
+                                        onBlur={Defvalidation("maxAllowVisualDefects")}
+                                        autoComplete="off"
+                                    // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")}
+                                    // onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
                                     />
+                                    <small className='text-danger'>{visualSampling.maxAllowVisualDefects === '' ? errors.maxAllowVisualDefects : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Critical Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Critical Defect' value={visualSampling.maxAllowCriticalDefects == 0 ? 0 : visualSampling.maxAllowCriticalDefects}
+                                    <input type="text" class="form-control" placeholder='Enter Critical Defect'
+                                        value={visualSampling.maxAllowCriticalDefects == '' ? 0 : visualSampling.maxAllowCriticalDefects}
                                         id="maxAllowCriticalDefects"
                                         disabled={visible}
+                                        maxLength="4"
                                         onChange={inputOnChange("maxAllowCriticalDefects")}
                                         onBlur={Defvalidation("maxAllowCriticalDefects")}
+                                        autoComplete="off"
                                     />
+                                    <small className='text-danger'>{visualSampling.maxAllowCriticalDefects === '' ? errors.maxAllowCriticalDefects : ''}</small>
                                 </div>
                             </div>
 
@@ -978,48 +1174,62 @@ export default function AqlMaster() {
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Sewing Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Sewing Defect' value={visualSampling.maxAllowSewDefects == 0 ? 0 : visualSampling.maxAllowSewDefects}
+                                    <input type="text" class="form-control" placeholder='Enter Sewing Defect'
+                                        value={visualSampling.maxAllowSewDefects == '' ? 0 : visualSampling.maxAllowSewDefects}
                                         id="maxAllowSewDefects"
                                         disabled={visible}
+                                        maxLength="4"
                                         onChange={inputOnChange("maxAllowSewDefects")}
                                         onBlur={Defvalidation("maxAllowSewDefects")}
+                                        autoComplete="off"
                                     />
+                                    <small className='text-danger'>{visualSampling.maxAllowSewDefects === '' ? errors.maxAllowSewDefects : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Other Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Other Defect' value={visualSampling.maxAllowOthDefects == 0 ? 0 : visualSampling.maxAllowOthDefects}
+                                    <input type="text" class="form-control" placeholder='Enter Other Defect'
+                                        value={visualSampling.maxAllowOthDefects == '' ? 0 : visualSampling.maxAllowOthDefects}
                                         id="maxAllowOthDefects"
                                         disabled={visible}
+                                        maxLength="4"
                                         onChange={inputOnChange("maxAllowOthDefects")}
                                         onBlur={Defvalidation("maxAllowOthDefects")}
+                                        autoComplete="off"
                                     />
+                                    <small className='text-danger'>{visualSampling.maxAllowOthDefects === '' ? errors.maxAllowOthDefects : ''}</small>
                                 </div>
                             </div>
 
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Mesurement Pcs</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Mesurement Pcs' value={visualSampling.mesurementPcs == 0 ? 0 : visualSampling.mesurementPcs}
+                                    <label>Measurement Pcs</label>
+                                    <input type="text" class="form-control" placeholder='Enter Measurement  Pcs'
+                                        value={visualSampling.mesurementPcs == '' ? 0 : visualSampling.mesurementPcs}
                                         id="mesurementPcs"
                                         disabled={visible}
+                                        maxLength="4"
                                         onChange={inputOnChange("mesurementPcs")}
+                                        autoComplete="off"
+                                        onBlur={Measurementvalidation("mesurementPcs")}
                                     />
+                                    <small className='text-danger'>{visualSampling.mesurementPcs === '' ? errors.mesurementPcs : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Mesurement Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Mesurement Defect' value={visualSampling.maxAllowMesurementDefects == 0 ? 0 : visualSampling.maxAllowMesurementDefects}
+                                    <label>Measurement Defect</label>
+                                    <input type="text" class="form-control" placeholder='Enter Measurement Defect'
+                                        value={visualSampling.maxAllowMesurementDefects == '' ? 0 : visualSampling.maxAllowMesurementDefects}
                                         id="maxAllowMesurementDefects"
                                         disabled={visible}
+                                        maxLength="4"
                                         onChange={inputOnChange("maxAllowMesurementDefects")}
+                                        autoComplete="off"
+                                        onBlur={Measurementvalidation("maxAllowMesurementDefects")}
                                     />
+                                    <small className='text-danger'>{visualSampling.maxAllowMesurementDefects === '' ? errors.maxAllowMesurementDefects : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'></div>
@@ -1027,7 +1237,7 @@ export default function AqlMaster() {
                         <div className='row d-flex my-xl-auto right-content'>
                             <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
                                 <div class="float-start">
-                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
+                                    <button class="btn btn-primary search-btn btn-block  " onClick={() => ResetVisualSamPlan()}>Reset</button>
                                 </div>
                                 <div class="float-start pl-5">
 
@@ -1053,7 +1263,7 @@ export default function AqlMaster() {
                                         <tr>
                                             <th>Edit</th>
                                             <th>Remove</th>
-                                            <th class="">SlNo</th>
+                                            {/* <th class="">SlNo</th> */}
                                             <th class="">Pack-Qty From</th>
                                             <th class="">Pack-Qty To</th>
                                             <th class="">Sample Size</th>
@@ -1073,16 +1283,16 @@ export default function AqlMaster() {
                                             fields.aqlvmDetlModels.filter(f => f.active == "Y").map((row, index) => (
                                                 <tr key={index}>
                                                     <td align='center'>
-                                                        <div className='text-center' onClick={() => { editVisualSampling(row?.id, row?.packQtyFrom) }}>
+                                                        <div className='text-center' onClick={() => { editVisualSampling(row?.packQtyFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
                                                     <td align='center'>
-                                                        <div className='text-center' onClick={() => { removeVisualSampling(row?.id, row?.packQtyFrom) }}>
-                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                        <div className='text-center' onClick={() => { removeVisualSampling(row?.packQtyFrom) }}>
+                                                            <FontAwesomeIcon icon={faTrashCan} color="#919191" />
                                                         </div>
                                                     </td>
-                                                    <td align='center'> {index + 1} </td>
+                                                    {/* <td align='center'> {index + 1} </td> */}
 
                                                     <td align='center'>{row.packQtyFrom}</td>
                                                     <td align='center'>{row.packQtyTo}</td>
@@ -1106,37 +1316,64 @@ export default function AqlMaster() {
                         <div class="row mt-15">
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Carton From</label>
-                                    <small className='text-danger'></small>
+                                    <label>Carton From<span className='text-danger'>*  </span></label>
                                     <input type="text" class="form-control" placeholder='Enter Carton From' value={packAuditSampling.noofCtnsFrom == 0 ? '' : packAuditSampling.noofCtnsFrom}
-                                        id="noofCtnsFrom" onChange={inputOnChange2("noofCtnsFrom")}
+                                        id="noofCtnsFrom"
+                                        disabled={cartonFromvisible}
+                                        maxLength="6"
+                                        autoComplete='off'
+
+                                        onChange={inputOnChange2("noofCtnsFrom")}
+
                                     />
+                                    <small className='text-danger'>{packAuditSampling.noofCtnsFrom === '' ? errors.noofCtnsFrom : ''}</small>
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Carton To</label>
-                                    <small className='text-danger'></small>
+                                    <label>Carton To<span className='text-danger'>*  </span></label>
                                     <input type="text" class="form-control" placeholder='Enter Carton To' value={packAuditSampling.noofCtnsTo == 0 ? '' : packAuditSampling.noofCtnsTo}
-                                        id="noofCtnsTo" onChange={inputOnChange2("noofCtnsTo")}
+                                        id="noofCtnsTo"
+                                        autoComplete='off'
+                                        disabled={cartonFromvisible}
+                                        maxLength="6"
+
+                                        onChange={inputOnChange2("noofCtnsTo")}
+
                                     />
+                                    <small className='text-danger'>{packAuditSampling.noofCtnsTo === '' ? errors.noofCtnsTo : ''}</small>
+
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Pack Sample</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Pack Sample' value={packAuditSampling.packSamples == 0 ? '' : packAuditSampling.packSamples}
-                                        id="packSamples" onChange={inputOnChange2("packSamples")}
+
+                                    <input type="text" class="form-control" placeholder='Enter Pack Sample'
+                                        value={packAuditSampling.packSamples == 0 ? '' : packAuditSampling.packSamples}
+                                        id="packSamples"
+                                        autoComplete='off'
+                                        maxLength="4"
+                                        onBlur={PackDefectvalidation("packSamples")}
+                                        onChange={inputOnChange2("packSamples")}
+                                        disabled={visible}
                                     />
+                                    <small className='text-danger'>{packAuditSampling.packSamples === '' ? errors.packSamples : ''}</small>
+
                                 </div>
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
                                     <label>Pack Defect</label>
                                     <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Pack Defect' value={packAuditSampling.maxAllowPackDefects == 0 ? '' : packAuditSampling.maxAllowPackDefects}
-                                        id="maxAllowPackDefects" onChange={inputOnChange2("maxAllowPackDefects")}
+                                    <input type="text" class="form-control" placeholder='Enter Pack Defect'
+                                        value={packAuditSampling.maxAllowPackDefects == 0 ? 0 : packAuditSampling.maxAllowPackDefects}
+                                        id="maxAllowPackDefects"
+                                        autoComplete='off'
+                                        maxLength="4"
+                                        onBlur={PackDefectvalidation("maxAllowPackDefects")}
+                                        onChange={inputOnChange2("maxAllowPackDefects")}
+                                        disabled={visible}
                                     />
                                 </div>
                             </div>
@@ -1145,7 +1382,7 @@ export default function AqlMaster() {
                         <div className='row d-flex my-xl-auto right-content'>
                             <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
                                 <div class="float-start">
-                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
+                                    <button class="btn btn-primary search-btn btn-block  " onClick={() => ResetPackAudit()}>Reset</button>
                                 </div>
                                 <div class="float-start pl-5">
                                     {
@@ -1171,13 +1408,13 @@ export default function AqlMaster() {
                                 <table id="example" class="table table-striped edit-np f-l1">
                                     <thead>
                                         <tr>
-                                            <th align='center'>Edit</th>
-                                            <th align='center'>Remove</th>
-                                            <th >SlNo</th>
+                                            <th >Edit</th>
+                                            <th >Remove</th>
+                                            {/* <th >SlNo</th> */}
                                             <th >Carton From</th>
                                             <th >Carton To</th>
                                             <th >Pack Sample</th>
-                                            <th> Pack Defect (Max Allowed)</th>
+                                            <th > Pack Defect (Max Allowed)</th>
 
                                         </tr>
                                     </thead>
@@ -1185,21 +1422,21 @@ export default function AqlMaster() {
                                         {
                                             fields.aqlpkDetlModels.filter(f => f.active == "Y").map((row1, index) => (
                                                 <tr key={index}>
-                                                    <td align='center'>
-                                                        <div className='text-center' onClick={() => { editpkDetl(row1?.id) }}>
+                                                    <td >
+                                                        <div className='text-center' onClick={() => { editpkDetl(row1?.noofCtnsFrom) }}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
                                                     </td>
-                                                    <td align='center'>
-                                                        <div className='text-center' onClick={() => { removepkDetl(row1?.id) }}>
-                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                    <td >
+                                                        <div className='text-center' onClick={() => { removepkDetl(row1?.noofCtnsFrom) }}>
+                                                            <FontAwesomeIcon icon={faTrashCan} color="#919191" />
                                                         </div>
                                                     </td>
-                                                    <td > {index + 1} </td>
-                                                    <td >{row1.noofCtnsFrom}</td>
-                                                    <td >{row1.noofCtnsTo}</td>
-                                                    <td >{row1.packSamples}</td>
-                                                    <td >{row1.maxAllowPackDefects}</td>
+                                                    {/* <td > {index + 1} </td> */}
+                                                    <td align='center'>{row1.noofCtnsFrom}</td>
+                                                    <td align='center'>{row1.noofCtnsTo}</td>
+                                                    <td align='center'>{row1.packSamples}</td>
+                                                    <td align='center'>{row1.maxAllowPackDefects}</td>
 
                                                 </tr>
                                             ))

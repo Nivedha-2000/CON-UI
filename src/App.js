@@ -22,6 +22,9 @@ function App() {
       if (react_app_auth_mode == "external") {
         
         if (res.directLogin == true && res.tokenState == true) {
+          console.log("ttt")
+          console.log("bbbb")
+
           navigate('/masters/defect-master');
         }
         else {

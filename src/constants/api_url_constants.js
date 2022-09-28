@@ -166,16 +166,17 @@ export const API_URLS = {
   //ProductivityMaster
   SAVE_PRODUCTIVITY_MASTER: "Productivity/SaveProductivityList",
   //GetProductivityListByStartdateEnddateParamerters:"Productivity/GetProductivityListByStartdateEnddateParamerters",
-  GetProductivityListByStartdateEnddateParamerters:"Productivity/GetProductivityByStartdateEnddateParamertersListwithStatus",
+  GetProductivityListByStartdateEnddateParamerters: "Productivity/GetProductivityByStartdateEnddateParamertersListwithStatus",
+  GetProductivityList: "Productivity/GetProductivityListByLocCodeFactCodeLineGroup",
 
 
-  
   //TNA_MASTER 
   SAVE_TNA_MASTER_LIST: "TNAMaster/SaveTNAMasterList",
   SAVE_TNA_MASTER: "TNAMaster/SaveTNAMaster",
   GET_TNA_MASTER_EDIT_BY_ID: "TNAMaster/GetTNAMaster",
   GET_ACTIVE_LOCATION_MASTER: "LocationMaster/GetAllActiveLocation",
   GET_ALL_TNA_LIST: "TNAMaster/GetAllTNAMaster",
+  GET_ALL_TNA_DISTINCT_LIST: "TNAMaster/GetTNAMasterBy5ParamsDistinctList",
   GET_ALL_TNA_LIST_WITH_PARAMS: "TNAMaster/GetTNAMasterBy5Params",
   GET_ALL_TNA_DPND_CODE_PARAMS: "TNAMaster/GetTNAMasterSeqNoBy5Params",
   GET_ALL_TNA_DPND_ACTIVITY_PARAMS: "TNAMaster/GetTNAMasterByDeptcode",
@@ -211,10 +212,10 @@ export const MISCELLANEOUS_TYPES = {
   AUDFORMAT: 'AUDFORMAT',
   FABTYPE: 'FABTYPE',
   DLEVEL: 'DLEVEL',
-  DEPT:'DEPT',
-  ORDSTAGE:'ORDSTAGE',
-  ORDCATE:'ORDCATE',
-  ACTTYPE:'ACTTYPE',
-  INDDEPT:'INDDEPT',
-  VALUEADD:'VALUEADD',
+  DEPT: 'DEPT',
+  ORDSTAGE: 'ORDSTAGE',
+  ORDCATE: 'ORDCATE',
+  ACTTYPE: 'ACTTYPE',
+  INDDEPT: 'INDDEPT',
+  VALUEADD: 'VALUEADD',
 }
