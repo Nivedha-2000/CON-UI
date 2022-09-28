@@ -205,35 +205,7 @@ function BuyerProductTypeMaster({ name }) {
             }
         })
 
-        setErrors({ ...initialErrorMessages, ...err })
-
-        //getDataById(fields.buyCode, fields.buyDivCode, fields.productType)
-
-        // if (validation) {
-        //     setLoader(true)
-
-        //     ApiCall({
-        //         method: "POST",
-        //         path: API_URLS.SAVE_BUYPRODTYPE_MASTER,
-        //         data: {
-        //             ...fields,
-        //             hostName: getHostName()
-        //         }
-        //     }).then(resp => {
-        //         setLoader(false)
-        //         message.success(resp.message)
-        //         onClose()
-        //         getDatas()
-        //         setBuyerCodeVisible(false)
-        //     }).catch(err => {
-        //         setLoader(false)
-
-        //         //  fields['ftdOprName'] = tempOprName
-        //         setFields({ ...fields })
-        //         setErrors({ ...initialErrorMessages })
-        //         message.error(err.message || err)
-        //     })
-        // }
+        setErrors({ ...initialErrorMessages, ...err })   
 
         if (validation) {
             if (type === "update") {

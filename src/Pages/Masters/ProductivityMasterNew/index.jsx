@@ -8,10 +8,14 @@ import { ItrApiService } from '@afiplfeed/itr-ui';
 import PropTypes, { number } from 'prop-types';
 import ApiCall from "../../../services";
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
 import { Construction, Deblur } from '@mui/icons-material';
 import { findDOMNode } from 'react-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, FormFeedback } from 'reactstrap';
 import { filledInputClasses } from '@mui/material';
+
+import ms from 'ms';
+import moment from 'moment';
 
 
 const requiredFields = ["locCode", "factCode", "productType", "startdate", "enddate"],
@@ -62,10 +66,10 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
         hostName: "",
     },
     Test = {
-        // id: 0,
-        // locCode: "",
-        // factCode: "",
-        // lineGroup: "",
+        id: 0,
+        locCodel: "",
+        factCodel: "",
+        lineGroupl: "",
         // productType: "",
         // subProductType: "",
         // noOfOperators: 0,
@@ -94,13 +98,16 @@ export default function ProductivityMasters() {
         ...initialFieldValues
     });
 
-    const [Prodfields, setProdFields] = useState([{
+    const [Prodfields, setProdFields] = useState({
         ...Test
-    }]);
+    });
 
     const [LocationList, setLocationList] = useState([]);
+    const [LocationList1, setLocationList1] = useState([]);
     const [Factoryist, setFactoryList] = useState([]);
+    const [Factoryist1, setFactoryList1] = useState([]);
     const [OperatorList, setOperatorList] = useState([]);
+    const [OperatorList1, setOperatorList1] = useState([]);
 
     const [OperatorListNew, setOperatorNewList] = useState([]);
     const [WorkingHrsList, setWorkingHrsList] = useState([]);
@@ -115,11 +122,21 @@ export default function ProductivityMasters() {
     const [btnVisible, setBtnVisible] = useState(false);
     const [AddbtnVisible, setAddBtnVisible] = useState(false);
     const [btnSaveVisible, setBtnSaveVisible] = useState(false);
+    const [backBtnVisible, setbackBtnVisible] = useState(false);
 
     const [headerFleids, setheaderFleids] = useState(false);
 
+    const [listLoading, setListLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [showResults, setShowResults] = React.useState(true);
+    const [showForm, setShowForm] = React.useState(false);
+
+    const minsec = ms('14d')
 
 
+
+    const [minDate, setMinDate] = useState(null)
+    const [maxDate, setMaxDate] = useState(null)
 
 
 
@@ -129,6 +146,11 @@ export default function ProductivityMasters() {
         getFabType();
         getDifficultyLevel();
         disableDate();
+        getLocationList();
+        //  getDatas();
+
+        // setMinDate(moment(min_date).format('YYYY-MM-DD'));
+        // setMaxDate(moment(max_date).format('YYYY-MM-DD'))
 
     }, []);
 
@@ -137,6 +159,12 @@ export default function ProductivityMasters() {
             getFactoryDropDown()
         }
     }, [fields.locCode])
+
+    useEffect(() => {
+        if (Prodfields.locCodel) {
+            getFactoryDropDownList()
+        }
+    }, [Prodfields.locCodel])
 
     useEffect(() => {
         if (fields.enddate) {
@@ -149,6 +177,12 @@ export default function ProductivityMasters() {
             factCodeChangeHandle()
         }
     }, [fields.factCode])
+
+    useEffect(() => {
+        if (Prodfields.factCodel) {
+            factCodeChangeHandleList()
+        }
+    }, [Prodfields.factCodel])
 
     useEffect(() => {
         if (fields.lineGroup) {
@@ -171,6 +205,20 @@ export default function ProductivityMasters() {
 
             if (Array.isArray(response.data)) {
                 setLocationList(response.data.filter(d => d.active == "Y"))
+            } else {
+                message.error("Response data is expected as array")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+    const getLocationList = () => {
+        ApiCall({
+            path: API_URLS.GET_LOCATION_MASTER_LIST
+        }).then(response => {
+
+            if (Array.isArray(response.data)) {
+                setLocationList1(response.data.filter(d => d.active == "Y"))
             } else {
                 message.error("Response data is expected as array")
             }
@@ -269,6 +317,26 @@ export default function ProductivityMasters() {
         }
     }
 
+    const getFactoryDropDownList = () => {
+        setProdFields({ ...Prodfields, factCodel: Prodfields.id == 0 ? "" : Prodfields.factCodel })
+        if (Prodfields.locCodel) {
+            ApiCall({
+                path: API_URLS.GET_UNIT_MASTER_LIST
+            }).then(resp => {
+                try {
+                    setFactoryList1(resp.data.filter(f => f.loccode == Prodfields.locCodel))
+                } catch (er) {
+                    message.error("Response data is not as expected")
+                }
+            })
+                .catch(err => {
+                    message.error(err.message || err)
+                })
+        } else {
+            setFactoryList1([])
+        }
+    }
+
     const getNoOfOperatorsDropDown = () => {
         setFields({ ...fields, noOfOperators: fields.id == 0 ? "" : fields.noOfOperators })
         //   console.log(API_URLS.GET_LINECOST_MASTER_LOCCODEFACTORY_LIST + "?LocCode=" + `${fields.locCode}` + "&FactCode=" + `${fields.factCode}` + "&FromDate=" + `${fields.startdate}` + "&ToDate=" + `${fields.enddate}`)
@@ -311,8 +379,6 @@ export default function ProductivityMasters() {
     }
 
     const factCodeChangeHandle = () => {
-        debugger;
-
         setFields({ ...fields, lineGroup: fields.id == 0 ? "" : fields.lineGroup })
         if (fields.factCode) {
             ApiCall({
@@ -333,6 +399,29 @@ export default function ProductivityMasters() {
         }
 
     }
+
+    const factCodeChangeHandleList = () => {
+        debugger;
+        setProdFields({ ...Prodfields, lineGroupl: Prodfields.id == 0 ? "" : Prodfields.lineGroupl })
+        if (Prodfields.factCodel) {
+            ApiCall({
+                path: API_URLS.GET_LINECOST_LINEGROUB + "?LocCode=" + Prodfields.locCodel + "&FactCode=" + Prodfields.factCodel   //+ "&FromDate=" + fields.startdate + "&ToDate=" + "2023-08-25"
+            }).then(resp => {
+                try {
+                    setOperatorList1(resp.data)
+                } catch (er) {
+                    message.error("Response data is not as expected")
+                }
+            })
+                .catch(err => {
+                    message.error(err.message || err)
+                })
+        } else {
+            setFactoryList1([])
+        }
+
+    }
+
     const lineGroupChangeHandle = () => {
         debugger;
 
@@ -372,11 +461,6 @@ export default function ProductivityMasters() {
         }).then(resp => {
             setWorkingHrsList([])
             setWorkingHrsList(resp.data)
-            // try {
-            //     setWorkingHrsList(resp.data)
-            // } catch (er) {
-            //     message.error("Response data is not as expected")
-            // }
         })
             .catch(err => {
                 message.error(err.message || err)
@@ -394,6 +478,12 @@ export default function ProductivityMasters() {
         mm = today.getMonth() + 1;
         yyyy = today.getFullYear();
         return yyyy + "-" + mm + "-" + dd;
+    }
+
+    const inputOnChangeList = name => e => {
+        let err = {}, validation = true
+        let value = e.target.value
+        setProdFields({ ...Prodfields, [name]: value })
     }
 
     const inputOnChange = name => e => {
@@ -433,11 +523,41 @@ export default function ProductivityMasters() {
         ApiCall({
             path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
         }).then(resp => {
-            let len = resp.data.filter(f => f.peakEff == "Y");
-            setProductivityList(resp.data)
-            setBtnVisible(true);
-            setheaderFleids(true);
-            setBtnSaveVisible(false)
+
+
+            const current = new Date(resp.data[0].lastSubmittedDate);
+            const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+            //  const lastDt =new Intl.DateimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(resp.data[0].lastSubmittedDate);
+
+            if (resp.data[0].data.length > 0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
+                setProductivityList(resp.data[0].data)
+                setBtnVisible(true);
+                setheaderFleids(true);
+                setBtnSaveVisible()
+            } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
+                alert("already data is exists. please changes correct date & last Submitted Date is " + date)
+                setProductivityList([]);
+                setBtnVisible(false);
+
+            } else if (resp.data[0].dateStatus == true && resp.data[0].dataStatus == true) {
+                setProductivityList(resp.data[0].data)
+                setBtnVisible(true);
+                setheaderFleids(true);
+                setBtnSaveVisible(false)
+            } else {
+                alert("Missing date please select correct date & last Submitted Date is " + date)
+                setProductivityList([]);
+                setBtnVisible(false);
+            }
+
+            // console.log(resp.data[0].data)
+            //console.log(resp.data.dataStatus)
+            //console.log(resp.data.dateStatus)
+
+            // setProductivityList(resp.data[0].data)
+            // setBtnVisible(true);
+            // setheaderFleids(true);
+            // setBtnSaveVisible(false)
         })
 
     }
@@ -498,10 +618,11 @@ export default function ProductivityMasters() {
     }
 
     function ProductivityMastersave() {
+        debugger;
         //console.log(fields.aqlpkDetlModels.filter(d=>d.noofCtnsFrom>0) && fields.aqlvmDetlModels.filter(a=>a.packQtyFrom>0));
         // console.log(ProductivityList);
 
-        if (loader) return
+        // if (loader) return
         let err = {}, validation = true
         debugger;
         requiredFields.forEach(f => {
@@ -529,6 +650,7 @@ export default function ProductivityMasters() {
                         setBtnVisible(false);
                         setheaderFleids(false);
                         setBtnSaveVisible(false)
+                        setbackBtnVisible(true)
 
                     }).catch(err => {
                         setLoader(false)
@@ -537,7 +659,7 @@ export default function ProductivityMasters() {
                         message.error(err.message || err)
                     })
                 } else {
-                    alert("Please close Peak Effits...!")
+                    message.error("Please close Peak Effits...!")
                 }
             }
 
@@ -572,9 +694,12 @@ export default function ProductivityMasters() {
             return item;
         });
 
-
+        setFields({ ...fields, peakEff: 'N', scaleUpEffPer: 0 })
+        // setFields({ ...fields, scaleUpEffPer: 0 })
         setProductivityList(toUpdateData);
         setBtnVisible(true);
+        setBtnSaveVisible(false);
+
 
 
     }
@@ -595,17 +720,17 @@ export default function ProductivityMasters() {
         setBtnVisible(false);
         setheaderFleids(true);
         setAddBtnVisible(true)
+        setbackBtnVisible(false)
 
 
         //   console.log(ProductivityList);
         if (LocCode != '') {
-            //  console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay));
+              console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
             setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
         }
     };
     const onClose = () => {
         clearFields()
-        // setVisible(false);
     };
     const clearFields = () => {
         setFields({
@@ -613,595 +738,745 @@ export default function ProductivityMasters() {
         });
         setFields([]);
         setProductivityList([]);
-
         setErrors({ ...initialErrorMessages });
     }
 
-    return (
-        <div class="container-fluid" >
-            <div class="breadcrumb-header justify-content-between bread-list">
-                <div class="w-100">
-                    <div class="d-flex border-bottom pb-15">
-                        <div class="me-auto ">
-                            <a href="#myCollapse" data-bs-toggle="collapse" aria-expanded="true" class="text-black">
-                                <h4 class="content-title float-start pr-20 border-0">
-                                    <span class="pr-10">
-                                        <img src={breadcrumbIcon} alt="" />
-                                    </span>
-                                    &nbsp; Productivity Master
-                                </h4>
-                            </a>
+    const disablePastDate = () => {
+        const today = new Date();
+        //const today = String(today1.getDate() - 1).padStart(2, "0");
+        // var today = new Date(),
+        // date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+        const dd = String(today.getDate()).padStart(2, "0");
+        const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+        const yyyy = today.getFullYear();
+        return yyyy + "-" + mm + "-" + dd;
+    };
+    const tableColumns = [
+        {
+            name: "locCode",
+            label: "Action",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return (
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[1], tm.rowData[2], tm.rowData[3], tm.rowData[4], tm.rowData[5], tm.rowData[6], tm.rowData[7], tm.rowData[8], tm.rowData[9], tm.rowData[10], tm.rowData[11], 'edit')}>
+                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                            </div>
                         </div>
-                        <div class="pt-15"></div>
+
+                    )
+                }
+            }
+        },
+        {
+            name: "locCode",
+            label: "Location"
+        },
+        {
+            name: "factCode",
+            label: "factCode"
+        },
+        {
+            name: "lineGroup",
+            label: "line Group"
+        },
+        {
+            name: "noOfOperators",
+            label: "no Of Operators"
+        },
+        {
+            name: "workingHrs",
+            label: "working Hrs"
+        },
+        {
+            name: "productType",
+            label: "product Type"
+        },
+        {
+            name: "subProductType",
+            label: "sub ProductType"
+        },
+        {
+            name: "plaidType",
+            label: "plaid Type"
+        },
+        {
+            name: "difficultyLevel",
+            label: "difficulty Level"
+        },
+        {
+            name: "startdate",
+            label: "star tdate"
+        },
+        {
+            name: "enddate",
+            label: "end date"
+        },
+        {
+            name: "active",
+            label: "Active",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return <div>
+                        {value === "Y" ? "Yes" : "No"}
                     </div>
-                    <div class="col-lg"></div>
-                </div>
-            </div>
-            <div class="clear"></div>
-            {/* <div class="row mt-15 dis-sel mt-20">
-                <div class="col-lg">
-                    <label>AQL Type</label>
-                    <small className='text-danger'>{fields.aqlType === '' ? errors.aqlType : ''}</small>
-                    <div class="main-select">
-                        <select name="somename" class="form-control SlectBox main-select" required
-                            value={fields.aqlType}
-                            onChange={inputOnChange1("aqlType")}
-                        >
-                            <option value="">Select AQL Type </option>
-                            {aqlList.map((v, index) => {
-                                return <option key={index} value={v.code}>{v.code}</option>
-                            })}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg">
-                    <label>Audit Format</label>
-                    <small className='text-danger'>{fields.auditFormat === '' ? errors.auditFormat : ''}</small>
-                    <div class="main-select">
-                        <select name="somename" class="form-control SlectBox main-select" required
-                            value={fields.auditFormat}
-                            onChange={inputOnChange1("auditFormat")}
-                        >
-                            <option value="">Select Audit Format</option>
-                           
-                            {auditFormatList.map((v, index) => {
-                                return <option key={index} value={v.code}>{v.code}</option>
-                            })}
+                }
+            }
+        }
 
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg">
-                    <label>Unit Code</label>
-                    <small className='text-danger'>{fields.unitCode === '' ? errors.unitCode : ''}</small>
-                    <select name="somename" class="form-control SlectBox main-select" required
-                        value={fields.unitCode}
-                        onChange={inputOnChange1("unitCode")}
-                    >
-                        <option value="">Select Unit Code </option>
-                        {unitCodeList.map((v, index) => {
-                            return <option key={index} value={v.uCode}>{v.uCode}</option>
-                        })}
-                    </select>
-                </div>
-                <div class="col-lg">
-                    <label>Buyer Div Code</label>
-                    <small className='text-danger'>{fields.buyerCode === '' ? errors.buyerCode : ''}</small>
-                    <select name="somename" class="form-control SlectBox main-select" required
-                        value={fields.buyerCode}
-                        onChange={inputOnChange1("buyerCode")}
-                    >
-                        <option value="">Select Buyer Div Code </option>
-                        {buyDivCodeList.map((v, index) => {
-                            return <option key={index} value={v.buyDivCode}>{v.buyDivCode}</option>
-                        })}
-                    </select>
-                </div>
+    ]
 
-                <div class="col-lg pt-20 ">
-                    <button class="btn btn-secondary search-btn btn-block"
-                        onClick={() => AddVisualSamplingPlan(fields.aqlType, fields.auditFormat, fields.unitCode, fields.buyerCode)}
-                    >Show Result</button>
-                </div>
-            </div> */}
-            <div class="row mt-25 main-tab pl-15 pr-15">
-                <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                            type="button" role="tab" aria-controls="home" aria-selected="true">Productivity Master </button>
-                    </li>
-                    {/* <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1" type="button" role="tab" aria-controls="profile" aria-selected="false">Pack audit Sampling plan</button>
-                    </li> */}
-                </ul>
-                <div class="tab-content p-15" id="myTabContent">
-                    <div class="tab-pane fade show active mb-70" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row mt-15">
+    const onClick = () => {
+        setShowResults(false)
+        setShowForm(true)
+        setbackBtnVisible(true)
+        // setbtnUpdateVisible(false)
+    }
+
+    const close = () => {
+        clearFields()
+    }
+    const [tableProps, setTableProps] = useState({
+        page: 0,
+        rowsPerPage: 10,
+        sortOrder: {
+            name: 'locCode',
+            direction: 'asc'
+        }
+    })
+
+    const updateTableProps = props => {
+        setTableProps({
+            ...tableProps,
+            ...props
+        })
+    }
+
+    function getDatas(locCode, factcode, linegroup) {
+        debugger;
+        setListLoading(true)
+        ApiCall({
+            path: API_URLS.GetProductivityList + "?loccode=" + locCode + "&factcode=" + factcode + "&linegroup=" + linegroup,
+        }).then(resp => {
+            setListLoading(false)
+            setList(resp.data)
+            console.log(resp.data)
+
+        }).catch(err => {
+            setListLoading(false)
+            message.error(err.message || err)
+        })
+    }
+    const back = () => {
+        setLoader(false)
+        onClose();
+        setShowResults(true)
+        setShowForm(false)
+        setProdFields({
+            ...Test
+        });
+        setProdFields([]);
+        setList([]);
+
+    }
+
+    const edit = async (locCode, factCode, lineGroup, noOfOperators, workingHrs, productType, subProductType, plaidType, difficultyLevel, startdate, enddate, type) => {
+        debugger;
+        setShowResults(false)
+        setShowForm(true)
+        setLoader(true)
+        setVisible(true);
+        ApiCall({
+            path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + locCode + "&factcode=" + factCode + "&linegroup=" + lineGroup + "&producttype=" + productType + "&subproducttype=" + subProductType + "&noofoperators=" + noOfOperators + "&plaidtype=" + plaidType + "&difficultylevel=" + difficultyLevel + "&workinghrs=" + workingHrs + "&Startdate=" + startdate + "&Enddate=" + enddate,
+        }).then(resp => {
+
+            const current = new Date(resp.data[0].lastSubmittedDate);
+            const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+
+            if (resp.data[0].data.length > 0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
+                setProductivityList(resp.data[0].data)
+                setBtnVisible(true);
+                setheaderFleids(true);
+                setBtnSaveVisible()
+            } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
+                alert("already data is exists. please changes correct date & last Submitted Date is " + date)
+                setProductivityList([]);
+                setBtnVisible(false);
+
+            } else if (resp.data[0].dateStatus == true && resp.data[0].dataStatus == true) {
+                setProductivityList(resp.data[0].data)
+                setBtnVisible(true);
+                setheaderFleids(true);
+                setBtnSaveVisible(false)
+            } else {
+                alert("Missing date please select correct date & last Submitted Date is " + date)
+                setProductivityList([]);
+                setBtnVisible(false);
+            }
+        })
 
 
-                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <div className="form-group">
-                                    <label> Start Date </label>
-                                    <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
-                                    <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
-                                        min={disableDate()}
-                                        onChange={inputOnChange("startdate")}
-                                        disabled={AddbtnVisible}
+        // try {
+        //     setShowResults(false)
+        //     setShowForm(true)
+        //     setLoader(true)
+        //     setVisible(true);
+        //     setbtnSaveVisible(false)
+        //     setbtnUpdateVisible(true)
+        //     let { data } = (supCategory && await getDataById(supplierId, supCategory, supCode))
+        //     if (!data) {
+        //         message.error("Data not found")
+        //         return
+        //     }
+        //     setFields({
+        //         supCategory: data.supCategory,
+        //         supCode: data.supCode,
+        //         supName: data.supName,
+        //         address1: data.address1,
+        //         address2: data.address2,
+        //         address3: data.address3,
+        //         city: data.city,
+        //         pinCode: data.pinCode,
+        //         country: data.country,
+        //         tngstNo: data.tngstNo,
+        //         tinNo: data.tinNo,
+        //         cstNo: data.cstNo,
+        //         panNo: data.panNo,
+        //         cinNo: data.cinNo,
+        //         emailId1: data.emailId1,
+        //         emailId2: data.emailId2,
+        //         contPerson1: data.contPerson1,
+        //         contPerson2: data.contPerson2,
+        //         contNo1: data.contNo1,
+        //         contNo2: data.contNo2,
+        //         faxNo: data.faxNo,
+        //         acctCode: data.acctCode,
+        //         tdsType: data.tdsType,
+        //         tdsCategory: data.tdsCategory,
+        //         strRegNo: data.strRegNo,
+        //         requestBy: data.requestBy,
+        //         arnNo: data.arnNo,
+        //         gstNo: data.gstNo,
+        //         supplierNo: data.supplierNo,
+        //         supplierGroup: data.supplierGroup,
+        //         paymentType: data.paymentType,
+        //         enterprise: data.enterprise,
+        //         epType: data.epType,
+        //         active: data.active
+        //     })
+        //     setLoader(false)
+        // } catch (err) {
+        //     setLoader(false)
+        //     message.error(typeof err == "string" ? err : "data not found")
+        // }
+    }
 
-                                    />
-                                    <span className="error"></span>
-                                </div>
-                            </div>
-                            <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <div className="form-group">
-                                    <label> End Date </label>
-                                    <small className='text-danger'> {fields.enddate === '' ? errors.enddate : ''}</small>
-                                    <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={fields.enddate}
-                                        // onChange={ToDateChangeHandle("enddate")}
-                                        onChange={inputOnChange("enddate")}
-                                        disabled={AddbtnVisible}
-                                    />
-                                    <span className="error"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+    return (
+
+        <>
+            {showResults &&
+                <div className='defect-master-main'>
+                    <div className='m-3'>
+                        <h6 className='m-0 p-0'>{name}</h6>
+
+                        <div className='row align-items-center mt-2'>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
                                 <label> Location </label>
-                                <small className='text-danger'> {fields.locCode === '' ? errors.locCode : ''}</small>
                                 <div class="main-select">
-                                    <select name="locCode" class="form-control SlectBox main-select" required
-                                        value={fields.locCode}
-                                        // onChange={LocationChangeHandle("locCode")}
-                                        onChange={inputOnChange("locCode")}
+                                    <select name="locCodel" class="form-control SlectBox main-select" required
+                                        value={Prodfields.locCodel}
+                                        onChange={inputOnChangeList("locCodel")}
                                         disabled={AddbtnVisible}
-
-                                    // onChange={e => { inputOnChange("locCode"); LocationChangeHandle("locCode") }}
                                     >
                                         <option value="">Select Location </option>
-                                        {LocationList.map((v, index) => {
+                                        {LocationList1.map((v, index) => {
                                             return <option key={index} value={v.locCode}>{v.locCode}</option>
                                         })}
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
                                 <label> Factory </label>
-                                <small className='text-danger'> {fields.factCode === '' ? errors.factCode : ''}</small>
                                 <div class="main-select">
-                                    <select name="factCode" class="form-control SlectBox main-select" required
-                                        value={fields.factCode}
-                                        onChange={inputOnChange("factCode")}
+                                    <select name="factCodel" class="form-control SlectBox main-select" required
+                                        value={Prodfields.factCodel}
+                                        onChange={inputOnChangeList("factCodel")}
                                         disabled={AddbtnVisible}
-                                    // onChange={factCodeChangeHandle("factCode")}
                                     >
                                         <option value="">Select Factory </option>
-                                        {Factoryist.map((v, index) => {
+                                        {Factoryist1.map((v, index) => {
                                             return <option key={index} value={v.uCode}>{v.uCode}</option>
                                         })}
                                     </select>
                                 </div>
                             </div>
-
-
-
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
                                 <label> Line Group </label>
-                                <small className='text-danger'> {fields.lineGroup === '' ? errors.lineGroup : ''}</small>
                                 <div class="main-select">
-                                    <select name="lineGroup" class="form-control SlectBox main-select" required
-                                        value={fields.lineGroup}
-                                        onChange={inputOnChange("lineGroup")}
+                                    <select name="lineGroupl" class="form-control SlectBox main-select" required
+                                        value={Prodfields.lineGroupl}
+                                        onChange={inputOnChangeList("lineGroupl")}
                                         disabled={AddbtnVisible}
                                     >
                                         <option value="">Select line Group </option>
-                                        {OperatorList.map((v, index) => {
+                                        {OperatorList1.map((v, index) => {
                                             return <option key={index} value={v}>{v}</option>
                                         })}
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> NoOfOperators </label>
-                                <small className='text-danger'> {fields.noOfOperators === '' ? errors.noOfOperators : ''}</small>
-                                <div class="main-select">
-                                    <select name="noOfOperators" class="form-control SlectBox main-select" required
-                                        value={fields.noOfOperators}
-                                        disabled={AddbtnVisible}
-                                        // onChange={inputOnChange("noOfOperators")}
-                                        onChange={OperatorsChangeHandle("noOfOperators")}
-                                    >
-                                        <option value="">Select no Of Operators </option>
-                                        {OperatorListNew.map((v, index) => {
-                                            return <option key={index} value={v}>{v}</option>
-                                        })}
-                                    </select>
-                                </div>
+
+
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-2 mt-1 text-end' >
+                                <button className='btn-sm btn defect-master-add' onClick={() => getDatas(Prodfields.locCodel, Prodfields.factCodel, Prodfields.lineGroupl)} >  Load List </button>
                             </div>
 
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> Working Hrs </label>
-                                <small className='text-danger'> {fields.workingHrs === '' ? errors.workingHrs : ''}</small>
-                                <div class="main-select">
-                                    <select name="workingHrs" class="form-control SlectBox main-select" required
-                                        value={fields.workingHrs}
-                                        disabled={AddbtnVisible}
-                                        onChange={inputOnChange("workingHrs")}
-                                    >
-                                        <option value="">Select working Hrs </option>
-                                        {WorkingHrsList.map((v, index) => {
-                                            return <option key={index} value={v}>{v}</option>
-                                        })}
 
-                                        {/* {OperatorList.map((v, index) => {
-                                            return <option key={index} value={v.workingHrs}>{v.workingHrs}</option>
-                                        })} */}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> Product Type </label>
-                                <small className='text-danger'> {fields.productType === '' ? errors.productType : ''}</small>
-                                <div class="main-select">
-                                    <select name="productType" class="form-control SlectBox main-select" required
-                                        value={fields.productType}
-                                        disabled={AddbtnVisible}
-                                        onChange={inputOnChange("productType")}
-                                    >
-                                        <option value="">Select Product Type </option>
-                                        {ProductTypeList.map((v, index) => {
-                                            return <option key={index} value={v.productType}>{v.productType}</option>
-                                        })}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label>  Sub Product Type </label>
-                                <small className='text-danger'> {fields.subProductType === '' ? errors.subProductType : ''}</small>
-                                <div class="main-select">
-                                    <select name="subProductType" class="form-control SlectBox main-select" required
-                                        value={fields.subProductType}
-                                        disabled={AddbtnVisible}
-                                        onChange={inputOnChange("subProductType")}
-                                    >
-                                        <option value="">Select Sub Product Type </option>
-                                        <option value="CARGO PANTS">CARGO PANTS </option>
-                                        <option value="CARGO SHORT">CARGO SHORT </option>
-                                        <option value="CARGOSHORT">CARGOSHORT </option>
-                                        <option value="PANTS 5 PKT">PANTS 5 PKT </option>
-                                        <option value="PANTS CHINO 4 PKT">PANTS CHINO 4 PKT </option>
-                                        <option value="SHORTS 5 PKT">SHORTS 5 PKT </option>
-                                        <option value="SHORTS CHINO 4 PKT">SHORTS CHINO 4 PKT </option>
-                                        <option value="SKIRT">SKIRT </option>
-                                        <option value="LADIES BLOUSE">LADIES BLOUSE </option>
-                                        <option value="LADIES DRESS">LADIES DRESS </option>
-                                        <option value="LADIES SHIRT/TOP">LADIES SHIRT/TOP </option>
-                                        <option value="JACKET">JACKET </option>
-                                        <option value="MEN SHIRT L/SLV">MEN SHIRT L/SLV </option>
-                                        <option value="SKIRT">SKIRT </option>
-                                        <option value="LADIES BLOUSE">LADIES BLOUSE </option>
-                                        <option value="LADIES DRESS">LADIES DRESS </option>
-                                        <option value="LADIES SHIRT/TOP">LADIES SHIRT/TOP </option>
-                                        <option value="MEN SHIRT L/SLV">MEN SHIRT L/SLV </option>
-                                        <option value="MENS SHIRT L/SLV">MENS SHIRT L/SLV </option>
-                                        <option value="MENS SHIRT S/SLV">MENS SHIRT S/SLV </option>
-
-
-
-
-                                        {/* {ProductTypeList.map((v, index) => {
-                                            return <option key={index} value={v.productType}>{v.productType}</option>
-                                        })} */}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> Fabric Type </label>
-                                <small className='text-danger'></small>
-                                <div class="main-select">
-                                    <select name="plaidType" class="form-control SlectBox main-select" required
-                                        value={fields.plaidType}
-                                        disabled={AddbtnVisible}
-                                        onChange={inputOnChange("plaidType")}
-                                    >
-                                        <option value="">Select Fabric Type </option>
-                                        {FabTypeList.map((v, index) => {
-                                            return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                        })}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> Difficulty Level </label>
-                                <small className='text-danger'></small>
-                                <div class="main-select">
-                                    <select name="difficultyLevel" class="form-control SlectBox main-select" required
-                                        value={fields.difficultyLevel}
-                                        disabled={AddbtnVisible}
-                                        // onChange={inputOnChange("difficultyLevel")}
-                                        onChange={difficultyLevelOnChange("difficultyLevel")}
-
-                                    >
-                                        <option value="">Select Difficulty Level </option>
-                                        {DifficultyLevelList.map((v, index) => {
-                                            return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                        })}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {
-                                headerFleids &&
-                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                    <label> Scaleup Day </label>
-                                    <small className='text-danger'></small>
-                                    <div class="main-select">
-                                        <select name="scaleUpDay" class="form-control SlectBox main-select" required disabled="disabled"
-                                            value={fields.scaleUpDay}
-                                            onChange={inputOnChange("scaleUpDay")}
-                                        >
-                                            <option value="">Select scale UpDay </option>
-                                            {ProductivityList.map((v, index) => {
-                                                return <option key={index} value={v.scaleUpDay}>{v.scaleUpDay}</option>
-                                            })}
-                                        </select>
-                                    </div>
-                                </div>
-
-                            }
-
-                            {
-                                headerFleids &&
-                                <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                    <div className="form-group">
-                                        <label> Scaleup Qty </label>
-                                        <Input type="text" name="scaleUpEffPer" className="form-control" id="ScaleUpEffPer" placeholder="ScaleUp Eff"
-                                            value={fields.scaleUpEffPer} onChange={inputOnChange("scaleUpEffPer")}
-                                        />
-
-                                    </div>
-                                </div>
-                            }
-
-                            {/* <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                <label> Peak Eff </label>
-                                <small className='text-danger'></small>
-                                <div class="main-select">
-                                    <select name="peakEff" class="form-control SlectBox main-select" required
-                                        value={fields.peakEff}
-                                        onChange={inputOnChange("peakEff")}
-                                    >
-                                        <option value="">Select peakEff </option>
-                                        <option value="Y">YES</option>
-                                        <option value="N" selected={true}>NO</option>
-                                    </select>
-                                </div>
-                            </div> */}
-
-                            {
-                                headerFleids &&
-                                <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                    <div className="form-group">
-                                        <label> Peak Eff </label>
-                                        <select className="form-control" name="peakEff" id='peakEff' value={fields.peakEff} onChange={inputOnChange("peakEff")} >
-                                            <option value="">- Peak Eff -</option>
-                                            <option value="Y">YES</option>
-                                            <option value="N" selected={true}>NO</option>
-                                        </select>
-
-                                    </div>
-                                </div>
-                            }
-
-                            {/* <div className='col-lg'>
-                                <div className='form-group'  >
-                                    <label>Pack-Qty From</label>
-                                    <small className='text-danger'>{fields.aqlvmDetlModels.packQtyFrom === '' ? errors.aqlvmDetlModels.packQtyFrom : ''}</small>
-                                    <input type="text" class="form-control disabled " placeholder='Enter Pack-Qty From' value={visualSampling.packQtyFrom == 0 ? '' : visualSampling.packQtyFrom}
-                                        id="packQtyFrom"
-                                        disabled={packQtyvisible}
-
-                                        onChange={inputOnChange("packQtyFrom")}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Pack-Qty To</label>
-                                    <small className='text-danger'>{fields.aqlvmDetlModels.packQtyTo === '' ? errors.aqlvmDetlModels.packQtyTo : ''}</small>
-                                    <input type="text" class="form-control" placeholder='Enter Pack-Qty To' value={visualSampling.packQtyTo == 0 ? '' : visualSampling.packQtyTo}
-                                        id="packQtyTo"
-                                        // disabled={visible}
-                                        disabled={packQtyvisible}
-                                        onChange={inputOnChange("packQtyTo")}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Sample Size</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Sample Size' value={visualSampling.sampleSize == 0 ? 0 : visualSampling.sampleSize}
-                                        id="sampleSize" onChange={inputOnChange("sampleSize")} disabled={visible}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Visual Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Visual Defect' value={visualSampling.maxAllowVisualDefects == 0 ? 0 : visualSampling.maxAllowVisualDefects}
-                                        id="maxAllowVisualDefects"
-                                        disabled={visible}
-                                        onChange={inputOnChange("maxAllowVisualDefects")}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Critical Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Critical Defect' value={visualSampling.maxAllowCriticalDefects == 0 ? 0 : visualSampling.maxAllowCriticalDefects}
-                                        id="maxAllowCriticalDefects"
-                                        disabled={visible}
-                                        onChange={inputOnChange("maxAllowCriticalDefects")}
-                                        onBlur={Defvalidation("maxAllowCriticalDefects")}
-                                    />
-                                </div>
-                            </div> */}
-
-                        </div>
-                        <div class="row mt-15">
-                            {/* <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Sewing Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Sewing Defect' value={visualSampling.maxAllowSewDefects == 0 ? 0 : visualSampling.maxAllowSewDefects}
-                                        id="maxAllowSewDefects"
-                                        disabled={visible}
-                                        onChange={inputOnChange("maxAllowSewDefects")}
-                                        onBlur={Defvalidation("maxAllowSewDefects")}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Other Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Other Defect' value={visualSampling.maxAllowOthDefects == 0 ? 0 : visualSampling.maxAllowOthDefects}
-                                        id="maxAllowOthDefects"
-                                        disabled={visible}
-                                        onChange={inputOnChange("maxAllowOthDefects")}
-                                        onBlur={Defvalidation("maxAllowOthDefects")}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Mesurement Pcs</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Mesurement Pcs' value={visualSampling.mesurementPcs == 0 ? 0 : visualSampling.mesurementPcs}
-                                        id="mesurementPcs"
-                                        disabled={visible}
-                                        onChange={inputOnChange("mesurementPcs")}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'>
-                                <div className='form-group'>
-                                    <label>Mesurement Defect</label>
-                                    <small className='text-danger'></small>
-                                    <input type="text" class="form-control" placeholder='Enter Mesurement Defect' value={visualSampling.maxAllowMesurementDefects == 0 ? 0 : visualSampling.maxAllowMesurementDefects}
-                                        id="maxAllowMesurementDefects"
-                                        disabled={visible}
-                                        onChange={inputOnChange("maxAllowMesurementDefects")}
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg'></div> */}
-                        </div>
-                        <div className='row d-flex my-xl-auto right-content'>
-                            <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
-                                {/* <div class="float-start">
-                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
-                                </div> */}
-                                <div class="float-start pl-5">
-                                    {
-                                        < button class="btn btn-primary search-btn btn-block" onClick={() => ViewList()}>View</button>
-                                    }
-
-                                </div>
-
-                                <div class="float-start pl-5">
-                                    {
-                                        btnVisible && < button class="btn btn-primary search-btn btn-block" onClick={() => AddProductivityList()}>Add to List</button>
-                                    }
-                                </div>
-                                <div class="float-start pl-5">
-                                    {
-                                        btnVisible &&
-                                        <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMastersave()}>Save</button>
-                                    }
-                                </div>
-
-                                <div class="float-start pl-5">
-                                    {
-                                        btnSaveVisible &&
-                                        <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMasterUpdate()}>Update</button>
-                                    }
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
-                            <div class="table-wrap">
-
-
-                                <table id="example" class="table table-striped edit-np f-l1">
-                                    <thead>
-                                        <tr>
-                                            <th className="text-center w-10">Actions</th>
-                                            <th className="" align='center'>Id</th>
-                                            <th className="" align='center'>Location</th>
-                                            <th className="" align='center'>Factory</th>
-                                            <th className="" align='center'>Start Date</th>
-                                            <th className="" align='center'>End Date</th>
-                                            <th className="" align='center'>No Of Operators</th>
-                                            <th className="" align='center'>WorkingHrs</th>
-                                            <th className="" align='center'>Product Type</th>
-                                            <th className="" align='center'>Fabric Type</th>
-                                            <th className="" align='center'>Difficulty Level</th>
-                                            <th className="" align='center'>Scaleup Day</th>
-                                            <th className="" align='center'>Scaleup Qty</th>
-                                            <th className="" align='center'>Peak Eff</th>
-
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {/* if(visible=="True") */}
-                                        {
-
-                                            ProductivityList.map((row, index) => (
-                                                <tr key={index}>
-                                                    <td align='center'>
-                                                        <div className='text-center' >
-                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191"
-                                                                onClick={() => { editProductivityMaster(row?.locCode, row?.scaleUpDay) }}
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                    <td align='center'> {index + 1} </td>
-                                                    <td align='center'>{row.locCode}</td>
-                                                    <td align='center'>{row.factCode}</td>
-                                                    <td align='center'>{row.startdate}</td>
-                                                    <td align='center'>{row.enddate}</td>
-                                                    <td align='center'>{row.noOfOperators}</td>
-                                                    <td align='center'>{row.workingHrs}</td>
-                                                    <td align='center'>{row.productType}</td>
-                                                    <td align='center'>{row.plaidType}</td>
-                                                    <td align='center'>{row.difficultyLevel}</td>
-                                                    <td align='center'>{index + 1}</td>
-                                                    <td align='center'>{row.scaleUpEffPer}</td>
-                                                    <td align='center'>{row.peakEff}</td>
-
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-2 mt-1 text-end'>
+                                <button className='btn-sm btn defect-master-add' onClick={onClick} onClose={onClose} visible={visible} > + Add New </button>
                             </div>
                         </div>
                     </div>
-
+                    <div>
+                        <CustomTableContainer
+                            columns={tableColumns}
+                            data={list}
+                            options={{
+                                download: !1,
+                                print: !1,
+                                filter: !1,
+                                viewColumns: !1,
+                                jumpToPage: !0,
+                                selectableRows: "none",
+                                rowsPerPageOptions: [10, 25, 50, 100],
+                                rowsPerPage: tableProps.rowsPerPage,
+                                page: tableProps.page,
+                                count: list.length,
+                                sortOrder: tableProps.sortOrder,
+                                onTableChange: (action, tableState) => {
+                                    if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                    const { page, rowsPerPage, sortOrder } = tableState
+                                    updateTableProps({
+                                        page, rowsPerPage, sortOrder
+                                    })
+                                }
+                            }}
+                        />
+                    </div>
+                    {listLoading && <div className='text-center'>
+                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                    </div>}
                 </div>
-            </div>
-        </div >
+            }
+            {showForm &&
+                <div class="container-fluid" >
+                    <div class="breadcrumb-header justify-content-between bread-list">
+                        <div class="w-100">
+                            <div class="d-flex border-bottom pb-15">
+                                <div class="me-auto ">
+                                    <a href="#myCollapse" data-bs-toggle="collapse" aria-expanded="true" class="text-black">
+                                        <h4 class="content-title float-start pr-20 border-0">
+                                            <span class="pr-10">
+                                                <img src={breadcrumbIcon} alt="" />
+                                            </span>
+                                            &nbsp; Productivity Master
+                                        </h4>
+                                    </a>
+                                </div>
+                                <div class="pt-15"></div>
+                            </div>
+                            <div class="col-lg"></div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+
+                    <div class="row mt-25 main-tab pl-15 pr-15">
+                        <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                    type="button" role="tab" aria-controls="home" aria-selected="true">Productivity Master </button>
+                            </li>
+                            {/* <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1" type="button" role="tab" aria-controls="profile" aria-selected="false">Pack audit Sampling plan</button>
+                    </li> */}
+                        </ul>
+                        <div class="tab-content p-15" id="myTabContent">
+                            <div class="tab-pane fade show active mb-70" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="row mt-15">
+
+
+                                    <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <div className="form-group">
+                                            <label> Start Date </label>
+                                            <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
+                                            <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
+                                                min={disablePastDate()}
+                                                onChange={inputOnChange("startdate")}
+                                                disabled={AddbtnVisible}
+
+                                            />
+                                            <span className="error"></span>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <div className="form-group">
+                                            <label> End Date </label>
+                                            <small className='text-danger'> {fields.enddate === '' ? errors.enddate : ''}</small>
+                                            <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={fields.enddate}
+                                                // onChange={ToDateChangeHandle("enddate")}
+                                                onChange={inputOnChange("enddate")}
+                                                disabled={AddbtnVisible}
+                                                min={disablePastDate()}
+                                            />
+                                            <span className="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Location </label>
+                                        <small className='text-danger'> {fields.locCode === '' ? errors.locCode : ''}</small>
+                                        <div class="main-select">
+                                            <select name="locCode" class="form-control SlectBox main-select" required
+                                                value={fields.locCode}
+                                                // onChange={LocationChangeHandle("locCode")}
+                                                onChange={inputOnChange("locCode")}
+                                                disabled={AddbtnVisible}
+
+                                            // onChange={e => { inputOnChange("locCode"); LocationChangeHandle("locCode") }}
+                                            >
+                                                <option value="">Select Location </option>
+                                                {LocationList.map((v, index) => {
+                                                    return <option key={index} value={v.locCode}>{v.locCode}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Factory </label>
+                                        <small className='text-danger'> {fields.factCode === '' ? errors.factCode : ''}</small>
+                                        <div class="main-select">
+                                            <select name="factCode" class="form-control SlectBox main-select" required
+                                                value={fields.factCode}
+                                                onChange={inputOnChange("factCode")}
+                                                disabled={AddbtnVisible}
+                                            // onChange={factCodeChangeHandle("factCode")}
+                                            >
+                                                <option value="">Select Factory </option>
+                                                {Factoryist.map((v, index) => {
+                                                    return <option key={index} value={v.uCode}>{v.uCode}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Line Group </label>
+                                        <small className='text-danger'> {fields.lineGroup === '' ? errors.lineGroup : ''}</small>
+                                        <div class="main-select">
+                                            <select name="lineGroup" class="form-control SlectBox main-select" required
+                                                value={fields.lineGroup}
+                                                onChange={inputOnChange("lineGroup")}
+                                                disabled={AddbtnVisible}
+                                            >
+                                                <option value="">Select line Group </option>
+                                                {OperatorList.map((v, index) => {
+                                                    return <option key={index} value={v}>{v}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> NoOfOperators </label>
+                                        <small className='text-danger'> {fields.noOfOperators === '' ? errors.noOfOperators : ''}</small>
+                                        <div class="main-select">
+                                            <select name="noOfOperators" class="form-control SlectBox main-select" required
+                                                value={fields.noOfOperators}
+                                                disabled={AddbtnVisible}
+                                                // onChange={inputOnChange("noOfOperators")}
+                                                onChange={OperatorsChangeHandle("noOfOperators")}
+                                            >
+                                                <option value="">Select no Of Operators </option>
+                                                {OperatorListNew.map((v, index) => {
+                                                    return <option key={index} value={v}>{v}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Working Hrs </label>
+                                        <small className='text-danger'> {fields.workingHrs === '' ? errors.workingHrs : ''}</small>
+                                        <div class="main-select">
+                                            <select name="workingHrs" class="form-control SlectBox main-select" required
+                                                value={fields.workingHrs}
+                                                disabled={AddbtnVisible}
+                                                onChange={inputOnChange("workingHrs")}
+                                            >
+                                                <option value="">Select working Hrs </option>
+                                                {WorkingHrsList.map((v, index) => {
+                                                    return <option key={index} value={v}>{v}</option>
+                                                })}
+
+                                                {/* {OperatorList.map((v, index) => {
+                                            return <option key={index} value={v.workingHrs}>{v.workingHrs}</option>
+                                        })} */}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Product Type </label>
+                                        <small className='text-danger'> {fields.productType === '' ? errors.productType : ''}</small>
+                                        <div class="main-select">
+                                            <select name="productType" class="form-control SlectBox main-select" required
+                                                value={fields.productType}
+                                                disabled={AddbtnVisible}
+                                                onChange={inputOnChange("productType")}
+                                            >
+                                                <option value="">Select Product Type </option>
+                                                {ProductTypeList.map((v, index) => {
+                                                    return <option key={index} value={v.productType}>{v.productType}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label>  Sub Product Type </label>
+                                        <small className='text-danger'> {fields.subProductType === '' ? errors.subProductType : ''}</small>
+                                        <div class="main-select">
+                                            <select name="subProductType" class="form-control SlectBox main-select" required
+                                                value={fields.subProductType}
+                                                disabled={AddbtnVisible}
+                                                onChange={inputOnChange("subProductType")}
+                                            >
+                                                <option value="">Select Sub Product Type </option>
+                                                <option value="CARGO PANTS">CARGO PANTS </option>
+                                                <option value="CARGO SHORT">CARGO SHORT </option>
+                                                <option value="CARGOSHORT">CARGOSHORT </option>
+                                                <option value="PANTS 5 PKT">PANTS 5 PKT </option>
+                                                <option value="PANTS CHINO 4 PKT">PANTS CHINO 4 PKT </option>
+                                                <option value="SHORTS 5 PKT">SHORTS 5 PKT </option>
+                                                <option value="SHORTS CHINO 4 PKT">SHORTS CHINO 4 PKT </option>
+                                                <option value="SKIRT">SKIRT </option>
+                                                <option value="LADIES BLOUSE">LADIES BLOUSE </option>
+                                                <option value="LADIES DRESS">LADIES DRESS </option>
+                                                <option value="LADIES SHIRT/TOP">LADIES SHIRT/TOP </option>
+                                                <option value="JACKET">JACKET </option>
+                                                <option value="MEN SHIRT L/SLV">MEN SHIRT L/SLV </option>
+                                                <option value="SKIRT">SKIRT </option>
+                                                <option value="LADIES BLOUSE">LADIES BLOUSE </option>
+                                                <option value="LADIES DRESS">LADIES DRESS </option>
+                                                <option value="LADIES SHIRT/TOP">LADIES SHIRT/TOP </option>
+                                                <option value="MEN SHIRT L/SLV">MEN SHIRT L/SLV </option>
+                                                <option value="MENS SHIRT L/SLV">MENS SHIRT L/SLV </option>
+                                                <option value="MENS SHIRT S/SLV">MENS SHIRT S/SLV </option>
+
+
+
+
+                                                {/* {ProductTypeList.map((v, index) => {
+                                            return <option key={index} value={v.productType}>{v.productType}</option>
+                                        })} */}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Fabric Type </label>
+                                        <small className='text-danger'></small>
+                                        <div class="main-select">
+                                            <select name="plaidType" class="form-control SlectBox main-select" required
+                                                value={fields.plaidType}
+                                                disabled={AddbtnVisible}
+                                                onChange={inputOnChange("plaidType")}
+                                            >
+                                                <option value="">Select Fabric Type </option>
+                                                {FabTypeList.map((v, index) => {
+                                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                        <label> Difficulty Level </label>
+                                        <small className='text-danger'></small>
+                                        <div class="main-select">
+                                            <select name="difficultyLevel" class="form-control SlectBox main-select" required
+                                                value={fields.difficultyLevel}
+                                                disabled={AddbtnVisible}
+                                                // onChange={inputOnChange("difficultyLevel")}
+                                                onChange={difficultyLevelOnChange("difficultyLevel")}
+
+                                            >
+                                                <option value="">Select Difficulty Level </option>
+                                                {DifficultyLevelList.map((v, index) => {
+                                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {
+                                        headerFleids &&
+                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                            <label> Scaleup Day </label>
+                                            <small className='text-danger'></small>
+                                            <div class="main-select">
+                                                <select name="scaleUpDay" class="form-control SlectBox main-select" required disabled="disabled"
+                                                    value={fields.scaleUpDay}
+                                                    onChange={inputOnChange("scaleUpDay")}
+                                                >
+                                                    <option value="">Select scale UpDay </option>
+                                                    {ProductivityList.map((v, index) => {
+                                                        return <option key={index} value={v.scaleUpDay}>{v.scaleUpDay}</option>
+                                                    })}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    }
+
+                                    {
+                                        headerFleids &&
+                                        <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                            <div className="form-group">
+                                                <label> Scaleup Qty </label>
+                                                <Input type="text" name="scaleUpEffPer" className="form-control" id="ScaleUpEffPer" placeholder="ScaleUp Eff"
+                                                    value={fields.scaleUpEffPer} onChange={inputOnChange("scaleUpEffPer")}
+                                                />
+
+                                            </div>
+                                        </div>
+                                    }
+                                    {
+                                        headerFleids &&
+                                        <div className="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                            <div className="form-group">
+                                                <label> Peak Eff </label>
+                                                <select className="form-control" name="peakEff" id='peakEff' value={fields.peakEff} onChange={inputOnChange("peakEff")} >
+                                                    <option value="">- Peak Eff -</option>
+                                                    <option value="Y">YES</option>
+                                                    <option value="N" selected={true}>NO</option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+                                <div class="row mt-15">
+
+                                </div>
+                                <div className='row d-flex my-xl-auto right-content'>
+                                    <div class="col-12 mg-t-10 mg-md-t-0 p-0 mr-10">
+
+                                        <div class="float-start pl-5">
+                                            {
+                                                < button class="btn btn-primary search-btn btn-block" onClick={() => ViewList()}>View</button>
+                                            }
+
+                                        </div>
+                                        <div class="float-start pl-5">
+                                            {
+                                              backBtnVisible &&  < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
+                                            }
+
+                                        </div>
+
+                                        <div class="float-start pl-5">
+                                            {
+                                                btnVisible && < button class="btn btn-primary search-btn btn-block" onClick={() => AddProductivityList()}>Add to List</button>
+                                            }
+                                        </div>
+                                        <div class="float-start pl-5">
+                                            {
+                                                btnVisible &&
+                                                <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMastersave()}>Save</button>
+                                            }
+                                        </div>
+
+                                        <div class="float-start pl-5">
+                                            {
+                                                btnSaveVisible &&
+                                                <button class="btn btn-sm defect-master-add search-btn btn-block" onClick={() => ProductivityMasterUpdate()}>Update</button>
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                                <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                                    <div class="table-wrap">
+
+
+                                        <table id="example" class="table table-striped edit-np f-l1">
+                                            <thead>
+                                                <tr>
+                                                    <th className="text-center w-10">Actions</th>
+                                                    <th className="" align='center'>Id</th>
+                                                    <th className="" align='center'>Location</th>
+                                                    <th className="" align='center'>Factory</th>
+                                                    <th className="" align='center'>Start Date</th>
+                                                    <th className="" align='center'>End Date</th>
+                                                    <th className="" align='center'>No Of Operators</th>
+                                                    <th className="" align='center'>WorkingHrs</th>
+                                                    <th className="" align='center'>Product Type</th>
+                                                    <th className="" align='center'>Fabric Type</th>
+                                                    <th className="" align='center'>Difficulty Level</th>
+                                                    <th className="" align='center'>Scaleup Day</th>
+                                                    <th className="" align='center'>Scaleup Qty</th>
+                                                    <th className="" align='center'>Peak Eff</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {/* if(visible=="True") */}
+                                                {
+
+                                                    ProductivityList.map((row, index) => (
+                                                        <tr key={index}>
+                                                            <td align='center'>
+                                                                <div className='text-center' >
+                                                                    <FontAwesomeIcon icon={faPenToSquare} color="#919191"
+                                                                        onClick={() => { editProductivityMaster(row?.locCode, row?.scaleUpDay) }}
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td align='center'> {index + 1} </td>
+                                                            <td align='center'>{row.locCode}</td>
+                                                            <td align='center'>{row.factCode}</td>
+                                                            <td align='center'>{row.startdate}</td>
+                                                            <td align='center'>{row.enddate}</td>
+                                                            <td align='center'>{row.noOfOperators}</td>
+                                                            <td align='center'>{row.workingHrs}</td>
+                                                            <td align='center'>{row.productType}</td>
+                                                            <td align='center'>{row.plaidType}</td>
+                                                            <td align='center'>{row.difficultyLevel}</td>
+                                                            <td align='center'>{index + 1}</td>
+                                                            <td align='center'>{row.scaleUpEffPer}</td>
+                                                            <td align='center'>{row.peakEff}</td>
+
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div >
+            }
+        </>
     )
 }

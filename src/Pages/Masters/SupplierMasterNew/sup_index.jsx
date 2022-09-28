@@ -32,6 +32,7 @@ const requiredFields = ["supCategory", "supCode", "supName", "city", "country", 
     initialErrorMessages = {
         // supplierId: 0,
         supCategory: "",
+        supplierId: 0,
         supCode: "",
         supName: "",
         address1: "",
@@ -68,6 +69,7 @@ const requiredFields = ["supCategory", "supCode", "supName", "city", "country", 
     },
     initialFieldValues = {
         id: 0,
+        supplierId: 0,
         supCategory: "",
         supCode: "",
         supName: "",
@@ -236,19 +238,21 @@ function SupplierMasterNew({ name }) {
         debugger;
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'MatTypeIndex') {
+        if (name === 'acctCode') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['MatTypeIndex'] = ''
+                err['acctCode'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['MatTypeIndex'] = "Please enter numbers only"
+                err['acctCode'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        } else {
+        }
+
+        else {
             setFields({ ...fields, [name]: value })
         }
 
@@ -290,8 +294,8 @@ function SupplierMasterNew({ name }) {
     }
 
 
-    const save = () => {
-
+    const save = async (supplierId, supCategory, supCode, type) => {
+        debugger;
         if (loader) return
         let err = {}, validation = true
         debugger;
@@ -304,26 +308,63 @@ function SupplierMasterNew({ name }) {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_SUPPLIER_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
+            if (type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_SUPPLIER_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
+            } else {
+                debugger;
+                ItrApiService.GET({
+                    url: API_URLS.GET_SUPPLIER_MASTER_BY_ID + "/" + supplierId + "/" + supCategory + "/" + supCode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_SUPPLIER_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            setFields({ ...fields })
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (supCode.toUpperCase() === res.data.supCode.toUpperCase()) {
+                            err = "sup Category & Supplier Code Already Available...!"
+                            message.error(err)
 
-                //  fields['ftdOprName'] = tempOprName
-                setFields({ ...fields })
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
+                        }
+                    }
+                });
+            }
+
+
         }
     }
 
@@ -618,9 +659,6 @@ function SupplierMasterNew({ name }) {
 
     return (
         <>
-
-
-
             {showResults &&
                 <div className='defect-master-main'>
                     <div className='m-3'>
@@ -1093,14 +1131,14 @@ function SupplierMasterNew({ name }) {
                                 <button class="btn btn-primary search-btn btn-block  " onClick={close}>Cancel</button>
                             </div>
                             <div class="">
-                                { btnSaveVisible &&
-                                    <button class="btn btn-success search-btn btn-block ml-10" onClick={save}>Save</button>
+                                {btnSaveVisible &&
+                                    <button class="btn btn-success search-btn btn-block ml-10" onClick={() => save(fields.supplierId, fields.supCategory, fields.supCode, 'save')}>Save</button>
                                 }
                             </div>
                             <div class="">
                                 {
                                     btnUpdateVisible &&
-                                    <button class="btn btn-success search-btn btn-block ml-10" onClick={save}>Update</button>
+                                    <button class="btn btn-success search-btn btn-block ml-10" onClick={() => save(fields.supplierId, fields.supCategory, fields.supCode, 'update')}>Update</button>
                                 }
                             </div>
                             <div class="">

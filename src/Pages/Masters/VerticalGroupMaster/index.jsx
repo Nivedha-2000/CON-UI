@@ -4,7 +4,7 @@ import '../DefectMasters/DefectMasters.css';
 import { Drawer, Switch, message, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
-
+import { ItrApiService } from '@afiplfeed/itr-ui';
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
 import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import ApiCall from "../../../services"
@@ -35,6 +35,8 @@ function VerticalGroupMaster({ name }) {
     const add = () => {
         try {
             setVisible(true);
+            setSaveVisible(true)
+            setUpdateVisible(false)
             clearFields()
         } catch (err) {
             setLoader(false)
@@ -42,24 +44,26 @@ function VerticalGroupMaster({ name }) {
         }
     };
 
-    const getDataById = id => {
+    const getDataById = vGcode => {
         return ApiCall({
-            path: API_URLS.GET_VERTICAL_GROUP_MASTER_BY_ID + "/" + id,
+            path: API_URLS.GET_VERTICAL_GROUP_MASTER_BY_ID + "/" + vGcode,
         })
     }
 
-    const edit = async id => {
+    const edit = async vGcode => {
         try {
             setLoader(true)
             setVisible(true);
-            let { data } = (await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            let { data } = (vGcode && await getDataById(vGcode))
             data = Array.isArray(data) ? data[0] : data
             if (!data) {
                 message.error("Data not found")
                 return
             }
             setFields({
-                id,
+                // id,
                 vGcode: data.vGcode,
                 vgName: data.vgName,
                 active: data.active,
@@ -79,6 +83,8 @@ function VerticalGroupMaster({ name }) {
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
     const [tableProps, setTableProps] = useState({
         page: 0,
         rowsPerPage: 10,
@@ -97,8 +103,11 @@ function VerticalGroupMaster({ name }) {
 
     const inputOnChange = name => e => {
         let value = e.target.value
-    //    if (name == "unitperPack") value = validateInputOnKeyup(e)
-        setFields({ ...fields, [name]: value })
+        if (name === 'vGcode') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        } else {
+            setFields({ ...fields, [name]: value })
+        }
     }
 
     const [listLoading, setListLoading] = useState(false);
@@ -110,7 +119,7 @@ function VerticalGroupMaster({ name }) {
         ...initialErrorMessages
     })
 
-    const save = () => {
+    const save = async (vGcode, Type) => {
         if (loader) return
         let err = {}, validation = true
         requiredFields.forEach(f => {
@@ -122,22 +131,59 @@ function VerticalGroupMaster({ name }) {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_VERTICAL_GROUP_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-                message.error(err.message || err)
-            })
+
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_VERTICAL_GROUP_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    message.error(err.message || err)
+                })
+            } else {
+                ItrApiService.GET({
+                    url: API_URLS.GET_VERTICAL_GROUP_MASTER_BY_ID + "/" + vGcode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_VERTICAL_GROUP_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (vGcode.toUpperCase() === res.data.vGcode.toUpperCase()) {
+                            err = "Vertical Group code Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -161,12 +207,12 @@ function VerticalGroupMaster({ name }) {
         })
     }
 
-   
-   
+
+
 
     useEffect(() => {
         getDatas()
-       // getBuyerList()
+        // getBuyerList()
     }, []);
 
     const tableColumns = [
@@ -201,7 +247,7 @@ function VerticalGroupMaster({ name }) {
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
-                <h6 className='m-0 p-0' style={{fontWeight: "bold"}}>{name}</h6>
+                <h6 className='m-0 p-0' style={{ fontWeight: "bold" }}>{name}</h6>
 
                 <div className='row align-items-center mt-2'>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
@@ -248,6 +294,13 @@ function VerticalGroupMaster({ name }) {
                 <>
                     <div>
                         {
+                            saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.vGcode, 'save')}> Save </button>
+                        }
+                        {
+                            updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.vGcode, 'update')}> Update </button>
+                        }
+
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Save" : "Update"} </button>
                                 : (
@@ -255,7 +308,7 @@ function VerticalGroupMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={e => {
@@ -275,7 +328,7 @@ function VerticalGroupMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Vertical Group code' disabled={fields.id != 0}
                             value={fields.vGcode} maxLength="10"
                             id="vGcode"
-                            onChange={inputOnChange("vGcode")} 
+                            onChange={inputOnChange("vGcode")}
                             required />
                     </div>
 
@@ -287,7 +340,7 @@ function VerticalGroupMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Vertical Group  name'
                             value={fields.vgName} maxLength="50"
                             id="vgName"
-                            onChange={inputOnChange("vgName")} 
+                            onChange={inputOnChange("vgName")}
                             required />
                     </div>
 

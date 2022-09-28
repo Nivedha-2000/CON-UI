@@ -4,7 +4,7 @@ import '../DefectMasters/DefectMasters.css';
 import { Drawer, Switch, message, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
-
+import { ItrApiService } from '@afiplfeed/itr-ui';
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
 import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import ApiCall from "../../../services"
@@ -36,6 +36,8 @@ function ProjectMaster({ name }) {
     const add = () => {
         try {
             setVisible(true);
+            setSaveVisible(true)
+            setUpdateVisible(false)
             clearFields()
         } catch (err) {
             setLoader(false)
@@ -43,24 +45,26 @@ function ProjectMaster({ name }) {
         }
     };
 
-    const getDataById = id => {
+    const getDataById = pcode => {
         return ApiCall({
-            path: API_URLS.GET_PROJECT_MASTER_BY_ID + "/" + id,
+            path: API_URLS.GET_PROJECT_MASTER_BY_ID + "/" + pcode,
         })
     }
 
-    const edit = async id => {
+    const edit = async pcode => {
         try {
             setLoader(true)
             setVisible(true);
-            let { data } = (await getDataById(id))
+            setSaveVisible(false)
+            setUpdateVisible(true)
+            let { data } = (pcode && await getDataById(pcode))
             data = Array.isArray(data) ? data[0] : data
             if (!data) {
                 message.error("Data not found")
                 return
             }
             setFields({
-                id,
+                // id,
                 pcode: data.pcode,
                 pName: data.pName,
                 active: data.active,
@@ -98,8 +102,12 @@ function ProjectMaster({ name }) {
 
     const inputOnChange = name => e => {
         let value = e.target.value
-    //    if (name == "unitperPack") value = validateInputOnKeyup(e)
-        setFields({ ...fields, [name]: value })
+        if (name === 'pcode') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        } else {
+            setFields({ ...fields, [name]: value })
+        }
+
     }
 
     const [listLoading, setListLoading] = useState(false);
@@ -107,11 +115,13 @@ function ProjectMaster({ name }) {
     const [pcode, setpcodeList] = useState([]);
     const [pName, setpNameList] = useState([]);
     const [list, setList] = useState([]);
+    const [saveVisible, setSaveVisible] = useState(true);
+    const [updateVisible, setUpdateVisible] = useState(false);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
     })
 
-    const save = () => {
+    const save = async (pcode, Type) => {
         if (loader) return
         let err = {}, validation = true
         requiredFields.forEach(f => {
@@ -123,22 +133,60 @@ function ProjectMaster({ name }) {
         setErrors({ ...initialErrorMessages, ...err })
         if (validation) {
             setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_PROJECT_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-                message.error(err.message || err)
-            })
+            if (Type == "update") {
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_PROJECT_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    getDatas()
+                }).catch(err => {
+                    setLoader(false)
+                    message.error(err.message || err)
+                })
+            } else {
+                debugger;
+                ItrApiService.GET({
+                    url: API_URLS.GET_PROJECT_MASTER_BY_ID + "/" + pcode,
+                    appCode: "CNF"
+                }).then(res => {
+                    if (res.Success == false) {
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_PROJECT_MASTER,
+                            data: {
+                                ...fields,
+                                hostName: getHostName()
+                            }
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose()
+                            getDatas()
+                        }).catch(err => {
+                            setLoader(false)
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        setLoader(false);
+                        if (pcode.toUpperCase() === res.data.pcode.toUpperCase()) {
+                            err = "Project code Already Available"
+                            message.error(err)
+
+                        }
+                    }
+                });
+
+            }
+
+
         }
     }
 
@@ -162,12 +210,12 @@ function ProjectMaster({ name }) {
         })
     }
 
-   
-   
+
+
 
     useEffect(() => {
         getDatas()
-       // getBuyerList()
+        // getBuyerList()
     }, []);
 
     const tableColumns = [
@@ -202,7 +250,7 @@ function ProjectMaster({ name }) {
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
-                <h6 className='m-0 p-0' style={{fontWeight: "bold"}}>{name}</h6>
+                <h6 className='m-0 p-0' style={{ fontWeight: "bold" }}>{name}</h6>
 
                 <div className='row align-items-center mt-2'>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
@@ -249,6 +297,13 @@ function ProjectMaster({ name }) {
                 <>
                     <div>
                         {
+                            saveVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.pcode, 'save')}> Save </button>
+                        }
+                        {
+                            updateVisible && <button className='btn-sm btn defect-master-save mt-1 w-100' onClick={() => save(fields.pcode, 'update')}> Update </button>
+                        }
+
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id == 0 ? "Save" : "Update"} </button>
                                 : (
@@ -256,7 +311,7 @@ function ProjectMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={e => {
@@ -277,7 +332,7 @@ function ProjectMaster({ name }) {
                             value={fields.pcode} maxLength="10"
                             id="pcode"
                             disabled={fields.id != 0}
-                            onChange={inputOnChange("pcode")} 
+                            onChange={inputOnChange("pcode")}
                             required />
                     </div>
 
@@ -289,7 +344,7 @@ function ProjectMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Project name'
                             value={fields.pName} maxLength="50"
                             id="pName"
-                            onChange={inputOnChange("pName")} 
+                            onChange={inputOnChange("pName")}
                             required />
                     </div>
 
