@@ -374,7 +374,7 @@ export default function AqlMaster() {
 
         let err = {}, validation = true
 
-        debugger;
+     
         requiredVisualsample.forEach(f => {
             if (visualSampling[f] === "") {
                 err[f] = "This field is required"
