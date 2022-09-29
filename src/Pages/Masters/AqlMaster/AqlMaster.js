@@ -10,6 +10,7 @@ import ApiCall from "../../../services";
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
 import { Construction, Deblur } from '@mui/icons-material';
 import { findDOMNode } from 'react-dom';
+//import { NULL } from 'node-sass';
 
 
 const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo", "sampleSize", "noofCtnsFrom", "noofCtnsTo", "packSamples",
@@ -17,6 +18,7 @@ const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "pack
     //     "maxAllowOthDefects", "maxAllowMesurementDefects"
 ],
     requiredFieldsHeader = ["aqlType", "auditFormat", "unitCode", "buyerCode"],
+    requiredVisualsample = ["packQtyFrom", "packQtyTo", "sampleSize"],
     initialErrorMessages = {
         id: 0,
         aqlType: "",
@@ -223,7 +225,7 @@ export default function AqlMaster() {
         //  txtdisabled();
         // console.log(fields.aqlvmDetlModels.length)
         // console.log(errors.aqlvmDetlModels.length)
-        // debugger;
+
     }, []);
 
     const getAqlType = () => {
@@ -298,7 +300,7 @@ export default function AqlMaster() {
         });
     }
     function AddVisualSamplingPlan(aqlType, auditFormat, unitCode, buyerCode) {
-        debugger;
+
 
 
         let err = {}, validation = true
@@ -371,8 +373,9 @@ export default function AqlMaster() {
     function AddVisualSamPlan() {
 
         let err = {}, validation = true
+
         debugger;
-        requiredFields.forEach(f => {
+        requiredVisualsample.forEach(f => {
             if (visualSampling[f] === "") {
                 err[f] = "This field is required"
                 validation = false
@@ -383,18 +386,12 @@ export default function AqlMaster() {
                 validation = false
                 return false;
             }
-            // else if (fields.aqlvmDetlModels[f] === "") {
-            //     err[f] = "This field is required"
-            //     validation = false
-            //     return false;
-            // }
-
             else {
                 validation = true
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
-        debugger;
+
         // fields.aqlvmDetlModels.push(visualSampling)
         // clearFieldsVisualSam();
         let len = fields.aqlvmDetlModels.filter(a => a.active == 'Y').length;
@@ -409,9 +406,15 @@ export default function AqlMaster() {
             if (parseInt(packqtyF, 10) < parseInt(CurPackqtyF, 10) && parseInt(packqtyF, 10) < parseInt(CurpackqtyT, 10)) {
                 if (visualSampling.sampleSize > 0) {
                     if (CurPackqtyF < CurpackqtyT) {
-                        fields.aqlvmDetlModels.push(visualSampling)
-                        console.log(fields);
-                        clearFieldsVisualSam();
+                        let nextpackqtyF = packqtyF + 1;
+                        if (nextpackqtyF == CurPackqtyF) {
+                            fields.aqlvmDetlModels.push(visualSampling)
+                            console.log(fields);
+                            clearFieldsVisualSam();
+                        }else{
+                            message.error("Pack-Qty From start with " + nextpackqtyF)
+                        }
+                      
                     } else {
                         message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
                     }
@@ -424,12 +427,22 @@ export default function AqlMaster() {
                 message.error("This range of Pack-Qty From & Pack-Qty To already exists.....!")
             }
         } else {
-            debugger;
-            if (visualSampling.packQtyFrom > 0 && visualSampling.sampleSize > 0) {
+
+            if (visualSampling.packQtyFrom > 0) {
                 if (visualSampling.packQtyFrom < visualSampling.packQtyTo) {
-                    fields.aqlvmDetlModels.push(visualSampling)
-                    console.log(fields);
-                    clearFieldsVisualSam();
+                    if (visualSampling.sampleSize > 0) {
+                        if (visualSampling.packQtyFrom == 1) {
+                            fields.aqlvmDetlModels.push(visualSampling)
+                            console.log(fields);
+                            clearFieldsVisualSam();
+                        } else {
+                            message.error("Please start with packQty 1 !")
+                        }
+
+                    } else {
+                        message.error("Please enter sample Size .....!")
+                    }
+
                 } else {
                     message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
                 }
@@ -460,21 +473,28 @@ export default function AqlMaster() {
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
-        debugger;
+
         let len = fields.aqlpkDetlModels.filter(a => a.active == 'Y').length;
         let CartonF = 0;
         let CartonT = 0;
-
-        if (len > 0) {
+        let CurpackSamples = parseInt(packAuditSampling.packSamples);
+        if (len > 0 && validation == true) {
             CartonF = parseInt(fields.aqlpkDetlModels[len - 1].noofCtnsTo);
             let CurCartonF = parseInt(packAuditSampling.noofCtnsFrom);
             let CurCartonT = parseInt(packAuditSampling.noofCtnsTo);
+
             if (parseInt(CartonF, 10) < parseInt(CurCartonF, 10) && parseInt(CartonF, 10) < parseInt(CurCartonT, 10)) {
-                if (packAuditSampling.packSamples > 0) {
+
+                if (parseInt(CurpackSamples, 10) > 0) {
                     if (CurCartonF < CurCartonT) {
-                        fields.aqlpkDetlModels.push(packAuditSampling)
-                        clearFieldsPackAuditSam();
-                        console.log(fields)
+                        let nextCartonF = CartonF + 1;
+                        if (nextCartonF == CurCartonF) {
+                            fields.aqlpkDetlModels.push(packAuditSampling)
+                            clearFieldsPackAuditSam();
+                            console.log(fields)
+                        } else {
+                            message.error("Carton From start with " + nextCartonF)
+                        }
                     } else {
                         message.error("Carton From should be lesser than Carton To .....!")
                     }
@@ -490,9 +510,18 @@ export default function AqlMaster() {
         } else {
             if (packAuditSampling.noofCtnsFrom > 0) {
                 if (packAuditSampling.noofCtnsFrom < packAuditSampling.noofCtnsTo) {
-                    clearFieldsPackAuditSam();
-                    fields.aqlpkDetlModels.push(packAuditSampling)
-                    console.log(fields)
+                    if (parseInt(CurpackSamples, 10) > 0 && CurpackSamples != "") {
+                        if (packAuditSampling.noofCtnsFrom == 1) {
+                            clearFieldsPackAuditSam();
+                            fields.aqlpkDetlModels.push(packAuditSampling)
+                        } else {
+                            message.error("Please start with Carton From 1 !")
+                        }
+
+                    } else {
+                        message.error("Please enter pack Samples .....!")
+                    }
+
                 } else {
                     message.error("Carton From should be lesser than Carton To .....!")
                 }
@@ -510,7 +539,7 @@ export default function AqlMaster() {
         console.log(visualSampling);
         // fields.aqlvmDetlModels.filter(q=>q.id ==visualSampling.id)[0].push(visualSampling)
 
-        debugger;
+
         let toUpdateData = fields.aqlvmDetlModels.map((item) => {
             if (item.id === visualSampling.id) {
                 item.aqlHead_ID = visualSampling.aqlHead_ID;
@@ -539,7 +568,7 @@ export default function AqlMaster() {
     }
 
     function UpdatePackAuditSamPlan() {
-        debugger;
+
         setAddBtnPasVisible(true)
         setBtnPasVisible(false);
         let toUpdatePackAuditSamPlan = fields.aqlpkDetlModels.map((item1) => {
@@ -564,7 +593,7 @@ export default function AqlMaster() {
         setCartonFromVisible(false);
     }
     const editVisualSampling = (packQtyFrom) => {
-        // debugger;
+
         setEditVisible(false)
         setBtnVisible(true);
         setAddBtnVisible(false);
@@ -576,7 +605,7 @@ export default function AqlMaster() {
     };
 
     const removeVisualSampling = (row) => {
-        debugger;
+
         if (row != '') {
             // let toUpdateData1 = fields.aqlvmDetlModels.filter(a => a.id != row);
             // toUpdateData1.active=
@@ -593,22 +622,22 @@ export default function AqlMaster() {
                 }
                 return item;
             });
-           // setVisualSampling({ ...toUpdateData1 });
-           setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+            // setVisualSampling({ ...toUpdateData1 });
+            setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
         }
     }
 
     const removepkDetl = (row1) => {
-        
+
         let toUpdatePackAuditSamPlan1 = fields.aqlpkDetlModels.map((item1) => {
             if (item1.noofCtnsFrom === row1) {
                 item1.active = "N";
             }
             return item1;
         });
-        setFields({ ...fields, aqlpkDetlModels: toUpdatePackAuditSamPlan1 });        
+        setFields({ ...fields, aqlpkDetlModels: toUpdatePackAuditSamPlan1 });
         console.log(fields);
-      
+
     }
 
     const editpkDetl = (row1) => {
@@ -628,7 +657,7 @@ export default function AqlMaster() {
 
         if (loader) return
         let err = {}, validation = true
-        debugger;
+
         requiredFields.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
@@ -668,27 +697,49 @@ export default function AqlMaster() {
 
     const Measurementvalidation = name => e => {
         let value = e.target.value
-        if (name === 'mesurementPcs' || name === 'maxAllowMesurementDefects') {
-            debugger;
+        if (name === 'mesurementPcs') {
+
             let MP = visualSampling.mesurementPcs;
             let MAMD = visualSampling.maxAllowMesurementDefects;
 
             //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
             if (parseInt(MP, 10) < parseInt(MAMD, 10)) {
-                setVisualSampling({ ...visualSampling, [name]: '' });
+
+                setVisualSampling({ ...visualSampling, mesurementPcs: 0, maxAllowMesurementDefects: 0 });
                 message.error('Measurement Defect should be less than Measurement Pcs .....! ')
+            }
+        }
+        else if (name === 'maxAllowMesurementDefects') {
+            let MP = visualSampling.mesurementPcs;
+            let MAMD = visualSampling.maxAllowMesurementDefects;
+            if (parseInt(MP, 10) < parseInt(MAMD, 10)) {
+                setVisualSampling({ ...visualSampling, [name]: '' });
+                //     setPackAuditSampling({ ...packAuditSampling, packSamples:0,maxAllowPackDefects:0 });
+                message.error('maxAllow Mesurement Defect should be less than Measurement Pcs .....! ')
             }
         }
     }
     const PackDefectvalidation = name => e => {
         let value = e.target.value
-        if (name === 'packSamples' || name === 'maxAllowPackDefects') {
-            debugger;
+        if (name === 'packSamples') {
+
             let PS = packAuditSampling.packSamples;
             let MAPD = packAuditSampling.maxAllowPackDefects;
 
             //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
             if (parseInt(PS, 10) < parseInt(MAPD, 10)) {
+                setPackAuditSampling({ ...packAuditSampling, packSamples: 0, maxAllowPackDefects: 0 });
+                message.error('Pack Defect should be less than Pack Sample .....! ')
+            }
+        } else if (name === 'maxAllowPackDefects') {
+
+            let PS = packAuditSampling.packSamples;
+            let MAPD = packAuditSampling.maxAllowPackDefects;
+
+            //   let tot = parseInt(CD) + parseInt(SD) + parseInt(OD);
+            if (parseInt(PS, 10) < parseInt(MAPD, 10)) {
+
+                //  setVisualSampling({ ...visualSampling, maxAllowCriticalDefects: 0, maxAllowSewDefects: 0, maxAllowOthDefects: 0 });
                 setPackAuditSampling({ ...packAuditSampling, [name]: '' });
                 message.error('Pack Defect should be less than Pack Sample .....! ')
             }
@@ -698,7 +749,7 @@ export default function AqlMaster() {
 
     const Defvalidation = name => e => {
         let value = e.target.value
-        debugger;
+
         if (name === 'maxAllowVisualDefects') {
 
             let VD = visualSampling.maxAllowVisualDefects === "" ? 0 : visualSampling.maxAllowVisualDefects;
@@ -735,7 +786,7 @@ export default function AqlMaster() {
 
 
     const inputOnChange = name => e => {
-        debugger;
+
         let err = {}, validation = true
         let value = e.target.value
         if (name === 'packQtyFrom') {
@@ -1347,7 +1398,7 @@ export default function AqlMaster() {
                             </div>
                             <div className='col-lg'>
                                 <div className='form-group'>
-                                    <label>Pack Sample</label>
+                                    <label>Pack Sample<span className='text-danger'>*  </span></label>
 
                                     <input type="text" class="form-control" placeholder='Enter Pack Sample'
                                         value={packAuditSampling.packSamples == 0 ? '' : packAuditSampling.packSamples}
