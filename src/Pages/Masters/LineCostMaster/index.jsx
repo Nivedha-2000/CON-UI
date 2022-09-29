@@ -152,12 +152,19 @@ function LineCostMaster({ name }) {
 
     const inputOnChange1 = (index, name) => e => {
         debugger;
+        console.log(rowData);
         let value = e.target.value
         let res = rowData[index];
-        setFields( arr => [...fields, `${arr.length}`]);
+        let curname1=name;
+      
+        setRowData({ ...rowData  })
+    
+
+       // setRowData({ ...rowData[index], [name]: value })
+     //   setFields( arr => [...fields, `${arr.length}`]);
       
       //  setFields({ fields, [name]: value })
-        console.log(fields)
+     ///   console.log(fields)
 
 
     //    setRowDataTemp({ ...rowDataTemp[0], [name]: value })
@@ -278,9 +285,9 @@ function LineCostMaster({ name }) {
             }).then(respp => {
                 console.log(respp)
                 if (Array.isArray(respp.data)) {
-                    console.log(respp.data)
                     //setList(respp.data)
                     setRowData(respp.data)
+                  
                 } else {
                     message.error("Response data is expected as array")
                 }
