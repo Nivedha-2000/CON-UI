@@ -12,6 +12,7 @@ import DefectMaster from '../Pages/Masters/DefectMasters/DefectMasters';
 import OperationMaster from '../Pages/Masters/OperationMaster/OperationMaster';
 import SewingLineMaster from '../Pages/Masters/SewingLineMaster/SewingLineMaster';
 import AqlMaster from '../Pages/Masters/AqlMaster/AqlMaster';
+import AqlMaster_Old from '../Pages/Masters/AqlMaster_Old/AqlMaster';
 import PartsMasters from '../Pages/Masters/PartsMaster/PartsMaster';
 import DefectMasters from '../Pages/Masters/DefectMasters/DefectMasters';
 import FTDOperationMaster from '../Pages/Masters/FTDOperationMaster';
@@ -87,7 +88,8 @@ export default function Routing() {
         <Route path='masters/parts-master' element={<PartsMasters />} />
         <Route path='masters/operation-master' element={<OperationMaster />} />
         <Route path='masters/sewingline-master' element={<SewingLineMaster />} />
-        <Route path='masters/aql-master' element={<AqlMaster />} />
+        {/* <Route path='masters/aql-master' element={<AqlMaster />} /> */}
+        <Route path='masters/aql-master' element={<AqlMaster_Old />} />
         <Route path='masters/language-master' element={<LanguageMaster />} />
         <Route path='masters/defect-translation-master' element={<TranslationMaster />} />
         <Route path='masters/translation-master' element={<DefectTranslationMaster />} />
