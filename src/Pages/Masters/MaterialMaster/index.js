@@ -20,12 +20,16 @@ import deletetbl from '../../../Assets/images/style/delete-tbl.svg'
 import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import '../../../Assets/sumoselect.css'
 import jquery from '../../../Assets/js/jquerymin'
+var arrFab = [];
+var arrThd = [];
+var arrTrims = [];
+var arrPur = [];
 
-const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "address3", "city", "pinCode", "country", "tngstNo", "tinNo", "tanNo", "cinNo", "cstNo", "panNo", "stNo", "areaCode", "emailId", "contPerson1", "contPerson2", "contNo", "gstNo"],
-    requiredField = ["entityID", "eCode", "eName", "address1", "address2", "address3", "city", "pinCode", "country", "tngstNo", "tinNo", "tanNo", "cinNo", "cstNo", "panNo", "stNo", "areaCode", "emailId", "contPerson1", "contPerson2", "contNo", "gstNo"],
-    requiredFieldse = ["entityID", "eCode", "eName", "address1", "address2", "address3", "city", "pinCode", "country", "tngstNo", "tinNo", "tanNo", "cinNo", "cstNo", "panNo", "stNo", "areaCode", "emailId", "contPerson1", "contPerson2", "contNo", "gstNo"],
-    requiredFieldss = ["entityID", "eCode", "eName", "address1", "address2", "address3", "city", "pinCode", "country", "tngstNo", "tinNo", "tanNo", "cinNo", "cstNo", "panNo", "stNo", "areaCode", "emailId", "contPerson1", "contPerson2", "contNo", "gstNo"],
-    requiredFieldsss = ["entityID", "eCode", "eName", "address1", "address2", "address3", "city", "pinCode", "country", "tngstNo", "tinNo", "tanNo", "cinNo", "cstNo", "panNo", "stNo", "areaCode", "emailId", "contPerson1", "contPerson2", "contNo", "gstNo"],
+const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGroup", "sysMatCode", "matCode", "matDesc", "buyDivcode", "approved", "approvedBy", "active"],
+    fabrequiredFields = ["fibreContent", "fabricType", "fabWeave", "dyeProcess", "yarnWarp", "yarnWeft", "warpYarnBlend", "weftYarnBlend", "endsPerInch", "pickPerInch", "shrinkWarp", "shrinkWeft", "washMethod", "fabWt_BW", "fabWt_AW", "weightUom", "actualWidth", "cutWidth", "widthUom", "physicalFinish", "chemicalFinish"],
+    TrimsrequiredFields = ["articleNo", "product", "finish"],
+    ThreadrequiredFields = ["quality", "tex", "tkt"],
+    PurchaserequiredFields = ["matCode", "supcode", "supplierId", "supRefNo", "brand", "moq", "moqUom", "multiples", "leadtime", "color", "size", "fromDt", "toDt", "price", "curCode", "binCode", "purdesc", "remarks"],
 
     initialErrorMessages = {
         id: 0,
@@ -33,12 +37,12 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         matType: "",
         matGroup: "",
         matSubGroup: "",
-        sysMatCode: "",
+        sysMatCode: "DADAS",
         matCode: "",
         matDesc: "",
         buyDivcode: "",
-        approved: "",
-        approvedBy: "",
+        approved: "N",
+        approvedBy: "sdds",
         approvedDt: Date.UTC,
         active: 'Y',
         hostName: "",
@@ -49,7 +53,7 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         isActive: false,
         matMastFBRModels: [{
             id: 0,
-            matMast_ID: "",
+            matMast_ID: 0,
             fibreContent: "",
             fabricType: "",
             fabWeave: "",
@@ -60,11 +64,11 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
             weftYarnBlend: "",
             endsPerInch: "",
             pickPerInch: "",
-            shrinkWarp: 0,
-            shrinkWeft: "",
+            shrinkWarp: 0.00,
+            shrinkWeft: 0.00,
             washMethod: "",
-            fabWt_BW: "",
-            fabWt_AW: "",
+            fabWt_BW: 0.00,
+            fabWt_AW: 0.00,
             weightUom: "",
             yarnWarp: "",
             actualWidth: "",
@@ -72,7 +76,6 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
             widthUom: "",
             physicalFinish: "",
             chemicalFinish: "",
-            active: 'Y',
             hostName: "",
             createdDate: "2022-08-22",
             createdBy: "AD",
@@ -87,7 +90,6 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
             tex: "",
             tkt: "",
             noOfMtr: 0,
-            active: 'Y',
             hostName: "",
             createdDate: "2022-08-22",
             createdBy: "AD",
@@ -101,7 +103,6 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
             articleNo: "",
             product: "",
             finish: "",
-            active: 'Y',
             hostName: "",
             createdDate: "2022-08-22",
             createdBy: "AD",
@@ -148,13 +149,13 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         matType: "",
         matGroup: "",
         matSubGroup: "",
-        sysMatCode: "",
+        sysMatCode: "ddda",
         matCode: "",
         matDesc: "",
         buyDivcode: "",
-        approved: "",
-        approvedBy: "",
-        approvedDt: Date.UTC,
+        approved: "N",
+        approvedBy: "sdds",
+        approvedDt: "2022-09-27T11:50:04.3451877Z",
         active: 'Y',
         hostName: "",
         createdDate: "2022-08-22",
@@ -162,15 +163,14 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         modifiedDate: "2022-08-22",
         modifiedBy: "",
         isActive: false,
-        matMastFBRModels: [],
-        matMastThreadModels: [],
-        matMastTrimsModels: [],
-        matMastPurchaseModels: []
-
+        matMastFBRModels: arrFab,
+        matMastThreadModels: arrThd,
+        matMastTrimsModels: arrTrims,
+        matMastPurchaseModels: arrPur
     },
     MatmastFabinitialValues = {
         id: 0,
-        matMast_ID: "",
+        matMast_ID: 0,
         fibreContent: "",
         fabricType: "",
         fabWeave: "",
@@ -181,18 +181,17 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         weftYarnBlend: "",
         endsPerInch: "",
         pickPerInch: "",
-        shrinkWarp: 0,
-        shrinkWeft: "",
+        shrinkWarp: 0.00,
+        shrinkWeft: 0.00,
         washMethod: "",
-        fabWt_BW: "",
-        fabWt_AW: "",
-        weightUom: "",       
+        fabWt_BW: 0.00,
+        fabWt_AW: 0.00,
+        weightUom: "",
         actualWidth: "",
         cutWidth: "",
         widthUom: "",
         physicalFinish: "",
         chemicalFinish: "",
-        active: 'Y',
         hostName: "",
         createdDate: "2022-08-22",
         createdBy: "AD",
@@ -207,7 +206,6 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         tex: "",
         tkt: "",
         noOfMtr: 0,
-        active: 'Y',
         hostName: "",
         createdDate: "2022-08-22",
         createdBy: "AD",
@@ -221,7 +219,6 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
         articleNo: "",
         product: "",
         finish: "",
-        active: 'Y',
         hostName: "",
         createdDate: "2022-08-22",
         createdBy: "AD",
@@ -295,25 +292,50 @@ const requiredFields = ["entityID", "eCode", "eName", "address1", "address2", "a
 function MaterialMaster({ name }) {
     const [visible, setVisible] = useState(false);
     const [countryList, setcountryList] = useState([]);
-    const [showResults, setShowResults] = React.useState(true);
-    const [showForm, setShowForm] = React.useState(false);
-    const [showFabricTab, setshowFabricTab] = React.useState(true);
+    const [mattypeList, setmattypeList] = useState([]);
+    const [matgroupList, setmatgroupList] = useState([]);
+    const [matsubgroupList, setmatsubgroupList] = useState([]);
+    const [buyerdivcodelist, setbuyerdivcodelist] = useState([]);
+    const [fbrlist, setfbrList] = useState([]);
+    const [fbrtypelist, setfbrtypeList] = useState([]);
+    const [fbrweavelist, setfbrweaveList] = useState([]);
+    const [fbrdyedlist, setfbrdyedList] = useState([]);
+    const [fbrwashlist, setfbrwashList] = useState([]);
+    const [uomlist, setuomList] = useState([]);
+    const [phyFinishlist, setPhyFinishList] = useState([]);
+    const [cheFinishlist, setCheFinishList] = useState([]);
+    const [currencyList, setCurrencyList] = useState([]);
 
-    // const [showFabricTab, setshowFabricTab] = React.useState(false);
+    const [suplierlist, setsuplierlist] = useState([]);
+    // const [matSubGrouplist, setmatSubGrouplist] = useState([]);
+    const [showAddtolist, setShowAddtolist] = React.useState(true);
+    const [cloneSave, setCloneSave] = React.useState(false);
+    const [showUpdatetolist, setShowUpdatetolist] = React.useState(false);
+
+    const [showResults, setShowResults] = React.useState(false);
+    const [showForm, setShowForm] = React.useState(true);
+    const [showitemLists, setShowitemLists] = React.useState(false);
+    const [showApprovallist, setShowApprovallist] = React.useState(false);
+    //const [showFabricTab, setshowFabricTab] = React.useState(true);
+
+    const [showFabricTab, setshowFabricTab] = React.useState(false);
 
     const [entityVisible, setEntityVisible] = useState(false);
     const [Savevisible, setSavevisible] = React.useState(true);
     const [updatevisible, setUpdatevisible] = React.useState(false);
 
-    // const [Threadvisible, setThreadvisible] = React.useState(true);
-    // const [Fabricvisible, setFabricvisible] = React.useState(true);
-    // const [Trimsvisible, setTrimsvisible] = React.useState(true);
-    // const [Purchasevisible, setPurchasevisible] = React.useState(true);
+    const [Threadvisible, setThreadvisible] = React.useState(true);
+    const [Fabricvisible, setFabricvisible] = React.useState(true);
+    const [Trimsvisible, setTrimsvisible] = React.useState(true);
+    const [Purchasevisible, setPurchasevisible] = React.useState(true);
+    //const [Purchasevisible, setPurchasevisible] = React.useState(false);
 
-    const [Threadvisible, setThreadvisible] = React.useState(false);
-    const [Fabricvisible, setFabricvisible] = React.useState(false);
-    const [Trimsvisible, setTrimsvisible] = React.useState(false);
-    const [Purchasevisible, setPurchasevisible] = React.useState(false);
+
+    // const [Threadvisible, setThreadvisible] = React.useState(false);
+    // const [Fabricvisible, setFabricvisible] = React.useState(false);
+    // const [Trimsvisible, setTrimsvisible] = React.useState(false);
+    // const [Purchasevisible, setPurchasevisible] = React.useState(false);
+    const [trimsGridfields, setrimsGridFields] = useState([]);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
@@ -331,7 +353,9 @@ function MaterialMaster({ name }) {
     });
     const [listLoading, setListLoading] = useState(false);
     const [loader, setLoader] = useState(false);
-    const [list, setList] = useState([]);
+    // const [list, setList] = useState([]);
+    const [approvedlist, setApprovedList] = useState([]);
+    const [pendinglist, setPendingList] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
     })
@@ -339,6 +363,18 @@ function MaterialMaster({ name }) {
     const clearFields = () => {
         setFields({
             ...initialFieldValues
+        });
+        setFabricFields({
+            ...MatmastFabinitialValues
+        });
+        setThreadFields({
+            ...MatmastThreadinitialValues
+        });
+        setTrimsFields({
+            ...MatmastTrimsinitialValues
+        });
+        setPurchaseFields({
+            ...MatmastPurchaseinitialValues
         });
         setErrors({ ...initialErrorMessages });
     }
@@ -371,8 +407,23 @@ function MaterialMaster({ name }) {
     });
 
     useEffect(() => {
-        getDatas();
-        getOrginLocationType();
+        //getDatas();
+        getPendingDatas();
+        getApprovedDatas();
+        getParentGroup();
+        getMatType();
+        getActiveSuplier();
+        // getMatSubGroup();
+        getBuyerDivCode();
+        getFiber();
+        getFiberType();
+        getFiberWeave();
+        getFibDyed();
+        getWashMethod();
+        getUom();
+        getPhisicalFinish();
+        getChemicalFinish();
+        getCurrency();
     }, []);
 
     const handleChange = (page) => {
@@ -393,7 +444,7 @@ function MaterialMaster({ name }) {
     //     })
     // }
 
-    const getOrginLocationType = () => {
+    const getParentGroup = () => {
 
         ItrApiService.GET({
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.PARENTGRP,
@@ -403,15 +454,187 @@ function MaterialMaster({ name }) {
         });
     }
 
-    const getDatas = () => {
+    const getMatType = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MATERIALTYPE_MASTER_LIST,
+            appCode: "CNF"
+        }).then(resp => {
+            setmattypeList(resp.data.map(d => ({ code: d.mattype, codeDesc: d.matDesc })))
+        });
+    }
+
+    const getActiveSuplier = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_ACTIVE_SUPPLIER_MASTER_DD,
+            appCode: "CNF"
+        }).then(resp => {
+            setsuplierlist(resp.data.map(d => ({ id: d.supplierId, code: d.supCode, codeDesc: d.supName })))
+        });
+    }
+
+    // const getMatSubGroup = () => {
+
+    //     ItrApiService.GET({
+    //         url: API_URLS.GET_MATERIALGROUP_MASTER_LIST,
+    //         appCode: "CNF"
+    //     }).then(resp => {
+    //         setmatsubgroupList(resp.data.map(d => ({ code: d.matSubGroup, codeDesc: d.matSubGroup })))
+    //     });
+    // }
+
+    const getBuyerDivCode = () => {
+        ApiCall({
+            path: API_URLS.GET_BUYDIVCODE_DROPDOWN
+        }).then(resp => {
+            //  setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
+            // try {
+            setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
+            // } catch (e) {
+            //     message.error("response is not as expected")
+            // }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+
+
+    const getFiber = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRCONTENT,
+            appCode: "CNF"
+        }).then(resp => {
+            setfbrList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+
+
+    const getFiberType = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FABTYPE,
+            appCode: "CNF"
+        }).then(resp => {
+            setfbrtypeList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+
+    const getFiberWeave = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRWeave,
+            appCode: "CNF"
+        }).then(resp => {
+            setfbrweaveList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+
+    const getFibDyed = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRDyed,
+            appCode: "CNF"
+        }).then(resp => {
+            setfbrdyedList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+
+    const getWashMethod = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.WASH,
+            appCode: "CNF"
+        }).then(resp => {
+            setfbrwashList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+    const getUom = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.UOM,
+            appCode: "CNF"
+        }).then(resp => {
+            setuomList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+
+    const getPhisicalFinish = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRPhyFin,
+            appCode: "CNF"
+        }).then(resp => {
+            setPhyFinishList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+    const getChemicalFinish = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRCheFin,
+            appCode: "CNF"
+        }).then(resp => {
+            setCheFinishList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+
+    const getCurrency = () => {
+
+        ItrApiService.GET({
+            url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.CUR,
+            appCode: "CNF"
+        }).then(resp => {
+            setCurrencyList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+        });
+    }
+    // const getDatas = () => {
+    //     setListLoading(true)
+    //     ApiCall({
+    //         path: API_URLS.GET_ALL_MATERIAL_LIST
+
+    //     }).then(resp => {
+    //         setListLoading(false)
+    //         if (Array.isArray(resp.data)) {
+    //             setList(resp.data)
+    //         } else {
+    //             message.error("Response data is expected as array")
+    //         }
+    //     }).catch(err => {
+    //         setListLoading(false)
+    //         message.error(err.message || err)
+    //     })
+
+
+    // }
+    const getPendingDatas = () => {
         setListLoading(true)
         ApiCall({
-            path: API_URLS.GET_COMPANY_MASTER_LIST
+            path: API_URLS.GET_ALL_MATERIAL_PENDING_LIST
 
         }).then(resp => {
             setListLoading(false)
             if (Array.isArray(resp.data)) {
-                setList(resp.data)
+                setPendingList(resp.data)
+            } else {
+                message.error("Response data is expected as array")
+            }
+        }).catch(err => {
+            setListLoading(false)
+            message.error(err.message || err)
+        })
+
+
+    }
+    const getApprovedDatas = () => {
+        setListLoading(true)
+        ApiCall({
+            path: API_URLS.GET_ALL_MATERIAL_APPROVED_LIST
+
+        }).then(resp => {
+            setListLoading(false)
+            if (Array.isArray(resp.data)) {
+                setApprovedList(resp.data)
             } else {
                 message.error("Response data is expected as array")
             }
@@ -426,8 +649,21 @@ function MaterialMaster({ name }) {
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
+        setShowApprovallist(false);
+        setShowitemLists(false);
     }
-
+    const onClickList = () => {
+        setShowResults(true)
+        setShowForm(false)
+        setShowApprovallist(true);
+        setShowitemLists(false);
+    }
+    const onClickPending = () => {
+        setShowResults(true)
+        setShowForm(false)
+        setShowApprovallist(false);
+        setShowitemLists(true);
+    }
     const close = () => {
         clearFields()
         setShowResults(true)
@@ -435,6 +671,9 @@ function MaterialMaster({ name }) {
         setSavevisible(true)
         setUpdatevisible(false)
         setEntityVisible(false);
+        onClickList();
+        // setShowApprovallist(true);
+        // setShowitemLists(false);
     }
 
     // const ChangeEvent = (e) => {
@@ -444,113 +683,595 @@ function MaterialMaster({ name }) {
     // }
 
     const inputOnChange = name => e => {
+        debugger;
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+        if (name === 'matType') {
+            debugger;
+            // alert(e.target.value);
+            // alert([name]);
+            // edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
+            //setAddTnamodels({ ...AddTnamodels, [name]: value })
+            if (e.target.value === 'FBR') {
+                setshowFabricTab(true);
+                setThreadvisible(true);
+                setFabricvisible(false);
+                setTrimsvisible(false);
+                setPurchasevisible(true);
+                //("home-tab")
+
+            }
+            else if (e.target.value === 'FTD') {
+                setshowFabricTab(false);
+                setFabricvisible(true);
+                setThreadvisible(false);
+                setTrimsvisible(false);
+                setPurchasevisible(true);
+            }
+            else {
+                setshowFabricTab(false);
+                setFabricvisible(true);
+                setThreadvisible(true);
+                setTrimsvisible(false);
+                setPurchasevisible(true);
+            }
+            // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
+
+            debugger;
+
+            GetmatGroupDropDown(e.target.value);
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else if (name === 'matGroup') {
+            debugger;
+            GetmatSubGroupDropDown(fields.matType, e.target.value);
             setFields({ ...fields, [name]: value.toUpperCase() })
         }
         else {
             setFields({ ...fields, [name]: value })
         }
+        // if (name === 'activityType') {
+        //     debugger;
+        //     // alert(e.target.value);
+        //     // alert([name]);
+        //     edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
+        //     setAddTnamodels({ ...AddTnamodels, [name]: value })
+        //     if (e.target.value === 'SOP') {
+        //         setPackQtyVisible(true);
+        //         setBuyerTypeVisible(true);
+        //     }
+        //     else if (e.target.value === 'BUYER') {
+        //         setPackQtyVisible(true);
+        //         setBuyerTypeVisible(false);
+        //     }
+        //     else if (e.target.value === 'INTERNAL') {
+        //         setPackQtyVisible(false);
+        //         setBuyerTypeVisible(false);
+        //     }
+        //     GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
+        // }
+        // else {
+        //     setAddTnamodels({ ...AddTnamodels, [name]: value })
+        // }
+
+    }
+    const inputOnChangeFab = name => e => {
+        debugger;
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+            setFabricFields({ ...fabricfields, [name]: value.toUpperCase() })
+        }
+        else {
+            setFabricFields({ ...fabricfields, [name]: value })
+        }
+
+    }
+    const inputOnChangeFabs = name => e => {
+        debugger;
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+            setFabricFields({ ...fabricfields, [name]: value.toUpperCase() })
+        }
+        else {
+            setFabricFields({ ...fabricfields, [name]: value })
+        }
+
+    }
+    const inputOnChangeThread = name => e => {
+        debugger;
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+            setThreadFields({ ...threadfields, [name]: value.toUpperCase() })
+        }
+        else {
+            setThreadFields({ ...threadfields, [name]: value })
+        }
+
+    }
+    const inputOnChangeTrims = name => e => {
+        debugger;
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+            setTrimsFields({ ...trimsfields, [name]: value.toUpperCase() })
+        }
+        else {
+            setTrimsFields({ ...trimsfields, [name]: value })
+        }
+
+    }
+    const inputOnChangePurchase = name => e => {
+        debugger;
+        let err = {}, validation = true
+        let value = e.target.value
+        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+            setPurchaseFields({ ...purchasefields, [name]: value.toUpperCase() })
+        }
+        else {
+            setPurchaseFields({ ...purchasefields, [name]: value })
+        }
+
+    }
+    const GetmatGroupDropDown = (mattype) => {
+        //alert(API_URLS.GET_MATERIALGROUP_DROPDOWN + "?mattype=" + mattype);
+        ApiCall({
+            path: API_URLS.GET_MATERIALGROUP_DROPDOWN + "?mattype=" + mattype,
+        }).then(resp => {
+            try {
+                // alert(resp.data);
+                setmatgroupList(resp.data)
+                console.log(resp.data)
+            } catch (er) {
+                message.error("Response data is not as expected")
+            }
+        })
+            .catch(err => {
+                message.error(err.message || err)
+            })
 
     }
 
+    const GetmatSubGroupDropDown = (mattype, matgroup) => {
+        // alert(API_URLS.GET_MATERIAL_SUBGROUP_DROPDOWN + "?mattype=" + mattype + "&MatGroup=" + matgroup);
+        ApiCall({
+            path: API_URLS.GET_MATERIAL_SUBGROUP_DROPDOWN + "?mattype=" + mattype + "&MatGroup=" + matgroup,
+        }).then(resp => {
+            try {
+                // alert(resp.data);
+                setmatsubgroupList(resp.data)
+                console.log(resp.data)
+            } catch (er) {
+                message.error("Response data is not as expected")
+            }
+        })
+            .catch(err => {
+                message.error(err.message || err)
+            })
 
+    }
+
+    function AddTrims() {
+        // alert("ADD");
+        debugger;
+        //  let c = 0;
+        let err = {}, validation = true
+        TrimsrequiredFields.forEach(f => {
+            if (trimsfields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+                //   ++c;
+            } else {
+                validation = true
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+        debugger;
+        console.log(trimsfields);
+        //fields.push(AddTnamodels)
+        //clearFieldsVisualSam();
+        debugger;
+        if (validation == true) {
+            //alert(AddTnamodels.id);
+            if (trimsfields.id == 0) {
+                debugger;
+                //setTrimsFields([...fields.matMastTrimsModels, trimsfields])
+                fields.matMastTrimsModels.push(trimsfields)
+                //  fields.matMastTrimsModels.push(trimsfields);
+                // Clear();
+                // clearFields();
+            } else {
+                debugger;
+                // alert(AddTnamodels.id);
+                setShowAddtolist(true);
+                setShowUpdatetolist(false);
+                GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
+                //onChange={inputOnChange("activityType")};
+                // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
+                //console.log(toUpdateData);
+                let toUpdateData = fields.map((item) => {
+                    if (item.id === AddTnamodels.id) {
+                        item.buyCode = AddTnamodels.buyCode,
+                            item.buydivCode = AddTnamodels.buydivCode,
+                            item.deptcode = AddTnamodels.deptcode,
+                            item.locCode = AddTnamodels.locCode,
+                            item.activityType = AddTnamodels.activityType,
+                            item.mActive = AddTnamodels.mActive,
+                            item.orderCategory = AddTnamodels.orderCategory,
+                            item.stage = AddTnamodels.stage,
+                            item.fit = AddTnamodels.fit,
+                            item.actCode = AddTnamodels.actCode,
+                            item.activity = AddTnamodels.activity,
+                            item.subActivity = AddTnamodels.subActivity,
+                            item.criticalActivity = AddTnamodels.criticalActivity,
+                            item.tnaSeqNo = AddTnamodels.tnaSeqNo,
+                            item.duration = AddTnamodels.duration,
+                            item.dependActCode = AddTnamodels.dependActCode,
+                            item.dependDeptCode = AddTnamodels.dependDeptCode,
+                            item.dependActvity = AddTnamodels.dependActvity,
+                            item.dependSubActvity = AddTnamodels.dependSubActvity,
+                            item.preNotifyDays = AddTnamodels.preNotifyDays,
+                            item.notifyRoleId = AddTnamodels.notifyRoleId,
+                            item.l1EscalateDays = AddTnamodels.l1EscalateDays,
+                            item.l1EscalateRole = AddTnamodels.l1EscalateRole,
+                            item.l2EscalateDays = AddTnamodels.l2EscalateDays,
+                            item.l2EscalateRole = AddTnamodels.l2EscalateRole,
+                            item.category = AddTnamodels.category,
+                            item.valueAddtype = AddTnamodels.valueAddtype,
+                            item.weightage = AddTnamodels.weightage,
+                            item.skipped = AddTnamodels.skipped,
+                            item.remarks = AddTnamodels.remarks,
+                            item.cancel = AddTnamodels.cancel,
+                            item.active = AddTnamodels.active,
+                            item.hostName = AddTnamodels.hostName,
+                            item.createdDate = AddTnamodels.createdDate,
+                            item.createdBy = AddTnamodels.createdBy,
+                            item.modifiedDate = AddTnamodels.modifiedDate,
+                            item.modifiedBy = AddTnamodels.modifiedBy,
+                            item.isActive = AddTnamodels.isActive
+                    }
+                    return item;
+                });
+                AddTnamodels.id = 0;
+                AddTnamodels.orderCategory = "",
+                    AddTnamodels.stage = "",
+                    AddTnamodels.fit = "",
+                    AddTnamodels.actCode = 0,
+                    AddTnamodels.activity = "",
+                    AddTnamodels.subActivity = "",
+                    AddTnamodels.criticalActivity = "",
+                    AddTnamodels.tnaSeqNo = 0,
+                    AddTnamodels.duration = 0,
+                    AddTnamodels.dependActCode = 0,
+                    AddTnamodels.dependDeptCode = "",
+                    AddTnamodels.dependActvity = "",
+                    AddTnamodels.dependSubActvity = "",
+                    AddTnamodels.preNotifyDays = 0,
+                    AddTnamodels.notifyRoleId = "",
+                    AddTnamodels.l1EscalateDays = 0,
+                    AddTnamodels.l1EscalateRole = "",
+                    AddTnamodels.l2EscalateDays = 0,
+                    AddTnamodels.l2EscalateRole = "",
+                    AddTnamodels.category = "NA",
+                    AddTnamodels.valueAddtype = "",
+                    AddTnamodels.weightage = 0,
+                    AddTnamodels.skipped = "N",
+                    AddTnamodels.remarks = "",
+                    AddTnamodels.cancel = "Y",
+                    AddTnamodels.active = 'Y',
+                    //this.setState({ TaskData: toUpdateData });
+                    setFields(toUpdateData);
+
+                //Clear();
+                //clearFields();
+                //onClose();
+                // alert(AddTnamodels.id);
+            }
+            //  fields.push(AddTnamodels)
+            //ClearDetails();
+        }
+
+    }
+    function AddPurchase() {
+        // alert("ADD");
+        debugger;
+        //  let c = 0;
+        let err = {}, validation = true
+        PurchaserequiredFields.forEach(f => {
+            if (purchasefields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+                //   ++c;
+            } else {
+                validation = true
+            }
+        })
+        setErrors({ ...initialErrorMessages, ...err })
+        debugger;
+        console.log(purchasefields);
+        //fields.push(AddTnamodels)
+        //clearFieldsVisualSam();
+        debugger;
+        if (validation == true) {
+            //alert(AddTnamodels.id);
+            if (purchasefields.id == 0) {
+                debugger;
+                //setTrimsFields([...fields.matMastTrimsModels, trimsfields])
+                fields.matMastPurchaseModels.push(purchasefields)
+                //  fields.matMastTrimsModels.push(trimsfields);
+                // Clear();
+                // clearFields();
+            } else {
+                debugger;
+                // alert(AddTnamodels.id);
+                setShowAddtolist(true);
+                setShowUpdatetolist(false);
+                GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
+                //onChange={inputOnChange("activityType")};
+                // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
+                //console.log(toUpdateData);
+                let toUpdateData = fields.map((item) => {
+                    if (item.id === AddTnamodels.id) {
+                        item.buyCode = AddTnamodels.buyCode,
+                            item.buydivCode = AddTnamodels.buydivCode,
+                            item.deptcode = AddTnamodels.deptcode,
+                            item.locCode = AddTnamodels.locCode,
+                            item.activityType = AddTnamodels.activityType,
+                            item.mActive = AddTnamodels.mActive,
+                            item.orderCategory = AddTnamodels.orderCategory,
+                            item.stage = AddTnamodels.stage,
+                            item.fit = AddTnamodels.fit,
+                            item.actCode = AddTnamodels.actCode,
+                            item.activity = AddTnamodels.activity,
+                            item.subActivity = AddTnamodels.subActivity,
+                            item.criticalActivity = AddTnamodels.criticalActivity,
+                            item.tnaSeqNo = AddTnamodels.tnaSeqNo,
+                            item.duration = AddTnamodels.duration,
+                            item.dependActCode = AddTnamodels.dependActCode,
+                            item.dependDeptCode = AddTnamodels.dependDeptCode,
+                            item.dependActvity = AddTnamodels.dependActvity,
+                            item.dependSubActvity = AddTnamodels.dependSubActvity,
+                            item.preNotifyDays = AddTnamodels.preNotifyDays,
+                            item.notifyRoleId = AddTnamodels.notifyRoleId,
+                            item.l1EscalateDays = AddTnamodels.l1EscalateDays,
+                            item.l1EscalateRole = AddTnamodels.l1EscalateRole,
+                            item.l2EscalateDays = AddTnamodels.l2EscalateDays,
+                            item.l2EscalateRole = AddTnamodels.l2EscalateRole,
+                            item.category = AddTnamodels.category,
+                            item.valueAddtype = AddTnamodels.valueAddtype,
+                            item.weightage = AddTnamodels.weightage,
+                            item.skipped = AddTnamodels.skipped,
+                            item.remarks = AddTnamodels.remarks,
+                            item.cancel = AddTnamodels.cancel,
+                            item.active = AddTnamodels.active,
+                            item.hostName = AddTnamodels.hostName,
+                            item.createdDate = AddTnamodels.createdDate,
+                            item.createdBy = AddTnamodels.createdBy,
+                            item.modifiedDate = AddTnamodels.modifiedDate,
+                            item.modifiedBy = AddTnamodels.modifiedBy,
+                            item.isActive = AddTnamodels.isActive
+                    }
+                    return item;
+                });
+                AddTnamodels.id = 0;
+                AddTnamodels.orderCategory = "",
+                    AddTnamodels.stage = "",
+                    AddTnamodels.fit = "",
+                    AddTnamodels.actCode = 0,
+                    AddTnamodels.activity = "",
+                    AddTnamodels.subActivity = "",
+                    AddTnamodels.criticalActivity = "",
+                    AddTnamodels.tnaSeqNo = 0,
+                    AddTnamodels.duration = 0,
+                    AddTnamodels.dependActCode = 0,
+                    AddTnamodels.dependDeptCode = "",
+                    AddTnamodels.dependActvity = "",
+                    AddTnamodels.dependSubActvity = "",
+                    AddTnamodels.preNotifyDays = 0,
+                    AddTnamodels.notifyRoleId = "",
+                    AddTnamodels.l1EscalateDays = 0,
+                    AddTnamodels.l1EscalateRole = "",
+                    AddTnamodels.l2EscalateDays = 0,
+                    AddTnamodels.l2EscalateRole = "",
+                    AddTnamodels.category = "NA",
+                    AddTnamodels.valueAddtype = "",
+                    AddTnamodels.weightage = 0,
+                    AddTnamodels.skipped = "N",
+                    AddTnamodels.remarks = "",
+                    AddTnamodels.cancel = "Y",
+                    AddTnamodels.active = 'Y',
+                    //this.setState({ TaskData: toUpdateData });
+                    setFields(toUpdateData);
+
+                //Clear();
+                //clearFields();
+                //onClose();
+                // alert(AddTnamodels.id);
+            }
+            //  fields.push(AddTnamodels)
+            //ClearDetails();
+        }
+
+    }
     const Save = async (entityID, eCode, eName, type) => {
         debugger;
         //  alert(buyCode, buyDivCode, productType, type);
         if (loader) return
         let err = {}, validation = true
         debugger;
-        requiredFields.forEach(f => {
+        MatmastrequiredFields.forEach(f => {
             if (fields[f] === "") {
                 err[f] = "This field is required"
                 validation = false
             }
         })
-
         setErrors({ ...initialErrorMessages, ...err })
-        if (validation) {
-            if (type === "update") {
-                if (validation) {
-                    setLoader(true)
-
-                    ApiCall({
-                        method: "POST",
-                        path: API_URLS.SAVE_COMPANY_MASTER,
-                        data: {
-                            ...fields,
-                            hostName: getHostName()
-                        }
-                    }).then(resp => {
-                        setLoader(false)
-                        message.success(resp.message)
-                        onClose()
-                        getDatas()
-                        setSavevisible(true)
-                        setUpdatevisible(false)
-                        setEntityVisible(false);
-                        setShowResults(true)
-                        setShowForm(false)
-                    }).catch(err => {
-                        setLoader(false)
-
-                        //  fields['ftdOprName'] = tempOprName
-                        setFields({ ...fields })
-                        setErrors({ ...initialErrorMessages })
-                        message.error(err.message || err)
-                    })
+        if (fields.matType === 'FBR') {
+            fabrequiredFields.forEach(f => {
+                if (fabricfields[f] === "") {
+                    err[f] = "This field is required"
+                    validation = false
                 }
-            }
-            else {
-                ItrApiService.GET({
-                    url: API_URLS.GET_COMPANY_MASTER_BY_ID + "/" + entityID + "/" + eCode + "/" + eName,
-                    appCode: "CNF"
-                }).then(res => {
-                    //  alert(res.Success);
-                    if (res.Success == false) {
-                        if (validation) {
-                            setLoader(true)
-
-                            ApiCall({
-                                method: "POST",
-                                path: API_URLS.SAVE_COMPANY_MASTER,
-                                data: {
-                                    ...fields,
-                                    hostName: getHostName()
-                                }
-                            }).then(resp => {
-                                setLoader(false)
-                                message.success(resp.message)
-                                onClose()
-                                getDatas()
-                                setSavevisible(true)
-                                setUpdatevisible(false)
-                                setEntityVisible(false);
-                                setShowResults(true)
-                                setShowForm(false)
-                            }).catch(err => {
-                                setLoader(false)
-                                setFields({ ...fields })
-                                setErrors({ ...initialErrorMessages })
-                                message.error(err.message || err)
-                            })
-                        }
-                    }
-                    else {
-
-                        setLoader(false);
-                        // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
-                        err = "Company Details Already Available"
-                        message.error(err)
-                        // }
-                    }
-                });
-
-
-            }
+            })
+            arrThd = null;
+            arrPur = null;
+            fields.matMastFBRModels.push(fabricfields);
+            // fields.matMastThreadModels.null;
+            //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+            // setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+            fields.matMastTrimsModels.push(trimsfields);
+            //fields.matMastPurchaseModels.null;
+            debugger;
+        }
+        else if (fields.matType === 'FTD') {
+            ThreadrequiredFields.forEach(f => {
+                if (threadfields[f] === "") {
+                    err[f] = "This field is required"
+                    validation = false
+                }
+            })
+            arrFab = null;
+            arrPur = null;
+            fields.matMastThreadModels.push(threadfields);
+            fields.matMastTrimsModels.push(trimsfields);
 
         }
+        else {
+            if (fields.matType === '') {
+                setErrors({ ...initialErrorMessages, ...err })
+
+            }
+            else {
+                if (!trimsfields) {
+                    arrFab = null;
+                    arrPur = null;
+                    arrThd = null;
+
+                    fields.matMastTrimsModels.push(trimsfields);
+
+                }
+                else {
+                    message.error("Data not found in Trims")
+                    return
+                    //fields.matMastTrimsModels.push(trimsfields);
+                }
+            }
+        }
+        console.log(fields);
+        setErrors({ ...initialErrorMessages, ...err })
+        if (validation) {
+            setLoader(true)
+
+            ApiCall({
+                method: "POST",
+                path: API_URLS.SAVE_MATERIAL_MASTER,
+                data: {
+                    ...fields,
+                    hostName: getHostName()
+                }
+            }).then(resp => {
+                setLoader(false)
+                message.success(resp.message)
+                onClose()
+                getDatas()
+                setSavevisible(true)
+                setUpdatevisible(false)
+                setEntityVisible(false);
+                setShowResults(true)
+                setShowForm(false)
+            }).catch(err => {
+                setLoader(false)
+
+                //  fields['ftdOprName'] = tempOprName
+                setFields({ ...fields })
+                setErrors({ ...initialErrorMessages })
+                message.error(err.message || err)
+            })
+        }
+
+        // if (validation) {
+        //     if (type === "update") {
+        //         if (validation) {
+        //             setLoader(true)
+
+        //             ApiCall({
+        //                 method: "POST",
+        //                 path: API_URLS.SAVE_MATERIAL_MASTER,
+        //                 data: {
+        //                     ...fields,
+        //                     hostName: getHostName()
+        //                 }
+        //             }).then(resp => {
+        //                 setLoader(false)
+        //                 message.success(resp.message)
+        //                 onClose()
+        //                 getDatas()
+        //                 setSavevisible(true)
+        //                 setUpdatevisible(false)
+        //                 setEntityVisible(false);
+        //                 setShowResults(true)
+        //                 setShowForm(false)
+        //             }).catch(err => {
+        //                 setLoader(false)
+
+        //                 //  fields['ftdOprName'] = tempOprName
+        //                 setFields({ ...fields })
+        //                 setErrors({ ...initialErrorMessages })
+        //                 message.error(err.message || err)
+        //             })
+        //         }
+        //     }
+        //     else {
+        //         ItrApiService.GET({
+        //             url: API_URLS.GET_COMPANY_MASTER_BY_ID + "/" + entityID + "/" + eCode + "/" + eName,
+        //             appCode: "CNF"
+        //         }).then(res => {
+        //             //  alert(res.Success);
+        //             if (res.Success == false) {
+        //                 if (validation) {
+        //                     setLoader(true)
+
+        //                     ApiCall({
+        //                         method: "POST",
+        //                         path: API_URLS.SAVE_MATERIAL_MASTER,
+        //                         data: {
+        //                             ...fields,
+        //                             hostName: getHostName()
+        //                         }
+        //                     }).then(resp => {
+        //                         setLoader(false)
+        //                         message.success(resp.message)
+        //                         onClose()
+        //                         getDatas()
+        //                         setSavevisible(true)
+        //                         setUpdatevisible(false)
+        //                         setEntityVisible(false);
+        //                         setShowResults(true)
+        //                         setShowForm(false)
+        //                     }).catch(err => {
+        //                         setLoader(false)
+        //                         setFields({ ...fields })
+        //                         setErrors({ ...initialErrorMessages })
+        //                         message.error(err.message || err)
+        //                     })
+        //                 }
+        //             }
+        //             else {
+
+        //                 setLoader(false);
+        //                 // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+        //                 err = "Company Details Already Available"
+        //                 message.error(err)
+        //                 // }
+        //             }
+        //         });
+
+
+        //     }
+
+        // }
     }
     const [tableProps, setTableProps] = useState({
         page: 0,
@@ -570,13 +1291,13 @@ function MaterialMaster({ name }) {
 
     const tableColumns = [
         {
-            name: "entityID",
+            name: "id",
             label: "Action",
             options: {
                 customBodyRender: (value, tm) => {
                     return (
                         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                            <div onClick={() => edit(tm.rowData[1], tm.rowData[2], tm.rowData[3], 'edit')}>
+                            <div onClick={() => edit(tm.rowData[1], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div onClick={() => edit(value, 'clone')}>
@@ -589,105 +1310,33 @@ function MaterialMaster({ name }) {
             }
         },
         {
-            name: "entityID",
-            label: "entityID",
+            name: "id",
+            label: "ID",
         },
         {
-            name: "eCode",
-            label: "eCode",
+            name: "matType",
+            label: "matType",
         },
         {
-            name: "eName",
-            label: "eName",
+            name: "matGroup",
+            label: "matGroup",
         },
         {
-            name: "address1",
-            label: "address1",
+            name: "matSubGroup",
+            label: "matSubGroup",
         },
         {
-            name: "address2",
-            label: "address2",
+            name: "matCode",
+            label: "matCode",
         },
         {
-            name: "address3",
-            label: "address3",
+            name: "matDesc",
+            label: "matDesc",
         },
-        {
-            name: "city",
-            label: "city",
-        },
-        {
-            name: "pinCode",
-            label: "pinCode",
-        },
-
         // {
-        //     name: "loccode",
-        //     label: "loccode"
-        // },  
-
-        {
-            name: "country",
-            label: "country",
-        },
-        {
-            name: "tngstNo",
-            label: "tngstNo",
-        },
-        {
-            name: "tinNo",
-            label: "tinNo",
-        },
-        {
-            name: "tanNo",
-            label: "tanNo",
-        },
-        {
-            name: "cinNo",
-            label: "cinNo",
-        },
-        {
-            name: "cstNo",
-            label: "cstNo",
-        },
-        {
-            name: "cstDate",
-            label: "cstDate",
-        },
-
-        {
-            name: "panNo",
-            label: "panNo"
-        },
-
-        {
-            name: "stNo",
-            label: "stNo",
-        },
-        {
-            name: "areaCode",
-            label: "areaCode",
-        },
-        {
-            name: "emailId",
-            label: "emailId",
-        },
-        {
-            name: "contPerson1",
-            label: "contPerson1",
-        },
-        {
-            name: "contPerson2",
-            label: "contPerson2",
-        },
-        {
-            name: "contNo",
-            label: "contNo",
-        },
-        {
-            name: "gstNo",
-            label: "gstNo",
-        },
+        //     name: "address3",
+        //     label: "address3",
+        // },
 
         {
             name: "active",
@@ -702,11 +1351,73 @@ function MaterialMaster({ name }) {
         }
 
     ]
+    const ApprovaltableColumns = [
+        {
+            name: "id",
+            label: "Action",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return (
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[1], 'edit')}>
+                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                            </div>
+                            {/* <div onClick={() => edit(value, 'clone')}>
+                                <FontAwesomeIcon icon={faCopy} color="#919191" />
+                            </div> */}
+                        </div>
 
-    const getDataById = (entityID, eCode, eName) => {
+                    )
+                }
+            }
+        },
 
+        {
+            name: "id",
+            label: "ID",
+        },
+        {
+            name: "matType",
+            label: "matType",
+        },
+        {
+            name: "matGroup",
+            label: "matGroup",
+        },
+        {
+            name: "matSubGroup",
+            label: "matSubGroup",
+        },
+        {
+            name: "matCode",
+            label: "matCode",
+        },
+        {
+            name: "matDesc",
+            label: "matDesc",
+        },
+        // {
+        //     name: "address3",
+        //     label: "address3",
+        // },
+
+        {
+            name: "active",
+            label: "Active",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return <div>
+                        {value === "Y" ? "Yes" : "No"}
+                    </div>
+                }
+            }
+        }
+
+    ]
+    const getDataById = (id) => {
+        // alert(API_URLS.GET_MATERIAL_MASTER_EDIT_BY_ID + "/" + id);
         return ApiCall({
-            path: API_URLS.GET_COMPANY_MASTER_BY_ID + "/" + entityID + "/" + eCode + "/" + eName,
+            path: API_URLS.GET_MATERIAL_MASTER_EDIT_BY_ID + "/" + id,
 
         })
     }
@@ -721,47 +1432,100 @@ function MaterialMaster({ name }) {
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
-    const edit = async (entityID, eCode, eName, type) => {
+
+    const editRow = async (id, type) => {
+        //this.setState({ edit_add: true });
+        ApiCall({
+            path: API_URLS.GET_TNA_MASTER_EDIT_BY_ID + "/" + id
+        }).then(response => {
+            try {
+                debugger;
+                let dataval = response.data;
+                setAddTnamodels(response.data);
+                setShowAddtolist(false);
+                setShowUpdatetolist(true);
+
+                // setFields({
+                //     id: dataval.id,
+                //     buyCode: dataval.buyCode,
+                //     buydivCode: dataval.buydivCode,
+                //     deptcode: dataval.deptcode,
+                //     locCode: dataval.locCode,
+                //     activityType: dataval.activityType, 
+                //     orderCategory: dataval.orderCategory,
+                //     mActive: dataval.mActive,                   
+                //     stage: dataval.stage,
+                //     activityType: dataval.activityType,                   
+                //     fit: dataval.fit,
+                //     actCode: dataval.actCode,
+                //     activity: dataval.activity,
+                //     subActivity: dataval.subActivity,
+                //     criticalActivity: dataval.criticalActivity,
+                //     tnaSeqNo: dataval.tnaSeqNo,
+                //     duration: dataval.duration,
+                //     dependActCode: dataval.dependActCode,
+                //     dependDeptCode: dataval.dependDeptCode,
+                //     dependActvity: dataval.dependActvity,
+                //     dependSubActvity: dataval.dependSubActvity,
+                //     preNotifyDays: dataval.preNotifyDays,
+                //     notifyRoleId: dataval.notifyRoleId,
+                //     l1EscalateDays: dataval.l1EscalateDays,
+                //     l1EscalateRole:dataval.l1EscalateRole,
+                //     l2EscalateDays: dataval.l2EscalateDays,
+                //     l2EscalateRole: dataval.l2EscalateRole,
+                //     category: dataval.category,
+                //     valueAddtype: dataval.valueAddtype,
+                //     weightage: dataval.weightage,
+                //     skipped: dataval.skipped,
+                //     remarks: dataval.remarks,
+                //     cancel: dataval.cancel,
+                //     active: dataval.active,
+                //     hostName: dataval.hostName,
+                //     createdDate: dataval.createdDate,
+                //     createdBy: dataval.createdBy,
+                //     modifiedDate: dataval.modifiedDate,
+                //     modifiedBy:dataval.modifiedBy,
+                //     isActive: dataval.isActive,                   
+                //     active: data.active
+                // })
+                // alert(dataval.parentMenuName);
+                console.log(response.data);
+                // this.setState({
+                //     module: [{ value: dataval.appName, label: dataval.appName }]
+                //     , parent_menu_id: [{
+                //         value: dataval.parantMenuId, label:
+                //             (dataval.parantMenuId == 0 ? dataval.menuName : this.state.menulists.filter(f => f.menuId == dataval.parantMenuId).map(d => d.menuName)[0])
+                //     }],
+                //     //  parentmenutypedropdown.push({ value: item.menuId, label: item.menuName });
+                //     menu_type: [{ value: dataval.menuType, label: dataval.menuType }],
+                //     menuname: dataval.menuName, menuurl: dataval.menuUrl,
+                //     menudesc: dataval.menuDescription, displayindex: dataval.displayIndex,
+                //     menuId: dataval.menuId, active_status: dataval.active, menu_visible: dataval.menuVisible
+                // });
+
+            } catch (e) {
+                message.error("response is not as expected")
+            }
+        }).catch(err => {
+            message.error(err.message || err)
+        })
+    }
+
+    const edit = async (id) => {
+        debugger;
         try {
             setLoader(true);
             setVisible(true);
             setShowResults(false);
             setShowForm(true);
-            let { data } = (entityID && await getDataById(entityID, eCode, eName))
+            let { data } = (id && await getDataById(id))
+            // alert(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
             const tableId = type === 'clone' ? 0 : 0
-            setFields({
-                // id: tableId,                    
-                entityID: data.entityID,
-                eCode: data.eCode,
-                eName: data.eName,
-                address1: data.address1,
-                address2: data.address2,
-                address3: data.address3,
-                city: data.city,
-                pinCode: data.pinCode,
-                country: data.country,
-                tngstNo: data.tngstNo,
-                tinNo: data.tinNo,
-                tanNo: data.tanNo,
-                cinNo: data.cinNo,
-                cstNo: data.cstNo,
-                cstDate: data.cstDate,
-                panNo: data.panNo,
-                stNo: data.stNo,
-
-                areaCode: data.areaCode,
-                emailId: data.emailId,
-                contPerson1: data.contPerson1,
-                contPerson2: data.contPerson2,
-                contNo: data.contNo,
-                gstNo: data.gstNo,
-
-                active: data.active
-            })
+            setFields({ data })
             setEntityVisible(true);
             setSavevisible(false);
             setUpdatevisible(true);
@@ -778,12 +1542,22 @@ function MaterialMaster({ name }) {
         <>
 
             {showResults &&
+
+
                 <div className='defect-master-main'>
                     <div className='m-3'>
                         <h6 className='m-0 p-0'>{name}</h6>
 
                         <div className='row align-items-center mt-2'>
-                            <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
+                            {/* <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
+                            </div> */}
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
+                                <button className='btn-sm btn defect-master-add' onClick={onClickList} onClose={onClose} visible={visible} maskClosable={false}> Item List </button>
+                            </div>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-1 col-xl-1 mt-1'>
+                                <button className='btn-sm btn defect-master-add' onClick={onClickPending} onClose={onClose} visible={visible} maskClosable={false}> Approval </button>
+                            </div>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mt-1'>
                             </div>
                             <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
                                 <button className='btn-sm btn defect-master-add' onClick={onClick} onClose={onClose} visible={visible} maskClosable={false}> + Add New </button>
@@ -791,7 +1565,7 @@ function MaterialMaster({ name }) {
                         </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                         <CustomTableContainer
                             columns={tableColumns}
                             data={list}
@@ -819,10 +1593,169 @@ function MaterialMaster({ name }) {
                     </div>
                     {listLoading && <div className='text-center'>
                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                    </div>} */}
+
+                    {/* <div>
+                        <CustomTableContainer
+                            columns={tableColumns}
+                            data={approvedlist}
+                            options={{
+                                download: !1,
+                                print: !1,
+                                filter: !1,
+                                viewColumns: !1,
+                                jumpToPage: !0,
+                                selectableRows: "none",
+                                rowsPerPageOptions: [10, 25, 50, 100],
+                                rowsPerPage: tableProps.rowsPerPage,
+                                page: tableProps.page,
+                                count: approvedlist.length,
+                                sortOrder: tableProps.sortOrder,
+                                onTableChange: (action, tableState) => {
+                                    if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                    const { page, rowsPerPage, sortOrder } = tableState
+                                    updateTableProps({
+                                        page, rowsPerPage, sortOrder
+                                    })
+                                }
+                            }}
+                        />
+                    </div>
+                    {listLoading && <div className='text-center'>
+                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                    </div>}
+
+                    <div>
+                        <CustomTableContainer
+                            columns={tableColumns}
+                            data={pendinglist}
+                            options={{
+                                download: !1,
+                                print: !1,
+                                filter: !1,
+                                viewColumns: !1,
+                                jumpToPage: !0,
+                                selectableRows: "none",
+                                rowsPerPageOptions: [10, 25, 50, 100],
+                                rowsPerPage: tableProps.rowsPerPage,
+                                page: tableProps.page,
+                                count: pendinglist.length,
+                                sortOrder: tableProps.sortOrder,
+                                onTableChange: (action, tableState) => {
+                                    if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                    const { page, rowsPerPage, sortOrder } = tableState
+                                    updateTableProps({
+                                        page, rowsPerPage, sortOrder
+                                    })
+                                }
+                            }}
+                        />
+                    </div>
+                    {listLoading && <div className='text-center'>
+                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                    </div>} */}
+
+                </div >
+            }
+
+            {showitemLists &&
+
+                <div className='defect-master-main'>
+                    <div>
+                        <CustomTableContainer
+                            columns={tableColumns}
+                            data={pendinglist}
+                            options={{
+                                download: !1,
+                                print: !1,
+                                filter: !1,
+                                viewColumns: !1,
+                                jumpToPage: !0,
+                                selectableRows: "none",
+                                rowsPerPageOptions: [10, 25, 50, 100],
+                                rowsPerPage: tableProps.rowsPerPage,
+                                page: tableProps.page,
+                                count: pendinglist.length,
+                                sortOrder: tableProps.sortOrder,
+                                onTableChange: (action, tableState) => {
+                                    if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                    const { page, rowsPerPage, sortOrder } = tableState
+                                    updateTableProps({
+                                        page, rowsPerPage, sortOrder
+                                    })
+                                }
+                            }}
+                        />
+                    </div>
+                    {listLoading && <div className='text-center'>
+                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
                     </div>}
 
                 </div >
             }
+            {showApprovallist &&
+
+
+                <div className='defect-master-main'>
+
+                    {/* <div>
+                        <table className="table">
+                            <thead className="thead-light">
+                                <th align='center' style={{ textAlign: "center" }}>
+                                    <Checkbox color="primary" onClick={(e) => this.handleChangecheckboxall(e)} title={"select all buyer"} checked={allCheck} />
+                                </th>
+                                <th>Buyer</th>
+                                <th>Buyer Division</th>
+                                <th>Division Name</th>
+                            </thead>
+                            <tbody>
+                                {
+                                    tapprovedlist.map((n, index) => (
+                                        <tr>
+                                            <td className='' align='center'>
+                                                <Checkbox color="primary" onClick={(e) => this.handleChangecheckbox(n, index, e)} checked={n.notify == 'Y' ? true : false} />
+                                            </td>
+                                            <td>{n.buyCode}</td>
+                                            <td>{n.buyDivCode}</td>
+                                            <td>{n.divName}</td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div> */}
+                    <div>
+                        <CustomTableContainer
+                            columns={ApprovaltableColumns}
+                            data={approvedlist}
+                            options={{
+                                download: !1,
+                                print: !1,
+                                filter: !1,
+                                viewColumns: !1,
+                                jumpToPage: !0,
+                                selectableRows: "none",
+                                rowsPerPageOptions: [10, 25, 50, 100],
+                                rowsPerPage: tableProps.rowsPerPage,
+                                page: tableProps.page,
+                                count: approvedlist.length,
+                                sortOrder: tableProps.sortOrder,
+                                onTableChange: (action, tableState) => {
+                                    if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                    const { page, rowsPerPage, sortOrder } = tableState
+                                    updateTableProps({
+                                        page, rowsPerPage, sortOrder
+                                    })
+                                }
+                            }}
+                        />
+                    </div>
+                    {listLoading && <div className='text-center'>
+                        <Spin style={{ color: '#F57234' }} tip="Loading..." />
+                    </div>}
+                </div >
+            }
+
             {showForm &&
                 <div class="container-fluid">
                     {/* <!-- breadcrumb --> */}
@@ -894,7 +1827,7 @@ function MaterialMaster({ name }) {
                                     value={fields.matType}
                                     onChange={inputOnChange("matType")}                                >
                                     <option value=""> Select Material Type</option>
-                                    {countryList.map((v, index) => {
+                                    {mattypeList.map((v, index) => {
                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
                                     })}
                                 </select>
@@ -912,8 +1845,8 @@ function MaterialMaster({ name }) {
                                     value={fields.matGroup}
                                     onChange={inputOnChange("matGroup")}                                >
                                     <option value=""> Select Material Group</option>
-                                    {countryList.map((v, index) => {
-                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                    {matgroupList.map((v, index) => {
+                                        return <option key={index} value={v}>{v}</option>
                                     })}
                                 </select>
                             </div>
@@ -929,8 +1862,8 @@ function MaterialMaster({ name }) {
                                     value={fields.matSubGroup}
                                     onChange={inputOnChange("matSubGroup")}                                >
                                     <option value=""> Select Material Sub Group</option>
-                                    {countryList.map((v, index) => {
-                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                    {matsubgroupList.map((v, index) => {
+                                        return <option key={index} value={v}>{v}</option>
                                     })}
                                 </select>
                             </div>
@@ -945,7 +1878,7 @@ function MaterialMaster({ name }) {
                                 <small className='text-danger'>{fields.matCode === '' ? errors.matCode : ''}</small>
                             </div>
                             <input className='form-control form-control-sm mt-1' placeholder='Enter Material Code'
-                                value={fields.matCode} minLength="1" maxLength="10"
+                                value={fields.matCode} minLength="1" maxLength="20"
                                 onChange={inputOnChange("matCode")} disabled={entityVisible}
                             />
                         </div>
@@ -961,7 +1894,7 @@ function MaterialMaster({ name }) {
                                     value={fields.buyDivcode}
                                     onChange={inputOnChange("buyDivcode")}                                >
                                     <option value=""> Select Buyer Division</option>
-                                    {countryList.map((v, index) => {
+                                    {buyerdivcodelist.map((v, index) => {
                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
                                     })}
                                 </select>
@@ -977,7 +1910,7 @@ function MaterialMaster({ name }) {
                                 <small className='text-danger'>{fields.matDesc === '' ? errors.matDesc : ''}</small>
                             </div>
                             <input className='form-control form-control-sm mt-1' placeholder='Enter Material Description'
-                                value={fields.matDesc} minLength="1" maxLength="3"
+                                value={fields.matDesc} minLength="1" maxLength="150"
                                 onChange={inputOnChange("matDesc")} disabled={entityVisible}
                             />
                         </div>
@@ -1027,10 +1960,17 @@ function MaterialMaster({ name }) {
                                                 <label>Fiber<span className='text-danger'>*  </span> </label>
                                                 {/* <small className='text-danger'>{fields.fibreContent === '' ? errors.fibreContent : ''}</small> */}
                                             </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter Fiber'
-                                                //value={fields.fibreContent} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("fibre")}
-                                            />
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.fibreContent}
+                                                    onChange={inputOnChangeFab("fibreContent")}                                >
+                                                    <option value=""> Select fibre Content</option>
+                                                    {fbrlist.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -1038,8 +1978,8 @@ function MaterialMaster({ name }) {
                                                 {/* <small className='text-danger'>{fields.address2 === '' ? errors.address2 : ''}</small> */}
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter Content'
-                                               // value={fields.address2} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("Content")}
+                                                // value={fields.address2} minLength="1" maxLength="100"
+                                                onChange={inputOnChangeFabs("Content")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1049,7 +1989,7 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Fabric Content'
                                                 value={fabricfields.fibreContent} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("fibreContent")}
+                                                onChange={inputOnChangeFabs("fibreContent")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1057,20 +1997,34 @@ function MaterialMaster({ name }) {
                                                 <label>Fabric Type<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.fabricType === '' ? errors.fabricType : ''}</small>
                                             </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter fabricType'
-                                                value={fabricfields.fabricType} minLength="1" maxLength="50"
-                                                onChange={inputOnChange("fabricType")}
-                                            />
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.fabricType}
+                                                    onChange={inputOnChangeFab("fabricType")}                                >
+                                                    <option value=""> Select fibre Type</option>
+                                                    {fbrtypelist.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Fab Weave<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.fabWeave === '' ? errors.fabWeave : ''}</small>
                                             </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter fabWeave'
-                                                value={fabricfields.fabWeave} minLength="1" maxLength="15"
-                                                onChange={inputOnChange("fabWeave")}
-                                            />
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.fabWeavefabWeave}
+                                                    onChange={inputOnChangeFab("fabWeave")}                                >
+                                                    <option value=""> Select fab Weave</option>
+                                                    {fbrweavelist.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div class="col-lg-2">
@@ -1083,26 +2037,26 @@ function MaterialMaster({ name }) {
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.country}
-                                                    onChange={inputOnChange("dyeProcess")}
+                                                    value={fabricfields.dyeProcess}
+                                                    onChange={inputOnChangeFab("dyeProcess")}
                                                 >
                                                     <option value=""> Select Dye Process</option>
-                                                    {countryList.map((v, index) => {
+                                                    {fbrdyedlist.map((v, index) => {
                                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
                                                     })}
 
                                                 </select>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>Address 1<span className='text-danger'>*  </span> </label>
+                                                <label>YarnWarp<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.yarnWarp === '' ? errors.yarnWarp : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter YarnWarp'
-                                                value={fabricfields.yarnWarp} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("yarnWarp")}
+                                                value={fabricfields.yarnWarp} minLength="1" maxLength="20"
+                                                onChange={inputOnChangeFab("yarnWarp")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1111,18 +2065,18 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.yarnWeft === '' ? errors.yarnWeft : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter yarnWeft'
-                                                value={fabricfields.yarnWeft} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("yarnWeft")}
+                                                value={fabricfields.yarnWeft} minLength="1" maxLength="20"
+                                                onChange={inputOnChangeFab("yarnWeft")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>WarpYarnBlend<span className='text-danger'>  </span> </label>
+                                                <label>Warp YarnBlend<span className='text-danger'>  </span> </label>
                                                 <small className='text-danger'>{fabricfields.warpYarnBlend === '' ? errors.warpYarnBlend : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter warpYarnBlend'
-                                                value={fabricfields.warpYarnBlend} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("warpYarnBlend")}
+                                                value={fabricfields.warpYarnBlend} minLength="1" maxLength="50"
+                                                onChange={inputOnChangeFab("warpYarnBlend")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1132,7 +2086,7 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter weftYarnBlend'
                                                 value={fabricfields.weftYarnBlend} minLength="1" maxLength="50"
-                                                onChange={inputOnChange("weftYarnBlend")}
+                                                onChange={inputOnChangeFab("weftYarnBlend")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1141,26 +2095,54 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.endsPerInch === '' ? errors.endsPerInch : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter endsPerInch'
-                                                value={fabricfields.endsPerInch} minLength="1" maxLength="15"
-                                                onChange={inputOnChange("endsPerInch")}
+                                                value={fabricfields.endsPerInch} minLength="1" maxLength="50"
+                                                onChange={inputOnChangeFab("endsPerInch")}
                                             />
                                         </div>
 
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>PickPerInch <span className='text-danger'>*  </span> </label>
+                                                <label>Pick PerInch <span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.pickPerInch === '' ? errors.pickPerInch : ''}</small>
                                             </div>
-                                            {/* <label>Country</label>
-                                        <small className='text-danger'>{fields.country === '' ? errors.country : ''}</small> */}
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter pickPerInch'
+                                                value={fabricfields.pickPerInch} minLength="1" maxLength="50"
+                                                onChange={inputOnChangeFab("pickPerInch")}
+                                            />
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Shrink Warp<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{fabricfields.shrinkWarp === '' ? errors.shrinkWarp : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWarp'
+                                                value={fabricfields.shrinkWarp} minLength="1" maxLength="100"
+                                                onChange={inputOnChangeFab("shrinkWarp")}
+                                            />
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Shrink Weft<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{fabricfields.shrinkWeft === '' ? errors.shrinkWeft : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWeft'
+                                                value={fabricfields.shrinkWeft} minLength="1" maxLength="100"
+                                                onChange={inputOnChangeFab("shrinkWeft")}
+                                            />
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Wash Method<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{fabricfields.washMethod === '' ? errors.washMethod : ''}</small>
+                                            </div>
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.pickPerInch}
-                                                    onChange={inputOnChange("pickPerInch")}
+                                                    value={fabricfields.washMethod}
+                                                    onChange={inputOnChangeFab("washMethod")}
                                                 >
-                                                    <option value=""> Select pickPerInch</option>
-                                                    {countryList.map((v, index) => {
+                                                    <option value=""> Select Wash Method</option>
+                                                    {fbrwashlist.map((v, index) => {
                                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
                                                     })}
 
@@ -1169,42 +2151,12 @@ function MaterialMaster({ name }) {
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>ShrinkWarp<span className='text-danger'>*  </span> </label>
-                                                <small className='text-danger'>{fabricfields.shrinkWarp === '' ? errors.shrinkWarp : ''}</small>
-                                            </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWarp'
-                                                value={fabricfields.shrinkWarp} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("shrinkWarp")}
-                                            />
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>ShrinkWeft<span className='text-danger'>  </span> </label>
-                                                <small className='text-danger'>{fabricfields.shrinkWeft === '' ? errors.shrinkWeft : ''}</small>
-                                            </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWeft'
-                                                value={fabricfields.shrinkWeft} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("shrinkWeft")}
-                                            />
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>WashMethod<span className='text-danger'>  </span> </label>
-                                                <small className='text-danger'>{fabricfields.washMethod === '' ? errors.washMethod : ''}</small>
-                                            </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter washMethod'
-                                                value={fabricfields.washMethod} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("washMethod")}
-                                            />
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>FabWt_BW<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.fabWt_BW === '' ? errors.fabWt_BW : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter fabWt_BW'
                                                 value={fabricfields.fabWt_BW} minLength="1" maxLength="50"
-                                                onChange={inputOnChange("fabWt_BW")}
+                                                onChange={inputOnChangeFab("fabWt_BW")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1213,8 +2165,8 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.fabWt_AW === '' ? errors.fabWt_AW : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter fabWt_AW'
-                                                value={fabricfields.fabWt_AW} minLength="1" maxLength="15"
-                                                onChange={inputOnChange("fabWt_AW")}
+                                                value={fabricfields.fabWt_AW} minLength="1" maxLength="50"
+                                                onChange={inputOnChangeFab("fabWt_AW")}
                                             />
                                         </div>
 
@@ -1229,10 +2181,10 @@ function MaterialMaster({ name }) {
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
                                                     value={fabricfields.weightUom}
-                                                    onChange={inputOnChange("weightUom")}
+                                                    onChange={inputOnChangeFab("weightUom")}
                                                 >
                                                     <option value=""> Select weightUom</option>
-                                                    {countryList.map((v, index) => {
+                                                    {uomlist.map((v, index) => {
                                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
                                                     })}
 
@@ -1245,18 +2197,18 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.actualWidth === '' ? errors.actualWidth : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter actualWidth'
-                                                value={fabricfields.actualWidth} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("actualWidth")}
+                                                value={fabricfields.actualWidth} minLength="1" maxLength="20"
+                                                onChange={inputOnChangeFab("actualWidth")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>Cut Width<span className='text-danger'>  </span> </label>
+                                                <label>Cuttable Width<span className='text-danger'>  </span> </label>
                                                 <small className='text-danger'>{fabricfields.cutWidth === '' ? errors.cutWidth : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter cutWidth'
-                                                value={fabricfields.cutWidth} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("cutWidth")}
+                                                value={fabricfields.cutWidth} minLength="1" maxLength="20"
+                                                onChange={inputOnChangeFab("cutWidth")}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -1264,67 +2216,72 @@ function MaterialMaster({ name }) {
                                                 <label>Width Uom<span className='text-danger'>  </span> </label>
                                                 <small className='text-danger'>{fabricfields.widthUom === '' ? errors.widthUom : ''}</small>
                                             </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter widthUom'
-                                                value={fabricfields.widthUom} minLength="1" maxLength="100"
-                                                onChange={inputOnChange("widthUom")}
-                                            />
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.widthUom}
+                                                    onChange={inputOnChangeFab("widthUom")}
+                                                >
+                                                    <option value=""> Select widthUom</option>
+                                                    {uomlist.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
+
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Physical Finish<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.physicalFinish === '' ? errors.physicalFinish : ''}</small>
                                             </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter physicalFinish'
-                                                value={fabricfields.physicalFinish} minLength="1" maxLength="50"
-                                                onChange={inputOnChange("physicalFinish")}
-                                            />
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.physicalFinish}
+                                                    onChange={inputOnChangeFab("physicalFinish")}
+                                                >
+                                                    <option value=""> Select Physical Finish</option>
+                                                    {phyFinishlist.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
+
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Chemical Finish<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.chemicalFinish === '' ? errors.chemicalFinish : ''}</small>
                                             </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter chemicalFinish'
-                                                value={fabricfields.chemicalFinish} minLength="1" maxLength="15"
-                                                onChange={inputOnChange("chemicalFinish")}
-                                            />
-                                        </div>
-
-                                        {/* <div class="col-lg-2">
-                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>Country <span className='text-danger'>*  </span> </label>
-                                                <small className='text-danger'>{fabricfields.country === '' ? errors.country : ''}</small>
-                                            </div>                                           
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.country}
-                                                    onChange={inputOnChange("country")}
+                                                    value={fabricfields.chemicalFinish}
+                                                    onChange={inputOnChangeFab("chemicalFinish")}
                                                 >
-                                                    <option value=""> Select country</option>
-                                                    {countryList.map((v, index) => {
+                                                    <option value=""> Select Chemical Finish</option>
+                                                    {cheFinishlist.map((v, index) => {
                                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
                                                     })}
 
                                                 </select>
                                             </div>
-                                        </div> */}
-                                        
-
+                                        </div>
                                     </div>
                                 </div>
                             }
 
-<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
                                 <div class="row mt-15">
-                                <div className='col-lg-3'>
+                                    <div className='col-lg-3'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Quality <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{threadfields.quality === '' ? errors.quality : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter quality'
-                                            value={threadfields.quality} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("quality")}
+                                            value={threadfields.quality} minLength="1" maxLength="30"
+                                            onChange={inputOnChangeThread("quality")}
                                         />
                                     </div>
                                     <div className='col-lg-3'>
@@ -1334,7 +2291,7 @@ function MaterialMaster({ name }) {
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter tex'
                                             value={threadfields.tex} minLength="1" maxLength="10"
-                                            onChange={inputOnChange("tex")}
+                                            onChange={inputOnChangeThread("tex")}
                                         />
                                     </div>
                                     <div className='col-lg-3'>
@@ -1343,23 +2300,23 @@ function MaterialMaster({ name }) {
                                             <small className='text-danger'>{threadfields.tkt === '' ? errors.tkt : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter tkt'
-                                            value={threadfields.tkt} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("tkt")}
+                                            value={threadfields.tkt} minLength="1" maxLength="10"
+                                            onChange={inputOnChangeThread("tkt")}
                                         />
                                     </div>
 
 
                                     <div className='col-lg-3'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>NoOfMtr <span className='text-danger'>*  </span> </label>
+                                            <label>No Of Meter <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{threadfields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter NoOfMtr'
                                             value={threadfields.noOfMtr} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("noOfMtr")}
+                                            onChange={inputOnChangeThread("noOfMtr")}
                                         />
                                     </div>
-                                   
+
                                 </div>
                             </div>
 
@@ -1372,8 +2329,8 @@ function MaterialMaster({ name }) {
                                             <small className='text-danger'>{trimsfields.articleNo === '' ? errors.articleNo : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter articleNo'
-                                            value={trimsfields.articleNo} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("articleNo")}
+                                            value={trimsfields.articleNo} minLength="1" maxLength="30"
+                                            onChange={inputOnChangeTrims("articleNo")}
                                         />
                                     </div>
                                     <div className='col-lg-3'>
@@ -1382,8 +2339,8 @@ function MaterialMaster({ name }) {
                                             <small className='text-danger'>{trimsfields.product === '' ? errors.product : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter product'
-                                            value={trimsfields.product} minLength="1" maxLength="10"
-                                            onChange={inputOnChange("product")}
+                                            value={trimsfields.product} minLength="1" maxLength="30"
+                                            onChange={inputOnChangeTrims("product")}
                                         />
                                     </div>
                                     <div className='col-lg-3'>
@@ -1392,227 +2349,346 @@ function MaterialMaster({ name }) {
                                             <small className='text-danger'>{trimsfields.finish === '' ? errors.finish : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter finish'
-                                            value={trimsfields.finish} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("finish")}
+                                            value={trimsfields.finish} minLength="1" maxLength="30"
+                                            onChange={inputOnChangeTrims("finish")}
                                         />
                                     </div>
 
 
-                                    <div className='col-lg-3'>
+                                    {/* <div className='col-lg-3'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Remarks <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{purchasefields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter Remarks'
                                             value={trimsfields.noOfMtr} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("noOfMtr")}
+                                            onChange={inputOnChangeTrims("noOfMtr")}
                                         />
+                                    </div> */}
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>   <span className='text-danger'>  </span> </label>
+                                            <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                        </div>
+                                        <div class="clear"></div>
+                                        <div class="clear"></div>
+                                        <div class="clear"></div>
+                                        {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
+                                        {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTrims()}>Add To List</button>}
+                                        {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTrims()}> Update To List</button>}
+                                        {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
+
                                     </div>
-                                   
+
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                                        <div class="table-wrap">
+
+
+                                            <table id="example" class="table table-striped edit-np f-l1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ACTION</th>
+                                                        {/* <th class="">SLNO</th> */}
+                                                        <th class="">GROUP ARTICLE NUMBER</th>
+                                                        <th class="">PRODUCT</th>
+                                                        <th>FINISH	</th>
+                                                        <th>REMARKS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {/* if(visible=="True") */}
+                                                    {
+
+                                                        fields.matMastTrimsModels.map((row, index) => (
+                                                            <tr key={index}>
+                                                                <td align='center'>
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                                        <div className='text-center' onClick={() => { editRow(row?.id) }}>
+                                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                                        </div>
+
+                                                                    </div>
+                                                                </td>
+                                                                {/* <td align='center'> {index + 1} </td> */}
+                                                                <td align='center'>{row.articleNo}</td>
+                                                                <td align='center'>{row.product}</td>
+                                                                <td align='center'>{row.finish}</td>
+                                                                <td align='center'>{row.Remarks}</td>
+                                                            </tr>
+                                                        ))
+
+                                                        //     trimsGridfields.map((row, index) => (
+                                                        // <tr key={index}>
+                                                        //     <td align='center'>
+                                                        //         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                        //             <div className='text-center'>
+                                                        //                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                        //             </div>
+                                                        //         </div>
+                                                        //     </td>
+                                                        //     <td align='center'> {index + 1} </td>
+                                                        //     <td align='center'>{row.articleNo}</td>
+                                                        //     <td align='center'>{row.product}</td>
+                                                        //     <td align='center'>{row.finish}</td>
+                                                        //     <td align='center'>{row.Remarks}</td>
+
+                                                        // </tr>
+                                                        // ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
-                           
+
                             <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="home-tab">
                                 <div class="row mt-15">
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Email Id <span className='text-danger'>*  </span> </label>
+                                            <label>Material Code <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{purchasefields.matCode === '' ? errors.matCode : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter matCode'
-                                            value={purchasefields.matCode} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("matCode")}
+                                            value={purchasefields.matCode} minLength="1" maxLength="20"
+                                            onChange={inputOnChangePurchase("matCode")}
                                         />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact Person1 <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson1 === '' ? errors.contPerson1 : ''}</small>
+                                            <label>Supplier <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.supcode === '' ? errors.supcode : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person1'
-                                            value={purchasefields.contPerson1} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("contPerson1")}
-                                        />
+                                        <div class="main-select">
+                                            <select name="somename" className='form-control form-control-sm mt-1'
+                                                required
+                                                value={fabricfields.supcode}
+                                                onChange={inputOnChangeFab("supcode")}
+                                            >
+                                                <option value=""> Select Supplier</option>
+                                                {suplierlist.map((v, index) => {
+                                                    return <option key={index} value={v.id + "|" + v.code}>{v.codeDesc}</option>
+                                                })}
+
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact Person2 <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson2 === '' ? errors.contPerson2 : ''}</small>
+                                            <label>Supplier Reference No <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.supRefNo === '' ? errors.supRefNo : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person2'
-                                            value={purchasefields.contPerson2} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("contPerson2")}
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter supRefNo'
+                                            value={purchasefields.supRefNo} minLength="1" maxLength="30"
+                                            onChange={inputOnChangePurchase("supRefNo")}
                                         />
                                     </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contNo === '' ? errors.contNo : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
-                                            value={purchasefields.contNo} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("contNo")}
-                                        />
-                                    </div>
-
-                                    <div className='col-lg-2'>
+                                    {/* <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Contact No <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{purchasefields.contNo === '' ? errors.contNo : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
                                             value={purchasefields.contNo} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("contNo")}
+                                            onChange={inputOnChangePurchase("contNo")}
                                         />
-                                    </div>
+                                    </div> */}
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Area Code <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.areaCode === '' ? errors.areaCode : ''}</small>
+                                            <label>Brand <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.brand === '' ? errors.brand : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Area Code'
-                                            value={purchasefields.areaCode} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("areaCode")}
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter brand'
+                                            value={purchasefields.brand} minLength="1" maxLength="30"
+                                            onChange={inputOnChangePurchase("brand")}
                                         />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>GST No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.gstNo === '' ? errors.gstNo : ''}</small>
+                                            <label>MOQ <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.moq === '' ? errors.moq : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter GST No'
-                                            value={purchasefields.gstNo} minLength="1" maxLength="30"
-                                            onChange={inputOnChange("gstNo")}
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter moq'
+                                            value={purchasefields.moq} minLength="1" maxLength="25"
+                                            onChange={inputOnChangePurchase("moq")}
                                         />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Email Id <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.matCode === '' ? errors.matCode : ''}</small>
+                                            <label>MOQUOM <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.moqUom === '' ? errors.moqUom : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter matCode'
-                                            value={purchasefields.matCode} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("matCode")}
-                                        />
-                                    </div>
+                                        <div class="main-select">
+                                            <select name="somename" className='form-control form-control-sm mt-1'
+                                                required
+                                                value={fabricfields.moqUom}
+                                                onChange={inputOnChangeFab("moqUom")}
+                                            >
+                                                <option value=""> Select MOQ UOM</option>
+                                                {uomlist.map((v, index) => {
+                                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                })}
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact Person1 <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson1 === '' ? errors.contPerson1 : ''}</small>
+                                            </select>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person1'
-                                            value={purchasefields.contPerson1} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("contPerson1")}
-                                        />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact Person2 <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson2 === '' ? errors.contPerson2 : ''}</small>
+                                            <label>Multiples <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.multiples === '' ? errors.multiples : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person2'
-                                            value={purchasefields.contPerson2} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("contPerson2")}
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter multiples'
+                                            value={purchasefields.multiples} minLength="1" maxLength="50"
+                                            onChange={inputOnChangePurchase("multiples")}
                                         />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contNo === '' ? errors.contNo : ''}</small>
+                                            <label>Lead time <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.leadtime === '' ? errors.leadtime : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
-                                            value={purchasefields.contNo} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("contNo")}
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter leadtime'
+                                            value={purchasefields.leadtime} minLength="1" maxLength="50"
+                                            onChange={inputOnChangePurchase("leadtime")}
                                         />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contNo === '' ? errors.contNo : ''}</small>
+                                            <label>Color <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.contPerson2 === '' ? errors.color : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
-                                            value={purchasefields.contNo} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("contNo")}
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter color'
+                                            value={purchasefields.color} minLength="1" maxLength="20"
+                                            onChange={inputOnChangePurchase("color")}
                                         />
                                     </div>
 
                                     <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Area Code <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.areaCode === '' ? errors.areaCode : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Area Code'
-                                            value={purchasefields.areaCode} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("areaCode")}
-                                        />
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>GST No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.gstNo === '' ? errors.gstNo : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter GST No'
-                                            value={purchasefields.gstNo} minLength="1" maxLength="30"
-                                            onChange={inputOnChange("gstNo")}
-                                        />
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Email Id <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.matCode === '' ? errors.matCode : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter matCode'
-                                            value={purchasefields.matCode} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("matCode")}
-                                        />
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact Person1 <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson1 === '' ? errors.contPerson1 : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person1'
-                                            value={purchasefields.contPerson1} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("contPerson1")}
-                                        />
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact Person2 <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson2 === '' ? errors.contPerson2 : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact Person2'
-                                            value={purchasefields.contPerson2} minLength="1" maxLength="50"
-                                            onChange={inputOnChange("contPerson2")}
-                                        />
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Contact No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contNo === '' ? errors.contNo : ''}</small>
+                                            <label>Size <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.size === '' ? errors.size : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
-                                            value={purchasefields.contNo} minLength="1" maxLength="25"
-                                            onChange={inputOnChange("contNo")}
+                                            value={purchasefields.size} minLength="1" maxLength="20"
+                                            onChange={inputOnChangePurchase("size")}
+                                        />
+                                    </div>
+                                    <div className='col-lg-2'>
+
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>From Date <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.fromDt === '' ? errors.fromDt : ''}</small>
+                                        </div>
+                                        <Input type="date" name="fromDt" className="form-control form-control-sm mt-1" id="fromDt" placeholder="From Date" value={purchasefields.fromDt} onChange={inputOnChangePurchase("fromDt")} />
+                                        {/* <input className='form-control form-control-sm mt-1' placeholder='Enter fromDt'
+                                            value={purchasefields.fromDt} minLength="1" maxLength="25"
+                                            onChange={inputOnChangePurchase("fromDt")}
+                                        /> */}
+                                    </div>
+
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>To Date <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.toDt === '' ? errors.toDt : ''}</small>
+                                        </div>
+                                        <Input type="date" name="toDt" className="form-control form-control-sm mt-1" id="toDt" placeholder="To Date" value={purchasefields.toDt} onChange={inputOnChangePurchase("toDt")} />
+
+                                        {/* <input className='form-control form-control-sm mt-1' placeholder='Enter toDt'
+                                            value={purchasefields.toDt} minLength="1" maxLength="25"
+                                            onChange={inputOnChangePurchase("toDt")}
+                                        /> */}
+                                    </div>
+
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Price <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.price === '' ? errors.price : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter price'
+                                            value={purchasefields.price} minLength="1" maxLength="30"
+                                            onChange={inputOnChangePurchase("price")}
                                         />
                                     </div>
 
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Currency <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.curCode === '' ? errors.curCode : ''}</small>
+                                        </div>
+                                        <div class="main-select">
+                                            <select name="somename" className='form-control form-control-sm mt-1'
+                                                required
+                                                value={fabricfields.curCode}
+                                                onChange={inputOnChangePurchase("curCode")}
+                                            >
+                                                <option value=""> Select Currency</option>
+                                                {currencyList.map((v, index) => {
+                                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                })}
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Bin Code<span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.binCode === '' ? errors.binCode : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter binCode'
+                                            value={purchasefields.binCode} minLength="1" maxLength="30"
+                                            onChange={inputOnChangePurchase("binCode")}
+                                        />
+                                    </div>
+
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Description <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.purdesc === '' ? errors.purdesc : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter purdesc'
+                                            value={purchasefields.purdesc} minLength="1" maxLength="150"
+                                            onChange={inputOnChangePurchase("purdesc")}
+                                        />
+                                    </div>
+
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Remarks<span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                        </div>
+                                        <input className='form-control form-control-sm mt-1' placeholder='Enter remarks'
+                                            value={purchasefields.remarks} minLength="1" maxLength="200"
+                                            onChange={inputOnChangePurchase("remarks")}
+                                        />
+                                    </div>
+                                    <div className='col-lg-2'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>   <span className='text-danger'>  </span> </label>
+                                            <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                        </div>
+                                        <div class="clear"></div>
+                                        <div class="clear"></div>
+                                        <div class="clear"></div>
+                                        {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
+                                        {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddPurchase()}>Add To List</button>}
+                                        {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddPurchase()}> Update To List</button>}
+                                        {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
+
+                                    </div>
                                     {/* <div className='col-lg-3'>
                                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                                         <div className='mt-1'>
@@ -1621,13 +2697,70 @@ function MaterialMaster({ name }) {
                                                 onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                                         </div>
                                     </div> */}
+
+
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                                        <div class="table-wrap">
+
+
+                                            <table id="example" class="table table-striped edit-np f-l1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ACTION</th>
+                                                        {/* <th class="">SLNO</th> */}
+                                                        <th class="">MATERIAL CODE</th>
+                                                        <th class="">SUPPLIER</th>
+                                                        <th>SUPPLIER REFERENCE	</th>
+                                                        <th>BRAND	</th>
+                                                        <th>DESCRIPTION	</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {/* if(visible=="True") */}
+                                                    {
+
+
+                                                        fields.matMastPurchaseModels.map((row, index) => (
+                                                            <tr key={index}>
+                                                                <td align='center'>
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                                        <div className='text-center' onClick={() => { editRow(row?.id) }}>
+                                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                                        </div>
+                                                                        {/* <div onClick={() => edit(value, 'clone')}>onClick={() => { editRow(row?.id) }}
+                                                                    <FontAwesomeIcon icon={faCopy} color="#919191" />
+                                                                </div> */}
+                                                                    </div>
+                                                                </td>
+                                                                {/* <td align='center'> {index + 1} </td> */}
+                                                                <td align='center'>{row.matCode}</td>
+                                                                <td align='center'>{row.supcode}</td>
+                                                                <td align='center'>{row.supRefNo}</td>
+                                                                <td align='center'>{row.brand}</td>
+                                                                <td align='center'>{row.purdesc}</td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {/* <div class="clear"></div>
+                        <div class="clear"></div>
+                        <div class="clear"></div>
+                        <div class="clear"></div>
+                        <div class="clear"></div>
+                        <div class="clear"></div> */}
                         <div class="d-flex align-content-center pt-20 pb-20 justify-content-center sticky-bottom">
 
                             <div class=" ">
-                                <button class="btn btn-primary search-btn btn-block ml-10" onClick={close}>Back</button>
+                                <button class="btn btn-primary search-btn btn-block ml-10" onClick={close}>View List</button>
                             </div>
                             {/* <div class=" ">
                     <button class="btn btn-primary search-btn btn-block ml-10">Cancel</button>
@@ -1640,7 +2773,7 @@ function MaterialMaster({ name }) {
                                     let _id = Number(fields.id)
                                     if (_id === 0) add()
                                     else edit(fields.entityID, fields.eCode, fields.eName)
-                                }}> Cancel </button>
+                                }}> Clear </button>
                             </div>
                             <div class="">
                                 {Savevisible && <button class="btn btn-success search-btn btn-block ml-10" disabled={loader} onClick={() => Save(fields.entityID, fields.eCode, fields.eName, 'save')}>Save</button>}
