@@ -154,55 +154,28 @@ function LineCostMaster({ name }) {
     }, [rowData]);
     const inputOnChange1 = (index, name) => e => {
         debugger;
-        console.log(rowData);
-        let value = e.target.value
-        let res = rowData[index];
-        let curname1 = name;
-        var oData = rowData;
-        res[name] = value;
-        if (name == "workingHrs" || name == "linecost") {
-            var workHrs = res["workingHrs"]
-            var lineCost = res["linecost"]
-            res["smv"] = (lineCost / workHrs) / 60;
+        let err = {}, validation = true
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === '' || re.test(e.target.value)) {
+            let value = e.target.value
+            let res = rowData[index];
+            let curname1 = name;
+            var oData = rowData;
+            res[name] = value;
+            if (name == "workingHrs" || name == "linecost") {
+                var workHrs = res["workingHrs"]
+                var lineCost = res["linecost"]
+                res["smv"] =parseFloat((lineCost / workHrs) / 60).toFixed(2) ;
+            }
+
+            const updatedObject = rowData.map((user, rowIndex) =>
+                index === rowIndex ? res : user
+            );
+            setRowData(updatedObject)
+        } else {
+
         }
 
-        const updatedObject = rowData.map((user, rowIndex) =>
-            index === rowIndex ? res : user
-        );
-        // setRowData({ ...rowData,oData  })
-        setRowData(updatedObject)
-
-        //  setRowData({ ...rowData[index], [name]: value })
-
-        //   setRowData(current =>
-        //     current.map(obj => {
-        //       if (obj.id === 2) {
-        //         return {...obj, name: 'Sophia', country: 'Sweden'};
-        //       }
-
-        //       return obj;
-        //     }),
-        //   );
-        //   setFields( arr => [...fields, `${arr.length}`]);
-
-        //  setFields({ fields, [name]: value })
-        ///   console.log(fields)
-
-
-        //    setRowDataTemp({ ...rowDataTemp[0], [name]: value })
-        //  console.log(rowDataTemp)
-
-
-        //  setRowData({ ...rowData[index], [name]: value })
-
-        // setRowData({ ...fields, [name]: value })
-
-
-        // setRowData({ ...rowData[index], [name]: value })
-        //  const index=rowData.findIndex(x=>index)
-        // setRowData(test);
-        // // if (name == "operators") value = validateInputOnKeyup(e)
-        // setRowData({ ...fields, [name]: value })
     }
 
     // const onNameEdited = (i, event) => {
@@ -629,23 +602,33 @@ function LineCostMaster({ name }) {
                                     <label>Line Group <span className='text-danger'>*  </span> </label>
                                     <small className='text-danger'>{fields.lineGroup === '' ? errors.lineGroup : ''}</small>
                                     <input type="text" class="form-control" placeholder='Enter line Group'
-                                        value={fields.lineGroup} maxLength="50"
+                                        value={fields.lineGroup} maxLength="50" autoComplete="off"
                                         id="line-Group"
                                         onChange={inputOnChange("lineGroup")}
                                         required />
                                 </div>
 
-                                <div class="col-lg-auto">
-                                    <button class="btn btn-success search-btn btn-block ml-10 " onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.factCode, fields.lineGroup)}>
-                                        {/* <i class="fe fe-plus fs-10 pe-auto"></i> */}
+                                <div class="col-lg-1">
+                                    <label></label>
+                                    <button class="btn btn-success search-btn btn-block ml-10 mt-10" onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.factCode, fields.lineGroup)}>
                                         ADD
                                     </button>
-                                    <div class=" ">
+                                    {/* <div class=" ">
                                         <button class="btn btn-primary search-btn btn-block ml-10 " onClick={() => onClose()}>Cancel</button>
                                     </div>
                                     <div class="">
                                         <button class="btn btn-success search-btn btn-block ml-10" onClick={() => postLineCostsave()}>Save</button>
-                                    </div>
+                                    </div> */}
+                                </div>
+                                <div class="col-lg-1">
+                                    <label></label>
+                                    <button class="btn btn-primary search-btn btn-block ml-10 mt-10" onClick={() => onClose()}>Cancel</button>
+
+                                </div>
+                                <div class="col-lg-1">
+                                    <label></label>
+                                    <button class="btn btn-success search-btn btn-block ml-10 mt-10" onClick={() => postLineCostsave()}>Save</button>
+
                                 </div>
                             </div>
 
