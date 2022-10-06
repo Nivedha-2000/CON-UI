@@ -278,10 +278,10 @@ function MaterialTypeMaster({ name }) {
             name: "matTypeIndex",
             label: "matTypeIndex"
         },
-        {
-            name: "allow",
-            label: "Allow"
-        },
+        // {
+        //     name: "allow",
+        //     label: "Allow"
+        // },
 
         {
             name: "active",

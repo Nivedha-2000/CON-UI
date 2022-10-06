@@ -122,6 +122,7 @@ export default function ProductivityMasters() {
     const [btnVisible, setBtnVisible] = useState(false);
     const [AddbtnVisible, setAddBtnVisible] = useState(false);
     const [btnSaveVisible, setBtnSaveVisible] = useState(false);
+    const [backBtnVisible, setbackBtnVisible] = useState(false);
 
     const [headerFleids, setheaderFleids] = useState(false);
 
@@ -649,6 +650,7 @@ export default function ProductivityMasters() {
                         setBtnVisible(false);
                         setheaderFleids(false);
                         setBtnSaveVisible(false)
+                        setbackBtnVisible(true)
 
                     }).catch(err => {
                         setLoader(false)
@@ -657,7 +659,7 @@ export default function ProductivityMasters() {
                         message.error(err.message || err)
                     })
                 } else {
-                    alert("Please close Peak Effits...!")
+                    message.error("Please close Peak Effits...!")
                 }
             }
 
@@ -692,11 +694,12 @@ export default function ProductivityMasters() {
             return item;
         });
 
-
+        setFields({ ...fields, peakEff: 'N', scaleUpEffPer: 0 })
+        // setFields({ ...fields, scaleUpEffPer: 0 })
         setProductivityList(toUpdateData);
         setBtnVisible(true);
-        setBtnSaveVisible(true);
-     
+        setBtnSaveVisible(false);
+
 
 
     }
@@ -717,11 +720,12 @@ export default function ProductivityMasters() {
         setBtnVisible(false);
         setheaderFleids(true);
         setAddBtnVisible(true)
+        setbackBtnVisible(false)
 
 
         //   console.log(ProductivityList);
         if (LocCode != '') {
-            //  console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay));
+              console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
             setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
         }
     };
@@ -826,7 +830,7 @@ export default function ProductivityMasters() {
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
-        //  setbtnSaveVisible(true)
+        setbackBtnVisible(true)
         // setbtnUpdateVisible(false)
     }
 
@@ -837,10 +841,17 @@ export default function ProductivityMasters() {
         page: 0,
         rowsPerPage: 10,
         sortOrder: {
-            name: 'supCategory',
+            name: 'locCode',
             direction: 'asc'
         }
     })
+
+    const updateTableProps = props => {
+        setTableProps({
+            ...tableProps,
+            ...props
+        })
+    }
 
     function getDatas(locCode, factcode, linegroup) {
         debugger;
@@ -858,7 +869,8 @@ export default function ProductivityMasters() {
         })
     }
     const back = () => {
-        // setListLoading(true)
+        setLoader(false)
+        onClose();
         setShowResults(true)
         setShowForm(false)
         setProdFields({
@@ -867,7 +879,6 @@ export default function ProductivityMasters() {
         setProdFields([]);
         setList([]);
 
-        onClose()
     }
 
     const edit = async (locCode, factCode, lineGroup, noOfOperators, workingHrs, productType, subProductType, plaidType, difficultyLevel, startdate, enddate, type) => {
@@ -970,7 +981,8 @@ export default function ProductivityMasters() {
                         <h6 className='m-0 p-0'>{name}</h6>
 
                         <div className='row align-items-center mt-2'>
-                            <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1'>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
+                                <label> Location </label>
                                 <div class="main-select">
                                     <select name="locCodel" class="form-control SlectBox main-select" required
                                         value={Prodfields.locCodel}
@@ -983,7 +995,9 @@ export default function ProductivityMasters() {
                                         })}
                                     </select>
                                 </div>
-
+                            </div>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
+                                <label> Factory </label>
                                 <div class="main-select">
                                     <select name="factCodel" class="form-control SlectBox main-select" required
                                         value={Prodfields.factCodel}
@@ -996,7 +1010,9 @@ export default function ProductivityMasters() {
                                         })}
                                     </select>
                                 </div>
-
+                            </div>
+                            <div className='col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 mt-1'>
+                                <label> Line Group </label>
                                 <div class="main-select">
                                     <select name="lineGroupl" class="form-control SlectBox main-select" required
                                         value={Prodfields.lineGroupl}
@@ -1009,8 +1025,8 @@ export default function ProductivityMasters() {
                                         })}
                                     </select>
                                 </div>
-
                             </div>
+
 
 
                             <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-2 mt-1 text-end' >
@@ -1359,10 +1375,8 @@ export default function ProductivityMasters() {
 
                                 </div>
                                 <div className='row d-flex my-xl-auto right-content'>
-                                    <div class="col-5 mg-t-10 mg-md-t-0 p-0 mr-10">
-                                        {/* <div class="float-start">
-                                    <button class="btn btn-primary search-btn btn-block  ">Reset</button>
-                                </div> */}
+                                    <div class="col-12 mg-t-10 mg-md-t-0 p-0 mr-10">
+
                                         <div class="float-start pl-5">
                                             {
                                                 < button class="btn btn-primary search-btn btn-block" onClick={() => ViewList()}>View</button>
@@ -1371,7 +1385,7 @@ export default function ProductivityMasters() {
                                         </div>
                                         <div class="float-start pl-5">
                                             {
-                                                < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
+                                              backBtnVisible &&  < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
                                             }
 
                                         </div>
