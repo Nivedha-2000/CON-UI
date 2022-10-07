@@ -132,8 +132,12 @@ export default function Header() {
       message.success('Logout Successfully');
     }
     else if (result.Success == false) {
-      message.success(result.message);
+      //message.success(result.message);
       // sessionStorage.clear();
+      console.log(result.message);
+      sessionStorage.clear();
+      window.location.href = configUrl().appUrl;
+      message.success('Logout Successfully');
     }
   }
 

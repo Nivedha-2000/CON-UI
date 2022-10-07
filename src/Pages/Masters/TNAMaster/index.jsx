@@ -313,13 +313,13 @@ function TNAMaster({ name }) {
     }
 
     const GetdependActCodeDropDown = (buyCode, buydivCode, deptcode, locCode, activityType) => {
-       // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType);
+        // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType);
         // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + AddTnamodels.buyCode + "&BuydivCode=" + AddTnamodels.buydivCode + "&Deptcode=" + AddTnamodels.deptcode + "&LocCode=" + AddTnamodels.locCode + "&ActivityType=" + value);       
         ApiCall({
             path: API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType,
         }).then(resp => {
             try {
-               // alert(resp.data);
+                // alert(resp.data);
                 setdependActCodeList(resp.data)
                 console.log(resp.data)
             } catch (er) {
@@ -824,15 +824,16 @@ function TNAMaster({ name }) {
         debugger;
         // alert('Hai save');
         // if (loader) return
-        // let err = {}, validation = true
+        let a = {}, validation = true
         // debugger;
-        // requiredFields.forEach(f => {
-        //     if (AddTnamodels[f] === "") {
-        //         err[f] = "This field is required"
-        //         validation  = false
+        // fields.forEach(weightage => {
+        //     if (AddTnamodels[weightage] !== "") {
+
+        //         a[weightage]++// = "This field is required"
+        //         // validation  = false
         //     }
         // })
-        // if (fields.transitdays == 0) {
+        // if (fields.weightage == 0) {
         //     err['transitdays'] = "Should be greater than zero."
         //     validation = false
         // }

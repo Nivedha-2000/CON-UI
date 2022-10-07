@@ -12,6 +12,7 @@ import DefectMaster from '../Pages/Masters/DefectMasters/DefectMasters';
 import OperationMaster from '../Pages/Masters/OperationMaster/OperationMaster';
 import SewingLineMaster from '../Pages/Masters/SewingLineMaster/SewingLineMaster';
 import AqlMaster from '../Pages/Masters/AqlMaster/AqlMaster';
+import AqlMaster_Old from '../Pages/Masters/AqlMaster_Old/AqlMaster';
 import PartsMasters from '../Pages/Masters/PartsMaster/PartsMaster';
 import DefectMasters from '../Pages/Masters/DefectMasters/DefectMasters';
 import FTDOperationMaster from '../Pages/Masters/FTDOperationMaster';
@@ -59,7 +60,7 @@ import ProductivityMasters from '../Pages/Masters/ProductivityMasterNew';
 import ProductivityMaster from '../Pages/Masters/ProductivityMaster';
 
 
-import TabTest from '../Pages/Masters/TabTest'
+import MaterialMaster from '../Pages/Masters/MaterialMaster'
 import SupplierMasterNew from '../Pages/Masters/SupplierMasterNew/sup_index';
 import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMaster';
 import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
@@ -87,7 +88,8 @@ export default function Routing() {
         <Route path='masters/parts-master' element={<PartsMasters />} />
         <Route path='masters/operation-master' element={<OperationMaster />} />
         <Route path='masters/sewingline-master' element={<SewingLineMaster />} />
-        <Route path='masters/aql-master' element={<AqlMaster />} />
+        {/* <Route path='masters/aql-master' element={<AqlMaster />} /> */}
+        <Route path='masters/aql-master' element={<AqlMaster_Old />} />
         <Route path='masters/language-master' element={<LanguageMaster />} />
         <Route path='masters/defect-translation-master' element={<TranslationMaster />} />
         <Route path='masters/translation-master' element={<DefectTranslationMaster />} />
@@ -126,13 +128,14 @@ export default function Routing() {
         <Route path='masters/unit-master' element={<UnitMaster name='Unit Master' />} />
         <Route path='masters/company-master' element={<CompanyMaster name='Company Master' />} />
         <Route path='masters/buyer-master' element={<BuyerMaster name='Buyer Master' />} />
-        <Route path='masters/tab-test' element={<TabTest name='Tab Test' />}></Route>
+        <Route path='masters/material-master' element={<MaterialMaster name='Material Master' />}></Route>
         <Route path='masters/user-buyer-rights-master' element={<UserbuyerrightsElement name='User Buyer Rights Master' />} />
         <Route path='masters/menu-rights-master' element={<MenurightsElement name='Menu Rights Master' />} />
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
         <Route path='masters/purpose-master' element={<PurposeMaster name='Purpose Master' />} />
         <Route path='masters/productivity-master' element={<ProductivityMasters name='Productivity Master' />} />
         <Route path='masters/tna-master' element={<TNAMaster name='T&A Master'/>}/>
+        
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>
     </Routes>
