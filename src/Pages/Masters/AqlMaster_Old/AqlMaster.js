@@ -627,7 +627,6 @@ export default function AqlMaster() {
                             //  onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")}
                             // onFocus={NUMBER_IS_FOCUS_IN_ZERO("packQtyFrom")} onBlur={NUMBER_IS_FOCUS_OUT_ZERO("packQtyFrom")}
                             minLength="1" maxLength="4"
-
                             onChange={(e) => {
                                 var reg = new RegExp('^[0-9]*$');
                                 if (e.target.value != '' && reg.test(e.target.value) != false) {
