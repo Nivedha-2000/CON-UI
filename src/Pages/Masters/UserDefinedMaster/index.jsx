@@ -98,7 +98,7 @@ function UserDefinedMaster({ name }) {
         }).then(resp => {
             try {
                 // console.log(resp.data);
-                settypeList(resp.data.map(d => ({ code: d.miscType, codeDesc: d.description })))
+                settypeList(resp.data.filter(s => s.active == "Y").map(d => ({ code: d.miscType, codeDesc: d.description })))
             } catch (e) {
                 message.error("response is not as expected")
             }
@@ -128,23 +128,21 @@ function UserDefinedMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'a') {
-            const re = /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/;
+        if (name === 'indexkey') {
+            const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['a'] = ''
+                err['indexkey'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
-                err['a'] = "Please enter numbers only"
+                err['indexkey'] = "Please enter numbers only"
                 validation = false
                 setErrors({ ...errors, ...err })
             }
         }
-        else if (name === 'type') {
-            setFields({ ...fields, [name]: value.toUpperCase() })
-        }
         else if (name === 'code') {
+            debugger;
             setFields({ ...fields, [name]: value.toUpperCase() })
         }
         else {
@@ -208,7 +206,7 @@ function UserDefinedMaster({ name }) {
                             getDatas()
                         }).catch(err => {
                             setLoader(false)
-        
+
                             setFields({ ...fields })
                             setErrors({ ...initialErrorMessages })
                             message.error(err.message || err)
@@ -223,7 +221,18 @@ function UserDefinedMaster({ name }) {
                         }
                     }
                 });
+                // ItrApiService.GET({
+                //     url: API_URLS.GET_UD_MASTER_BY_ID + "/" + type + "/" + code,
+                //     appCode: "CNF"
+                // }).then(data => {
+                //     if (data.length > 0) {
+                //         err = "Type & Code & Indexkey Already Available. Please change Indexkey..!"
+                //         message.error(err)
+                //     } else {
+                        
+                //     }
 
+                // });
             }
 
 
