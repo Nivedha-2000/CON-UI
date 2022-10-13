@@ -240,11 +240,6 @@ function PDCMaster({ name }) {
         }
     }, [fields.buyCode])
 
-    // useEffect(() => {
-    //     if (fields.locCode) {
-    //         getFactCodeDropDown(fields.locCode)
-    //     }
-    // }, [fields.locCode])
     useEffect(() => {
         if (fields.locCode) {
             getFinyearList(fields.locCode)
@@ -268,11 +263,6 @@ function PDCMaster({ name }) {
             , editable: true
         }
     ]);
-
-
-
-
-
 
     function postPDCsave() {
         debugger;

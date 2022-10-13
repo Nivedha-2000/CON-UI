@@ -22,16 +22,6 @@ import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import '../../../Assets/sumoselect.css'
 import jquery from '../../../Assets/js/jquerymin'
 
-
-//import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
-
-// import 'ag-grid-community/styles//ag-grid.css'; // Core grid CSS, always needed
-// import 'ag-grid-community/styles//ag-theme-alpine.css'; // Optional theme CSS
-
-
-
-
-
 const initialErrorMessages = {
     id: 0,
     transMonth: "",
@@ -72,60 +62,6 @@ function LineCostMaster({ name }) {
     const [visible, setVisible] = useState(false);
     const [datas, setDatas] = useState([]);
 
-    // const dataSource = [
-    //     {
-    //     //  key: '1',
-    //       transMonth: "JAN",
-    //       transYear: 0,
-    //       locCode: "",
-    //       factCode: "",
-    //       lineGroup:"",
-    //       operators:65,
-    //       workingHrs:9.00,
-    //       linecost:2000,
-    //       smv:0,
-    //     },
-    //     {
-    //    //   key: '2',
-    //       transMonth: "FEB",
-    //       transYear: 0,
-    //       locCode: "",
-    //       factCode: "",
-    //       lineGroup:"",
-    //       operators:65,
-    //       workingHrs:9.00,
-    //       linecost:2000,
-    //       smv:0,
-    //     },
-    //   ];
-
-    // const pageSize = 10;
-
-    // // for-list-pagination
-    // const [pagination, setPagination] = useState({
-    //     totalPage: 0,
-    //     current: 1,
-    //     minIndex: 0,
-    //     maxIndex: 0
-    // });
-
-    // const handleChange = (page) => {
-    //     setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
-    // };
-
-
-    // const add = () => {
-    //     try {
-    //         setVisible(true);
-    //         clearFields()
-    //     } catch (err) {
-    //         setLoader(false)
-    //         message.error(typeof err == "string" ? err : "data not found")
-    //     }
-    // };
-
-
-
     //const gridRef = useRef(); // Optional - for accessing Grid's API
     const [rowData, setRowData] = useState([]); // Set rowData to Array of Objects, one Object per Row
 
@@ -146,12 +82,22 @@ function LineCostMaster({ name }) {
         debugger;
         let value = e.target.value
         // if (name == "operators") value = validateInputOnKeyup(e)
-        setFields({ ...fields, [name]: value })
+
+        if (name === 'lineGroup') {
+            debugger;
+            setFields({ ...fields, [name]: value.toUpperCase() })
+        }else{
+            setFields({ ...fields, [name]: value })
+        }
+        
     }
 
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, [rowData]);
+    // }, [rowData]);
+
+
+
     const inputOnChange1 = (index, name) => e => {
         debugger;
         let err = {}, validation = true
@@ -178,14 +124,6 @@ function LineCostMaster({ name }) {
 
     }
 
-    // const onNameEdited = (i, event) => {
-    //     debugger;
-    //     let textInputValues = [...this.state.textInputValues];
-    //     textInputValues[i] = event.target.value;
-    //     this.setRowData({ textInputValues });
-    //     alert(textInputValues);
-
-    //}
 
     const [listLoading, setListLoading] = useState(false);
     const [loader, setLoader] = useState(false);
@@ -295,6 +233,9 @@ function LineCostMaster({ name }) {
         }
     }
     useEffect(() => {
+        getLocationList()
+    }, []);
+    useEffect(() => {
         if (fields.locCode) {
             getFactCodeDropDown(fields.locCode)
         }
@@ -305,157 +246,7 @@ function LineCostMaster({ name }) {
         }
     }, [fields.locCode])
 
-    useEffect(() => {
-        getLocationList()
-        //  getFinyearList()
-    }, []);
-
-
-
-    // const [tableProps, setTableProps] = useState({
-    //     page: 0,
-    //     rowsPerPage: 12,
-    //     sortOrder: {
-    //         name: 'mattype',
-    //         direction: 'asc'
-    //     }
-    // })
-
-    // const updateTableProps = props => {
-    //     setTableProps({
-    //         ...tableProps,
-    //         ...props
-    //     })
-    // }
-
-    // // const tableColumns = [
-    // //     {
-    // //         name: "transMonth",
-    // //         label: "transMonth",
-    // //         editable: true
-    // //     },   
-    // //     {
-    // //         name: "operators",
-    // //         label: "operators",
-    // //         editable: true
-    // //     },  
-    // //     {
-    // //         name: "workingHrs",
-    // //         label: "workingHrs"
-    // //     },  
-    // //     {
-    // //         name: "linecost",
-    // //         label: "linecost"
-    // //     }, 
-    // //     {
-    // //         name: "smv",
-    // //         label: "smv"
-    // //     }
-    // //     //,     
-    // //     // {
-    // //     //     name: "mattype",
-    // //     //     label: "Action",
-    // //     //     options: {
-    // //     //         customBodyRender: (value, tm) => {
-    // //     //             return (
-    // //     //                 <div style={{display: 'flex', justifyContent: 'space-around'}}>
-    // //     //                     <div onClick={() => edit(value, 'edit')}>
-    // //     //                         <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-    // //     //                     </div>
-    // //     //                     {/* <div onClick={() => edit(value, 'clone')}>
-    // //     //                         <FontAwesomeIcon icon={faCopy} color="#919191" />
-    // //     //                     </div> */}
-    // //     //                 </div>
-
-    // //     //             )
-    // //     //         }
-    // //     //     }
-    // //     // }
-    // // ]
-
-    // // Each Column Definition results in one Column.
-    // const [columnDefs, setColumnDefs] = useState([
-    //     { field: 'transMonth', filter: true },
-    //     {
-    //         field: 'operators'
-    //         , filter: true
-    //         // , cellRenderer: MedalCellRenderer
-    //         // , cellRendererParams: {
-    //         //     "onClick": (operParam) => operatorschange(operParam),
-    //         // }
-    //         , editable: true
-    //     },
-    //     {
-    //         field: 'workingHrs'
-    //         , filter: true
-    //         // , cellRenderer: MedalCellRenderer
-    //         // , cellRendererParams: {
-    //         //     "onClick": (whrParam) => workingHrschange(whrParam),
-    //         // }
-    //         , editable: true
-    //     },
-    //     {
-    //         field: 'linecost'
-    //         , filter: true
-    //         , cellRenderer: MedalCellRenderer
-    //         , cellRendererParams: {
-    //             "onClick": (testParam) => change(testParam),
-    //         }
-    //         , editable: true
-
-    //     },
-    //     {
-    //         field: 'smv'
-    //         , filter: true
-    //         , cellRenderer: (param) => {
-    //             debugger;
-    //             return param.data.workingHrs * param.data.linecost;
-    //         }
-    //     }
-    // ]);
-
-    // function change(testParam) {
-    // const changetrrtrt = (testParam) => {
-    //     debugger;
-    //     setRowData({ ...rowData, testParam })
-    //     const test = rowData;
-    //     // const index=test.findIndex(x=>)
-    //     test[0] = testParam;
-    //     setRowData(test);
-    // }
-
-    // const change1 = (testParam) => {
-    //     debugger;
-    //     console.log(rowData);
-    //     const test = rowData;
-    //     test[0] = testParam;
-
-    // }
-    // const operatorschange = (operParam) => {
-    //     debugger;
-    //     console.log(rowData);
-
-    // }
-
-    // const workingHrschange = (whrParam) => {
-    //     debugger;
-    //     console.log(rowData);
-    // }
-
-    // DefaultColDef sets props common to all Columns
-    // const defaultColDef = useMemo(() => ({
-    //     sortable: true
-    // }));
-
-    // Example of consuming Grid Event
-    // const cellClickedListener = useCallback(event => {
-    //     console.log('cellClicked', event);
-    // }, []);
-
-    // Example using Grid's API
-    // const buttonListener = useCallback(e => {
-    //     gridRef.current.api.deselectAll();
-    // }, []);
+   
 
     function postLineCostsave() {
         debugger;
@@ -504,7 +295,6 @@ function LineCostMaster({ name }) {
                 }).then(resp => {
                     message.success(resp.message)
                     onClose();
-                    setFields('');
                 }).catch(err => {
                     message.error(err.message || err)
                 })
@@ -521,18 +311,6 @@ function LineCostMaster({ name }) {
             <div class="container-fluid">
                 <div class="row mt-25 main-tab pl-15 pr-15">
                     <ul class="nav nav-tabs p-15 pl-15" id="myTab" role="tablist">
-                        {/* <li class="nav-item" role="presentation">
-                            <button class="nav-link " id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                                type="button" role="tab" aria-controls="home" aria-selected="true">Thread</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile1"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">Fabric</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">Details</button>
-                        </li> */}
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active1" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
                                 type="button" role="tab" aria-controls="contact" aria-selected="false">Line Cost Master</button>
@@ -548,7 +326,7 @@ function LineCostMaster({ name }) {
                                     <div class="main-select">
                                         <select name="somename" class="form-control SlectBox main-select"
                                             id="locCode"
-                                            value={fields.locName} onChange={inputOnChange("locCode")} required>
+                                            value={fields.locCode} onChange={inputOnChange("locCode")} required>
                                             <option value="" hidden>Select Location Code</option>
                                             {
                                                 locationList.map((t, ind) => (
