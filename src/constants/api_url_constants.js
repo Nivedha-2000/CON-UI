@@ -189,12 +189,11 @@ export const API_URLS = {
 
 //MATERIAL_MASTER 
 SAVE_MATERIAL_MASTER: "MatMast/SaveMatMast",
+SAVE_MATERIAL_APPROVAL_LIST: "MatMast/MatMastApproveDecline",
 GET_MATERIAL_MASTER_EDIT_BY_ID: "MatMast/GetMatMast",
 GET_ALL_MATERIAL_LIST: "MatMast/GetAllMatMast",
 GET_ALL_MATERIAL_APPROVED_LIST: "MatMast/GetAllMatMastByApproved",
 GET_ALL_MATERIAL_PENDING_LIST: "MatMast/GetAllMatMastByPending",
-
-
 }
 
 export const MISCELLANEOUS_TYPES = {
