@@ -19,6 +19,7 @@ import bootstrap from 'bootstrap/dist/js/bootstrap'
 import deletetbl from '../../../Assets/images/style/delete-tbl.svg'
 import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import '../../../Assets/sumoselect.css'
+import Checkbox from '@material-ui/core/Checkbox';
 import jquery from '../../../Assets/js/jquerymin'
 var arrFab = [];
 var arrThd = [];
@@ -54,6 +55,8 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
         matMastFBRModels: [{
             id: 0,
             matMast_ID: 0,
+            fibre: "",
+            Content: 0,
             fibreContent: "",
             fabricType: "",
             fabWeave: "",
@@ -162,6 +165,7 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
         createdBy: "AD",
         modifiedDate: "2022-08-22",
         modifiedBy: "",
+        // profArr: [],
         isActive: false,
         matMastFBRModels: arrFab,
         matMastThreadModels: arrThd,
@@ -171,6 +175,8 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
     MatmastFabinitialValues = {
         id: 0,
         matMast_ID: 0,
+        fibre: "",
+        Content: 0,
         fibreContent: "",
         fabricType: "",
         fabWeave: "",
@@ -319,8 +325,11 @@ function MaterialMaster({ name }) {
     //const [showFabricTab, setshowFabricTab] = React.useState(true);
 
     const [showFabricTab, setshowFabricTab] = React.useState(false);
+    const [showThredTab, setshowThredTab] = React.useState(false);
+    const [showTrimsTab, setshowTrimsTab] = React.useState(false);
+    const [showPurchaseTab, setshowPurchaseTab] = React.useState(false);
 
-    const [entityVisible, setEntityVisible] = useState(false);
+    const [entityVisible, setEntityVisible] = useState(true);
     const [Savevisible, setSavevisible] = React.useState(true);
     const [updatevisible, setUpdatevisible] = React.useState(false);
 
@@ -361,8 +370,9 @@ function MaterialMaster({ name }) {
     })
 
     const clearFields = () => {
+        // setFields({ ...fields, matMastTrimsModels: [], matMastPurchaseModels: [] });
         setFields({
-            ...initialFieldValues
+            ...initialFieldValues, matMastTrimsModels: [], matMastPurchaseModels: []
         });
         setFabricFields({
             ...MatmastFabinitialValues
@@ -376,9 +386,31 @@ function MaterialMaster({ name }) {
         setPurchaseFields({
             ...MatmastPurchaseinitialValues
         });
+        setshowFabricTab(false);
+        setshowThredTab(false);
+        setshowTrimsTab(false);
+        setshowPurchaseTab(false);
+        setThreadvisible(true);
+        setFabricvisible(true);
+        setTrimsvisible(true);
+        setPurchasevisible(true);
+        //setFields({ ...fields, matMastTrimsModels: [], matMastPurchaseModels: [] });
+        //setFields.matMastTrimsModels([])
+        //setFields.matMastPurchaseModels([])
         setErrors({ ...initialErrorMessages });
     }
-
+    const clearTrimsFields = () => {
+        setTrimsFields({
+            ...MatmastTrimsinitialValues
+        });
+        setErrors({ ...initialErrorMessages });
+    }
+    const clearPurchaseFields = () => {
+        setPurchaseFields({
+            ...MatmastPurchaseinitialValues
+        });
+        setErrors({ ...initialErrorMessages });
+    }
     // const clearFields = () => {
     //     setFields({
     //         ...initialFieldValues
@@ -395,6 +427,7 @@ function MaterialMaster({ name }) {
         setVisible(true);
     };
 
+    const allCheck = (pendinglist.length > 0 ? (pendinglist.length == pendinglist.filter(f => f.approved == "Y").length) : false);
 
     const pageSize = 10;
 
@@ -411,7 +444,7 @@ function MaterialMaster({ name }) {
         getPendingDatas();
         getApprovedDatas();
         getParentGroup();
-        getMatType();
+        // getMatType();
         getActiveSuplier();
         // getMatSubGroup();
         getBuyerDivCode();
@@ -645,7 +678,19 @@ function MaterialMaster({ name }) {
 
 
     }
-
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            // setFields({ ...AddTnamodels, [name]: "" })
+            setFabricFields({ ...fabricfields, [name]: '' });
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            // setFields({ ...AddTnamodels, [name]: 0 })
+            setFabricFields({ ...fabricfields, [name]: 0 });
+        }
+    }
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
@@ -671,6 +716,11 @@ function MaterialMaster({ name }) {
         setSavevisible(true)
         setUpdatevisible(false)
         setEntityVisible(false);
+
+        setshowFabricTab(false);
+        setshowTrimsTab(false);
+        setshowPurchaseTab(false);
+        setshowThredTab(false);
         onClickList();
         // setShowApprovallist(true);
         // setShowitemLists(false);
@@ -687,15 +737,29 @@ function MaterialMaster({ name }) {
         let err = {}, validation = true
         let value = e.target.value
         if (name === 'matType') {
+
+
+            // setshowTrimsTab(false);
+            // setshowPurchaseTab(false);
+            // setshowThredTab(false);
+            // setThreadvisible(false);
+            // setFabricvisible(false);
+            // setshowFabricTab(false);
+            // setTrimsvisible(false);
+            // setPurchasevisible(false);
             debugger;
             // alert(e.target.value);
             // alert([name]);
             // edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             //setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'FBR') {
-                setshowFabricTab(true);
+
+                setshowTrimsTab(true);
+                setshowPurchaseTab(false);
+                setshowThredTab(false);
                 setThreadvisible(true);
                 setFabricvisible(false);
+                setshowFabricTab(true);
                 setTrimsvisible(false);
                 setPurchasevisible(true);
                 //("home-tab")
@@ -703,6 +767,9 @@ function MaterialMaster({ name }) {
             }
             else if (e.target.value === 'FTD') {
                 setshowFabricTab(false);
+                setshowTrimsTab(true);
+                setshowPurchaseTab(false);
+                setshowThredTab(true);
                 setFabricvisible(true);
                 setThreadvisible(false);
                 setTrimsvisible(false);
@@ -710,75 +777,106 @@ function MaterialMaster({ name }) {
             }
             else {
                 setshowFabricTab(false);
+                setshowTrimsTab(true);
+                setshowPurchaseTab(false);
+                setshowThredTab(false);
                 setFabricvisible(true);
                 setThreadvisible(true);
                 setTrimsvisible(false);
                 setPurchasevisible(true);
             }
-            // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
-
-            debugger;
-
             GetmatGroupDropDown(e.target.value);
+            setFields({ ...fields, [name]: value.toUpperCase() })
+            //setFields({ ...fields, ['matCode']: value })
+            //setFields({ ...fields, ['matType']: value })
+
+        }
+        else if (name === 'parentGroup') {
+            debugger;
+            getMatType();
+            // GetmatSubGroupDropDown(fields.matType, e.target.value);
             setFields({ ...fields, [name]: value.toUpperCase() })
         }
         else if (name === 'matGroup') {
+
+            //let f = fields.matCode
+            //let mattp = fields.matType
+            //setFields({ ...fields, ['matCode']: f + value.toUpperCase() })
+
             debugger;
             GetmatSubGroupDropDown(fields.matType, e.target.value);
             setFields({ ...fields, [name]: value.toUpperCase() })
+
+
         }
         else {
             setFields({ ...fields, [name]: value })
         }
-        // if (name === 'activityType') {
-        //     debugger;
-        //     // alert(e.target.value);
-        //     // alert([name]);
-        //     edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
-        //     setAddTnamodels({ ...AddTnamodels, [name]: value })
-        //     if (e.target.value === 'SOP') {
-        //         setPackQtyVisible(true);
-        //         setBuyerTypeVisible(true);
-        //     }
-        //     else if (e.target.value === 'BUYER') {
-        //         setPackQtyVisible(true);
-        //         setBuyerTypeVisible(false);
-        //     }
-        //     else if (e.target.value === 'INTERNAL') {
-        //         setPackQtyVisible(false);
-        //         setBuyerTypeVisible(false);
-        //     }
-        //     GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
-        // }
-        // else {
-        //     setAddTnamodels({ ...AddTnamodels, [name]: value })
-        // }
+
 
     }
     const inputOnChangeFab = name => e => {
         debugger;
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
-            setFabricFields({ ...fabricfields, [name]: value.toUpperCase() })
+        if (name === 'Content') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                //alert(e.target.value);
+                setFabricFields({ ...fabricfields, [name]: value });
+                err['Content'] = ''
+                setErrors({ ...initialErrorMessages, ...err })
+            }
+            else {
+                message.error(typeof err == "string" ? err : "Please enter numbers only");
+                value == 0;
+                setFabricFields({ ...fabricfields, [name]: value });
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
         }
-        else {
-            setFabricFields({ ...fabricfields, [name]: value })
-        }
+        setFabricFields({ ...fabricfields, [name]: value });
 
     }
-    const inputOnChangeFabs = name => e => {
-        debugger;
-        let err = {}, validation = true
-        let value = e.target.value
-        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
-            setFabricFields({ ...fabricfields, [name]: value.toUpperCase() })
-        }
-        else {
-            setFabricFields({ ...fabricfields, [name]: value })
-        }
+    // const inputOnChangeFabs = name => e => {
+    //     debugger;
+    //     let err = {}, validation = true
+    //     let value = e.target.value
+    //     if (name === 'Content') {
+    //         const re = /^[0-9\b]+$/;
+    //         // alert(re);   /^[+-]?\d*(?:[.,]\d*)?$/
+    //         debugger;
+    //         if (e.target.value === '' || re.test(e.target.value)) {
+    //             //alert(e.target.value);
+    //             setFabricFields({ ...fabricfields, [name]: value });
+    //             err['Content'] = ''
+    //             setErrors({ ...initialErrorMessages, ...err })
+    //         }
+    //         else {
+    //             debugger;
+    //             message.error(typeof err == "string" ? err : "Please enter numbers only");
+    //             value == 0;
+    //             //setFabricFields({ ...fabricfields.Content == 0 });
+    //             setFabricFields({ ...fabricfields, [name]: value });
+    //             // setFabricFields({ ...fabricfields, [name]: '' })
+    //             // err['Content'] = "Please enter numbers only"
+    //             validation = false
+    //             setErrors({ ...errors, ...err })
 
-    }
+    //             // // setErrors({ ...errors, ...err })
+    //             // message.error(typeof err == "string" ? err : "Please enter numbers only");
+    //             // setFabricFields({ ...fabricfields, [name]: '' });
+    //             // setErrors({ ...errors, ...err })
+    //         }
+    //     }
+    //     // if (name === 'entityID' || name === 'eCode' || name === 'eName') {
+    //     //     setFabricFields({ ...fabricfields, [name]: value.toUpperCase() })
+    //     // }
+    //     // else {
+    //     //     setFabricFields({ ...fabricfields, [name]: value })
+    //     // }
+
+    // }
     const inputOnChangeThread = name => e => {
         debugger;
         let err = {}, validation = true
@@ -853,6 +951,46 @@ function MaterialMaster({ name }) {
 
     }
 
+
+    function AddContent() {
+        debugger;
+        let fibcon = '';
+        // let fibcons = '';
+        let final = '';
+
+        let fib = fabricfields.fibre
+        let con = fabricfields.Content
+        fibcon = con + ' % ' + fib
+        let fibcons = fabricfields.fibreContent
+        if (fabricfields.Content != 0 && fabricfields.fibre != '') {
+            if (fabricfields.fibreContent == '') {
+                final = fibcon
+                fibcon = ''
+            }
+            else {
+                final = fibcons + ' + ' + fibcon
+            }
+
+            setFabricFields({ ...fabricfields, ['fibreContent']: final })
+            setFields({ ...fields, ['matDesc']: final })
+        }
+    }
+    function AddYarnWarp() {
+        debugger;
+        let YarnW = fabricfields.yarnWarp
+        setFabricFields({ ...fabricfields, ['warpYarnBlend']: YarnW })
+    }
+    function AddYarnWeft() {
+        debugger;
+        let YarnF = fabricfields.yarnWeft
+        setFabricFields({ ...fabricfields, ['weftYarnBlend']: YarnF })
+
+    }
+    const Approved = async (id) => {
+    // function Approved() {
+       // checked={true};
+
+    }
     function AddTrims() {
         // alert("ADD");
         debugger;
@@ -878,7 +1016,8 @@ function MaterialMaster({ name }) {
             if (trimsfields.id == 0) {
                 debugger;
                 //setTrimsFields([...fields.matMastTrimsModels, trimsfields])
-                fields.matMastTrimsModels.push(trimsfields)
+                fields.matMastTrimsModels.push(trimsfields);
+                clearTrimsFields();
                 //  fields.matMastTrimsModels.push(trimsfields);
                 // Clear();
                 // clearFields();
@@ -969,6 +1108,7 @@ function MaterialMaster({ name }) {
                 //onClose();
                 // alert(AddTnamodels.id);
             }
+
             //  fields.push(AddTnamodels)
             //ClearDetails();
         }
@@ -999,7 +1139,8 @@ function MaterialMaster({ name }) {
             if (purchasefields.id == 0) {
                 debugger;
                 //setTrimsFields([...fields.matMastTrimsModels, trimsfields])
-                fields.matMastPurchaseModels.push(purchasefields)
+                fields.matMastPurchaseModels.push(purchasefields);
+                clearPurchaseFields();
                 //  fields.matMastTrimsModels.push(trimsfields);
                 // Clear();
                 // clearFields();
@@ -1090,6 +1231,7 @@ function MaterialMaster({ name }) {
                 //onClose();
                 // alert(AddTnamodels.id);
             }
+
             //  fields.push(AddTnamodels)
             //ClearDetails();
         }
@@ -1108,6 +1250,7 @@ function MaterialMaster({ name }) {
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
+
         if (fields.matType === 'FBR') {
             fabrequiredFields.forEach(f => {
                 if (fabricfields[f] === "") {
@@ -1115,13 +1258,25 @@ function MaterialMaster({ name }) {
                     validation = false
                 }
             })
-            arrThd = null;
-            arrPur = null;
-            fields.matMastFBRModels.push(fabricfields);
+            setErrors({ ...initialErrorMessages, ...err })
+            if (fields.matMastTrimsModels == "") {
+                message.error("Atleast Add One Row in Details Tab")
+                return
+            }// trimsfields.length == 0) 
+            else {
+                if (validation) {
+                    arrThd = null;
+                    arrPur = null;
+                    fields.matMastFBRModels.push(fabricfields);
+                    fields.matMastTrimsModels.push(trimsfields);
+                }
+                //fields.matMastTrimsModels.push(trimsfields);
+            }
+
             // fields.matMastThreadModels.null;
             //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
             // setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
-            fields.matMastTrimsModels.push(trimsfields);
+
             //fields.matMastPurchaseModels.null;
             debugger;
         }
@@ -1132,29 +1287,43 @@ function MaterialMaster({ name }) {
                     validation = false
                 }
             })
-            arrFab = null;
-            arrPur = null;
-            fields.matMastThreadModels.push(threadfields);
-            fields.matMastTrimsModels.push(trimsfields);
+            setErrors({ ...initialErrorMessages, ...err })
+            if (fields.matMastTrimsModels == "") {
+                message.error("Atleast Add One Row in Details Tab")
+                return
+
+            }
+            else {
+                if (validation) {
+                    arrFab = null;
+                    arrPur = null;
+                    fields.matMastThreadModels.push(threadfields);
+                    fields.matMastTrimsModels.push(trimsfields);
+                }
+                //fields.matMastTrimsModels.push(trimsfields);
+            }
+
 
         }
         else {
             if (fields.matType === '') {
-                setErrors({ ...initialErrorMessages, ...err })
+                message.error("Please Fill The Header")
+                return
+                // setErrors({ ...initialErrorMessages, ...err })
 
             }
             else {
-                if (!trimsfields) {
-                    arrFab = null;
-                    arrPur = null;
-                    arrThd = null;
-
-                    fields.matMastTrimsModels.push(trimsfields);
-
+                if (fields.matMastTrimsModels == "") {
+                    message.error("Atleast Add One Row in Details Tab")
+                    return
                 }
                 else {
-                    message.error("Data not found in Trims")
-                    return
+                    if (validation) {
+                        arrFab = null;
+                        arrPur = null;
+                        arrThd = null;
+                        fields.matMastTrimsModels.push(trimsfields);
+                    }
                     //fields.matMastTrimsModels.push(trimsfields);
                 }
             }
@@ -1175,7 +1344,7 @@ function MaterialMaster({ name }) {
                 setLoader(false)
                 message.success(resp.message)
                 onClose()
-                getDatas()
+                //getDatas()
                 setSavevisible(true)
                 setUpdatevisible(false)
                 setEntityVisible(false);
@@ -1183,7 +1352,125 @@ function MaterialMaster({ name }) {
                 setShowForm(false)
             }).catch(err => {
                 setLoader(false)
+                setFields({
+                    ...initialFieldValues, matMastTrimsModels: [], matMastPurchaseModels: []
+                });
+                //  fields['ftdOprName'] = tempOprName
+                setFields({ ...fields })
+                setErrors({ ...initialErrorMessages })
+                message.error(err.message || err)
+            })
+        }
 
+        // if (validation) {
+        //     if (type === "update") {
+        //         if (validation) {
+        //             setLoader(true)
+
+        //             ApiCall({
+        //                 method: "POST",
+        //                 path: API_URLS.SAVE_MATERIAL_MASTER,
+        //                 data: {
+        //                     ...fields,
+        //                     hostName: getHostName()
+        //                 }
+        //             }).then(resp => {
+        //                 setLoader(false)
+        //                 message.success(resp.message)
+        //                 onClose()
+        //                 getDatas()
+        //                 setSavevisible(true)
+        //                 setUpdatevisible(false)
+        //                 setEntityVisible(false);
+        //                 setShowResults(true)
+        //                 setShowForm(false)
+        //             }).catch(err => {
+        //                 setLoader(false)
+
+        //                 //  fields['ftdOprName'] = tempOprName
+        //                 setFields({ ...fields })
+        //                 setErrors({ ...initialErrorMessages })
+        //                 message.error(err.message || err)
+        //             })
+        //         }
+        //     }
+        //     else {
+        //         ItrApiService.GET({
+        //             url: API_URLS.GET_COMPANY_MASTER_BY_ID + "/" + entityID + "/" + eCode + "/" + eName,
+        //             appCode: "CNF"
+        //         }).then(res => {
+        //             //  alert(res.Success);
+        //             if (res.Success == false) {
+        //                 if (validation) {
+        //                     setLoader(true)
+
+        //                     ApiCall({
+        //                         method: "POST",
+        //                         path: API_URLS.SAVE_MATERIAL_MASTER,
+        //                         data: {
+        //                             ...fields,
+        //                             hostName: getHostName()
+        //                         }
+        //                     }).then(resp => {
+        //                         setLoader(false)
+        //                         message.success(resp.message)
+        //                         onClose()
+        //                         getDatas()
+        //                         setSavevisible(true)
+        //                         setUpdatevisible(false)
+        //                         setEntityVisible(false);
+        //                         setShowResults(true)
+        //                         setShowForm(false)
+        //                     }).catch(err => {
+        //                         setLoader(false)
+        //                         setFields({ ...fields })
+        //                         setErrors({ ...initialErrorMessages })
+        //                         message.error(err.message || err)
+        //                     })
+        //                 }
+        //             }
+        //             else {
+
+        //                 setLoader(false);
+        //                 // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+        //                 err = "Company Details Already Available"
+        //                 message.error(err)
+        //                 // }
+        //             }
+        //         });
+
+
+        //     }
+
+        // }
+    }
+
+    const ApprovalSave = async (status, id, eName, type) => {
+        if (validation) {
+            setLoader(true)
+
+            ApiCall({
+                method: "POST",
+                path: API_URLS.SAVE_MATERIAL_APPROVAL_LIST + "?Status=" + status,
+                data: {
+                    ...fields,
+                    hostName: getHostName()
+                }
+            }).then(resp => {
+                setLoader(false)
+                message.success(resp.message)
+                onClose()
+                //getDatas()
+                setSavevisible(true)
+                setUpdatevisible(false)
+                setEntityVisible(false);
+                setShowResults(true)
+                setShowForm(false)
+            }).catch(err => {
+                setLoader(false)
+                setFields({
+                    ...initialFieldValues, matMastTrimsModels: [], matMastPurchaseModels: []
+                });
                 //  fields['ftdOprName'] = tempOprName
                 setFields({ ...fields })
                 setErrors({ ...initialErrorMessages })
@@ -1289,7 +1576,42 @@ function MaterialMaster({ name }) {
         })
     }
 
-    const tableColumns = [
+    const pendingtableColumns = [
+        {
+            name: "id",
+            label: <Checkbox color="primary" checked={false} />,
+            options: {
+                customBodyRender: (value, tm) => {
+                    return (
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => Approved(tm.rowData[1], 'edit')}>
+                                <Checkbox color="primary" checked={false} />
+                            </div>
+                            {/* <div>
+                                <Checkbox color="primary" checked={true} />
+
+                                
+                            </div> */}
+                            {/* <Checkbox color="primary"  checked={allCheck} /> */}
+                            {/* <div onClick={() => edit(value, 'clone')}>
+                                <FontAwesomeIcon icon={faCopy} color="#919191" />
+                            </div> */}
+                        </div>
+
+                        // <div>
+                        //     <div>
+                        //         <Checkbox color="primary" checked={false} />
+                        //         {/* <Checkbox color="primary"  checked={allCheck} /> */}
+                        //     </div>
+                        //     {/* <div onClick={() => edit(value, 'clone')}>
+                        //         <FontAwesomeIcon icon={faCopy} color="#919191" />
+                        //     </div> */}
+                        // </div>
+
+                    )
+                }
+            }
+        },
         {
             name: "id",
             label: "Action",
@@ -1300,6 +1622,12 @@ function MaterialMaster({ name }) {
                             <div onClick={() => edit(tm.rowData[1], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
+                            {/* <div>
+                                <Checkbox color="primary" checked={true} />
+
+                                
+                            </div> */}
+                            {/* <Checkbox color="primary"  checked={allCheck} /> */}
                             {/* <div onClick={() => edit(value, 'clone')}>
                                 <FontAwesomeIcon icon={faCopy} color="#919191" />
                             </div> */}
@@ -1427,6 +1755,10 @@ function MaterialMaster({ name }) {
             setVisible(true);
             clearFields();
             setLoader(false);
+            // setShowResults(false)
+            // setShowForm(true)
+            // setShowApprovallist(false);
+            // setShowitemLists(false);
         } catch (err) {
             setLoader(false);
             message.error(typeof err == "string" ? err : "data not found")
@@ -1519,23 +1851,52 @@ function MaterialMaster({ name }) {
             setShowResults(false);
             setShowForm(true);
             let { data } = (id && await getDataById(id))
+
+            console.log(data);
             // alert(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            const tableId = type === 'clone' ? 0 : 0
+            // const tableId = type === 'clone' ? 0 : 0 matMastFBRModels matMastThreadModels matMastTrimsModels matMastPurchaseModels
             setFields({ data })
+            // setFabricFields({ data })
+            setShowResults(false)
+            setShowForm(true)
             setEntityVisible(true);
             setSavevisible(false);
             setUpdatevisible(true);
+            setShowApprovallist(false);
+            setShowitemLists(false);
             setLoader(false)
         } catch (err) {
             setLoader(false)
             message.error(typeof err == "string" ? err : "data not found")
         }
     }
+    // handleChangecheckbox(event, index, e) {
+    //     if (event.approved == 'Y') {
+    //         event.approved = 'N';
+    //         const { pendinglist } = this.state;
+    //         approvedlist[index] = event;
+    //         this.setState({ pendinglist });
+    //     } else {
+    //         event.approved = 'Y';
+    //         const { pendinglist } = this.state;
+    //         pendinglist[index] = event;
+    //         this.setState({ pendinglist });
+    //     }
+    // }
 
+    // handleChangecheckboxall(event) {
+    //     if (this.state.pendinglist.length > 0) {
+    //         let allbuyerrights = this.state.pendinglist.map(item => {
+    //             if (event.target.checked) item.approved = 'Y'; else item.approved = 'N';
+    //             return item;
+    //         });
+    //         this.setState({ pendinglist: allbuyerrights });
+    //     }
+    // }
     console.log(fields)
 
     return (
@@ -1663,7 +2024,7 @@ function MaterialMaster({ name }) {
                 <div className='defect-master-main'>
                     <div>
                         <CustomTableContainer
-                            columns={tableColumns}
+                            columns={pendingtableColumns}
                             data={pendinglist}
                             options={{
                                 download: !1,
@@ -1698,8 +2059,8 @@ function MaterialMaster({ name }) {
 
                 <div className='defect-master-main'>
 
-                    {/* <div>
-                        <table className="table">
+                    <div>
+                        {/* <table className="table">
                             <thead className="thead-light">
                                 <th align='center' style={{ textAlign: "center" }}>
                                     <Checkbox color="primary" onClick={(e) => this.handleChangecheckboxall(e)} title={"select all buyer"} checked={allCheck} />
@@ -1710,7 +2071,7 @@ function MaterialMaster({ name }) {
                             </thead>
                             <tbody>
                                 {
-                                    tapprovedlist.map((n, index) => (
+                                    pendinglist.map((n, index) => (
                                         <tr>
                                             <td className='' align='center'>
                                                 <Checkbox color="primary" onClick={(e) => this.handleChangecheckbox(n, index, e)} checked={n.notify == 'Y' ? true : false} />
@@ -1722,8 +2083,8 @@ function MaterialMaster({ name }) {
                                     ))
                                 }
                             </tbody>
-                        </table>
-                    </div> */}
+                        </table> */}
+                    </div>
                     <div>
                         <CustomTableContainer
                             columns={ApprovaltableColumns}
@@ -1879,7 +2240,7 @@ function MaterialMaster({ name }) {
                             </div>
                             <input className='form-control form-control-sm mt-1' placeholder='Enter Material Code'
                                 value={fields.matCode} minLength="1" maxLength="20"
-                                onChange={inputOnChange("matCode")} disabled={entityVisible}
+                                onChange={inputOnChange("matCode")}
                             />
                         </div>
 
@@ -1892,7 +2253,14 @@ function MaterialMaster({ name }) {
                                 <select name="somename" className='form-control form-control-sm mt-1'
                                     required
                                     value={fields.buyDivcode}
-                                    onChange={inputOnChange("buyDivcode")}                                >
+                                    onChange={inputOnChange("buyDivcode")}
+                                // onChange={(e) => {
+                                //     setFields({
+                                //         ...fields, buyDivcode: e.join(','),
+                                //         profArr: [...e]
+                                //     })
+                                // }}                             
+                                >
                                     <option value=""> Select Buyer Division</option>
                                     {buyerdivcodelist.map((v, index) => {
                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
@@ -1904,15 +2272,19 @@ function MaterialMaster({ name }) {
                                 onChange={inputOnChange("buyDivcode")} disabled={entityVisible}
                             /> */}
                         </div>
+
                         <div class="col-lg-3">
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                 <label>Material Description<span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{fields.matDesc === '' ? errors.matDesc : ''}</small>
                             </div>
-                            <input className='form-control form-control-sm mt-1' placeholder='Enter Material Description'
+                            <textarea className='form-control form-control-sm mt-1' placeholder='Enter Material Description'
                                 value={fields.matDesc} minLength="1" maxLength="150"
-                                onChange={inputOnChange("matDesc")} disabled={entityVisible}
+                                onChange={inputOnChange("matDesc")}
                             />
+                            {/* <textarea>
+                                Hello there, this is some text in a text area
+                            </textarea> */}
                         </div>
                         <div className='col-lg-3'>
                             <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
@@ -1958,29 +2330,34 @@ function MaterialMaster({ name }) {
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Fiber<span className='text-danger'>*  </span> </label>
-                                                {/* <small className='text-danger'>{fields.fibreContent === '' ? errors.fibreContent : ''}</small> */}
+                                                <small className='text-danger'>{fields.fibre === '' ? errors.fibre : ''}</small>
                                             </div>
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.fibreContent}
-                                                    onChange={inputOnChangeFab("fibreContent")}                                >
+                                                    value={fabricfields.fibre}
+                                                    onChange={inputOnChangeFab("fibre")}                                >
                                                     <option value=""> Select fibre Content</option>
                                                     {fbrlist.map((v, index) => {
-                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                        return <option key={index} value={v.codeDesc}>{v.codeDesc}</option>
                                                     })}
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-1">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Content<span className='text-danger'>  </span> </label>
-                                                {/* <small className='text-danger'>{fields.address2 === '' ? errors.address2 : ''}</small> */}
+                                                <small className='text-danger'>{fabricfields.Content === '' ? errors.Content : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter Content'
-                                                // value={fields.address2} minLength="1" maxLength="100"
-                                                onChange={inputOnChangeFabs("Content")}
+                                                value={fabricfields.Content} minLength="1" maxLength="100"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("Content")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("Content")}
+                                                onChange={inputOnChangeFab("Content")}
                                             />
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <button type="button" className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddContent()}> + </button>
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -1989,7 +2366,7 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Fabric Content'
                                                 value={fabricfields.fibreContent} minLength="1" maxLength="100"
-                                                onChange={inputOnChangeFabs("fibreContent")}
+                                                onChange={inputOnChangeFab("fibreContent")} disabled={entityVisible}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -2049,7 +2426,7 @@ function MaterialMaster({ name }) {
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-1">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>YarnWarp<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{fabricfields.yarnWarp === '' ? errors.yarnWarp : ''}</small>
@@ -2059,7 +2436,20 @@ function MaterialMaster({ name }) {
                                                 onChange={inputOnChangeFab("yarnWarp")}
                                             />
                                         </div>
+                                        <div class="col-lg-1">
+                                            <button type="button" className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddYarnWarp()}> + </button>
+                                        </div>
                                         <div class="col-lg-2">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Warp YarnBlend<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{fabricfields.warpYarnBlend === '' ? errors.warpYarnBlend : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter warpYarnBlend'
+                                                value={fabricfields.warpYarnBlend} minLength="1" maxLength="50"
+                                                onChange={inputOnChangeFab("warpYarnBlend")} disabled={entityVisible}
+                                            />
+                                        </div>
+                                        <div class="col-lg-1">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>YarnWeft<span className='text-danger'>  </span> </label>
                                                 <small className='text-danger'>{fabricfields.yarnWeft === '' ? errors.yarnWeft : ''}</small>
@@ -2069,15 +2459,8 @@ function MaterialMaster({ name }) {
                                                 onChange={inputOnChangeFab("yarnWeft")}
                                             />
                                         </div>
-                                        <div class="col-lg-2">
-                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                                <label>Warp YarnBlend<span className='text-danger'>  </span> </label>
-                                                <small className='text-danger'>{fabricfields.warpYarnBlend === '' ? errors.warpYarnBlend : ''}</small>
-                                            </div>
-                                            <input className='form-control form-control-sm mt-1' placeholder='Enter warpYarnBlend'
-                                                value={fabricfields.warpYarnBlend} minLength="1" maxLength="50"
-                                                onChange={inputOnChangeFab("warpYarnBlend")}
-                                            />
+                                        <div class="col-lg-1">
+                                            <button type="button" className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddYarnWeft()}> + </button>
                                         </div>
                                         <div class="col-lg-2">
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -2086,7 +2469,7 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter weftYarnBlend'
                                                 value={fabricfields.weftYarnBlend} minLength="1" maxLength="50"
-                                                onChange={inputOnChangeFab("weftYarnBlend")}
+                                                onChange={inputOnChangeFab("weftYarnBlend")} disabled={entityVisible}
                                             />
                                         </div>
                                         <div class="col-lg-2">
@@ -2117,6 +2500,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWarp'
                                                 value={fabricfields.shrinkWarp} minLength="1" maxLength="100"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("shrinkWarp")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("shrinkWarp")}
                                                 onChange={inputOnChangeFab("shrinkWarp")}
                                             />
                                         </div>
@@ -2127,6 +2512,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWeft'
                                                 value={fabricfields.shrinkWeft} minLength="1" maxLength="100"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("shrinkWeft")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("shrinkWeft")}
                                                 onChange={inputOnChangeFab("shrinkWeft")}
                                             />
                                         </div>
@@ -2156,6 +2543,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter fabWt_BW'
                                                 value={fabricfields.fabWt_BW} minLength="1" maxLength="50"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("fabWt_BW")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("fabWt_BW")}
                                                 onChange={inputOnChangeFab("fabWt_BW")}
                                             />
                                         </div>
@@ -2166,6 +2555,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter fabWt_AW'
                                                 value={fabricfields.fabWt_AW} minLength="1" maxLength="50"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("fabWt_AW")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("fabWt_AW")}
                                                 onChange={inputOnChangeFab("fabWt_AW")}
                                             />
                                         </div>
@@ -2273,89 +2664,92 @@ function MaterialMaster({ name }) {
                             }
 
                             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
-                                <div class="row mt-15">
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Quality <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{threadfields.quality === '' ? errors.quality : ''}</small>
+                                {showThredTab &&
+                                    <div class="row mt-15">
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Quality <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{threadfields.quality === '' ? errors.quality : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter quality'
+                                                value={threadfields.quality} minLength="1" maxLength="30"
+                                                onChange={inputOnChangeThread("quality")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter quality'
-                                            value={threadfields.quality} minLength="1" maxLength="30"
-                                            onChange={inputOnChangeThread("quality")}
-                                        />
-                                    </div>
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Tex<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{threadfields.tex === '' ? errors.tex : ''}</small>
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Tex<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{threadfields.tex === '' ? errors.tex : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter tex'
+                                                value={threadfields.tex} minLength="1" maxLength="10"
+                                                onChange={inputOnChangeThread("tex")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter tex'
-                                            value={threadfields.tex} minLength="1" maxLength="10"
-                                            onChange={inputOnChangeThread("tex")}
-                                        />
-                                    </div>
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Tkt<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{threadfields.tkt === '' ? errors.tkt : ''}</small>
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Tkt<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{threadfields.tkt === '' ? errors.tkt : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter tkt'
+                                                value={threadfields.tkt} minLength="1" maxLength="10"
+                                                onChange={inputOnChangeThread("tkt")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter tkt'
-                                            value={threadfields.tkt} minLength="1" maxLength="10"
-                                            onChange={inputOnChangeThread("tkt")}
-                                        />
-                                    </div>
 
 
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>No Of Meter <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{threadfields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>No Of Meter <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{threadfields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter NoOfMtr'
+                                                value={threadfields.noOfMtr} minLength="1" maxLength="50"
+                                                onChange={inputOnChangeThread("noOfMtr")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter NoOfMtr'
-                                            value={threadfields.noOfMtr} minLength="1" maxLength="50"
-                                            onChange={inputOnChangeThread("noOfMtr")}
-                                        />
-                                    </div>
 
-                                </div>
+                                    </div>
+                                }
                             </div>
 
                             <div class="tab-pane fade" id="profile1" role="tabpanel" aria-labelledby="profile-tab">
-                                <div class="row mt-15">
+                                {showTrimsTab &&
+                                    <div class="row mt-15">
 
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Article No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{trimsfields.articleNo === '' ? errors.articleNo : ''}</small>
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Article No <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{trimsfields.articleNo === '' ? errors.articleNo : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter articleNo'
+                                                value={trimsfields.articleNo} minLength="1" maxLength="30"
+                                                onChange={inputOnChangeTrims("articleNo")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter articleNo'
-                                            value={trimsfields.articleNo} minLength="1" maxLength="30"
-                                            onChange={inputOnChangeTrims("articleNo")}
-                                        />
-                                    </div>
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Product<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{trimsfields.product === '' ? errors.product : ''}</small>
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Product<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{trimsfields.product === '' ? errors.product : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter product'
+                                                value={trimsfields.product} minLength="1" maxLength="30"
+                                                onChange={inputOnChangeTrims("product")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter product'
-                                            value={trimsfields.product} minLength="1" maxLength="30"
-                                            onChange={inputOnChangeTrims("product")}
-                                        />
-                                    </div>
-                                    <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Finish<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{trimsfields.finish === '' ? errors.finish : ''}</small>
+                                        <div className='col-lg-3'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Finish<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{trimsfields.finish === '' ? errors.finish : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter finish'
+                                                value={trimsfields.finish} minLength="1" maxLength="30"
+                                                onChange={inputOnChangeTrims("finish")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter finish'
-                                            value={trimsfields.finish} minLength="1" maxLength="30"
-                                            onChange={inputOnChangeTrims("finish")}
-                                        />
-                                    </div>
 
 
-                                    {/* <div className='col-lg-3'>
+                                        {/* <div className='col-lg-3'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Remarks <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{purchasefields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
@@ -2365,132 +2759,134 @@ function MaterialMaster({ name }) {
                                             onChange={inputOnChangeTrims("noOfMtr")}
                                         />
                                     </div> */}
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>   <span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>   <span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                            </div>
+                                            <div class="clear"></div>
+                                            <div class="clear"></div>
+                                            <div class="clear"></div>
+                                            {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
+                                            {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddTrims()}>Add To List</button>}
+                                            {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddTrims()}> Update To List</button>}
+                                            {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
+
                                         </div>
+
                                         <div class="clear"></div>
                                         <div class="clear"></div>
                                         <div class="clear"></div>
-                                        {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
-                                        {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTrims()}>Add To List</button>}
-                                        {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddTrims()}> Update To List</button>}
-                                        {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
-
-                                    </div>
-
-                                    <div class="clear"></div>
-                                    <div class="clear"></div>
-                                    <div class="clear"></div>
-                                    <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
-                                        <div class="table-wrap">
+                                        <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                                            <div class="table-wrap">
 
 
-                                            <table id="example" class="table table-striped edit-np f-l1">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ACTION</th>
-                                                        {/* <th class="">SLNO</th> */}
-                                                        <th class="">GROUP ARTICLE NUMBER</th>
-                                                        <th class="">PRODUCT</th>
-                                                        <th>FINISH	</th>
-                                                        <th>REMARKS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {/* if(visible=="True") */}
-                                                    {
+                                                <table id="example" class="table table-striped edit-np f-l1">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ACTION</th>
+                                                            {/* <th class="">SLNO</th> */}
+                                                            <th class="">GROUP ARTICLE NUMBER</th>
+                                                            <th class="">PRODUCT</th>
+                                                            <th>FINISH	</th>
+                                                            <th>REMARKS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {/* if(visible=="True") */}
+                                                        {
 
-                                                        fields.matMastTrimsModels.map((row, index) => (
-                                                            <tr key={index}>
-                                                                <td align='center'>
-                                                                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                                                                        <div className='text-center' onClick={() => { editRow(row?.id) }}>
-                                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                            fields.matMastTrimsModels.map((row, index) => (
+                                                                <tr key={index}>
+                                                                    <td align='center'>
+                                                                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                                            <div className='text-center' onClick={() => { editRow(row?.id) }}>
+                                                                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                                            </div>
+
                                                                         </div>
+                                                                    </td>
+                                                                    {/* <td align='center'> {index + 1} </td> */}
+                                                                    <td align='center'>{row.articleNo}</td>
+                                                                    <td align='center'>{row.product}</td>
+                                                                    <td align='center'>{row.finish}</td>
+                                                                    <td align='center'>{row.Remarks}</td>
+                                                                </tr>
+                                                            ))
 
-                                                                    </div>
-                                                                </td>
-                                                                {/* <td align='center'> {index + 1} </td> */}
-                                                                <td align='center'>{row.articleNo}</td>
-                                                                <td align='center'>{row.product}</td>
-                                                                <td align='center'>{row.finish}</td>
-                                                                <td align='center'>{row.Remarks}</td>
-                                                            </tr>
-                                                        ))
+                                                            //     trimsGridfields.map((row, index) => (
+                                                            // <tr key={index}>
+                                                            //     <td align='center'>
+                                                            //         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                            //             <div className='text-center'>
+                                                            //                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                            //             </div>
+                                                            //         </div>
+                                                            //     </td>
+                                                            //     <td align='center'> {index + 1} </td>
+                                                            //     <td align='center'>{row.articleNo}</td>
+                                                            //     <td align='center'>{row.product}</td>
+                                                            //     <td align='center'>{row.finish}</td>
+                                                            //     <td align='center'>{row.Remarks}</td>
 
-                                                        //     trimsGridfields.map((row, index) => (
-                                                        // <tr key={index}>
-                                                        //     <td align='center'>
-                                                        //         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                                                        //             <div className='text-center'>
-                                                        //                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                                                        //             </div>
-                                                        //         </div>
-                                                        //     </td>
-                                                        //     <td align='center'> {index + 1} </td>
-                                                        //     <td align='center'>{row.articleNo}</td>
-                                                        //     <td align='center'>{row.product}</td>
-                                                        //     <td align='center'>{row.finish}</td>
-                                                        //     <td align='center'>{row.Remarks}</td>
-
-                                                        // </tr>
-                                                        // ))
-                                                    }
-                                                </tbody>
-                                            </table>
+                                                            // </tr>
+                                                            // ))
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                </div>
+                                    </div>
+                                }
                             </div>
 
                             <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="home-tab">
-                                <div class="row mt-15">
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Material Code <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.matCode === '' ? errors.matCode : ''}</small>
+                                {showPurchaseTab &&
+                                    <div class="row mt-15">
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Material Code <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.matCode === '' ? errors.matCode : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter matCode'
+                                                value={purchasefields.matCode} minLength="1" maxLength="20"
+                                                onChange={inputOnChangePurchase("matCode")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter matCode'
-                                            value={purchasefields.matCode} minLength="1" maxLength="20"
-                                            onChange={inputOnChangePurchase("matCode")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Supplier <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.supcode === '' ? errors.supcode : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Supplier <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.supcode === '' ? errors.supcode : ''}</small>
+                                            </div>
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.supcode}
+                                                    onChange={inputOnChangeFab("supcode")}
+                                                >
+                                                    <option value=""> Select Supplier</option>
+                                                    {suplierlist.map((v, index) => {
+                                                        return <option key={index} value={v.id + "|" + v.code}>{v.codeDesc}</option>
+                                                    })}
+
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div class="main-select">
-                                            <select name="somename" className='form-control form-control-sm mt-1'
-                                                required
-                                                value={fabricfields.supcode}
-                                                onChange={inputOnChangeFab("supcode")}
-                                            >
-                                                <option value=""> Select Supplier</option>
-                                                {suplierlist.map((v, index) => {
-                                                    return <option key={index} value={v.id + "|" + v.code}>{v.codeDesc}</option>
-                                                })}
 
-                                            </select>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Supplier Reference No <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.supRefNo === '' ? errors.supRefNo : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter supRefNo'
+                                                value={purchasefields.supRefNo} minLength="1" maxLength="30"
+                                                onChange={inputOnChangePurchase("supRefNo")}
+                                            />
                                         </div>
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Supplier Reference No <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.supRefNo === '' ? errors.supRefNo : ''}</small>
-                                        </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter supRefNo'
-                                            value={purchasefields.supRefNo} minLength="1" maxLength="30"
-                                            onChange={inputOnChangePurchase("supRefNo")}
-                                        />
-                                    </div>
-
-                                    {/* <div className='col-lg-2'>
+                                        {/* <div className='col-lg-2'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Contact No <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{purchasefields.contNo === '' ? errors.contNo : ''}</small>
@@ -2501,195 +2897,195 @@ function MaterialMaster({ name }) {
                                         />
                                     </div> */}
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Brand <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.brand === '' ? errors.brand : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Brand <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.brand === '' ? errors.brand : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter brand'
+                                                value={purchasefields.brand} minLength="1" maxLength="30"
+                                                onChange={inputOnChangePurchase("brand")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter brand'
-                                            value={purchasefields.brand} minLength="1" maxLength="30"
-                                            onChange={inputOnChangePurchase("brand")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>MOQ <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.moq === '' ? errors.moq : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>MOQ <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.moq === '' ? errors.moq : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter moq'
+                                                value={purchasefields.moq} minLength="1" maxLength="25"
+                                                onChange={inputOnChangePurchase("moq")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter moq'
-                                            value={purchasefields.moq} minLength="1" maxLength="25"
-                                            onChange={inputOnChangePurchase("moq")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>MOQUOM <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.moqUom === '' ? errors.moqUom : ''}</small>
-                                        </div>
-                                        <div class="main-select">
-                                            <select name="somename" className='form-control form-control-sm mt-1'
-                                                required
-                                                value={fabricfields.moqUom}
-                                                onChange={inputOnChangeFab("moqUom")}
-                                            >
-                                                <option value=""> Select MOQ UOM</option>
-                                                {uomlist.map((v, index) => {
-                                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                                })}
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>MOQUOM <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.moqUom === '' ? errors.moqUom : ''}</small>
+                                            </div>
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.moqUom}
+                                                    onChange={inputOnChangeFab("moqUom")}
+                                                >
+                                                    <option value=""> Select MOQ UOM</option>
+                                                    {uomlist.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
 
-                                            </select>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Multiples <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.multiples === '' ? errors.multiples : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Multiples <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.multiples === '' ? errors.multiples : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter multiples'
+                                                value={purchasefields.multiples} minLength="1" maxLength="50"
+                                                onChange={inputOnChangePurchase("multiples")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter multiples'
-                                            value={purchasefields.multiples} minLength="1" maxLength="50"
-                                            onChange={inputOnChangePurchase("multiples")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Lead time <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.leadtime === '' ? errors.leadtime : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Lead time <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.leadtime === '' ? errors.leadtime : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter leadtime'
+                                                value={purchasefields.leadtime} minLength="1" maxLength="50"
+                                                onChange={inputOnChangePurchase("leadtime")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter leadtime'
-                                            value={purchasefields.leadtime} minLength="1" maxLength="50"
-                                            onChange={inputOnChangePurchase("leadtime")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Color <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.contPerson2 === '' ? errors.color : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Color <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.contPerson2 === '' ? errors.color : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter color'
+                                                value={purchasefields.color} minLength="1" maxLength="20"
+                                                onChange={inputOnChangePurchase("color")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter color'
-                                            value={purchasefields.color} minLength="1" maxLength="20"
-                                            onChange={inputOnChangePurchase("color")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Size <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.size === '' ? errors.size : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Size <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.size === '' ? errors.size : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
+                                                value={purchasefields.size} minLength="1" maxLength="20"
+                                                onChange={inputOnChangePurchase("size")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Contact No'
-                                            value={purchasefields.size} minLength="1" maxLength="20"
-                                            onChange={inputOnChangePurchase("size")}
-                                        />
-                                    </div>
-                                    <div className='col-lg-2'>
+                                        <div className='col-lg-2'>
 
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>From Date <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.fromDt === '' ? errors.fromDt : ''}</small>
-                                        </div>
-                                        <Input type="date" name="fromDt" className="form-control form-control-sm mt-1" id="fromDt" placeholder="From Date" value={purchasefields.fromDt} onChange={inputOnChangePurchase("fromDt")} />
-                                        {/* <input className='form-control form-control-sm mt-1' placeholder='Enter fromDt'
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>From Date <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.fromDt === '' ? errors.fromDt : ''}</small>
+                                            </div>
+                                            <Input type="date" name="fromDt" className="form-control form-control-sm mt-1" id="fromDt" placeholder="From Date" value={purchasefields.fromDt} onChange={inputOnChangePurchase("fromDt")} />
+                                            {/* <input className='form-control form-control-sm mt-1' placeholder='Enter fromDt'
                                             value={purchasefields.fromDt} minLength="1" maxLength="25"
                                             onChange={inputOnChangePurchase("fromDt")}
                                         /> */}
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>To Date <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.toDt === '' ? errors.toDt : ''}</small>
                                         </div>
-                                        <Input type="date" name="toDt" className="form-control form-control-sm mt-1" id="toDt" placeholder="To Date" value={purchasefields.toDt} onChange={inputOnChangePurchase("toDt")} />
 
-                                        {/* <input className='form-control form-control-sm mt-1' placeholder='Enter toDt'
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>To Date <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.toDt === '' ? errors.toDt : ''}</small>
+                                            </div>
+                                            <Input type="date" name="toDt" className="form-control form-control-sm mt-1" id="toDt" placeholder="To Date" value={purchasefields.toDt} onChange={inputOnChangePurchase("toDt")} />
+
+                                            {/* <input className='form-control form-control-sm mt-1' placeholder='Enter toDt'
                                             value={purchasefields.toDt} minLength="1" maxLength="25"
                                             onChange={inputOnChangePurchase("toDt")}
                                         /> */}
-                                    </div>
-
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Price <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.price === '' ? errors.price : ''}</small>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter price'
-                                            value={purchasefields.price} minLength="1" maxLength="30"
-                                            onChange={inputOnChangePurchase("price")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Currency <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.curCode === '' ? errors.curCode : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Price <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.price === '' ? errors.price : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter price'
+                                                value={purchasefields.price} minLength="1" maxLength="30"
+                                                onChange={inputOnChangePurchase("price")}
+                                            />
                                         </div>
-                                        <div class="main-select">
-                                            <select name="somename" className='form-control form-control-sm mt-1'
-                                                required
-                                                value={fabricfields.curCode}
-                                                onChange={inputOnChangePurchase("curCode")}
-                                            >
-                                                <option value=""> Select Currency</option>
-                                                {currencyList.map((v, index) => {
-                                                    return <option key={index} value={v.code}>{v.codeDesc}</option>
-                                                })}
 
-                                            </select>
-                                        </div>
-                                    </div>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Currency <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.curCode === '' ? errors.curCode : ''}</small>
+                                            </div>
+                                            <div class="main-select">
+                                                <select name="somename" className='form-control form-control-sm mt-1'
+                                                    required
+                                                    value={fabricfields.curCode}
+                                                    onChange={inputOnChangePurchase("curCode")}
+                                                >
+                                                    <option value=""> Select Currency</option>
+                                                    {currencyList.map((v, index) => {
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
+                                                    })}
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Bin Code<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.binCode === '' ? errors.binCode : ''}</small>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter binCode'
-                                            value={purchasefields.binCode} minLength="1" maxLength="30"
-                                            onChange={inputOnChangePurchase("binCode")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Description <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.purdesc === '' ? errors.purdesc : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Bin Code<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.binCode === '' ? errors.binCode : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter binCode'
+                                                value={purchasefields.binCode} minLength="1" maxLength="30"
+                                                onChange={inputOnChangePurchase("binCode")} disabled={entityVisible}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter purdesc'
-                                            value={purchasefields.purdesc} minLength="1" maxLength="150"
-                                            onChange={inputOnChangePurchase("purdesc")}
-                                        />
-                                    </div>
 
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Remarks<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Description <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.purdesc === '' ? errors.purdesc : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter purdesc'
+                                                value={purchasefields.purdesc} minLength="1" maxLength="150"
+                                                onChange={inputOnChangePurchase("purdesc")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter remarks'
-                                            value={purchasefields.remarks} minLength="1" maxLength="200"
-                                            onChange={inputOnChangePurchase("remarks")}
-                                        />
-                                    </div>
-                                    <div className='col-lg-2'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>   <span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
-                                        </div>
-                                        <div class="clear"></div>
-                                        <div class="clear"></div>
-                                        <div class="clear"></div>
-                                        {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
-                                        {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddPurchase()}>Add To List</button>}
-                                        {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-1' onClick={(e) => AddPurchase()}> Update To List</button>}
-                                        {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
 
-                                    </div>
-                                    {/* <div className='col-lg-3'>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Remarks<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter remarks'
+                                                value={purchasefields.remarks} minLength="1" maxLength="200"
+                                                onChange={inputOnChangePurchase("remarks")}
+                                            />
+                                        </div>
+                                        <div className='col-lg-2'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>   <span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                            </div>
+                                            <div class="clear"></div>
+                                            <div class="clear"></div>
+                                            <div class="clear"></div>
+                                            {/* <button type="button" className='btn-sm btn defect-master-save mt-1' onClick={(e) => ClearDetails()}>Clear</button> */}
+                                            {showAddtolist && <button type="button" className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddPurchase()}>Add To List</button>}
+                                            {showUpdatetolist && <button disabled={loader} className='btn-sm btn defect-master-save mt-4' onClick={(e) => AddPurchase()}> Update To List</button>}
+                                            {/* <button disabled={loader} className='btn-sm btn defect-master-save mt-1 ' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button> */}
+
+                                        </div>
+                                        {/* <div className='col-lg-3'>
                                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                                         <div className='mt-1'>
                                             <Switch size='default'
@@ -2699,56 +3095,57 @@ function MaterialMaster({ name }) {
                                     </div> */}
 
 
-                                    <div class="clear"></div>
-                                    <div class="clear"></div>
-                                    <div class="clear"></div>
-                                    <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
-                                        <div class="table-wrap">
+                                        <div class="clear"></div>
+                                        <div class="clear"></div>
+                                        <div class="clear"></div>
+                                        <div id="table-scroll" class="table-scroll l-tb-1 m-fixx pt-15">
+                                            <div class="table-wrap">
 
 
-                                            <table id="example" class="table table-striped edit-np f-l1">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ACTION</th>
-                                                        {/* <th class="">SLNO</th> */}
-                                                        <th class="">MATERIAL CODE</th>
-                                                        <th class="">SUPPLIER</th>
-                                                        <th>SUPPLIER REFERENCE	</th>
-                                                        <th>BRAND	</th>
-                                                        <th>DESCRIPTION	</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {/* if(visible=="True") */}
-                                                    {
+                                                <table id="example" class="table table-striped edit-np f-l1">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ACTION</th>
+                                                            {/* <th class="">SLNO</th> */}
+                                                            <th class="">MATERIAL CODE</th>
+                                                            <th class="">SUPPLIER</th>
+                                                            <th>SUPPLIER REFERENCE	</th>
+                                                            <th>BRAND	</th>
+                                                            <th>DESCRIPTION	</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {/* if(visible=="True") */}
+                                                        {
 
 
-                                                        fields.matMastPurchaseModels.map((row, index) => (
-                                                            <tr key={index}>
-                                                                <td align='center'>
-                                                                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                                                                        <div className='text-center' onClick={() => { editRow(row?.id) }}>
-                                                                            <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                                                                        </div>
-                                                                        {/* <div onClick={() => edit(value, 'clone')}>onClick={() => { editRow(row?.id) }}
+                                                            fields.matMastPurchaseModels.map((row, index) => (
+                                                                <tr key={index}>
+                                                                    <td align='center'>
+                                                                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                                            <div className='text-center' onClick={() => { editRow(row?.id) }}>
+                                                                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                                                                            </div>
+                                                                            {/* <div onClick={() => edit(value, 'clone')}>onClick={() => { editRow(row?.id) }}
                                                                     <FontAwesomeIcon icon={faCopy} color="#919191" />
                                                                 </div> */}
-                                                                    </div>
-                                                                </td>
-                                                                {/* <td align='center'> {index + 1} </td> */}
-                                                                <td align='center'>{row.matCode}</td>
-                                                                <td align='center'>{row.supcode}</td>
-                                                                <td align='center'>{row.supRefNo}</td>
-                                                                <td align='center'>{row.brand}</td>
-                                                                <td align='center'>{row.purdesc}</td>
-                                                            </tr>
-                                                        ))
-                                                    }
-                                                </tbody>
-                                            </table>
+                                                                        </div>
+                                                                    </td>
+                                                                    {/* <td align='center'> {index + 1} </td> */}
+                                                                    <td align='center'>{row.matCode}</td>
+                                                                    <td align='center'>{row.supcode}</td>
+                                                                    <td align='center'>{row.supRefNo}</td>
+                                                                    <td align='center'>{row.brand}</td>
+                                                                    <td align='center'>{row.purdesc}</td>
+                                                                </tr>
+                                                            ))
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                         {/* <div class="clear"></div>
@@ -2784,8 +3181,16 @@ function MaterialMaster({ name }) {
 
                         </div>
                     </div>
-
-
+                    <div class="row mt-25 main-tab pl-15 pr-15">
+                    </div>
+                    <div class="row mt-25 main-tab pl-15 pr-15">
+                    </div>
+                    <div class="row mt-25 main-tab pl-15 pr-15">
+                    </div>
+                    <div class="row mt-25 main-tab pl-15 pr-15">
+                    </div>
+                    <div class="row mt-25 main-tab pl-15 pr-15">
+                    </div>
                     {/* <!--row closed--> */}
                 </div>
             }
