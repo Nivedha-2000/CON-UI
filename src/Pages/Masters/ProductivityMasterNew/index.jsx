@@ -385,7 +385,7 @@ export default function ProductivityMasters() {
                 path: API_URLS.GET_LINECOST_LINEGROUB + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode   //+ "&FromDate=" + fields.startdate + "&ToDate=" + "2023-08-25"
             }).then(resp => {
                 try {
-                  
+
                     setOperatorList(resp.data)
                     setOperatorNewList([])
                 } catch (er) {
@@ -523,40 +523,34 @@ export default function ProductivityMasters() {
             path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
         }).then(resp => {
 
+            // if (resp.data[0].data.length > 0) 
+            // {
+                const current = new Date(resp.data[0].lastSubmittedDate);
+                const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+                //  const lastDt =new Intl.DateimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(resp.data[0].lastSubmittedDate);
 
-            const current = new Date(resp.data[0].lastSubmittedDate);
-            const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-            //  const lastDt =new Intl.DateimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(resp.data[0].lastSubmittedDate);
+                if (resp.data[0].data.length > 0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
+                    setProductivityList(resp.data[0].data)
+                    setBtnVisible(true);
+                    setheaderFleids(true);
+                    setBtnSaveVisible()
+                } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
+                    alert("already data is exists. please changes correct date & last Submitted Date is " + date)
+                    setProductivityList([]);
+                    setBtnVisible(false);
 
-            if (resp.data[0].data.length > 0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
-                setProductivityList(resp.data[0].data)
-                setBtnVisible(true);
-                setheaderFleids(true);
-                setBtnSaveVisible()
-            } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
-                alert("already data is exists. please changes correct date & last Submitted Date is " + date)
-                setProductivityList([]);
-                setBtnVisible(false);
+                } else if (resp.data[0].dateStatus == true && resp.data[0].dataStatus == true) {
+                    setProductivityList(resp.data[0].data)
+                    setBtnVisible(true);
+                    setheaderFleids(true);
+                    setBtnSaveVisible(false)
+                } else {
+                    alert("Missing date please select correct date & last Submitted Date is " + date)
+                    setProductivityList([]);
+                    setBtnVisible(false);
+                }
+          //  }
 
-            } else if (resp.data[0].dateStatus == true && resp.data[0].dataStatus == true) {
-                setProductivityList(resp.data[0].data)
-                setBtnVisible(true);
-                setheaderFleids(true);
-                setBtnSaveVisible(false)
-            } else {
-                alert("Missing date please select correct date & last Submitted Date is " + date)
-                setProductivityList([]);
-                setBtnVisible(false);
-            }
-
-            // console.log(resp.data[0].data)
-            //console.log(resp.data.dataStatus)
-            //console.log(resp.data.dateStatus)
-
-            // setProductivityList(resp.data[0].data)
-            // setBtnVisible(true);
-            // setheaderFleids(true);
-            // setBtnSaveVisible(false)
         })
 
     }
@@ -725,7 +719,7 @@ export default function ProductivityMasters() {
 
         //   console.log(ProductivityList);
         if (LocCode != '') {
-             // console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
+            // console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
             setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
         }
     };
@@ -1388,7 +1382,7 @@ export default function ProductivityMasters() {
                                         </div>
                                         <div class="float-start pl-5">
                                             {
-                                              backBtnVisible &&  < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
+                                                backBtnVisible && < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
                                             }
 
                                         </div>
