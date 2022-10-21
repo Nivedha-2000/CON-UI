@@ -132,6 +132,11 @@ export default function Sidebar() {
                     <span className='mx-2'> AQL Master</span>
                   </NavLink>
                 </Menu.Item>
+                <Menu.Item key="1-10" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
+                  <NavLink to="masters/aql-master-old">
+                    <span className='mx-2'> AQL Master</span>
+                  </NavLink>
+                </Menu.Item>
               </SubMenu>
 
               <SubMenu key="3" title="Pre-Production " icon={<img src={production} width="20" />} >
