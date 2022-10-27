@@ -385,8 +385,9 @@ export default function ProductivityMasters() {
                 path: API_URLS.GET_LINECOST_LINEGROUB + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode   //+ "&FromDate=" + fields.startdate + "&ToDate=" + "2023-08-25"
             }).then(resp => {
                 try {
-                    //   console.log(resp.data)
+                  
                     setOperatorList(resp.data)
+                    setOperatorNewList([])
                 } catch (er) {
                     message.error("Response data is not as expected")
                 }
@@ -426,13 +427,11 @@ export default function ProductivityMasters() {
         debugger;
 
         setFields({ ...fields, operators: fields.id == 0 ? "" : fields.operators })
-        //    console.log(API_URLS.GET_LINECOST_OPERATORE + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup);
         if (fields.lineGroup) {
             ApiCall({
                 path: API_URLS.GET_LINECOST_OPERATORE + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup //+ "&ToDate=" + "2023-08-25"
             }).then(resp => {
                 try {
-                    //   console.log(resp.data)
                     setOperatorNewList(resp.data)
                 } catch (er) {
                     message.error("Response data is not as expected")
@@ -442,7 +441,7 @@ export default function ProductivityMasters() {
                     message.error(err.message || err)
                 })
         } else {
-            setOperatorList([])
+            setOperatorNewList([])
         }
 
     }
@@ -699,6 +698,7 @@ export default function ProductivityMasters() {
         setProductivityList(toUpdateData);
         setBtnVisible(true);
         setBtnSaveVisible(false);
+        setbackBtnVisible(true)
 
 
 
@@ -725,7 +725,7 @@ export default function ProductivityMasters() {
 
         //   console.log(ProductivityList);
         if (LocCode != '') {
-              console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
+             // console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
             setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
         }
     };
@@ -831,6 +831,9 @@ export default function ProductivityMasters() {
         setShowResults(false)
         setShowForm(true)
         setbackBtnVisible(true)
+        setAddBtnVisible(false)
+        setheaderFleids(false);
+        setBtnVisible(false);
         // setbtnUpdateVisible(false)
     }
 

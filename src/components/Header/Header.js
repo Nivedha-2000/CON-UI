@@ -132,8 +132,12 @@ export default function Header() {
       message.success('Logout Successfully');
     }
     else if (result.Success == false) {
-      message.success(result.message);
+      //message.success(result.message);
       // sessionStorage.clear();
+      console.log(result.message);
+      sessionStorage.clear();
+      window.location.href = configUrl().appUrl;
+      message.success('Logout Successfully');
     }
   }
 
@@ -191,17 +195,14 @@ export default function Header() {
                 </a>
                 <div class="dropdown-menu" style={{ "display": (shProfileCard ? "block" : "none") }}>
                   <a class="dropdown-item" >
-                    {/* <i class="bx bx-user-circle"></i> */}
                     <FontAwesomeIcon icon={faCircleUser} size="lg" style={{ "fontSize": "20px", "marginRight": "10px", "width": "24px", "textAlign": "center" }} />
                     Profile
                   </a>
                   <a class="dropdown-item" >
-                    {/* <i class="bx bx-cog"></i>  */}
                     <FontAwesomeIcon icon={faCog} size="lg" style={{ "fontSize": "20px", "marginRight": "10px", "width": "24px", "textAlign": "center" }} />
                     Edit Profile
                   </a>
                   <a class="dropdown-item" onClick={logOut}>
-                    {/* <i class="bx bx-log-out"></i> */}
                     <FontAwesomeIcon icon={faSignOut} size="lg" style={{ "fontSize": "20px", "marginRight": "10px", "width": "24px", "textAlign": "center" }} />
                     Sign Out
                   </a>
