@@ -3,7 +3,7 @@ import '../DefectMasters/DefectMasters.css';
 import { Drawer, Switch, Pagination, Spin, message, Tag, Radio } from 'antd';
 import breadcrumbIcon from '../../../Assets/images/style/bred-icon.svg'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import PropTypes, { number } from 'prop-types';
 import ApiCall from "../../../services";
@@ -13,9 +13,10 @@ import { Construction, Deblur } from '@mui/icons-material';
 import { findDOMNode } from 'react-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, FormFeedback } from 'reactstrap';
 import { filledInputClasses } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+import moment from 'moment';
 
 import ms from 'ms';
-import moment from 'moment';
 
 
 const requiredFields = ["locCode", "factCode", "productType", "startdate", "enddate"],
@@ -57,8 +58,8 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
         scaleUpDay: 0,
         scaleUpEffPer: 0,
         peakEff: "N",
-        startdate: Date.UTC,
-        enddate: Date.UTC,
+        startdate: "",//moment().format('YYYY-MM-DD'),
+        enddate: "",
         createdDate: "2022-08-17T09:51:51.057Z",
         createdBy: "",
         modifiedDate: "2022-08-17T09:51:51.057Z",
@@ -70,22 +71,6 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
         locCodel: "",
         factCodel: "",
         lineGroupl: "",
-        // productType: "",
-        // subProductType: "",
-        // noOfOperators: 0,
-        // plaidType: "NA",
-        // difficultyLevel: "",
-        // workingHrs: 0,
-        // scaleUpDay: 0,
-        // scaleUpEffPer: 0,
-        // peakEff: "N",
-        // startdate: Date.UTC,
-        // enddate: Date.UTC,
-        // createdDate: "2022-08-17T09:51:51.057Z",
-        // createdBy: "",
-        // modifiedDate: "2022-08-17T09:51:51.057Z",
-        // modifiedBy: "",
-        // hostName: "",
     }
 
 export default function ProductivityMasters() {
@@ -123,6 +108,8 @@ export default function ProductivityMasters() {
     const [AddbtnVisible, setAddBtnVisible] = useState(false);
     const [btnSaveVisible, setBtnSaveVisible] = useState(false);
     const [backBtnVisible, setbackBtnVisible] = useState(false);
+    const [viewBtnVisible, setviewBtnVisible] = useState(false);
+
 
     const [headerFleids, setheaderFleids] = useState(false);
 
@@ -191,10 +178,10 @@ export default function ProductivityMasters() {
     }, [fields.lineGroup])
 
     useEffect(() => {
-        if (fields.operators) {
+        if (fields.noOfOperators) {
             OperatorsChangeHandle()
         }
-    }, [fields.operators])
+    }, [fields.noOfOperators])
 
 
 
@@ -385,7 +372,7 @@ export default function ProductivityMasters() {
                 path: API_URLS.GET_LINECOST_LINEGROUB + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode   //+ "&FromDate=" + fields.startdate + "&ToDate=" + "2023-08-25"
             }).then(resp => {
                 try {
-                  
+
                     setOperatorList(resp.data)
                     setOperatorNewList([])
                 } catch (er) {
@@ -523,7 +510,8 @@ export default function ProductivityMasters() {
             path: API_URLS.GetProductivityListByStartdateEnddateParamerters + "?loccode=" + fields.locCode + "&factcode=" + fields.factCode + "&linegroup=" + fields.lineGroup + "&producttype=" + fields.productType + "&subproducttype=" + fields.subProductType + "&noofoperators=" + fields.noOfOperators + "&plaidtype=" + fields.plaidType + "&difficultylevel=" + fields.difficultyLevel + "&workinghrs=" + fields.workingHrs + "&Startdate=" + fields.startdate + "&Enddate=" + fields.enddate,
         }).then(resp => {
 
-
+            // if (resp.data[0].data.length > 0) 
+            // {
             const current = new Date(resp.data[0].lastSubmittedDate);
             const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
             //  const lastDt =new Intl.DateimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(resp.data[0].lastSubmittedDate);
@@ -548,15 +536,8 @@ export default function ProductivityMasters() {
                 setProductivityList([]);
                 setBtnVisible(false);
             }
+            //  }
 
-            // console.log(resp.data[0].data)
-            //console.log(resp.data.dataStatus)
-            //console.log(resp.data.dateStatus)
-
-            // setProductivityList(resp.data[0].data)
-            // setBtnVisible(true);
-            // setheaderFleids(true);
-            // setBtnSaveVisible(false)
         })
 
     }
@@ -584,9 +565,9 @@ export default function ProductivityMasters() {
             if (ProductivityList.length > 0) {
                 let count = ProductivityList.filter(a => a.peakEff == "Y").length;
                 if (count > 0) {
-                    alert("Already this commination Peak Eff Closed..!")
+                    message.error("Already this commination Peak Eff Closed..!")
                 } else {
-                    if (parseInt(fields.scaleUpEffPer) != 0) {
+                    if (parseInt(fields.scaleUpEffPer) != 0 && parseInt(fields.scaleUpEffPer)!='') {
                         fields.scaleUpDay = len + 1;
                         if (fields.peakEff != 'Y') {
                             setFields({ ...fields, peakEff: 'N' })
@@ -594,19 +575,21 @@ export default function ProductivityMasters() {
                         setProductivityList([...ProductivityList, fields])
                         setFields({ ...fields, scaleUpEffPer: 0 })
                     } else {
-                        alert("Please enter scaleUp Qty....! ")
+                        message.error("Please enter scaleUp Qty....! ")
                     }
                 }
             } else {
-                if (parseInt(fields.scaleUpEffPer) != 0) {
+                if (parseInt(fields.scaleUpEffPer) != 0 && parseInt(fields.scaleUpEffPer) != '') {
+                    debugger;
                     fields.scaleUpDay = len + 1;
-                    if (fields.peakEff != 'Y') {
+                    if (fields.peakEff != 'Y' ) {
                         setFields({ ...fields, peakEff: 'N' })
+                      //  setFields({  peakEff: 'N' })
                     }
                     setProductivityList([...ProductivityList, fields])
                     setFields({ ...fields, scaleUpEffPer: 0 })
                 } else {
-                    alert("Please enter scaleUp Qty....! ")
+                    message.error("Please enter scaleUp Qty....! ")
                 }
             }
 
@@ -650,6 +633,7 @@ export default function ProductivityMasters() {
                         setheaderFleids(false);
                         setBtnSaveVisible(false)
                         setbackBtnVisible(true)
+                        setviewBtnVisible(true);
 
                     }).catch(err => {
                         setLoader(false)
@@ -698,7 +682,7 @@ export default function ProductivityMasters() {
         setProductivityList(toUpdateData);
         setBtnVisible(true);
         setBtnSaveVisible(false);
-        setbackBtnVisible(true)
+        setbackBtnVisible(false)
 
 
 
@@ -725,7 +709,7 @@ export default function ProductivityMasters() {
 
         //   console.log(ProductivityList);
         if (LocCode != '') {
-             // console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
+            // console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
             setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
         }
     };
@@ -763,6 +747,11 @@ export default function ProductivityMasters() {
                             <div onClick={() => edit(tm.rowData[1], tm.rowData[2], tm.rowData[3], tm.rowData[4], tm.rowData[5], tm.rowData[6], tm.rowData[7], tm.rowData[8], tm.rowData[9], tm.rowData[10], tm.rowData[11], 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
+                            <Tooltip title="Clone">
+                                <div onClick={() => Clone(tm.rowData[1], tm.rowData[2], tm.rowData[3], tm.rowData[4], tm.rowData[5], tm.rowData[6], tm.rowData[7], tm.rowData[8], tm.rowData[9], tm.rowData[10], tm.rowData[11], 'Clone')}>
+                                    <FontAwesomeIcon icon={faCopy} color="#919191" />
+                                </div>
+                            </Tooltip>
                         </div>
 
                     )
@@ -835,6 +824,7 @@ export default function ProductivityMasters() {
         setheaderFleids(false);
         setBtnVisible(false);
         // setbtnUpdateVisible(false)
+        setviewBtnVisible(true);
     }
 
     const close = () => {
@@ -873,19 +863,21 @@ export default function ProductivityMasters() {
     }
     const back = () => {
         setLoader(false)
-        onClose();
-        setShowResults(true)
-        setShowForm(false)
+         setShowResults(true)
+         setShowForm(false)
         setProdFields({
             ...Test
         });
         setProdFields([]);
         setList([]);
+      
+        onClose();
 
+      
     }
 
     const edit = async (locCode, factCode, lineGroup, noOfOperators, workingHrs, productType, subProductType, plaidType, difficultyLevel, startdate, enddate, type) => {
-        debugger;
+
         setShowResults(false)
         setShowForm(true)
         setLoader(true)
@@ -899,82 +891,54 @@ export default function ProductivityMasters() {
 
             if (resp.data[0].data.length > 0 && resp.data[0].dateStatus == false && resp.data[0].dataStatus == true) {
                 setProductivityList(resp.data[0].data)
-                setBtnVisible(true);
+                //  setBtnVisible(true);
                 setheaderFleids(true);
-                setBtnSaveVisible()
+                //setBtnSaveVisible()
+                setbackBtnVisible(true);
+                setviewBtnVisible(false);
+                //  alert('1');
             } else if (resp.data[0].dateStatus == false && resp.data[0].dataStatus == false) {
                 alert("already data is exists. please changes correct date & last Submitted Date is " + date)
                 setProductivityList([]);
                 setBtnVisible(false);
-
+                //  alert('2');
             } else if (resp.data[0].dateStatus == true && resp.data[0].dataStatus == true) {
                 setProductivityList(resp.data[0].data)
                 setBtnVisible(true);
                 setheaderFleids(true);
                 setBtnSaveVisible(false)
+                //  alert('3');
             } else {
                 alert("Missing date please select correct date & last Submitted Date is " + date)
                 setProductivityList([]);
                 setBtnVisible(false);
+                // alert('4');
             }
         })
-
-
-        // try {
-        //     setShowResults(false)
-        //     setShowForm(true)
-        //     setLoader(true)
-        //     setVisible(true);
-        //     setbtnSaveVisible(false)
-        //     setbtnUpdateVisible(true)
-        //     let { data } = (supCategory && await getDataById(supplierId, supCategory, supCode))
-        //     if (!data) {
-        //         message.error("Data not found")
-        //         return
-        //     }
-        //     setFields({
-        //         supCategory: data.supCategory,
-        //         supCode: data.supCode,
-        //         supName: data.supName,
-        //         address1: data.address1,
-        //         address2: data.address2,
-        //         address3: data.address3,
-        //         city: data.city,
-        //         pinCode: data.pinCode,
-        //         country: data.country,
-        //         tngstNo: data.tngstNo,
-        //         tinNo: data.tinNo,
-        //         cstNo: data.cstNo,
-        //         panNo: data.panNo,
-        //         cinNo: data.cinNo,
-        //         emailId1: data.emailId1,
-        //         emailId2: data.emailId2,
-        //         contPerson1: data.contPerson1,
-        //         contPerson2: data.contPerson2,
-        //         contNo1: data.contNo1,
-        //         contNo2: data.contNo2,
-        //         faxNo: data.faxNo,
-        //         acctCode: data.acctCode,
-        //         tdsType: data.tdsType,
-        //         tdsCategory: data.tdsCategory,
-        //         strRegNo: data.strRegNo,
-        //         requestBy: data.requestBy,
-        //         arnNo: data.arnNo,
-        //         gstNo: data.gstNo,
-        //         supplierNo: data.supplierNo,
-        //         supplierGroup: data.supplierGroup,
-        //         paymentType: data.paymentType,
-        //         enterprise: data.enterprise,
-        //         epType: data.epType,
-        //         active: data.active
-        //     })
-        //     setLoader(false)
-        // } catch (err) {
-        //     setLoader(false)
-        //     message.error(typeof err == "string" ? err : "data not found")
-        // }
     }
 
+
+    const Clone = async (locCode, factCode, lineGroup, noOfOperators, workingHrs, productType, subProductType, plaidType, difficultyLevel, startdate, enddate, type) => {
+        setShowResults(false)
+        setShowForm(true)
+        setLoader(true)
+        setVisible(true);
+        setviewBtnVisible(true);
+        setbackBtnVisible(true);
+        setFields({
+            locCode: locCode,
+            factCode:factCode,
+            lineGroup:lineGroup,
+            noOfOperators:noOfOperators,
+            workingHrs:workingHrs,
+            productType:productType,
+            subProductType:subProductType,
+            plaidType:plaidType,
+            difficultyLevel:difficultyLevel,
+            startdate:startdate,
+            enddate:enddate
+        })
+    }
     return (
 
         <>
@@ -1114,7 +1078,7 @@ export default function ProductivityMasters() {
                                         <div className="form-group">
                                             <label> Start Date </label>
                                             <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
-                                            <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={fields.startdate}
+                                            <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={  moment(fields.startdate).format('YYYY-MM-DD') }
                                                 min={disablePastDate()}
                                                 onChange={inputOnChange("startdate")}
                                                 disabled={AddbtnVisible}
@@ -1127,7 +1091,7 @@ export default function ProductivityMasters() {
                                         <div className="form-group">
                                             <label> End Date </label>
                                             <small className='text-danger'> {fields.enddate === '' ? errors.enddate : ''}</small>
-                                            <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={fields.enddate}
+                                            <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={ moment(fields.enddate).format('YYYY-MM-DD') }
                                                 // onChange={ToDateChangeHandle("enddate")}
                                                 onChange={inputOnChange("enddate")}
                                                 disabled={AddbtnVisible}
@@ -1353,6 +1317,7 @@ export default function ProductivityMasters() {
                                                 <label> Scaleup Qty </label>
                                                 <Input type="text" name="scaleUpEffPer" className="form-control" id="ScaleUpEffPer" placeholder="ScaleUp Eff"
                                                     value={fields.scaleUpEffPer} onChange={inputOnChange("scaleUpEffPer")}
+                                                    autoComplete="off"
                                                 />
 
                                             </div>
@@ -1382,13 +1347,13 @@ export default function ProductivityMasters() {
 
                                         <div class="float-start pl-5">
                                             {
-                                                < button class="btn btn-primary search-btn btn-block" onClick={() => ViewList()}>View</button>
+                                                viewBtnVisible && < button class="btn btn-primary search-btn btn-block" onClick={() => ViewList()}>View</button>
                                             }
 
                                         </div>
                                         <div class="float-start pl-5">
                                             {
-                                              backBtnVisible &&  < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
+                                                backBtnVisible && < button class="btn btn-primary search-btn btn-block" onClick={back}>Back</button>
                                             }
 
                                         </div>
@@ -1424,6 +1389,7 @@ export default function ProductivityMasters() {
                                                 <tr>
                                                     <th className="text-center w-10">Actions</th>
                                                     <th className="" align='center'>Id</th>
+                                                    <th className="" align='center'>Peak Eff</th>
                                                     <th className="" align='center'>Location</th>
                                                     <th className="" align='center'>Factory</th>
                                                     <th className="" align='center'>Start Date</th>
@@ -1435,7 +1401,7 @@ export default function ProductivityMasters() {
                                                     <th className="" align='center'>Difficulty Level</th>
                                                     <th className="" align='center'>Scaleup Day</th>
                                                     <th className="" align='center'>Scaleup Qty</th>
-                                                    <th className="" align='center'>Peak Eff</th>
+
 
 
                                                 </tr>
@@ -1454,6 +1420,7 @@ export default function ProductivityMasters() {
                                                                 </div>
                                                             </td>
                                                             <td align='center'> {index + 1} </td>
+                                                            <td align='center'>{row.peakEff}</td>
                                                             <td align='center'>{row.locCode}</td>
                                                             <td align='center'>{row.factCode}</td>
                                                             <td align='center'>{row.startdate}</td>
@@ -1465,7 +1432,7 @@ export default function ProductivityMasters() {
                                                             <td align='center'>{row.difficultyLevel}</td>
                                                             <td align='center'>{index + 1}</td>
                                                             <td align='center'>{row.scaleUpEffPer}</td>
-                                                            <td align='center'>{row.peakEff}</td>
+
 
                                                         </tr>
                                                     ))

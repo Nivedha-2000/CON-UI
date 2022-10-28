@@ -36,7 +36,7 @@ function PurposeMaster({ name }) {
     const [ProductTypeList, setProductTypeList] = useState([]);
     const [buyerList, setBuyerList] = useState([]);
     const [pprList, setpprList] = useState([]);
-
+    const [PSnovisible, setPSnovisible] = React.useState(true);
     const [buyerDivisionList, setBuyerDivisionList] = useState([]);
     // const [shipmodeList, setShipmodeList] = useState([]);
     const [fields, setFields] = useState({
@@ -76,7 +76,7 @@ function PurposeMaster({ name }) {
         maxIndex: 0
     });
 
-   
+
     useEffect(() => {
         if (fields.parntslno) {
             getBuyerDivisionDropDown()
@@ -94,7 +94,7 @@ function PurposeMaster({ name }) {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
 
-   
+
     // const getBuyerCode = () => {
     //     ApiCall({
     //         path: API_URLS.GET_BUYCODE_DROPDOWN 
@@ -159,8 +159,8 @@ function PurposeMaster({ name }) {
         ApiCall({
             path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.PPRTYPE
         }).then(resp => {
-            try {              
-                setpprList(resp.data)               
+            try {
+                setpprList(resp.data)
             } catch (e) {
                 message.error("response is not as expected")
             }
@@ -202,7 +202,19 @@ function PurposeMaster({ name }) {
     }
 
 
-   
+    const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            // setFields({ ...AddTnamodels, [name]: "" })
+            setFields({ ...fields, [name]: '' });
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            // setFields({ ...AddTnamodels, [name]: 0 })
+            setFields({ ...fields, [name]: 0 });
+        }
+    }
 
     const inputOnChange = name => e => {
         let err = {}, validation = true
@@ -335,7 +347,7 @@ function PurposeMaster({ name }) {
                 customBodyRender: (value, tm) => {
                     return (
                         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                           <div title="Edit" onClick={() => edit(value)}>
+                            <div title="Edit" onClick={() => edit(value)}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div onClick={() => edit(value, 'clone')}>
@@ -348,13 +360,13 @@ function PurposeMaster({ name }) {
             }
         }
     ]
-   
-    const getDataById = parntslno => {        
+
+    const getDataById = parntslno => {
         return ApiCall({
             path: API_URLS.GET_PURPOSE_MASTER_EDIT_BY_ID + "/" + parntslno,
         })
     }
-  
+
     const add = async () => {
         try {
             setLoader(true)
@@ -396,19 +408,19 @@ function PurposeMaster({ name }) {
     //     }
     // }
 
-   
+
 
     const edit = async parntslno => {
         try {
             setLoader(true)
             setVisible(true);
             let { data } = (await getDataById(parntslno))
-            data = Array.isArray(data) ? data[0] : data            
+            data = Array.isArray(data) ? data[0] : data
             if (!data) {
                 message.error("Data not found")
                 return
             }
-            setFields({               
+            setFields({
                 parntslno: data.parntslno,
                 purpose: data.purpose,
                 type: data.type,
@@ -543,7 +555,7 @@ function PurposeMaster({ name }) {
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Stitch Length'
                             value={fields.parntslno} minLength="3" maxLength="11"
-                            numeric={true}
+                            numeric={true} disabled={PSnovisible}
                             onChange={inputOnChange("parntslno")} />
                         {/*onChange={(e) => setfields({ ...fields, parntslno: e.target.value })}*/}
                     </div>
@@ -578,6 +590,8 @@ function PurposeMaster({ name }) {
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Stitch Length'
                             value={fields.matchingSNo} minLength="3" maxLength="11"
                             numeric={true}
+                            onFocus={NUMBER_IS_FOCUS_IN_ZERO("matchingSNo")}
+                            onBlur={NUMBER_IS_FOCUS_OUT_ZERO("matchingSNo")}
                             onChange={inputOnChange("matchingSNo")} />
                         {/*onChange={(e) => setfields({ ...fields, parntslno: e.target.value })}*/}
                     </div>

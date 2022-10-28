@@ -781,7 +781,7 @@ function CompanyMaster({ name }) {
                                             <small className='text-danger'>{fields.tinNo === '' ? errors.tinNo : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter TIN No'
-                                            value={fields.tinNo} minLength="1" maxLength="10"
+                                            value={fields.tinNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("tinNo")}
                                         />
                                     </div>
