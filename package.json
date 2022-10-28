@@ -52,6 +52,7 @@
     "react-dropdown-select": "^4.9.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "4.0.3",
+    "react-tooltip": "^4.4.3",
     "reactstrap": "^9.1.2",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
@@ -61,13 +62,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    
     "build:development": "env-cmd -f .env.development react-scripts build",
     "build:production": "env-cmd -f .env.production react-scripts build",
     "build:qa": "env-cmd -f .env.qa react-scripts build",
     "build:uat": "env-cmd -f .env.uat react-scripts build",
     "build:devtest": "env-cmd -f .env.devtest react-scripts build",
-
     "start:development": "env-cmd -f .env.development react-scripts start",
     "start:production": "env-cmd -f .env.production react-scripts start",
     "start:qa": "env-cmd -f .env.qa react-scripts start",
