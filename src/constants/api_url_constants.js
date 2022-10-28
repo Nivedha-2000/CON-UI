@@ -133,6 +133,9 @@ export const API_URLS = {
   GET_HO_MASTER_LIST: "HOTaskMaster/GetAllHOTask",
   GET_HO_MASTER_BY_ID: "HOTaskMaster/GetHOTask",
   SAVE_HO_MASTER: "HOTaskMaster/SaveHOTaskMaster",
+  GET_HO_MASTER_TASKNAME_CHECK: "HOTaskMaster/GetHOTaskByHandoverTypeBuyDivCodeTaskName",
+  GET_HO_MASTER_TASKINDEX_CHECK: "HOTaskMaster/GetHOTaskByHandoverTypeBuyDivCodeTaskIndex",
+
   //UnitMaster
   GET_UNIT_MASTER_LIST: "UnitMaster/GetAllUCode",
   GET_UNIT_MASTER_BY_ID: "UnitMaster/GetUCode",
@@ -189,12 +192,11 @@ export const API_URLS = {
 
 //MATERIAL_MASTER 
 SAVE_MATERIAL_MASTER: "MatMast/SaveMatMast",
+SAVE_MATERIAL_APPROVAL_LIST: "MatMast/MatMastApproveDecline",
 GET_MATERIAL_MASTER_EDIT_BY_ID: "MatMast/GetMatMast",
 GET_ALL_MATERIAL_LIST: "MatMast/GetAllMatMast",
 GET_ALL_MATERIAL_APPROVED_LIST: "MatMast/GetAllMatMastByApproved",
 GET_ALL_MATERIAL_PENDING_LIST: "MatMast/GetAllMatMastByPending",
-
-
 }
 
 export const MISCELLANEOUS_TYPES = {
