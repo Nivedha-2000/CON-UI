@@ -25,7 +25,8 @@ var arrFab = [];
 var arrThd = [];
 var arrTrims = [];
 var arrPur = [];
-
+let count = 0;
+let count1 = 0;
 const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGroup", "sysMatCode", "matCode", "matDesc", "buyDivcode", "approved", "approvedBy", "active"],
     fabrequiredFields = ["fibreContent", "fabricType", "fabWeave", "dyeProcess", "yarnWarp", "yarnWeft", "warpYarnBlend", "weftYarnBlend", "endsPerInch", "pickPerInch", "shrinkWarp", "shrinkWeft", "washMethod", "fabWt_BW", "fabWt_AW", "weightUom", "actualWidth", "cutWidth", "widthUom", "physicalFinish", "chemicalFinish"],
     TrimsrequiredFields = ["articleNo", "product", "finish"],
@@ -74,8 +75,8 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
             fabWt_AW: 0.00,
             weightUom: "",
             yarnWarp: "",
-            actualWidth: "",
-            cutWidth: "",
+            actualWidth: 0,
+            cutWidth: 0,
             widthUom: "",
             physicalFinish: "",
             chemicalFinish: "",
@@ -193,8 +194,8 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
         fabWt_BW: 0.00,
         fabWt_AW: 0.00,
         weightUom: "",
-        actualWidth: "",
-        cutWidth: "",
+        actualWidth: 0,
+        cutWidth: 0,
         widthUom: "",
         physicalFinish: "",
         chemicalFinish: "",
@@ -311,6 +312,7 @@ function MaterialMaster({ name }) {
     const [phyFinishlist, setPhyFinishList] = useState([]);
     const [cheFinishlist, setCheFinishList] = useState([]);
     const [currencyList, setCurrencyList] = useState([]);
+    const [trimsadd, setTrimsadd] = React.useState(false);
 
     const [suplierlist, setsuplierlist] = useState([]);
     // const [matSubGrouplist, setmatSubGrouplist] = useState([]);
@@ -691,6 +693,21 @@ function MaterialMaster({ name }) {
             setFabricFields({ ...fabricfields, [name]: 0 });
         }
     }
+
+    const NUMBER_IS_FOCUS_IN_ZERO_THD = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            // setFields({ ...AddTnamodels, [name]: "" })
+            // setThredFields({ ...thredfields, [name]: 0 });
+            setThreadFields({ ...threadfields, [name]:  '' })
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO_THD = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            // setFields({ ...AddTnamodels, [name]: 0 })           
+            setThreadFields({ ...threadfields, [name]: 0 })
+        }
+    }
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
@@ -835,7 +852,44 @@ function MaterialMaster({ name }) {
                 setErrors({ ...errors, ...err })
             }
         }
-        setFabricFields({ ...fabricfields, [name]: value });
+        else if (name === 'shrinkWarp' || name === 'shrinkWeft' || name === 'fabWt_BW' || name === 'fabWt_AW') {
+            const re = /^[.0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setFabricFields({ ...fabricfields, [name]: value });
+                err['shrinkWarp'] = ''
+                err['shrinkWeft'] = ''
+                err['fabWt_BW'] = ''
+                err['fabWt_AW'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['shrinkWarp'] = "Please enter numbers only"
+                err['shrinkWeft'] = "Please enter numbers only"
+                err['fabWt_BW'] = "Please enter numbers only"
+                err['fabWt_AW'] = "Please enter numbers only"
+
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else if (name === 'actualWidth' || name === 'cutWidth') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setFabricFields({ ...fabricfields, [name]: value });
+                err['actualWidth'] = ''
+                err['cutWidth'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['actualWidth'] = "Please enter numbers only"
+                err['cutWidth'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
+        }
+        else {
+            setFabricFields({ ...fabricfields, [name]: value });
+        }
 
     }
     // const inputOnChangeFabs = name => e => {
@@ -883,6 +937,19 @@ function MaterialMaster({ name }) {
         let value = e.target.value
         if (name === 'entityID' || name === 'eCode' || name === 'eName') {
             setThreadFields({ ...threadfields, [name]: value.toUpperCase() })
+        }
+        else if (name === 'noOfMtr') {
+            const re = /^[0-9\b]+$/;
+            if (e.target.value === '' || re.test(e.target.value)) {
+                setThreadFields({ ...threadfields, [name]: value.toUpperCase() })
+                err['noOfMtr'] = ''
+                setErrors({ ...errors, ...err })
+            }
+            else {
+                err['noOfMtr'] = "Please enter numbers only"
+                validation = false
+                setErrors({ ...errors, ...err })
+            }
         }
         else {
             setThreadFields({ ...threadfields, [name]: value })
@@ -951,45 +1018,64 @@ function MaterialMaster({ name }) {
 
     }
 
+    // let count = 0;
+    // let count1 = 0;
 
     function AddContent() {
-        debugger;
         let fibcon = '';
-        // let fibcons = '';
         let final = '';
+        let fib = fabricfields.fibre === "" ? "" : fabricfields.fibre;
+        let con = fabricfields.Content === "" ? 0 : fabricfields.Content;
+        //count = count1 + con
+        count = parseInt(count1) + parseInt(con);
 
-        let fib = fabricfields.fibre
-        let con = fabricfields.Content
         fibcon = con + ' % ' + fib
-        let fibcons = fabricfields.fibreContent
-        if (fabricfields.Content != 0 && fabricfields.fibre != '') {
-            if (fabricfields.fibreContent == '') {
-                final = fibcon
-                fibcon = ''
-            }
-            else {
-                final = fibcons + ' + ' + fibcon
-            }
+        if (count <= 100) {
+            let fibcons = fabricfields.fibreContent
+            if (fabricfields.Content != 0 && fabricfields.fibre != '') {
+                if (fabricfields.fibreContent == '') {
+                    final = fibcon
+                    fibcon = ''
+                }
+                else {
+                    final = fibcons + ' + ' + fibcon
+                }
+                count1 = parseInt(count);
+                setFabricFields({ ...fabricfields, ['fibreContent']: final })
+                setFields({ ...fields, ['matDesc']: final })
+                //setFabricFields({ ...fabricfields, ['fibre']: '' })
+                //setFabricFields({ ...fabricfields, ['Content']: '' })
 
-            setFabricFields({ ...fabricfields, ['fibreContent']: final })
-            setFields({ ...fields, ['matDesc']: final })
+            }
+        }
+        else {
+            message.error("Content Should Not more than 100")
         }
     }
     function AddYarnWarp() {
         debugger;
         let YarnW = fabricfields.yarnWarp
         setFabricFields({ ...fabricfields, ['warpYarnBlend']: YarnW })
+        //setFabricFields({ ...fabricfields, ['yarnWarp']: '32342324324' })
+        //setFabricFields({ ...fabricfields, ['warpYarnBlend']: YarnW })
+        //setFabricFields({ ...fabricfields, yarnWarp: ''});
+        //fabricfields.yarnWarp = "";
+
     }
     function AddYarnWeft() {
         debugger;
         let YarnF = fabricfields.yarnWeft
         setFabricFields({ ...fabricfields, ['weftYarnBlend']: YarnF })
+        // setFabricFields({ ...fabricfields, ['yarnWeft']: '' })
+        //fabricfields.yarnWeft = "";
+        //setFabricFields({ ...fabricfields, yarnWeft: ""});
+
+
 
     }
     const Approved = async (id) => {
-    // function Approved() {
-       // checked={true};
-
+        // function Approved() {
+        // checked={true};
     }
     function AddTrims() {
         // alert("ADD");
@@ -1021,7 +1107,8 @@ function MaterialMaster({ name }) {
                 //  fields.matMastTrimsModels.push(trimsfields);
                 // Clear();
                 // clearFields();
-            } else {
+            }
+            else {
                 debugger;
                 // alert(AddTnamodels.id);
                 setShowAddtolist(true);
@@ -1268,14 +1355,14 @@ function MaterialMaster({ name }) {
                     arrThd = null;
                     arrPur = null;
                     fields.matMastFBRModels.push(fabricfields);
-                    fields.matMastTrimsModels.push(trimsfields);
+                    //fields.matMastTrimsModels.push(trimsfields);
                 }
                 //fields.matMastTrimsModels.push(trimsfields);
             }
 
-            // fields.matMastThreadModels.null;
+            //fields.matMastThreadModels.null;
             //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
-            // setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+            //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
 
             //fields.matMastPurchaseModels.null;
             debugger;
@@ -1298,7 +1385,7 @@ function MaterialMaster({ name }) {
                     arrFab = null;
                     arrPur = null;
                     fields.matMastThreadModels.push(threadfields);
-                    fields.matMastTrimsModels.push(trimsfields);
+                    //fields.matMastTrimsModels.push(trimsfields);
                 }
                 //fields.matMastTrimsModels.push(trimsfields);
             }
@@ -1322,7 +1409,7 @@ function MaterialMaster({ name }) {
                         arrFab = null;
                         arrPur = null;
                         arrThd = null;
-                        fields.matMastTrimsModels.push(trimsfields);
+                        //fields.matMastTrimsModels.push(trimsfields);
                     }
                     //fields.matMastTrimsModels.push(trimsfields);
                 }
@@ -1584,7 +1671,7 @@ function MaterialMaster({ name }) {
                 customBodyRender: (value, tm) => {
                     return (
                         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                            <div onClick={() => Approved(tm.rowData[1], 'edit')}>
+                            <div onClick={() => Approved(tm.rowData[1])}>
                                 <Checkbox color="primary" checked={false} />
                             </div>
                             {/* <div>
@@ -1619,7 +1706,7 @@ function MaterialMaster({ name }) {
                 customBodyRender: (value, tm) => {
                     return (
                         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                            <div onClick={() => edit(tm.rowData[1], 'edit')}>
+                            <div onClick={() => edit(tm.rowData[1])}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
                             {/* <div>
@@ -2351,6 +2438,7 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter Content'
                                                 value={fabricfields.Content} minLength="1" maxLength="100"
+                                                numeric={true}
                                                 onFocus={NUMBER_IS_FOCUS_IN_ZERO("Content")}
                                                 onBlur={NUMBER_IS_FOCUS_OUT_ZERO("Content")}
                                                 onChange={inputOnChangeFab("Content")}
@@ -2499,7 +2587,7 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.shrinkWarp === '' ? errors.shrinkWarp : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWarp'
-                                                value={fabricfields.shrinkWarp} minLength="1" maxLength="100"
+                                                value={fabricfields.shrinkWarp} minLength="1" maxLength="3"
                                                 onFocus={NUMBER_IS_FOCUS_IN_ZERO("shrinkWarp")}
                                                 onBlur={NUMBER_IS_FOCUS_OUT_ZERO("shrinkWarp")}
                                                 onChange={inputOnChangeFab("shrinkWarp")}
@@ -2511,7 +2599,7 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.shrinkWeft === '' ? errors.shrinkWeft : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter shrinkWeft'
-                                                value={fabricfields.shrinkWeft} minLength="1" maxLength="100"
+                                                value={fabricfields.shrinkWeft} minLength="1" maxLength="3"
                                                 onFocus={NUMBER_IS_FOCUS_IN_ZERO("shrinkWeft")}
                                                 onBlur={NUMBER_IS_FOCUS_OUT_ZERO("shrinkWeft")}
                                                 onChange={inputOnChangeFab("shrinkWeft")}
@@ -2542,7 +2630,7 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.fabWt_BW === '' ? errors.fabWt_BW : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter fabWt_BW'
-                                                value={fabricfields.fabWt_BW} minLength="1" maxLength="50"
+                                                value={fabricfields.fabWt_BW} minLength="1" maxLength="3"
                                                 onFocus={NUMBER_IS_FOCUS_IN_ZERO("fabWt_BW")}
                                                 onBlur={NUMBER_IS_FOCUS_OUT_ZERO("fabWt_BW")}
                                                 onChange={inputOnChangeFab("fabWt_BW")}
@@ -2554,7 +2642,7 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.fabWt_AW === '' ? errors.fabWt_AW : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter fabWt_AW'
-                                                value={fabricfields.fabWt_AW} minLength="1" maxLength="50"
+                                                value={fabricfields.fabWt_AW} minLength="1" maxLength="3"
                                                 onFocus={NUMBER_IS_FOCUS_IN_ZERO("fabWt_AW")}
                                                 onBlur={NUMBER_IS_FOCUS_OUT_ZERO("fabWt_AW")}
                                                 onChange={inputOnChangeFab("fabWt_AW")}
@@ -2588,7 +2676,9 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.actualWidth === '' ? errors.actualWidth : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter actualWidth'
-                                                value={fabricfields.actualWidth} minLength="1" maxLength="20"
+                                                value={fabricfields.actualWidth} minLength="1" maxLength="3"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("actualWidth")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("actualWidth")}
                                                 onChange={inputOnChangeFab("actualWidth")}
                                             />
                                         </div>
@@ -2598,7 +2688,9 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{fabricfields.cutWidth === '' ? errors.cutWidth : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter cutWidth'
-                                                value={fabricfields.cutWidth} minLength="1" maxLength="20"
+                                                value={fabricfields.cutWidth} minLength="1" maxLength="3"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO("cutWidth")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO("cutWidth")}
                                                 onChange={inputOnChangeFab("cutWidth")}
                                             />
                                         </div>
@@ -2704,7 +2796,9 @@ function MaterialMaster({ name }) {
                                                 <small className='text-danger'>{threadfields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter NoOfMtr'
-                                                value={threadfields.noOfMtr} minLength="1" maxLength="50"
+                                                value={threadfields.noOfMtr} minLength="1" maxLength="5"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO_THD("noOfMtr")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO_THD("noOfMtr")}
                                                 onChange={inputOnChangeThread("noOfMtr")}
                                             />
                                         </div>
