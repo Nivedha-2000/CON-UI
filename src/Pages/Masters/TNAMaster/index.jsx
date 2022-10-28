@@ -181,6 +181,8 @@ function TNAMaster({ name }) {
     const [fitList, setFitList] = useState([]);
     const [valueaddList, setValueAdd] = useState([]);
     const [packQtyvisible, setPackQtyVisible] = useState(false);
+    const [OGvisible, setOGVisible] = useState(true);
+
     const [buyerTypeVisible, setBuyerTypeVisible] = useState(false);
     const [EditVisible, setEditVisible] = useState(false);
     const [fields, setFields] = useState([
@@ -640,19 +642,31 @@ function TNAMaster({ name }) {
             GetdependSubActivityDropDown(e.target.value);
             setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
+        else if (name === 'stage') {
+            if (e.target.value === 'CONFIRMED') {
+                setOGVisible(false);
+            }
+            else
+            {
+                setOGVisible(true);
+            }
+            setAddTnamodels({ ...AddTnamodels, [name]: value })
+        }
         else if (name === 'activityType') {
             debugger;
             // alert(e.target.value);
-            // alert([name]);
+            // alert([name]); setOGVisible
             edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'SOP') {
                 setPackQtyVisible(true);
                 setBuyerTypeVisible(true);
+                setOGVisible(true);
             }
             else if (e.target.value === 'BUYER') {
                 setPackQtyVisible(true);
                 setBuyerTypeVisible(false);
+                setOGVisible(true);
             }
             else if (e.target.value === 'INTERNAL') {
                 setPackQtyVisible(false);
@@ -1436,10 +1450,12 @@ function TNAMaster({ name }) {
                     if (data[0].activityType === 'SOP') {
                         setPackQtyVisible(true);
                         setBuyerTypeVisible(true);
+                        setOGVisible(true);
                     }
                     else if (data[0].activityType === 'BUYER') {
                         setPackQtyVisible(true);
                         setBuyerTypeVisible(false);
+                        setOGVisible(true);
                     }
                     else if (data[0].activityType === 'INTERNAL') {
                         setPackQtyVisible(false);
@@ -2021,7 +2037,7 @@ function TNAMaster({ name }) {
                                     <small className='text-danger'>{AddTnamodels.orderCategory === '' ? errors.orderCategory : ''}</small>
                                 </div>
                                 <select className='form-select form-select-sm mt-1' required
-                                    value={AddTnamodels.orderCategory} disabled={packQtyvisible}
+                                    value={AddTnamodels.orderCategory} disabled={OGvisible}
                                     onChange={inputOnChange("orderCategory")} >
                                     <option value=""> Select orderCategory</option>
                                     {orderCatList.map((v, index) => {
@@ -2190,7 +2206,7 @@ function TNAMaster({ name }) {
                                         <label>{AddTnamodels.skipped === 'Y' ? 'Skipped' : 'Skipped'}</label>
                                         <div className='mt-1'>
                                             <Switch size='default'
-                                                checked={AddTnamodels.skipped === 'Y'}
+                                                checked={AddTnamodels.skipped === 'Y'} disabled={packQtyvisible}
                                                 onChange={(e) => setAddTnamodels({ ...AddTnamodels, skipped: e ? 'Y' : 'N' })} />
                                         </div>
                                     </div>

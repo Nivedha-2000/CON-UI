@@ -133,6 +133,9 @@ export const API_URLS = {
   GET_HO_MASTER_LIST: "HOTaskMaster/GetAllHOTask",
   GET_HO_MASTER_BY_ID: "HOTaskMaster/GetHOTask",
   SAVE_HO_MASTER: "HOTaskMaster/SaveHOTaskMaster",
+  GET_HO_MASTER_TASKNAME_CHECK: "HOTaskMaster/GetHOTaskByHandoverTypeBuyDivCodeTaskName",
+  GET_HO_MASTER_TASKINDEX_CHECK: "HOTaskMaster/GetHOTaskByHandoverTypeBuyDivCodeTaskIndex",
+
   //UnitMaster
   GET_UNIT_MASTER_LIST: "UnitMaster/GetAllUCode",
   GET_UNIT_MASTER_BY_ID: "UnitMaster/GetUCode",
