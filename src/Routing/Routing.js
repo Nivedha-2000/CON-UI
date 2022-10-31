@@ -66,6 +66,7 @@ import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMas
 import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
 import OffStdMaster from '../Pages/Masters/OffStdMaster/OffStdMaster';
 import TNAMaster from '../Pages/Masters/TNAMaster';
+import HsnMaster from '../Pages/Masters/HSNMaster/HsnMaster';
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
 export default function Routing() {
@@ -94,7 +95,7 @@ export default function Routing() {
         <Route path='masters/defect-translation-master' element={<TranslationMaster />} />
         <Route path='masters/translation-master' element={<DefectTranslationMaster />} />
         <Route path='masters/off-standard-master' element={<OffStdMaster />} />
-
+        <Route path='masters/HSN' element={<HsnMaster />} />
 
 
         <Route path='masters/shipment-tolerance-master' element={<ShipmentTolerance name="Shipment Tolerance Master" />} />

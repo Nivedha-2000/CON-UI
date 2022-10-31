@@ -276,11 +276,11 @@ export default function Sidebar() {
                     <span className='mx-2'> Material Master</span>
                   </NavLink>
                 </Menu.Item>
-                {/* <Menu.Item key="3-32" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/tab-test">
-                    <span className='mx-2'> Sample Master Design</span>
+                <Menu.Item key="3-32" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/HSN">
+                    <span className='mx-2'> HSN Master</span>
                   </NavLink>
-                </Menu.Item> */}
+                </Menu.Item>
                 {/* <Menu.Item key="4-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/user-buyer-rights-master">
                     <span className='mx-2'> User Buyer Rights Master</span>
