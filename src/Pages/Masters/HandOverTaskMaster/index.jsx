@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import {Drawer, message, Spin, Switch} from 'antd';
+import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
-import {API_URLS, MISCELLANEOUS_TYPES} from "../../../constants/api_url_constants";
-import {getHostName, validateInputOnKeyup} from "../../../helpers";
+import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
+import { getHostName, validateInputOnKeyup } from "../../../helpers";
 import CustomTableContainer from "../../../components/Table/alter/AlterMIUITable";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPenToSquare} from "@fortawesome/free-regular-svg-icons";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const requiredFields = ["handoverType", "buyDivCode", "taskName", "taskType","guideType", "taskSource", "menuName", "taskIndex"],
+const requiredFields = ["handoverType", "buyDivCode", "taskName", "taskType", "guideType", "taskSource", "menuName", "taskIndex"],
     initialErrorMessages = {
         handoverType: "",
         buyDivCode: "",
@@ -20,11 +20,11 @@ const requiredFields = ["handoverType", "buyDivCode", "taskName", "taskType","gu
         guideType: "",
         taskSource: "",
         menuName: "",
-        taskIndex: 0,     
+        taskIndex: 0,
         active: 'Y'
     },
     initialFieldValues = {
-        id: 0,       
+        id: 0,
         handoverType: "",
         buyDivCode: "",
         taskName: "",
@@ -32,7 +32,7 @@ const requiredFields = ["handoverType", "buyDivCode", "taskName", "taskType","gu
         guideType: "",
         taskSource: "",
         menuName: "",
-        taskIndex: 0,     
+        taskIndex: 0,
         active: 'Y'
     };
 
@@ -45,6 +45,9 @@ function HandOverTaskMaster({ name }) {
     const [handOverTaskList, setHandOverTaskList] = useState([]);
     const [guideTypeList, setGuideTypeList] = useState([]);
     const [sourceList, setSourceList] = useState([]);
+    const [Savevisible, setSavevisible] = React.useState(true);
+    const [entityVisible, setEntityVisible] = useState(false);
+    const [updatevisible, setUpdatevisible] = React.useState(false);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
@@ -63,8 +66,11 @@ function HandOverTaskMaster({ name }) {
     }
 
     const onClose = () => {
-        clearFields()
+        clearFields();
         setVisible(false);
+        setSavevisible(true);
+        setUpdatevisible(false);
+        setEntityVisible(false);
     };
 
     const showDrawer = () => {
@@ -82,13 +88,13 @@ function HandOverTaskMaster({ name }) {
         maxIndex: 0
     });
 
-    useEffect(() => {        
+    useEffect(() => {
         getDatas();
         getBuyerDivCode();
         getHandOverType();
         getHandOverTask();
         getGuideType();
-        getSource();       
+        getSource();
     }, []);
 
     const handleChange = (page) => {
@@ -97,7 +103,7 @@ function HandOverTaskMaster({ name }) {
 
     const getBuyerDivCode = () => {
         ApiCall({
-            path: API_URLS.GET_BUYDIVCODE_DROPDOWN 
+            path: API_URLS.GET_BUYDIVCODE_DROPDOWN
         }).then(resp => {
             try {
                 setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
@@ -183,11 +189,11 @@ function HandOverTaskMaster({ name }) {
     const inputOnChange = name => e => {
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'taskIndex'){
+        if (name === 'taskIndex') {
             const re = /^[0-9\b]+$/;
             if (e.target.value === '' || re.test(e.target.value)) {
                 setFields({ ...fields, [name]: value });
-                err['taskIndex'] =  ''
+                err['taskIndex'] = ''
                 setErrors({ ...errors, ...err })
             }
             else {
@@ -195,10 +201,123 @@ function HandOverTaskMaster({ name }) {
                 validation = false
                 setErrors({ ...errors, ...err })
             }
-        }  else {
+        } else {
             setFields({ ...fields, [name]: value })
         }
 
+    }
+
+    const Save = async (handoverType, buyDivCode, taskName, taskIndex, type) => {
+        debugger;
+        //  alert(buyCode, buyDivCode, productType, type);
+        if (loader) return
+        let err = {}, validation = true
+        debugger;
+        requiredFields.forEach(f => {
+            if (fields[f] === "") {
+                err[f] = "This field is required"
+                validation = false
+            }
+        })
+
+        setErrors({ ...initialErrorMessages, ...err })
+        if (validation) {
+            if (type === "update") {
+                if (validation) {
+                    setLoader(true)
+
+                    ApiCall({
+                        method: "POST",
+                        path: API_URLS.SAVE_HO_MASTER,
+                        data: {
+                            ...fields,
+                            hostName: getHostName()
+                        }
+                    }).then(resp => {
+                        setLoader(false)
+                        message.success(resp.message)
+                        onClose()
+                        getDatas()
+                        setSavevisible(true)
+                        setUpdatevisible(false)
+                        setEntityVisible(false);
+                        setShowResults(true)
+                        setShowForm(false)
+                    }).catch(err => {
+                        setLoader(false)
+
+                        //  fields['ftdOprName'] = tempOprName
+                        setFields({ ...fields })
+                        setErrors({ ...initialErrorMessages })
+                        message.error(err.message || err)
+                    })
+                }
+            }
+            else {
+                ItrApiService.GET({
+                    // url: API_URLS.GET_COMPANY_MASTER_BY_ID + "/" + entityID + "/" + eCode + "/" + eName,
+                    url: API_URLS.GET_HO_MASTER_TASKNAME_CHECK + "?HandoverType=" + handoverType + "&BuyDivCode=" + buyDivCode + "&TaskName=" + taskName,
+                    appCode: "CNF"
+                }).then(res => {
+                    //  alert(res.Success);
+                    if (res.Success == false) {
+                        ItrApiService.GET({
+                            url: API_URLS.GET_HO_MASTER_TASKINDEX_CHECK + "?HandoverType=" + handoverType + "&BuyDivCode=" + buyDivCode + "&TaskIndex=" + taskIndex,
+                            appCode: "CNF"
+                        }).then(res1 => {
+                            if (res1.Success == false) {
+                                if (validation) {
+                                    setLoader(true)
+
+                                    ApiCall({
+                                        method: "POST",
+                                        path: API_URLS.SAVE_HO_MASTER,
+                                        data: {
+                                            ...fields,
+                                            hostName: getHostName()
+                                        }
+                                    }).then(resp => {
+                                        setLoader(false)
+                                        message.success(resp.message)
+                                        onClose()
+                                        getDatas()
+                                        setSavevisible(true)
+                                        setUpdatevisible(false)
+                                        setEntityVisible(false);
+                                        setShowResults(true)
+                                        setShowForm(false)
+                                    }).catch(err => {
+                                        setLoader(false)
+                                        setFields({ ...fields })
+                                        setErrors({ ...initialErrorMessages })
+                                        message.error(err.message || err)
+                                    })
+                                }
+                            }
+                            else {
+
+                                setLoader(false);
+                                // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+                                err = "Task Index Already Available"
+                                message.error(err)
+                                // }
+                            }
+                        });
+                    }
+                    else {
+
+                        setLoader(false);
+                        // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+                        err = "Task Name Already Available"
+                        message.error(err)
+                        // }
+                    }
+                });
+
+
+            }
+
+        }
     }
     const save = () => {
         if (loader) return
@@ -209,17 +328,17 @@ function HandOverTaskMaster({ name }) {
                 err[f] = "This field is required"
                 validation = false
             }
-        })                     
-            if (fields.taskIndex==0){
-                err['taskIndex'] = "Should be greater than zero."
-                validation = false
-            }
-        
+        })
+        if (fields.taskIndex == 0) {
+            err['taskIndex'] = "Should be greater than zero."
+            validation = false
+        }
+
         setErrors({ ...initialErrorMessages, ...err })
 
         if (validation) {
             setLoader(true)
-            
+
             ApiCall({
                 method: "POST",
                 path: API_URLS.SAVE_HO_MASTER,
@@ -234,9 +353,9 @@ function HandOverTaskMaster({ name }) {
                 getDatas()
             }).catch(err => {
                 setLoader(false)
-               
-              //  fields['ftdOprName'] = tempOprName
-                setFields({...fields})
+
+                //  fields['ftdOprName'] = tempOprName
+                setFields({ ...fields })
                 setErrors({ ...initialErrorMessages })
                 message.error(err.message || err)
             })
@@ -262,40 +381,40 @@ function HandOverTaskMaster({ name }) {
     const tableColumns = [
         {
             name: "handoverType",
-            label: "handover Type",           
+            label: "handover Type",
         },
         {
             name: "buyDivCode",
-            label: "buyDivCode",          
+            label: "buyDivCode",
         },
         {
             name: "taskName",
             label: "task Name",
-           
+
         },
         {
             name: "taskType",
             label: "task Type"
-        },   
-        
+        },
+
         {
             name: "guideType",
-            label: "guide Type",           
+            label: "guide Type",
         },
         {
             name: "taskSource",
-            label: "task Source",          
+            label: "task Source",
         },
         {
             name: "menuName",
             label: "menu Name",
-           
+
         },
         {
             name: "taskIndex",
             label: "task Index"
-        },      
-        
+        },
+
         {
             name: "active",
             label: "Active",
@@ -313,7 +432,7 @@ function HandOverTaskMaster({ name }) {
             options: {
                 customBodyRender: (value, tm) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <div onClick={() => edit(value, 'edit')}>
                                 <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                             </div>
@@ -333,14 +452,30 @@ function HandOverTaskMaster({ name }) {
             path: API_URLS.GET_HO_MASTER_BY_ID + "/" + id,
         })
     }
+
+    // const getDataByTaskName = (entityID, eCode, eName) => {
+
+    //     return ApiCall({
+    //         path: API_URLS.GET_HO_MASTER_TASKNAME_CHECK + "?HandoverType=" + entityID + "&BuyDivCode=" + eCode + "&TaskName=" + eName,
+
+    //     })
+    // }
+    // const getDataByTaskIndex = (entityID, eCode, eName) => {
+
+    //     return ApiCall({
+    //         path: API_URLS.GET_HO_MASTER_TASKINDEX_CHECK + "?HandoverType=" + entityID + "&BuyDivCode=" + eCode + "&TaskIndex=" + eName,
+
+    //     })
+    // }
+
     const add = async () => {
         try {
-            setLoader(true)
-            setVisible(true);           
-            clearFields()
-            setLoader(false)
+            setLoader(true);
+            setVisible(true);
+            clearFields();
+            setLoader(false);
         } catch (err) {
-            setLoader(false)
+            setLoader(false);
             message.error(typeof err == "string" ? err : "data not found")
         }
     };
@@ -355,17 +490,20 @@ function HandOverTaskMaster({ name }) {
             }
             const tableId = type === 'clone' ? 0 : id
             setFields({
-                id: tableId,                    
+                id: tableId,
                 handoverType: data.handoverType,
                 buyDivCode: data.buyDivCode,
                 taskName: data.taskName,
-                taskType: data.taskType,  
+                taskType: data.taskType,
                 guideType: data.guideType,
                 taskSource: data.taskSource,
                 menuName: data.menuName,
-                taskIndex: data.taskIndex,     
-                active: data.active 
+                taskIndex: data.taskIndex,
+                active: data.active
             })
+            setEntityVisible(true);
+            setSavevisible(false);
+            setUpdatevisible(true);            
             setLoader(false)
         } catch (err) {
             setLoader(false)
@@ -423,7 +561,9 @@ function HandOverTaskMaster({ name }) {
             <Drawer footer={
                 <>
                     <div>
-                        {
+                        {Savevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.handoverType, fields.buyDivCode, fields.taskName, fields.taskIndex, 'save')}>Save</button>}
+                        {updatevisible && <button class="btn-sm btn defect-master-save mt-1 w-100" disabled={loader} onClick={() => Save(fields.handoverType, fields.buyDivCode, fields.taskName, fields.taskIndex, 'update')}>Update</button>}
+                        {/* {
                             !loader ?
                                 <button disabled={loader} className='btn-sm btn defect-master-save mt-1 w-100' onClick={save}> {fields.id === 0 ? "Save" : "Update"} </button>
                                 : (
@@ -431,12 +571,12 @@ function HandOverTaskMaster({ name }) {
                                         <Spin style={{ color: '#F57234' }} tip="Loading..." />
                                     </div>
                                 )
-                        }
+                        } */}
                     </div>
                     <div>
                         <button className='btn-sm btn defect-master-cancel mt-1 w-100' onClick={(e) => {
                             let _id = Number(fields.id)
-                            if(_id === 0)add()
+                            if (_id === 0) add()
                             else edit(_id)
                         }}> Cancel </button>
                     </div>
@@ -449,14 +589,14 @@ function HandOverTaskMaster({ name }) {
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Origin handoverType <span className='text-danger'>*  </span> </label>
+                            <label>HandOver Type <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.handoverType === '' ? errors.handoverType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.handoverType}
-                                onChange={inputOnChange("handoverType")}                            
+                            value={fields.handoverType}
+                            onChange={inputOnChange("handoverType")} disabled={entityVisible}
                         >
-                            <option value=""> Select handoverType</option>
+                            <option value=""> Select HandOver Type</option>
                             {handOverTypeList.map((v, index) => {
                                 return <option key={index} value={v.code}>{v.codeDesc}</option>
                             })}
@@ -465,14 +605,14 @@ function HandOverTaskMaster({ name }) {
 
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>buyDivCode <span className='text-danger'>*  </span> </label>
+                            <label>BuyDivCode <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.buyDivCode}
-                                onChange={inputOnChange("buyDivCode")}                            
+                            value={fields.buyDivCode}
+                            onChange={inputOnChange("buyDivCode")} disabled={entityVisible}
                         >
-                            <option value=""> Select buyDivCode</option>
+                            <option value=""> Select BuyDivCode</option>
                             {buyerdivcodelist.map((v, index) => {
                                 return <option key={index} value={v.code}>{v.codeDesc}</option>
                             })}
@@ -485,8 +625,8 @@ function HandOverTaskMaster({ name }) {
                             <small className='text-danger'>{fields.taskName === '' ? errors.taskName : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Task Name'
-                               value={fields.taskName} minLength="1" maxLength="50"
-                               onChange={inputOnChange("taskName")}                            
+                            value={fields.taskName} minLength="1" maxLength="50"
+                            onChange={inputOnChange("taskName")} disabled={entityVisible}
                         />
                     </div>
 
@@ -496,8 +636,8 @@ function HandOverTaskMaster({ name }) {
                             <small className='text-danger'>{fields.taskType === '' ? errors.taskType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.taskType}
-                                onChange={inputOnChange("taskType")}                            
+                            value={fields.taskType}
+                            onChange={inputOnChange("taskType")}
                         >
                             <option value=""> Select Task Type</option>
                             {handOverTaskList.map((v, index) => {
@@ -512,8 +652,8 @@ function HandOverTaskMaster({ name }) {
                             <small className='text-danger'>{fields.guideType === '' ? errors.guideType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.guideType}
-                                onChange={inputOnChange("guideType")}                            
+                            value={fields.guideType}
+                            onChange={inputOnChange("guideType")}
                         >
                             <option value=""> Select Guide Type</option>
                             {guideTypeList.map((v, index) => {
@@ -528,8 +668,8 @@ function HandOverTaskMaster({ name }) {
                             <small className='text-danger'>{fields.taskSource === '' ? errors.taskSource : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1' required
-                                value={fields.taskSource}
-                                onChange={inputOnChange("taskSource")}                            
+                            value={fields.taskSource}
+                            onChange={inputOnChange("taskSource")}
                         >
                             <option value=""> Select Task Source</option>
                             {sourceList.map((v, index) => {
@@ -544,8 +684,8 @@ function HandOverTaskMaster({ name }) {
                             <small className='text-danger'>{fields.menuName === '' ? errors.menuName : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Menu Name '
-                               value={fields.menuName} minLength="1" maxLength="50"
-                               onChange={inputOnChange("menuName")}                            
+                            value={fields.menuName} minLength="1" maxLength="50"
+                            onChange={inputOnChange("menuName")}
                         />
                         {/* <select className='form-select form-select-sm mt-1' required
                                 value={fields.menuName}
@@ -565,18 +705,18 @@ function HandOverTaskMaster({ name }) {
                             <small className='text-danger'>{errors.taskIndex ? errors.taskIndex : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1' placeholder='Enter Task Index Value'
-                               value={fields.taskIndex} minLength="1" maxLength="2"
-                               onChange={inputOnChange("taskIndex")}                            
+                            value={fields.taskIndex} minLength="1" maxLength="2"
+                            onChange={inputOnChange("taskIndex")} disabled={entityVisible}
                         />
-                    </div>           
-           
+                    </div>
+
 
                     <div className='mt-3'>
                         <label>{fields.active === 'Y' ? 'Active' : 'In Active'}</label>
                         <div className='mt-1'>
                             <Switch size='default'
-                                    checked={fields.active === 'Y'}
-                                    onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
+                                checked={fields.active === 'Y'}
+                                onChange={(e) => setFields({ ...fields, active: e ? 'Y' : 'N' })} />
                         </div>
                     </div>
                 </div>
