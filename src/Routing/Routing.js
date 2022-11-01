@@ -88,8 +88,8 @@ export default function Routing() {
         <Route path='masters/parts-master' element={<PartsMasters />} />
         <Route path='masters/operation-master' element={<OperationMaster />} />
         <Route path='masters/sewingline-master' element={<SewingLineMaster />} />
-        {/* <Route path='masters/aql-master' element={<AqlMaster />} /> */}
-        <Route path='masters/aql-master' element={<AqlMaster_Old />} />
+        <Route path='masters/aql-master' element={<AqlMaster />} />
+        <Route path='masters/aql-master-old' element={<AqlMaster_Old />} />
         <Route path='masters/language-master' element={<LanguageMaster />} />
         <Route path='masters/defect-translation-master' element={<TranslationMaster />} />
         <Route path='masters/translation-master' element={<DefectTranslationMaster />} />

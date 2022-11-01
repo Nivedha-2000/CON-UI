@@ -230,7 +230,7 @@ export default function AqlMaster() {
 
     const getAqlType = () => {
         ApiCall({
-            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.AQLTYPE
+            path: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.AQLTYPE, appCode: "CNF"
         }).then(resp => {
             try {
                 setAqlList(resp.data.map(d => ({ code: d.code, codeDesc: d.code })))
@@ -284,7 +284,7 @@ export default function AqlMaster() {
 
         ItrApiService.GET({
             url: 'BuyerDivMaster/GetAllBuyerDivInfo',
-            appCode: "ENAPP003"
+            appCode: "CNF"
         }).then(res => {
             console.log(res)
             if (res.Success == true) {
@@ -374,7 +374,7 @@ export default function AqlMaster() {
 
         let err = {}, validation = true
 
-     
+
         requiredVisualsample.forEach(f => {
             if (visualSampling[f] === "") {
                 err[f] = "This field is required"
@@ -411,10 +411,10 @@ export default function AqlMaster() {
                             fields.aqlvmDetlModels.push(visualSampling)
                             console.log(fields);
                             clearFieldsVisualSam();
-                        }else{
+                        } else {
                             message.error("Pack-Qty From start with " + nextpackqtyF)
                         }
-                      
+
                     } else {
                         message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
                     }
