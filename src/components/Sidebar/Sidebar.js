@@ -60,13 +60,7 @@ export default function Sidebar() {
               <img src={MenuIcon} className="mx-1" width="25" />
               <span className='px-3'>Menu</span>
             </div>
-            {/* <Menu className='mx-4 my-3 logo' onClick={onCollapse}>
-              <Menu.Item icon={<img src={MenuIcon} className="mx-1" width="25"  />}>
-                <NavLink to="/dashboard">
-                  <span className='mx-2'>Menu</span>
-                </NavLink>
-              </Menu.Item>
-            </Menu> */}
+
             <Menu defaultSelectedKeys={['1']} defaultActiveFirst={true} mode="inline" className='mb-5' >
               <SubMenu key="1" title="Administrator" icon={<img src={production} width="20" />} >
                 <Menu.Item key="1-1" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
@@ -203,104 +197,84 @@ export default function Sidebar() {
                     <span className='mx-2'> Style Division Master</span>
                   </NavLink>
                 </Menu.Item>
-                {/* <Menu.Item key="4-8" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/supplier-master">
-                    <span className='mx-2'> Supplier Master</span>
-                  </NavLink>
-                </Menu.Item> */}
-                <Menu.Item key="4-9" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-8" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/supplier-master-new">
                     <span className='mx-2'> Supplier Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4-10" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-9" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/line-cost-master">
                     <span className='mx-2'> Line Cost Master</span>
                   </NavLink>
                 </Menu.Item>
 
-                <Menu.Item key="4-11" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-10" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/pdc-master">
                     <span className='mx-2'> PDC Master</span>
                   </NavLink>
                 </Menu.Item>
 
-                <Menu.Item key="4-21" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-11" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/material-group-master">
                     <span className='mx-2'> Material Group Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4-22" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-12" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/buyer-product-type-master">
                     <span className='mx-2'> Buyer Product Type Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4-23" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-13" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/size-master">
                     <span className='mx-2'> Size Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4-24" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-14" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/role-master">
                     <span className='mx-2'> Role Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4-25" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-15" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/hand-over-task-master">
                     <span className='mx-2'> HandOver Task Master</span>
                   </NavLink>
                 </Menu.Item>
 
-                <Menu.Item key="4-28" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-16" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/buyer-master">
                     <span className='mx-2'> Buyer Master</span>
                   </NavLink>
-                </Menu.Item>                
-                <Menu.Item key="3-35" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                </Menu.Item>
+                <Menu.Item key="4-17" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/tna-master">
                     <span className='mx-2'> T&A Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="3-30" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-18" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/purpose-master">
                     <span className='mx-2'> Purpose Master</span>
                   </NavLink>
-                </Menu.Item>  
-                <Menu.Item key="3-31" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                </Menu.Item>
+                <Menu.Item key="4-19" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/productivity-master">
                     <span className='mx-2'> Productivity Master</span>
                   </NavLink>
                 </Menu.Item>
-                <Menu.Item key="3-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                <Menu.Item key="4-20" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
                   <NavLink to="masters/material-master">
                     <span className='mx-2'> Material Master</span>
                   </NavLink>
                 </Menu.Item>
-                {/* <Menu.Item key="3-32" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/tab-test">
-                    <span className='mx-2'> Sample Master Design</span>
+                <Menu.Item key="4-21" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/material-group-master1">
+                    <span className='mx-2'> Material Group Master</span>
                   </NavLink>
-                </Menu.Item> */}
-                {/* <Menu.Item key="4-29" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/user-buyer-rights-master">
-                    <span className='mx-2'> User Buyer Rights Master</span>
+                </Menu.Item>
+                <Menu.Item key="4-22" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
+                  <NavLink to="masters/hsn-master">
+                    <span className='mx-2'> HSN Master</span>
                   </NavLink>
-                </Menu.Item> */}
-                {/* <Menu.Item key="4-9" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/hs-code-master">
-                    <span className='mx-2'> HS Code Master</span>
-                  </NavLink>
-                </Menu.Item> 
-                <Menu.Item key="4-10" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/line-cost-master">
-                    <span className='mx-2'> Line Cost Master</span>
-                  </NavLink>
-                </Menu.Item>             
-                <Menu.Item key="4-11" icon={<FontAwesomeIcon icon={faFile} size="lg" />}>
-                  <NavLink to="masters/sub-product-type-master">
-                    <span className='mx-2'> Sub Product Type Master</span>
-                  </NavLink>
-                </Menu.Item> */}
+                </Menu.Item>
               </SubMenu>
 
               <SubMenu key="5" title="Corporate Group" icon={<img src={production} width="20" />} >
@@ -349,53 +323,6 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
               </SubMenu>
-
-              {/* <Menu.Item key="3" icon={<img src={production} alt="" width="20" />}>
-                <NavLink to="/dashboard/external-audit">
-                  <span className='mx-2'>Product Development</span>
-                </NavLink>
-              </Menu.Item> */}
-              {/* <Menu.Item key="2" icon={
-                <img src={Configuration} alt="" width="20" />
-              }>
-                <NavLink to="/dashboard/scheduler">
-                  <span className='mx-1'>User Defined</span>
-                </NavLink>
-              </Menu.Item> */}
-
-              {/* <Menu.Item key="3" icon={<img src={ForeCasting} alt="" width="25" />}>
-                <NavLink to="/dashboard/scheduler-02">
-                  <span className='mx-2'>Scheduler 02</span>
-                </NavLink>
-              </Menu.Item> */}
-              {/* <Menu.Item key="2" icon={<img src={ForeCasting} width="25" />}>
-      <span className='mx-2'>Forecasting</span>
-    </Menu.Item>
-    <Menu.Item key="3" icon={<img src={Styling} width="25" />}>
-      <span className='mx-2'>Styling</span>
-    </Menu.Item>
-    <Menu.Divider />
-
-    <SubMenu key="4" icon={<img src={Tax} width="25" />} title={
-      <span className='mx-2'>T&A Information</span>
-    }>
-
-    </SubMenu> */}
-              {/* <Menu.Item >
-      <span className='mx-2'>T&A Information</span>
-    </Menu.Item> */}
-              {/* <Menu.Item key="5" icon={<img src={ItemGrid} width="25" />}>
-      <span className='mx-2'>Item Master Grid</span>
-    </Menu.Item>
-    <Menu.Item key="6" icon={<img src={ItemCreation} width="25" />}>
-      <span className='mx-2'>Item Creation</span>
-    </Menu.Item>
-    <Menu.Item key="7" icon={<img src={Costing} width="25" />}>
-      <span className='mx-2'>Costing</span>
-    </Menu.Item>
-    <Menu.Item key="8" icon={<img src={HandOver} width="25" />}>
-      <span className='mx-2'>Handover</span>
-    </Menu.Item> */}
             </Menu>
           </Sider>
           <Layout className="site-layout">

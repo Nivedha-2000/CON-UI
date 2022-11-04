@@ -66,6 +66,8 @@ import TranslationMaster from '../Pages/Masters/TranslationMaster/TranslationMas
 import DefectTranslationMaster from '../Pages/Masters/DefectTranslationMaster/DefectTranslationMaster';
 import OffStdMaster from '../Pages/Masters/OffStdMaster/OffStdMaster';
 import TNAMaster from '../Pages/Masters/TNAMaster';
+import MatGroupMaster from '../Pages/Masters/MaterialTypeGroupMaster/MatGroupMaster';
+import HsnMaster from '../Pages/Masters/HsnMaster/HsnMaster';
 // import DefectMasters1 from '../Testing/DefectMasters/DefectMasters1';
 
 export default function Routing() {
@@ -134,8 +136,10 @@ export default function Routing() {
         <Route path='masters/menu-master' element={<MenuElement name='Menu Master' />} />
         <Route path='masters/purpose-master' element={<PurposeMaster name='Purpose Master' />} />
         <Route path='masters/productivity-master' element={<ProductivityMasters name='Productivity Master' />} />
-        <Route path='masters/tna-master' element={<TNAMaster name='T&A Master'/>}/>
-        
+        <Route path='masters/tna-master' element={<TNAMaster name='T&A Master' />} />
+        <Route path='masters/material-group-master1' element={<MatGroupMaster name="Material Type Group Master" />} />
+        <Route path='masters/hsn-master' element={<HsnMaster name="HSN Master" />} />
+
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>
     </Routes>
