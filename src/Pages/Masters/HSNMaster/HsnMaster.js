@@ -5,14 +5,12 @@ import { useEffect } from 'react';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
-import { RESIZE_ITEM_ACTION } from '@progress/kendo-react-scheduler';
 
 export default function HsnMaster() {
     const [datas, setDatas] = useState([]);
     const [totalPageCount, setTotalPageCount] = useState();
     const [totalpagesize, settotalpagesize] = useState(10);
     const [loader, setLoader] = useState(false);
-    //const pageSize = 10;
     const [pagination, setPagination] = useState({
         totalPage: 0,
         current: 1,
@@ -61,7 +59,6 @@ export default function HsnMaster() {
         hostName: "",
         active: 'Y'
     });
-
     const [errors, setErrors] = useState({
         gstType: '',
         chapter: '',
@@ -70,7 +67,6 @@ export default function HsnMaster() {
         uom: '',
         taxRate: ''
     });
-    
     const [search, setSearch] = useState('');
     const handleChange = event => {
         setSearch(event.target.value);
@@ -78,63 +74,46 @@ export default function HsnMaster() {
     const [exist, setexists] = useState(false);
     const [dynamicpageno, setDynamicpageno] = useState(1);
     const getDatas = (onCreate, onUpdate) => {
-        console.log(dynamicpageno,totalpagesize);
         setLoader(true);
         ItrApiService.GET({
             url: 'GSTHSCode/GetAllGSTHSCodeWithPagesByPageNo/' + dynamicpageno + '/' + totalpagesize,
             appCode: "CNF"
         }).then(res => {
-           
+            console.log(res);
             if (res.Success == true) {
                 setLoader(false);
                 setDatas(res.data.list);
                 setTotalPageCount(res.data.pageCount);
-console.log(res.data.pageCount);
-    // if (onCreate && onCreate == true) {
-    //                 setPagination({ ...pagination, totalPage:res.data.pageCount,
-    //                     minIndex: (Math.ceil(res.data.pageCount) - 1) * totalpagesize, 
-    //                     maxIndex: Math.ceil(res.data.pageCount) * totalpagesize, 
-    //                     current: Math.ceil(res.data.pageCount) });
-    //             }
-    //             else if (onUpdate && onUpdate == true) {
-    //                 setPagination({ ...pagination, totalPage: res.data.pageCount });
-    //             } else {
-    //                 setPagination({ ...pagination, totalPage:res.data.pageCount,
-    //                      minIndex: 0, maxIndex: totalpagesize });
-    //             }
-    //             //   settotalpagesize(res.data.pageSize);
-                // if (onCreate && onCreate == true) {
-                //     setPagination({ ...pagination, totalPage: res.data.length / totalpagesize, minIndex: (Math.ceil(res.data.list.length / totalpagesize) - 1) * totalpagesize, maxIndex: Math.ceil(res.data.list.length / totalpagesize) * totalpagesize, current: Math.ceil(res.data.list.length / totalpagesize) });
-                // }
-                // else if (onUpdate && onUpdate == true) {
-                //     setPagination({ ...pagination, totalPage: res.data.length / totalpagesize });
-                // } else {
-                //     setPagination({ ...pagination, totalPage: res.data.length / totalpagesize, minIndex: 0, maxIndex: totalpagesize });
-                // }
-                console.log('-->',totalPageCount)
+
+                // settotalpagesize(res.data.pageSize);
+                if (onCreate && onCreate == true) {
+                    setPagination({ ...pagination, totalPage: totalPageCount / totalpagesize, minIndex: (Math.ceil(totalPageCount / totalpagesize) - 1) * totalpagesize, maxIndex: Math.ceil(totalPageCount / totalpagesize) * totalpagesize, current: 1 });
+                } else if (onUpdate && onUpdate == true) {
+                    setPagination({ ...pagination, totalPage: totalPageCount / totalpagesize });
+                } else {
+                    setPagination({ ...pagination, totalPage: totalPageCount / totalpagesize, minIndex: 0, maxIndex: totalpagesize });
+                }
             }
             else {
                 setLoader(false);
             }
         })
     }
-    const PageClick = (cpage) => {
+    const PageClick = (cpage, tpz) => {
         setLoader(true);
         console.log(cpage);
+
+        console.log(tpz)
         if (search == '') {
             ItrApiService.GET({
-                url: 'GSTHSCode/GetAllGSTHSCodeWithPagesByPageNo/' + cpage + '/' + totalpagesize,
+                url: 'GSTHSCode/GetAllGSTHSCodeWithPagesByPageNo/' + cpage + '/' + tpz,
                 appCode: "CNF"
             }).then(res => {
                 if (res.Success == true) {
                     setLoader(false);
                     setDatas(res.data.list);
                     setTotalPageCount(res.data.pageCount);
-                             //  settotalpagesize(res.data.pageSize);
-                    setPagination({ ...pagination, 
-                        totalPage: res.data.pageCount,
-                         current: cpage, minIndex: ((cpage - 1) * totalpagesize),
-                          maxIndex: (cpage * totalpagesize) });
+                    setPagination({ ...pagination, totalPage: totalPageCount / tpz, current: cpage, minIndex: ((cpage - 1) * tpz), maxIndex: (cpage * tpz) });
                 }
                 else {
                     setLoader(false);
@@ -150,11 +129,9 @@ console.log(res.data.pageCount);
                     setLoader(false);
                     setDatas(res.data.list);
                     setTotalPageCount(res.data.pageCount);
-                    //          settotalpagesize(res.data.pageSize);
-                    setPagination({ ...pagination, 
-                        current: cpage, 
-                        totalPage: res.data.pageCount, 
-                        minIndex: 0, maxIndex: totalpagesize })
+                    settotalpagesize(res.data.pageSize);
+                    setDynamicpageno(1);
+                    setPagination({ ...pagination, totalPage: totalPageCount / totalpagesize, minIndex: (Math.ceil(totalPageCount / totalpagesize) - 1) * totalpagesize, maxIndex: Math.ceil(totalPageCount / totalpagesize) * totalpagesize, current: cpage });
                 }
                 else {
                     setLoader(false);
@@ -168,7 +145,7 @@ console.log(res.data.pageCount);
     const createHsnMaster = () => {
         let { gstType, chapter, hScode, hsDescription, uom, taxRate } = hsnMaster;
         if (gstType == '' || chapter == '' || hScode == '' || hsDescription == '' || uom == '' || taxRate == '') {
-            setErrors({ ...errors, gstType: ' Gst Type is required', chapter: 'Chapter is required', hScode: 'Hs Code is required', hsDescription: 'Hs Description is required', uom: 'UOM is required', taxRate: 'Tax Rate is required', })
+            setErrors({ ...errors, gstType: ' Gst Type is required', chapter: 'Enter only numbers', hScode: 'Enter only numbers', hsDescription: 'Hs Description is required', uom: 'UOM is required', taxRate: 'Tax Rate is required', })
         }
         else {
             setLoader(true);
@@ -178,7 +155,7 @@ console.log(res.data.pageCount);
                 data: hsnMaster
             }).then(res => {
                 if (res.Success == true) {
-                    setDynamicpageno(1);
+                    //setDynamicpageno(1);
                     setLoader(false);
                     message.success("HSN Master Created Successfully");
                     onClose();
@@ -192,9 +169,9 @@ console.log(res.data.pageCount);
             })
         }
     }
-    const [closeDefect, setCloseDefect] = useState(false);
-    const editDefect = (chapter, gstType, hScode) => {
-        setCloseDefect(true);
+    const [closeHsn, setCloseHsn] = useState(false);
+    const editHsn = (chapter, gstType, hScode) => {
+        setCloseHsn(true);
         ItrApiService.GET({
             url: `GSTHSCode/GetGSTHSCode/` + chapter + "/" + gstType + "/" + hScode,
             appCode: "CNF",
@@ -209,7 +186,7 @@ console.log(res.data.pageCount);
         })
     };
     const cancel = () => {
-        setCloseDefect(false);
+        setCloseHsn(false);
     };
     const updateHsnMaster = () => {
         let { hsDescription, uom, taxRate, gstType, chapter, hScode } = hsnMaster;
@@ -237,29 +214,8 @@ console.log(res.data.pageCount);
     };
 
     const onShowSizeChanger = (current, totalpagesize) => {
-        console.log(current, totalpagesize);
-        // setLoader(true);
-        // ItrApiService.GET({
-        //     url: 'GSTHSCode/GetAllGSTHSCodeWithPagesByPageNo/' + current + '/' + totalpagesize,
-        //     appCode: "CNF"
-        // }).then(res => {
-        //     if (res.Success == true) {
-        //         setLoader(false);
-        //         setDatas(res.data.list);
-        //         setTotalPageCount(res.data.pageCount);
-        //         //           settotalpagesize(res.data.pageSize);
-        //         //setPagination({ ...pagination, totalPage: res.data.length / totalpagesize, current: cpage, minIndex: ((cpage - 1) * totalpagesize), maxIndex: (cpage * totalpagesize) });
-        //     }
-        //     else {
-        //         setLoader(false);
-        //     }
-        // })
-      
-       // PageClick(current)
         settotalpagesize(totalpagesize);
-
-
-
+        console.log(current, totalpagesize);
     }
     const myFunction = (searchstring) => {
         ItrApiService.GET({
@@ -271,10 +227,10 @@ console.log(res.data.pageCount);
                 console.log(res.data.pageCount);
                 setDatas(res.data.list);
                 setTotalPageCount(res.data.pageCount);
-                settotalpagesize(res.data.pageSize);
-                setDynamicpageno(pagination.current);
-                //console.log(page * pageSize);
-                setPagination({ ...pagination, totalPage: res.data.pageCount, minIndex: 0, maxIndex: totalpagesize })
+                setDynamicpageno(1);
+                //settotalpagesize(res.data.pageSize);
+
+                setPagination({ ...pagination, current: dynamicpageno, totalPage: totalPageCount / totalpagesize, minIndex: 0, maxIndex: totalpagesize })
             }
 
         });
@@ -304,14 +260,14 @@ console.log(res.data.pageCount);
                     <table className="table table-hover" id='operationTable'>
                         <thead id='table-header'>
                             <tr>
-                                <th scope="col">Gst Type</th>
-                                <th scope="col">Chapter</th>
+                                <th scope="col" >Gst Type</th>
+                                <th scope="col" >Chapter</th>
                                 <th scope="col">HS Code</th>
-                                <th scope="col">HS Description</th>
-                                <th scope="col">UOM</th>
-                                <th scope="col">Tax Rate</th>
-                                <th scope="col">Active</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" >HS Description</th>
+                                <th scope="col" >UOM</th>
+                                <th scope="col" >Tax Rate</th>
+                                <th scope="col" >Active</th>
+                                <th scope="col" className='text-center'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -328,7 +284,7 @@ console.log(res.data.pageCount);
                                         >
                                             {hsn?.active == 'Y' ? 'Yes' : 'No'}</Tag></td>
                                     <td>
-                                        <div className='text-center' onClick={() => editDefect(hsn?.chapter, hsn?.gstType, hsn?.hScode)}>
+                                        <div className='text-center' onClick={() => editHsn(hsn?.chapter, hsn?.gstType, hsn?.hScode)}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                         </div>
                                     </td>
@@ -343,12 +299,12 @@ console.log(res.data.pageCount);
                 <div className='text-end mt-3'>
                     <Pagination
                         showQuickJumper
-
+                        showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} `}
                         onShowSizeChange={onShowSizeChanger}
-                        pageSizeOptions={['10', '25', '50']}
+                        pageSizeOptions={['10', '25', '50', '100']}
                         current={pagination.current}
-                        //pageSize={totalpagesize}
-                        total={totalPageCount * 10 }
+                        // pageSize={totalpagesize}
+                        total={totalPageCount * totalpagesize}
                         onChange={PageClick}
                         responsive={true}
                         showSizeChanger={true}
@@ -381,8 +337,8 @@ console.log(res.data.pageCount);
                 <div className='defect-master-add-new'>
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>Gst Type</label>
-                            <small className='text-danger'>{hsnMaster.gstType == '' ? errors.gstType : ''}</small>
+                            <label>Gst Type<span className='text-danger'>*  </span> </label>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.gstType == '' ? errors.gstType : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1'
                             value={hsnMaster.gstType}
@@ -396,24 +352,26 @@ console.log(res.data.pageCount);
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Chapter <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.chapter == '' ? errors.chapter : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.chapter == '' ? errors.chapter : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
-                            maxLength="2"
+
                             placeholder='Enter Chapter'
                             value={hsnMaster.chapter}
+
                             onChange={(e) => {
                                 let re = /^[0-9\b]+$/;
                                 if (e.target.value === '' || re.test(e.target.value)) {
                                     setHsnMaster({ ...hsnMaster, chapter: e.target.value })
                                 }
+
                             }}
                         />
                     </div>
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>HS Code <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.hScode == '' ? errors.hScode : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.hScode == '' ? errors.hScode : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             maxLength="15"
@@ -431,7 +389,7 @@ console.log(res.data.pageCount);
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>HS Description <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.hsDescription == '' ? errors.hsDescription : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.hsDescription == '' ? errors.hsDescription : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             placeholder='Enter HS Description'
@@ -441,8 +399,8 @@ console.log(res.data.pageCount);
                     </div>
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                            <label>UOM<span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.uom == '' ? errors.uom : ''}</small>
+                            <label>UOM<span className='text-danger' >*  </span> </label>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.uom == '' ? errors.uom : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1'
                             value={hsnMaster.uom}
@@ -461,7 +419,7 @@ console.log(res.data.pageCount);
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Tax Rate <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.taxRate == '' ? errors.taxRate : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.taxRate == '' ? errors.taxRate : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
 
@@ -506,7 +464,7 @@ console.log(res.data.pageCount);
                 }
                 title={
                     <h4 className='m-0'>Edit HSN Master</h4>
-                } placement="right" onClose={() => { clearFields(); cancel(); }} visible={closeDefect} >
+                } placement="right" onClose={() => { clearFields(); cancel(); }} visible={closeHsn} >
                 <div className='defect-master-add-new'>
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
@@ -547,7 +505,7 @@ console.log(res.data.pageCount);
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>HS Description <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.hsDescription == '' ? errors.hsDescription : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.hsDescription == '' ? errors.hsDescription : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
 
@@ -558,7 +516,7 @@ console.log(res.data.pageCount);
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>UOM<span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.uom == '' ? errors.uom : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.uom == '' ? errors.uom : ''}</small>
                         </div>
                         <select className='form-select form-select-sm mt-1'
                             value={hsnMaster.uom}
@@ -577,7 +535,7 @@ console.log(res.data.pageCount);
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Tax Rate <span className='text-danger'>*  </span> </label>
-                            <small className='text-danger'>{hsnMaster.taxRate == '' ? errors.taxRate : ''}</small>
+                            <small className='text-danger' style={{fontSize:"12px"}}>{hsnMaster.taxRate == '' ? errors.taxRate : ''}</small>
                         </div>
                         <input className='form-control form-control-sm mt-1'
                             placeholder='00.00'
