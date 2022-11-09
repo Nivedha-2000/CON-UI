@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import { Drawer, message, Spin, Switch } from 'antd';
+// import { Drawer, message, Spin, Switch } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
@@ -14,6 +14,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select1 from "react-dropdown-select";
 
+import { Tag, Drawer, Switch, Pagination, Spin, message, Select } from 'antd';
 
 import '../../../Assets/style.css'
 import bootstrap from 'bootstrap/dist/js/bootstrap'
@@ -153,11 +154,15 @@ const requiredFields = ["buyCode", "buydivCode", "mActive", "deptcode", "activit
         createdBy: "AD",
         modifiedDate: "2022-08-22",
         modifiedBy: "",
+        NotroleArr: [],
+        L1Arr: [],
+        L2Arr: [],
         isActive: false
     };
 
 function TNAMaster({ name }) {
     const [visible, setVisible] = useState(false);
+    const [closeDefect, setCloseDefect] = useState(false);
     const [locationName, setLocationName] = useState([]);
     const [buyerList, setBuyerList] = useState([]);
     const [buyerDivisionList, setBuyerDivisionList] = useState([]);
@@ -185,6 +190,8 @@ function TNAMaster({ name }) {
 
     const [buyerTypeVisible, setBuyerTypeVisible] = useState(false);
     const [EditVisible, setEditVisible] = useState(false);
+    const [EditDVisible, setEditDVisible] = React.useState(false);
+    const [UpDVisible, setEditUpDVisible] = React.useState(true); //useState(false);
     const [fields, setFields] = useState([
     ]);
     // const [field, setField] = useState({
@@ -203,7 +210,7 @@ function TNAMaster({ name }) {
     const [errors, setErrors] = useState({
         ...initialErrorMessages
     })
-
+    const { Option } = Select;
     const clearFields = () => {
         setAddTnamodels({
             ...TnaModels
@@ -646,8 +653,7 @@ function TNAMaster({ name }) {
             if (e.target.value === 'CONFIRMED') {
                 setOGVisible(false);
             }
-            else
-            {
+            else {
                 setOGVisible(true);
             }
             setAddTnamodels({ ...AddTnamodels, [name]: value })
@@ -694,6 +700,16 @@ function TNAMaster({ name }) {
                 validation = true
             }
         })
+
+        // fields.forEach(f => {
+        //     if (TnaModels[f] === "") {
+        //         err[f] = "This field is required"
+        //         validation = false
+        //         //   ++c;
+        //     } else {
+        //         validation = true
+        //     }
+        // })
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
         console.log(AddTnamodels);
@@ -706,11 +722,14 @@ function TNAMaster({ name }) {
                 setFields([...fields, AddTnamodels])
                 // Clear();
                 // clearFields();
+               // setdependActCodeList([fields.id])
             } else {
                 debugger;
                 // alert(AddTnamodels.id);
                 setShowAddtolist(true);
                 setShowUpdatetolist(false);
+                setEditDVisible(false);
+                setEditUpDVisible(true);
                 GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
                 //onChange={inputOnChange("activityType")};
                 // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
@@ -795,6 +814,9 @@ function TNAMaster({ name }) {
             }
             //  fields.push(AddTnamodels)
             //ClearDetails();
+            AddTnamodels.NotroleArr = [],
+                AddTnamodels.L1Arr = [],
+                AddTnamodels.L2Arr = []
         }
 
     }
@@ -853,12 +875,18 @@ function TNAMaster({ name }) {
         // }
 
         //  setErrors({ ...initialErrorMessages, ...err })
-        // alert(fields.length);
+        // alert(fields.length);parseInt(PS, 10)
+
+        //  alert(sum(parseInt(fields.weightage)));
         if (fields.length == 0) {
             message.error(typeof err == "string" ? err : "Atleast Add one row");
             return
         }
         {
+            // if (sum(parseInt(fields.weightage)) != 100) {
+            //     message.error(typeof err == "string" ? err : "Weightage Should Be 100");
+            //     return
+            // }
             if (showUpdatetolist) {
                 message.error(typeof err == "string" ? err : "Update to list then Save");
                 return
@@ -866,78 +894,85 @@ function TNAMaster({ name }) {
             {
                 console.log(cloneSave)
                 if (cloneSave) {
+                    if (AddTnamodels.buyCode != '' && AddTnamodels.buydivCode != '' && AddTnamodels.deptcode != '' && AddTnamodels.locCode != '' && AddTnamodels.activityType) {
+                        let toUpdateData = fields.map((item) => {
+                            if (fields) {
+                                item.id = 0,
+                                    item.buyCode = AddTnamodels.buyCode,
+                                    item.buydivCode = AddTnamodels.buydivCode,
+                                    item.deptcode = AddTnamodels.deptcode,
+                                    item.locCode = AddTnamodels.locCode,
+                                    item.activityType = AddTnamodels.activityType,
+                                    item.mActive = item.mActive,
+                                    item.orderCategory = item.orderCategory,
+                                    item.stage = item.stage,
+                                    item.fit = item.fit,
+                                    item.actCode = item.actCode,
+                                    item.activity = item.activity,
+                                    item.subActivity = item.subActivity,
+                                    item.criticalActivity = item.criticalActivity,
+                                    item.tnaSeqNo = 0,
+                                    item.duration = item.duration,
+                                    item.dependActCode = item.dependActCode,
+                                    item.dependDeptCode = item.dependDeptCode,
+                                    item.dependActvity = item.dependActvity,
+                                    item.dependSubActvity = item.dependSubActvity,
+                                    item.preNotifyDays = item.preNotifyDays,
+                                    item.notifyRoleId = item.notifyRoleId,
+                                    item.l1EscalateDays = item.l1EscalateDays,
+                                    item.l1EscalateRole = item.l1EscalateRole,
+                                    item.l2EscalateDays = item.l2EscalateDays,
+                                    item.l2EscalateRole = item.l2EscalateRole,
+                                    item.category = item.category,
+                                    item.valueAddtype = item.valueAddtype,
+                                    item.weightage = item.weightage,
+                                    item.skipped = item.skipped,
+                                    item.remarks = item.remarks,
+                                    item.cancel = item.cancel,
+                                    item.active = item.active,
+                                    item.hostName = item.hostName,
+                                    item.createdDate = item.createdDate,
+                                    item.createdBy = item.createdBy,
+                                    item.modifiedDate = item.modifiedDate,
+                                    item.modifiedBy = item.modifiedBy,
+                                    item.isActive = item.isActive
+                            }
+                            return item;
+                        });
+
+                        setFields(toUpdateData);
+
+                        console.log(fields);
+                        setLoader(true);
+                        //  alert(API_URLS.SAVE_TNA_MASTER_LIST);
+                        ApiCall({
+                            method: "POST",
+                            path: API_URLS.SAVE_TNA_MASTER_LIST,
+                            data: fields
+                        }).then(resp => {
+                            setLoader(false)
+                            message.success(resp.message)
+                            onClose();
+                            getDatas();
+                            setShowResults(true);
+                            setShowForm(false);
+                            setCloneSave(false);
+                        }).catch(err => {
+
+                            //console.log('CATCH');
+                            setLoader(false)
+                            //  fields['ftdOprName'] = tempOprName
+                            //setFields([...fields, AddTnamodels])
+                            setErrors({ ...initialErrorMessages })
+                            message.error(err.message || err)
+                        })
+                    }
+                    else {
+                        message.error(typeof err == "string" ? err : "Please Fill The Header For Clone Save");
+                        return
+                    }
                     //alert('cloned')
-                    let toUpdateData = fields.map((item) => {
-                        if (fields) {
-                            item.id = 0,
-                                item.buyCode = item.buyCode,
-                                item.buydivCode = item.buydivCode,
-                                item.deptcode = item.deptcode,
-                                item.locCode = item.locCode,
-                                item.activityType = item.activityType,
-                                item.mActive = item.mActive,
-                                item.orderCategory = item.orderCategory,
-                                item.stage = item.stage,
-                                item.fit = item.fit,
-                                item.actCode = item.actCode,
-                                item.activity = item.activity,
-                                item.subActivity = item.subActivity,
-                                item.criticalActivity = item.criticalActivity,
-                                item.tnaSeqNo = 0,
-                                item.duration = item.duration,
-                                item.dependActCode = item.dependActCode,
-                                item.dependDeptCode = item.dependDeptCode,
-                                item.dependActvity = item.dependActvity,
-                                item.dependSubActvity = item.dependSubActvity,
-                                item.preNotifyDays = item.preNotifyDays,
-                                item.notifyRoleId = item.notifyRoleId,
-                                item.l1EscalateDays = item.l1EscalateDays,
-                                item.l1EscalateRole = item.l1EscalateRole,
-                                item.l2EscalateDays = item.l2EscalateDays,
-                                item.l2EscalateRole = item.l2EscalateRole,
-                                item.category = item.category,
-                                item.valueAddtype = item.valueAddtype,
-                                item.weightage = item.weightage,
-                                item.skipped = item.skipped,
-                                item.remarks = item.remarks,
-                                item.cancel = item.cancel,
-                                item.active = item.active,
-                                item.hostName = item.hostName,
-                                item.createdDate = item.createdDate,
-                                item.createdBy = item.createdBy,
-                                item.modifiedDate = item.modifiedDate,
-                                item.modifiedBy = item.modifiedBy,
-                                item.isActive = item.isActive
-                        }
-                        return item;
-                    });
 
-                    setFields(toUpdateData);
-
-                    console.log(fields);
-                    setLoader(true)
-                    //  alert(API_URLS.SAVE_TNA_MASTER_LIST);
-                    ApiCall({
-                        method: "POST",
-                        path: API_URLS.SAVE_TNA_MASTER_LIST,
-                        data: fields
-                    }).then(resp => {
-                        setLoader(false)
-                        message.success(resp.message)
-                        onClose()
-                        getDatas()
-                        setShowResults(true)
-                        setShowForm(false)
-                        setCloneSave(false);
-                    }).catch(err => {
-
-                        //console.log('CATCH');
-                        setLoader(false)
-                        //  fields['ftdOprName'] = tempOprName
-                        //setFields([...fields, AddTnamodels])
-                        setErrors({ ...initialErrorMessages })
-                        message.error(err.message || err)
-                    })
 
                 }
                 else {
@@ -1356,20 +1391,23 @@ function TNAMaster({ name }) {
                 debugger;
                 let dataval = response.data;
                 setAddTnamodels(response.data);
+
                 setShowAddtolist(false);
                 setShowUpdatetolist(true);
-
-                // setFields({
+                setEditDVisible(true);
+                setEditUpDVisible(false);
+                //setAddTnamodels({ ...AddTnamodels, [notifyRoleId]: response.data.notifyRoleId })
+                // setAddTnamodels({
                 //     id: dataval.id,
                 //     buyCode: dataval.buyCode,
                 //     buydivCode: dataval.buydivCode,
                 //     deptcode: dataval.deptcode,
                 //     locCode: dataval.locCode,
-                //     activityType: dataval.activityType, 
+                //     activityType: dataval.activityType,
                 //     orderCategory: dataval.orderCategory,
-                //     mActive: dataval.mActive,                   
+                //     mActive: dataval.mActive,
                 //     stage: dataval.stage,
-                //     activityType: dataval.activityType,                   
+                //     activityType: dataval.activityType,
                 //     fit: dataval.fit,
                 //     actCode: dataval.actCode,
                 //     activity: dataval.activity,
@@ -1384,7 +1422,7 @@ function TNAMaster({ name }) {
                 //     preNotifyDays: dataval.preNotifyDays,
                 //     notifyRoleId: dataval.notifyRoleId,
                 //     l1EscalateDays: dataval.l1EscalateDays,
-                //     l1EscalateRole:dataval.l1EscalateRole,
+                //     l1EscalateRole: dataval.l1EscalateRole,
                 //     l2EscalateDays: dataval.l2EscalateDays,
                 //     l2EscalateRole: dataval.l2EscalateRole,
                 //     category: dataval.category,
@@ -1398,9 +1436,10 @@ function TNAMaster({ name }) {
                 //     createdDate: dataval.createdDate,
                 //     createdBy: dataval.createdBy,
                 //     modifiedDate: dataval.modifiedDate,
-                //     modifiedBy:dataval.modifiedBy,
-                //     isActive: dataval.isActive,                   
-                //     active: data.active
+                //     modifiedBy: dataval.modifiedBy,
+                //     isActive: dataval.isActive,
+                //     active: data.active,
+                //     NotroleArr: data.notifyRoleId
                 // })
                 // alert(dataval.parentMenuName);
                 console.log(response.data);
@@ -2331,20 +2370,70 @@ function TNAMaster({ name }) {
                                             onBlur={NUMBER_IS_FOCUS_OUT_ZERO("preNotifyDays")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Notify Role<span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.notifyRoleId === '' ? errors.notifyRoleId : ''}</small>
+                                    {UpDVisible &&
+                                        <div class="col-lg-3">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Notify Role<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{AddTnamodels.notifyRoleId === '' ? errors.notifyRoleId : ''}</small>
+                                            </div>
+                                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select Role ID" required
+                                                value={AddTnamodels.NotroleArr}
+                                                // value={AddTnamodels.id !== 0 ? errors.notifyRoleId : AddTnamodels.NotroleArr}
+                                                onChange={(e) => {
+                                                    setAddTnamodels({
+                                                        ...AddTnamodels, notifyRoleId: e.join(','),
+                                                        NotroleArr: [...e]
+                                                    })
+                                                }} >
+                                                {deptList.map((v, index) => {
+                                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                                })}
+                                            </Select>
                                         </div>
-                                        <select className='form-select form-select-sm mt-1' required
-                                            value={AddTnamodels.notifyRoleId}
-                                            onChange={inputOnChange("notifyRoleId")} >
-                                            <option value=""> Select PreNotify Role</option>
-                                            {deptList.map((v, index) => {
-                                                return <option key={index} value={v.code}>{v.code}</option>
-                                            })}
-                                        </select>
-                                    </div>
+                                    }
+                                    {EditDVisible &&
+                                        <div class="col-lg-3">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Notify Role<span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{AddTnamodels.notifyRoleId === '' ? errors.notifyRoleId : ''}</small>
+                                            </div>
+                                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select Role ID" required
+                                                value={AddTnamodels.notifyRoleId.split(',')}
+                                                // value={AddTnamodels.id !== 0 ? errors.notifyRoleId : AddTnamodels.NotroleArr}
+                                                onChange={(e) => {
+                                                    setAddTnamodels({
+                                                        ...AddTnamodels, notifyRoleId: e.join(','),
+                                                        NotroleArr: [...e]
+                                                    })
+                                                }} >
+                                                {deptList.map((v, index) => {
+                                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                                })}
+                                            </Select>
+                                        </div>
+                                    }
+                                    {/* <div className='mt-3'>
+                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                            <label>Defect Profile <span className='text-danger'>*  </span> </label>
+                                            <small className='text-danger'>{AddTnamodels.notifyRoleId == '' ? errors.notifyRoleId : ''}</small>
+                                        </div>
+                                        <Select mode="multiple" style={{ width: '100%' }} placeholder="Select Defect Profile"
+                                            value={AddTnamodels.profArr}
+                                            onChange={(e) => {
+                                                setAddTnamodels({
+                                                    ...AddTnamodels, notifyRoleId: e.join(','),
+                                                    profArr: [...e]
+                                                })
+                                            }}
+                                        >
+                                            <Option value="S" > Score Card </Option>
+                                            <Option value="E" > End Line / Inline </Option>
+                                            <Option value="F" > Finishing </Option>
+                                            <Option value="A" > Audit </Option>
+                                        </Select>
+                                       
+                                    </div> */}
+
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>L1Escalate Days<span className='text-danger'>  </span> </label>
@@ -2357,20 +2446,50 @@ function TNAMaster({ name }) {
                                             onBlur={NUMBER_IS_FOCUS_OUT_ZERO("l1EscalateDays")}
                                         />
                                     </div>
-                                    <div class="col-lg-2">
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>L1Escalate Role<span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.l1EscalateRole === '' ? errors.l1EscalateRole : ''}</small>
+                                    {UpDVisible &&
+                                        <div class="col-lg-2">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>L1Escalate Role<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{AddTnamodels.l1EscalateRole === '' ? errors.l1EscalateRole : ''}</small>
+                                            </div>
+
+                                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select L1 Escalate Role" required
+                                                value={AddTnamodels.L1Arr}
+                                                onChange={(e) => {
+                                                    setAddTnamodels({
+                                                        ...AddTnamodels, l1EscalateRole: e.join(','),
+                                                        L1Arr: [...e]
+                                                    })
+                                                }} >
+                                                {deptList.map((v, index) => {
+                                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                                })}
+                                            </Select>
                                         </div>
-                                        <select className='form-select form-select-sm mt-1' required
-                                            value={AddTnamodels.l1EscalateRole}
-                                            onChange={inputOnChange("l1EscalateRole")} >
-                                            <option value=""> Select L1 Role</option>
-                                            {deptList.map((v, index) => {
-                                                return <option key={index} value={v.code}>{v.code}</option>
-                                            })}
-                                        </select>
-                                    </div>
+                                    }
+                                    {EditDVisible &&
+
+                                        <div class="col-lg-2">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>L1Escalate Role<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{AddTnamodels.l1EscalateRole === '' ? errors.l1EscalateRole : ''}</small>
+                                            </div>
+
+                                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select L1 Escalate Role" required
+                                                value={AddTnamodels.l1EscalateRole.split(',')}
+                                                onChange={(e) => {
+                                                    setAddTnamodels({
+                                                        ...AddTnamodels, l1EscalateRole: e.join(','),
+                                                        L1Arr: [...e]
+                                                    })
+                                                }} >
+                                                {deptList.map((v, index) => {
+                                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                                })}
+                                            </Select>
+                                        </div>
+                                    }
+
                                     <div class="col-lg-2">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>L2Escalate Days<span className='text-danger'>  </span> </label>
@@ -2383,21 +2502,49 @@ function TNAMaster({ name }) {
                                             onBlur={NUMBER_IS_FOCUS_OUT_ZERO("l2EscalateDays")}
                                         />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>L2Escalate Role<span className='text-danger'>  </span> </label>
-                                            <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
-                                        </div>
-                                        <select mode="multiple" className='form-select form-select-sm mt-1' required
-                                            value={AddTnamodels.l2EscalateRole}
-                                            onChange={inputOnChange("l2EscalateRole")} >
-                                            <option value=""> Select L2 Role</option>
-                                            {deptList.map((v, index) => {
-                                                return <option key={index} value={v.code}>{v.code}</option>
-                                            })}
-                                        </select>
-                                    </div>
+                                    {UpDVisible &&
+                                        <div class="col-lg-3">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>L2Escalate Role<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
+                                            </div>
 
+                                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select L2 Escalate Role" required
+                                                value={AddTnamodels.L2Arr}
+                                                onChange={(e) => {
+                                                    setAddTnamodels({
+                                                        ...AddTnamodels, l2EscalateRole: e.join(','),
+                                                        L2Arr: [...e]
+                                                    })
+                                                }} >
+                                                {deptList.map((v, index) => {
+                                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                                })}
+                                            </Select>
+                                        </div>
+                                    }
+                                    {EditDVisible &&
+
+                                        <div class="col-lg-3">
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>L2Escalate Role<span className='text-danger'>  </span> </label>
+                                                <small className='text-danger'>{AddTnamodels.l2EscalateRole === '' ? errors.l2EscalateRole : ''}</small>
+                                            </div>
+
+                                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select L2 Escalate Role" required
+                                                value={AddTnamodels.l2EscalateRole.split(',')}
+                                                onChange={(e) => {
+                                                    setAddTnamodels({
+                                                        ...AddTnamodels, l2EscalateRole: e.join(','),
+                                                        L2Arr: [...e]
+                                                    })
+                                                }} >
+                                                {deptList.map((v, index) => {
+                                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                                })}
+                                            </Select>
+                                        </div>
+                                    }
                                     {/* <div class="col-lg-3">
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Active<span className='text-danger'>*  </span> </label>

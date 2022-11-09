@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import { Drawer, message, Spin, Switch } from 'antd';
+// import { Drawer, message, Spin, Switch } from 'antd';
+import { Tag, Drawer, Switch, Pagination, Spin, message, Select } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
@@ -33,6 +34,7 @@ const requiredFields = ["handoverType", "buyDivCode", "taskName", "taskType", "g
         taskSource: "",
         menuName: "",
         taskIndex: 0,
+        BuyDivArr: [],
         active: 'Y'
     };
 
@@ -48,6 +50,8 @@ function HandOverTaskMaster({ name }) {
     const [Savevisible, setSavevisible] = React.useState(true);
     const [entityVisible, setEntityVisible] = useState(false);
     const [updatevisible, setUpdatevisible] = React.useState(false);
+    const [EditDVisible, setEditDVisible] = React.useState(false);
+    const [UpDVisible, setEditUpDVisible] = React.useState(true);
     const [fields, setFields] = useState({
         ...initialFieldValues
     });
@@ -75,9 +79,11 @@ function HandOverTaskMaster({ name }) {
 
     const showDrawer = () => {
         setVisible(true);
+        setEditDVisible(false);
+        setEditUpDVisible(true);
     };
 
-
+    const { Option } = Select;
     const pageSize = 10;
 
     // for-list-pagination
@@ -483,6 +489,8 @@ function HandOverTaskMaster({ name }) {
         try {
             setLoader(true)
             setVisible(true);
+            setEditDVisible(true);
+            setEditUpDVisible(false);
             let { data } = (id && await getDataById(id))
             if (!data) {
                 message.error("Data not found")
@@ -503,7 +511,7 @@ function HandOverTaskMaster({ name }) {
             })
             setEntityVisible(true);
             setSavevisible(false);
-            setUpdatevisible(true);            
+            setUpdatevisible(true);
             setLoader(false)
         } catch (err) {
             setLoader(false)
@@ -603,7 +611,7 @@ function HandOverTaskMaster({ name }) {
                         </select>
                     </div>
 
-                    <div className='mt-3'>
+                    {/* <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>BuyDivCode <span className='text-danger'>*  </span> </label>
                             <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
@@ -617,8 +625,49 @@ function HandOverTaskMaster({ name }) {
                                 return <option key={index} value={v.code}>{v.codeDesc}</option>
                             })}
                         </select>
-                    </div>
-
+                    </div> */}
+                    {UpDVisible &&
+                        <div className='mt-3'>
+                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                <label>Buyer Division<span className='text-danger'>*  </span> </label>
+                                <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
+                            </div>
+                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select Buyer Division" required
+                                value={fields.BuyDivArr}
+                                // value={AddTnamodels.id !== 0 ? errors.notifyRoleId : AddTnamodels.NotroleArr}
+                                onChange={(e) => {
+                                    setFields({
+                                        ...fields, buyDivCode: e.join(','),
+                                        BuyDivArr: [...e]
+                                    })
+                                }} >
+                                {buyerdivcodelist.map((v, index) => {
+                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                })}
+                            </Select>
+                        </div>
+                    }
+                    {EditDVisible &&
+                        <div className='mt-3'>
+                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                <label>Buyer Division<span className='text-danger'>*  </span> </label>
+                                <small className='text-danger'>{fields.buyDivCode === '' ? errors.buyDivCode : ''}</small>
+                            </div>
+                            <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select Buyer Division" required
+                                value={fields.buyDivCode.split(',')} disabled={entityVisible}
+                                // value={AddTnamodels.id !== 0 ? errors.notifyRoleId : AddTnamodels.NotroleArr}
+                                onChange={(e) => {
+                                    setFields({
+                                        ...fields, buyDivCode: e.join(','),
+                                        BuyDivArr: [...e]
+                                    })
+                                }} >
+                                {buyerdivcodelist.map((v, index) => {
+                                    return <Option key={index} value={v.code}>{v.code}</Option>
+                                })}
+                            </Select>
+                        </div>
+                    }
                     <div className='mt-3'>
                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                             <label>Task Name <span className='text-danger'>*  </span> </label>
