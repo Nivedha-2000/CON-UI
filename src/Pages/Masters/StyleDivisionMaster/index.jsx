@@ -95,10 +95,9 @@ function StyleDivisionMaster({ name }) {
 
     const getProductType = () => {
         ApiCall({
-            path: API_URLS.GET_PRODUCTTYPE_MASTER_LIST
+            path: API_URLS.GET_ACTIVEPRODUCTTYPE_MASTER_LIST
         }).then(resp => {
             try {
-                console.log(resp.data);
                 setproductTypeList(resp.data.map(d => ({ code: d.productType, codeDesc: d.productType })))
             } catch (e) {
                 message.error("response is not as expected")

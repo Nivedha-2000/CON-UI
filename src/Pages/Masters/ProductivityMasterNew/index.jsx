@@ -51,7 +51,7 @@ const requiredFields = ["locCode", "factCode", "productType", "startdate", "endd
         lineGroup: "",
         productType: "",
         subProductType: "",
-        noOfOperators: 0,
+        noOfOperators: "",
         plaidType: "NA",
         difficultyLevel: "",
         workingHrs: 0,
@@ -134,11 +134,6 @@ export default function ProductivityMasters() {
         getDifficultyLevel();
         disableDate();
         getLocationList();
-        //  getDatas();
-
-        // setMinDate(moment(min_date).format('YYYY-MM-DD'));
-        // setMaxDate(moment(max_date).format('YYYY-MM-DD'))
-
     }, []);
 
     useEffect(() => {
@@ -153,11 +148,7 @@ export default function ProductivityMasters() {
         }
     }, [Prodfields.locCodel])
 
-    useEffect(() => {
-        if (fields.enddate) {
-            //   getNoOfOperatorsDropDown()
-        }
-    }, [fields.enddate])
+
 
     useEffect(() => {
         if (fields.factCode) {
@@ -174,6 +165,7 @@ export default function ProductivityMasters() {
     useEffect(() => {
         if (fields.lineGroup) {
             lineGroupChangeHandle()
+
         }
     }, [fields.lineGroup])
 
@@ -265,25 +257,6 @@ export default function ProductivityMasters() {
         })
     }
 
-
-    const LocationChangeHandle = name => e => {
-        let value = e.target.value
-        setFields({ ...fields, [name]: value })
-        //  console.log(fields)
-        // ApiCall({
-        //     path: API_URLS.GET_UNIT_MASTER_LIST
-        // }).then(resp => {
-        //     try {
-        //         console.log(resp.data);
-        //         setFactoryList(resp.data.filter(f => f.loccode == fields.locCode))
-        //     } catch (er) {
-        //         message.error("Response data is not as expected")
-        //     }
-        // })
-        //     .catch(err => {
-        //         message.error(err.message || err)
-        //     })
-    }
     const getFactoryDropDown = () => {
         setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
         if (fields.locCode) {
@@ -324,47 +297,6 @@ export default function ProductivityMasters() {
         }
     }
 
-    const getNoOfOperatorsDropDown = () => {
-        setFields({ ...fields, noOfOperators: fields.id == 0 ? "" : fields.noOfOperators })
-        //   console.log(API_URLS.GET_LINECOST_MASTER_LOCCODEFACTORY_LIST + "?LocCode=" + `${fields.locCode}` + "&FactCode=" + `${fields.factCode}` + "&FromDate=" + `${fields.startdate}` + "&ToDate=" + `${fields.enddate}`)
-        if (fields.enddate) {
-            ApiCall({
-                path: API_URLS.GET_LINECOST_MASTER_LOCCODEFACTORY_LIST + "?LocCode=" + `${fields.locCode}` + "&FactCode=" + `${fields.factCode}` + "&FromDate=" + `${fields.startdate}` + "&ToDate=" + `${fields.enddate}`
-            }).then(resp => {
-                try {
-                    //  console.log(resp.data);
-                    setOperatorList(resp.data)
-                } catch (er) {
-                    message.error("Response data is not as expected")
-                }
-            })
-                .catch(err => {
-                    message.error(err.message || err)
-                })
-        } else {
-            setOperatorList([])
-        }
-    }
-
-    const ToDateChangeHandle = name => e => {
-        debugger;
-        let value = e.target.value
-        setFields({ ...fields, [name]: value })
-        //  console.log(API_URLS.GET_LINECOST_MASTER_LOCCODEFACTORY_LIST + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&FromDate=" + fields.startdate + "&ToDate=" + fields.enddate)
-        ApiCall({
-            path: API_URLS.GET_LINECOST_MASTER_LOCCODEFACTORY_LIST + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&FromDate=" + fields.startdate + "&ToDate=" + "2023-08-25"
-        }).then(resp => {
-            try {
-                setOperatorList(resp.data)
-            } catch (er) {
-                message.error("Response data is not as expected")
-            }
-        })
-            .catch(err => {
-                message.error(err.message || err)
-            })
-    }
-
     const factCodeChangeHandle = () => {
         setFields({ ...fields, lineGroup: fields.id == 0 ? "" : fields.lineGroup })
         if (fields.factCode) {
@@ -374,7 +306,7 @@ export default function ProductivityMasters() {
                 try {
 
                     setOperatorList(resp.data)
-                    setOperatorNewList([])
+
                 } catch (er) {
                     message.error("Response data is not as expected")
                 }
@@ -420,6 +352,7 @@ export default function ProductivityMasters() {
             }).then(resp => {
                 try {
                     setOperatorNewList(resp.data)
+
                 } catch (er) {
                     message.error("Response data is not as expected")
                 }
@@ -441,11 +374,11 @@ export default function ProductivityMasters() {
         setFields({ ...fields, [name]: value })
 
         //  console.log(API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value);
-        // if (!fields.noOfOperators==0) {
+        //     if (fields.noOfOperators) {
         ApiCall({
             path: API_URLS.GET_LINECOST_WORKINGHRS + "?LocCode=" + fields.locCode + "&FactCode=" + fields.factCode + "&LineGroup=" + fields.lineGroup + "&Operators=" + e.target.value//+ "&ToDate=" + "2023-08-25"
         }).then(resp => {
-            setWorkingHrsList([])
+
             setWorkingHrsList(resp.data)
         })
             .catch(err => {
@@ -567,7 +500,7 @@ export default function ProductivityMasters() {
                 if (count > 0) {
                     message.error("Already this commination Peak Eff Closed..!")
                 } else {
-                    if (parseInt(fields.scaleUpEffPer) != 0 && parseInt(fields.scaleUpEffPer)!='') {
+                    if (parseInt(fields.scaleUpEffPer) != 0 && parseInt(fields.scaleUpEffPer) != '') {
                         fields.scaleUpDay = len + 1;
                         if (fields.peakEff != 'Y') {
                             setFields({ ...fields, peakEff: 'N' })
@@ -582,9 +515,9 @@ export default function ProductivityMasters() {
                 if (parseInt(fields.scaleUpEffPer) != 0 && parseInt(fields.scaleUpEffPer) != '') {
                     debugger;
                     fields.scaleUpDay = len + 1;
-                    if (fields.peakEff != 'Y' ) {
+                    if (fields.peakEff != 'Y') {
                         setFields({ ...fields, peakEff: 'N' })
-                      //  setFields({  peakEff: 'N' })
+                        //  setFields({  peakEff: 'N' })
                     }
                     setProductivityList([...ProductivityList, fields])
                     setFields({ ...fields, scaleUpEffPer: 0 })
@@ -705,12 +638,10 @@ export default function ProductivityMasters() {
         setheaderFleids(true);
         setAddBtnVisible(true)
         setbackBtnVisible(false)
-
-
-        //   console.log(ProductivityList);
         if (LocCode != '') {
-            // console.log(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
             setFields(ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0]);
+            let result = ProductivityList.filter(a => a.locCode == LocCode && a.scaleUpDay == scaleUpDay)[0];
+
         }
     };
     const onClose = () => {
@@ -863,17 +794,17 @@ export default function ProductivityMasters() {
     }
     const back = () => {
         setLoader(false)
-         setShowResults(true)
-         setShowForm(false)
+        setShowResults(true)
+        setShowForm(false)
         setProdFields({
             ...Test
         });
         setProdFields([]);
         setList([]);
-      
+
         onClose();
 
-      
+
     }
 
     const edit = async (locCode, factCode, lineGroup, noOfOperators, workingHrs, productType, subProductType, plaidType, difficultyLevel, startdate, enddate, type) => {
@@ -925,18 +856,26 @@ export default function ProductivityMasters() {
         setVisible(true);
         setviewBtnVisible(true);
         setbackBtnVisible(true);
+        setBtnVisible(false);
         setFields({
+            id: 0,
             locCode: locCode,
-            factCode:factCode,
-            lineGroup:lineGroup,
-            noOfOperators:noOfOperators,
-            workingHrs:workingHrs,
-            productType:productType,
-            subProductType:subProductType,
-            plaidType:plaidType,
-            difficultyLevel:difficultyLevel,
-            startdate:startdate,
-            enddate:enddate
+            factCode: factCode,
+            lineGroup: lineGroup,
+            noOfOperators: noOfOperators,
+            workingHrs: workingHrs,
+            productType: productType,
+            subProductType: subProductType,
+            plaidType: plaidType,
+            difficultyLevel: difficultyLevel,
+            startdate: startdate,
+            enddate: enddate,
+            peakEff:"N",
+            createdDate : "2022-08-17T09:51:51.057Z",
+            createdBy : "",
+            modifiedDate : "2022-08-17T09:51:51.057Z",
+            modifiedBy : "",
+            hostName : ""
         })
     }
     return (
@@ -1078,7 +1017,7 @@ export default function ProductivityMasters() {
                                         <div className="form-group">
                                             <label> Start Date </label>
                                             <small className='text-danger'> {fields.startdate === '' ? errors.startdate : ''}</small>
-                                            <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={  moment(fields.startdate).format('YYYY-MM-DD') }
+                                            <Input type="date" name="startdate" className="form-control" id="startdate" placeholder="Start Date" value={moment(fields.startdate).format('YYYY-MM-DD')}
                                                 min={disablePastDate()}
                                                 onChange={inputOnChange("startdate")}
                                                 disabled={AddbtnVisible}
@@ -1091,7 +1030,7 @@ export default function ProductivityMasters() {
                                         <div className="form-group">
                                             <label> End Date </label>
                                             <small className='text-danger'> {fields.enddate === '' ? errors.enddate : ''}</small>
-                                            <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={ moment(fields.enddate).format('YYYY-MM-DD') }
+                                            <Input type="date" name="enddate" className="form-control" id="enddate" placeholder="End Date" value={moment(fields.enddate).format('YYYY-MM-DD')}
                                                 // onChange={ToDateChangeHandle("enddate")}
                                                 onChange={inputOnChange("enddate")}
                                                 disabled={AddbtnVisible}
@@ -1188,10 +1127,6 @@ export default function ProductivityMasters() {
                                                 {WorkingHrsList.map((v, index) => {
                                                     return <option key={index} value={v}>{v}</option>
                                                 })}
-
-                                                {/* {OperatorList.map((v, index) => {
-                                            return <option key={index} value={v.workingHrs}>{v.workingHrs}</option>
-                                        })} */}
                                             </select>
                                         </div>
                                     </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import '../DefectMasters/DefectMasters.css';
-import { Drawer, message, Spin, Switch } from 'antd';
+// import { Drawer, message, Spin, Switch } from 'antd';
+import { Tag, Drawer, Switch, Pagination, Spin, message, Select } from 'antd';
 import { ItrApiService } from '@afiplfeed/itr-ui';
 import ApiCall from "../../../services";
 import { API_URLS, MISCELLANEOUS_TYPES } from "../../../constants/api_url_constants";
@@ -29,7 +30,7 @@ let count = 0;
 let count1 = 0;
 const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGroup", "sysMatCode", "matCode", "matDesc", "buyDivcode", "approved", "approvedBy", "active"],
     fabrequiredFields = ["fibreContent", "fabricType", "fabWeave", "dyeProcess", "yarnWarp", "yarnWeft", "warpYarnBlend", "weftYarnBlend", "endsPerInch", "pickPerInch", "shrinkWarp", "shrinkWeft", "washMethod", "fabWt_BW", "fabWt_AW", "weightUom", "actualWidth", "cutWidth", "widthUom", "physicalFinish", "chemicalFinish"],
-    TrimsrequiredFields = ["articleNo", "product", "finish"],
+    TrimsrequiredFields = ["articleNo", "product", "finish", "remarks"],
     ThreadrequiredFields = ["quality", "tex", "tkt"],
     PurchaserequiredFields = ["matCode", "supcode", "supplierId", "supRefNo", "brand", "moq", "moqUom", "multiples", "leadtime", "color", "size", "fromDt", "toDt", "price", "curCode", "binCode", "purdesc", "remarks"],
 
@@ -166,7 +167,7 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
         createdBy: "AD",
         modifiedDate: "2022-08-22",
         modifiedBy: "",
-        // profArr: [],
+        BuyDivArr: [],
         isActive: false,
         matMastFBRModels: arrFab,
         matMastThreadModels: arrThd,
@@ -226,6 +227,7 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
         articleNo: "",
         product: "",
         finish: "",
+        remarks: "",
         hostName: "",
         createdDate: "2022-08-22",
         createdBy: "AD",
@@ -313,7 +315,8 @@ function MaterialMaster({ name }) {
     const [cheFinishlist, setCheFinishList] = useState([]);
     const [currencyList, setCurrencyList] = useState([]);
     const [trimsadd, setTrimsadd] = React.useState(false);
-
+    const [EditDVisible, setEditDVisible] = React.useState(false);
+    const [UpDVisible, setEditUpDVisible] = React.useState(true);
     const [suplierlist, setsuplierlist] = useState([]);
     // const [matSubGrouplist, setmatSubGrouplist] = useState([]);
     const [showAddtolist, setShowAddtolist] = React.useState(true);
@@ -370,7 +373,7 @@ function MaterialMaster({ name }) {
     const [errors, setErrors] = useState({
         ...initialErrorMessages
     })
-
+    const { Option } = Select;
     const clearFields = () => {
         // setFields({ ...fields, matMastTrimsModels: [], matMastPurchaseModels: [] });
         setFields({
@@ -485,7 +488,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.PARENTGRP,
             appCode: "CNF"
         }).then(resp => {
-            setcountryList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setcountryList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
 
@@ -495,7 +498,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MATERIALTYPE_MASTER_LIST,
             appCode: "CNF"
         }).then(resp => {
-            setmattypeList(resp.data.map(d => ({ code: d.mattype, codeDesc: d.matDesc })))
+            setmattypeList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.mattype, codeDesc: d.matDesc })))
         });
     }
 
@@ -525,7 +528,7 @@ function MaterialMaster({ name }) {
         }).then(resp => {
             //  setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
             // try {
-            setbuyerdivcodelist(resp.data.map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
+            setbuyerdivcodelist(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.buyDivCode, codeDesc: d.buyDivCode })))
             // } catch (e) {
             //     message.error("response is not as expected")
             // }
@@ -541,7 +544,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRCONTENT,
             appCode: "CNF"
         }).then(resp => {
-            setfbrList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setfbrList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
 
@@ -552,7 +555,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FABTYPE,
             appCode: "CNF"
         }).then(resp => {
-            setfbrtypeList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setfbrtypeList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
 
@@ -562,7 +565,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRWeave,
             appCode: "CNF"
         }).then(resp => {
-            setfbrweaveList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setfbrweaveList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
 
@@ -572,7 +575,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.FBRDyed,
             appCode: "CNF"
         }).then(resp => {
-            setfbrdyedList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setfbrdyedList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
 
@@ -582,7 +585,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.WASH,
             appCode: "CNF"
         }).then(resp => {
-            setfbrwashList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setfbrwashList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
     const getUom = () => {
@@ -591,7 +594,7 @@ function MaterialMaster({ name }) {
             url: API_URLS.GET_MISCELLANEOUS_DROPDOWN + MISCELLANEOUS_TYPES.UOM,
             appCode: "CNF"
         }).then(resp => {
-            setuomList(resp.data.map(d => ({ code: d.code, codeDesc: d.codeDesc })))
+            setuomList(resp.data.filter(q => q.active == 'Y').map(d => ({ code: d.code, codeDesc: d.codeDesc })))
         });
     }
 
@@ -699,7 +702,7 @@ function MaterialMaster({ name }) {
             //    setprofitPercentList({ ...profitPercentList, [name]: "" });
             // setFields({ ...AddTnamodels, [name]: "" })
             // setThredFields({ ...thredfields, [name]: 0 });
-            setThreadFields({ ...threadfields, [name]:  '' })
+            setThreadFields({ ...threadfields, [name]: '' })
         }
     }
     const NUMBER_IS_FOCUS_OUT_ZERO_THD = name => (e) => {
@@ -708,11 +711,28 @@ function MaterialMaster({ name }) {
             setThreadFields({ ...threadfields, [name]: 0 })
         }
     }
+
+    const NUMBER_IS_FOCUS_IN_ZERO_PUR = name => (e) => {
+        if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
+            //    setprofitPercentList({ ...profitPercentList, [name]: "" });
+            // setFields({ ...AddTnamodels, [name]: "" })
+            // setThredFields({ ...thredfields, [name]: 0 });
+            setThreadFields({ ...threadfields, [name]: '' })
+        }
+    }
+    const NUMBER_IS_FOCUS_OUT_ZERO_PUR = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined) {
+            // setFields({ ...AddTnamodels, [name]: 0 })           
+            setPurchaseFields({ ...purchasefields, [name]: 0 })
+        }
+    }
     const onClick = () => {
         setShowResults(false)
         setShowForm(true)
         setShowApprovallist(false);
         setShowitemLists(false);
+        setEditDVisible(false);
+        setEditUpDVisible(true);
     }
     const onClickList = () => {
         setShowResults(true)
@@ -813,6 +833,11 @@ function MaterialMaster({ name }) {
             getMatType();
             // GetmatSubGroupDropDown(fields.matType, e.target.value);
             setFields({ ...fields, [name]: value.toUpperCase() })
+        }
+        else if (name === 'matCode') {
+            setFields({ ...fields, [name]: value.toUpperCase() })
+            setPurchaseFields({ ...purchasefields, [name]: value.toUpperCase() })
+
         }
         else if (name === 'matGroup') {
 
@@ -972,12 +997,28 @@ function MaterialMaster({ name }) {
         debugger;
         let err = {}, validation = true
         let value = e.target.value
-        if (name === 'entityID' || name === 'eCode' || name === 'eName') {
-            setPurchaseFields({ ...purchasefields, [name]: value.toUpperCase() })
+        if (name === 'supcode') {
+            debugger;
+            // let sid = value.split('|')[0]
+            // let scode = value.split('|')[1]
+            let bin = purchasefields.matCode + '' + value
+
+            // setPurchaseFields({ ...purchasefields, ['supcode']: scode.toUpperCase() })
+
+            setPurchaseFields({ ...purchasefields, [name]: value, ['binCode']: bin })
+
+            //setPurchaseFields({ ...purchasefields, ['supcode']: scode.toUpperCase(),['supplierId']: sid.toUpperCase(),['binCode']: bin.toUpperCase() })
+
+            // setPurchaseFields({ ...purchasefields, ['supplierId']: sid.toUpperCase() })
+
+            // setPurchaseFields({ ...purchasefields, ['binCode']: bin.toUpperCase() })
+
+
         }
         else {
             setPurchaseFields({ ...purchasefields, [name]: value })
         }
+        //setPurchaseFields({ ...purchasefields, ['binCode']: bin.toUpperCase() })
 
     }
     const GetmatGroupDropDown = (mattype) => {
@@ -1094,6 +1135,8 @@ function MaterialMaster({ name }) {
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
         console.log(trimsfields);
+        setEditDVisible(false);
+        setEditUpDVisible(true);
         //fields.push(AddTnamodels)
         //clearFieldsVisualSam();
         debugger;
@@ -1109,86 +1152,42 @@ function MaterialMaster({ name }) {
                 // clearFields();
             }
             else {
+                fields.matMastTrimsModels.push(trimsfields);
+                clearTrimsFields();
                 debugger;
-                // alert(AddTnamodels.id);
-                setShowAddtolist(true);
-                setShowUpdatetolist(false);
-                GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
-                //onChange={inputOnChange("activityType")};
-                // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
-                //console.log(toUpdateData);
-                let toUpdateData = fields.map((item) => {
-                    if (item.id === AddTnamodels.id) {
-                        item.buyCode = AddTnamodels.buyCode,
-                            item.buydivCode = AddTnamodels.buydivCode,
-                            item.deptcode = AddTnamodels.deptcode,
-                            item.locCode = AddTnamodels.locCode,
-                            item.activityType = AddTnamodels.activityType,
-                            item.mActive = AddTnamodels.mActive,
-                            item.orderCategory = AddTnamodels.orderCategory,
-                            item.stage = AddTnamodels.stage,
-                            item.fit = AddTnamodels.fit,
-                            item.actCode = AddTnamodels.actCode,
-                            item.activity = AddTnamodels.activity,
-                            item.subActivity = AddTnamodels.subActivity,
-                            item.criticalActivity = AddTnamodels.criticalActivity,
-                            item.tnaSeqNo = AddTnamodels.tnaSeqNo,
-                            item.duration = AddTnamodels.duration,
-                            item.dependActCode = AddTnamodels.dependActCode,
-                            item.dependDeptCode = AddTnamodels.dependDeptCode,
-                            item.dependActvity = AddTnamodels.dependActvity,
-                            item.dependSubActvity = AddTnamodels.dependSubActvity,
-                            item.preNotifyDays = AddTnamodels.preNotifyDays,
-                            item.notifyRoleId = AddTnamodels.notifyRoleId,
-                            item.l1EscalateDays = AddTnamodels.l1EscalateDays,
-                            item.l1EscalateRole = AddTnamodels.l1EscalateRole,
-                            item.l2EscalateDays = AddTnamodels.l2EscalateDays,
-                            item.l2EscalateRole = AddTnamodels.l2EscalateRole,
-                            item.category = AddTnamodels.category,
-                            item.valueAddtype = AddTnamodels.valueAddtype,
-                            item.weightage = AddTnamodels.weightage,
-                            item.skipped = AddTnamodels.skipped,
-                            item.remarks = AddTnamodels.remarks,
-                            item.cancel = AddTnamodels.cancel,
-                            item.active = AddTnamodels.active,
-                            item.hostName = AddTnamodels.hostName,
-                            item.createdDate = AddTnamodels.createdDate,
-                            item.createdBy = AddTnamodels.createdBy,
-                            item.modifiedDate = AddTnamodels.modifiedDate,
-                            item.modifiedBy = AddTnamodels.modifiedBy,
-                            item.isActive = AddTnamodels.isActive
-                    }
-                    return item;
-                });
-                AddTnamodels.id = 0;
-                AddTnamodels.orderCategory = "",
-                    AddTnamodels.stage = "",
-                    AddTnamodels.fit = "",
-                    AddTnamodels.actCode = 0,
-                    AddTnamodels.activity = "",
-                    AddTnamodels.subActivity = "",
-                    AddTnamodels.criticalActivity = "",
-                    AddTnamodels.tnaSeqNo = 0,
-                    AddTnamodels.duration = 0,
-                    AddTnamodels.dependActCode = 0,
-                    AddTnamodels.dependDeptCode = "",
-                    AddTnamodels.dependActvity = "",
-                    AddTnamodels.dependSubActvity = "",
-                    AddTnamodels.preNotifyDays = 0,
-                    AddTnamodels.notifyRoleId = "",
-                    AddTnamodels.l1EscalateDays = 0,
-                    AddTnamodels.l1EscalateRole = "",
-                    AddTnamodels.l2EscalateDays = 0,
-                    AddTnamodels.l2EscalateRole = "",
-                    AddTnamodels.category = "NA",
-                    AddTnamodels.valueAddtype = "",
-                    AddTnamodels.weightage = 0,
-                    AddTnamodels.skipped = "N",
-                    AddTnamodels.remarks = "",
-                    AddTnamodels.cancel = "Y",
-                    AddTnamodels.active = 'Y',
-                    //this.setState({ TaskData: toUpdateData });
-                    setFields(toUpdateData);
+                //alert(AddTnamodels.id);
+                // setShowAddtolist(true);
+                // setShowUpdatetolist(false);
+                // //GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
+                // //onChange={inputOnChange("activityType")};
+                // // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
+                // //console.log(toUpdateData);
+                // let toUpdateData = trimsfields.map((item) => {
+                //     if (item.matMast_ID === trimsfields.matMast_ID) {
+                //         item.buyCode = trimsfields.buyCode,
+                //             //item.articleNo = trimsfields.articleNo,
+                //             item.articleNo = trimsfields.articleNo,
+                //             item.product = trimsfields.product,
+                //             item.finish = trimsfields.finish,
+                //             item.remarks = trimsfields.remarks,
+                //             item.hostName = trimsfields.hostName,
+                //             item.createdDate = trimsfields.createdDate,
+                //             item.createdBy = trimsfields.createdBy,
+                //             item.modifiedDate = trimsfields.modifiedDate,
+                //             item.modifiedBy = trimsfields.modifiedBy,
+                //             item.isActive = trimsfields.isActive
+                //     }
+                //     return item;
+                // });
+                // trimsfields.articleNo = 0;
+                // trimsfields.product = "",
+                // trimsfields.finish = "",
+                // trimsfields.remarks = "",
+                // trimsfields.id = 0,
+                // //trimsfields.activity = "",
+
+                //     //this.setState({ TaskData: toUpdateData });
+                //     setTrimsFields(toUpdateData);
 
                 //Clear();
                 //clearFields();
@@ -1232,86 +1231,88 @@ function MaterialMaster({ name }) {
                 // Clear();
                 // clearFields();
             } else {
+                fields.matMastPurchaseModels.push(purchasefields);
+                clearPurchaseFields();
                 debugger;
                 // alert(AddTnamodels.id);
-                setShowAddtolist(true);
-                setShowUpdatetolist(false);
-                GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
-                //onChange={inputOnChange("activityType")};
-                // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
-                //console.log(toUpdateData);
-                let toUpdateData = fields.map((item) => {
-                    if (item.id === AddTnamodels.id) {
-                        item.buyCode = AddTnamodels.buyCode,
-                            item.buydivCode = AddTnamodels.buydivCode,
-                            item.deptcode = AddTnamodels.deptcode,
-                            item.locCode = AddTnamodels.locCode,
-                            item.activityType = AddTnamodels.activityType,
-                            item.mActive = AddTnamodels.mActive,
-                            item.orderCategory = AddTnamodels.orderCategory,
-                            item.stage = AddTnamodels.stage,
-                            item.fit = AddTnamodels.fit,
-                            item.actCode = AddTnamodels.actCode,
-                            item.activity = AddTnamodels.activity,
-                            item.subActivity = AddTnamodels.subActivity,
-                            item.criticalActivity = AddTnamodels.criticalActivity,
-                            item.tnaSeqNo = AddTnamodels.tnaSeqNo,
-                            item.duration = AddTnamodels.duration,
-                            item.dependActCode = AddTnamodels.dependActCode,
-                            item.dependDeptCode = AddTnamodels.dependDeptCode,
-                            item.dependActvity = AddTnamodels.dependActvity,
-                            item.dependSubActvity = AddTnamodels.dependSubActvity,
-                            item.preNotifyDays = AddTnamodels.preNotifyDays,
-                            item.notifyRoleId = AddTnamodels.notifyRoleId,
-                            item.l1EscalateDays = AddTnamodels.l1EscalateDays,
-                            item.l1EscalateRole = AddTnamodels.l1EscalateRole,
-                            item.l2EscalateDays = AddTnamodels.l2EscalateDays,
-                            item.l2EscalateRole = AddTnamodels.l2EscalateRole,
-                            item.category = AddTnamodels.category,
-                            item.valueAddtype = AddTnamodels.valueAddtype,
-                            item.weightage = AddTnamodels.weightage,
-                            item.skipped = AddTnamodels.skipped,
-                            item.remarks = AddTnamodels.remarks,
-                            item.cancel = AddTnamodels.cancel,
-                            item.active = AddTnamodels.active,
-                            item.hostName = AddTnamodels.hostName,
-                            item.createdDate = AddTnamodels.createdDate,
-                            item.createdBy = AddTnamodels.createdBy,
-                            item.modifiedDate = AddTnamodels.modifiedDate,
-                            item.modifiedBy = AddTnamodels.modifiedBy,
-                            item.isActive = AddTnamodels.isActive
-                    }
-                    return item;
-                });
-                AddTnamodels.id = 0;
-                AddTnamodels.orderCategory = "",
-                    AddTnamodels.stage = "",
-                    AddTnamodels.fit = "",
-                    AddTnamodels.actCode = 0,
-                    AddTnamodels.activity = "",
-                    AddTnamodels.subActivity = "",
-                    AddTnamodels.criticalActivity = "",
-                    AddTnamodels.tnaSeqNo = 0,
-                    AddTnamodels.duration = 0,
-                    AddTnamodels.dependActCode = 0,
-                    AddTnamodels.dependDeptCode = "",
-                    AddTnamodels.dependActvity = "",
-                    AddTnamodels.dependSubActvity = "",
-                    AddTnamodels.preNotifyDays = 0,
-                    AddTnamodels.notifyRoleId = "",
-                    AddTnamodels.l1EscalateDays = 0,
-                    AddTnamodels.l1EscalateRole = "",
-                    AddTnamodels.l2EscalateDays = 0,
-                    AddTnamodels.l2EscalateRole = "",
-                    AddTnamodels.category = "NA",
-                    AddTnamodels.valueAddtype = "",
-                    AddTnamodels.weightage = 0,
-                    AddTnamodels.skipped = "N",
-                    AddTnamodels.remarks = "",
-                    AddTnamodels.cancel = "Y",
-                    AddTnamodels.active = 'Y',
-                    //this.setState({ TaskData: toUpdateData });
-                    setFields(toUpdateData);
+                // setShowAddtolist(true);
+                // setShowUpdatetolist(false);
+                // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
+                // //onChange={inputOnChange("activityType")};
+                // // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
+                // //console.log(toUpdateData);
+                // let toUpdateData = fields.map((item) => {
+                //     if (item.id === AddTnamodels.id) {
+                //         item.buyCode = AddTnamodels.buyCode,
+                //             item.buydivCode = AddTnamodels.buydivCode,
+                //             item.deptcode = AddTnamodels.deptcode,
+                //             item.locCode = AddTnamodels.locCode,
+                //             item.activityType = AddTnamodels.activityType,
+                //             item.mActive = AddTnamodels.mActive,
+                //             item.orderCategory = AddTnamodels.orderCategory,
+                //             item.stage = AddTnamodels.stage,
+                //             item.fit = AddTnamodels.fit,
+                //             item.actCode = AddTnamodels.actCode,
+                //             item.activity = AddTnamodels.activity,
+                //             item.subActivity = AddTnamodels.subActivity,
+                //             item.criticalActivity = AddTnamodels.criticalActivity,
+                //             item.tnaSeqNo = AddTnamodels.tnaSeqNo,
+                //             item.duration = AddTnamodels.duration,
+                //             item.dependActCode = AddTnamodels.dependActCode,
+                //             item.dependDeptCode = AddTnamodels.dependDeptCode,
+                //             item.dependActvity = AddTnamodels.dependActvity,
+                //             item.dependSubActvity = AddTnamodels.dependSubActvity,
+                //             item.preNotifyDays = AddTnamodels.preNotifyDays,
+                //             item.notifyRoleId = AddTnamodels.notifyRoleId,
+                //             item.l1EscalateDays = AddTnamodels.l1EscalateDays,
+                //             item.l1EscalateRole = AddTnamodels.l1EscalateRole,
+                //             item.l2EscalateDays = AddTnamodels.l2EscalateDays,
+                //             item.l2EscalateRole = AddTnamodels.l2EscalateRole,
+                //             item.category = AddTnamodels.category,
+                //             item.valueAddtype = AddTnamodels.valueAddtype,
+                //             item.weightage = AddTnamodels.weightage,
+                //             item.skipped = AddTnamodels.skipped,
+                //             item.remarks = AddTnamodels.remarks,
+                //             item.cancel = AddTnamodels.cancel,
+                //             item.active = AddTnamodels.active,
+                //             item.hostName = AddTnamodels.hostName,
+                //             item.createdDate = AddTnamodels.createdDate,
+                //             item.createdBy = AddTnamodels.createdBy,
+                //             item.modifiedDate = AddTnamodels.modifiedDate,
+                //             item.modifiedBy = AddTnamodels.modifiedBy,
+                //             item.isActive = AddTnamodels.isActive
+                //     }
+                //     return item;
+                // });
+                // AddTnamodels.id = 0;
+                // AddTnamodels.orderCategory = "",
+                //     AddTnamodels.stage = "",
+                //     AddTnamodels.fit = "",
+                //     AddTnamodels.actCode = 0,
+                //     AddTnamodels.activity = "",
+                //     AddTnamodels.subActivity = "",
+                //     AddTnamodels.criticalActivity = "",
+                //     AddTnamodels.tnaSeqNo = 0,
+                //     AddTnamodels.duration = 0,
+                //     AddTnamodels.dependActCode = 0,
+                //     AddTnamodels.dependDeptCode = "",
+                //     AddTnamodels.dependActvity = "",
+                //     AddTnamodels.dependSubActvity = "",
+                //     AddTnamodels.preNotifyDays = 0,
+                //     AddTnamodels.notifyRoleId = "",
+                //     AddTnamodels.l1EscalateDays = 0,
+                //     AddTnamodels.l1EscalateRole = "",
+                //     AddTnamodels.l2EscalateDays = 0,
+                //     AddTnamodels.l2EscalateRole = "",
+                //     AddTnamodels.category = "NA",
+                //     AddTnamodels.valueAddtype = "",
+                //     AddTnamodels.weightage = 0,
+                //     AddTnamodels.skipped = "N",
+                //     AddTnamodels.remarks = "",
+                //     AddTnamodels.cancel = "Y",
+                //     AddTnamodels.active = 'Y',
+                //this.setState({ TaskData: toUpdateData });
+                //setFields(toUpdateData);
 
                 //Clear();
                 //clearFields();
@@ -1337,118 +1338,156 @@ function MaterialMaster({ name }) {
             }
         })
         setErrors({ ...initialErrorMessages, ...err })
+        if (type === "update") {
 
-        if (fields.matType === 'FBR') {
-            fabrequiredFields.forEach(f => {
-                if (fabricfields[f] === "") {
-                    err[f] = "This field is required"
-                    validation = false
-                }
-            })
-            setErrors({ ...initialErrorMessages, ...err })
-            if (fields.matMastTrimsModels == "") {
-                message.error("Atleast Add One Row in Details Tab")
-                return
-            }// trimsfields.length == 0) 
-            else {
-                if (validation) {
-                    arrThd = null;
-                    arrPur = null;
-                    fields.matMastFBRModels.push(fabricfields);
-                    //fields.matMastTrimsModels.push(trimsfields);
-                }
-                //fields.matMastTrimsModels.push(trimsfields);
+            if (validation) {
+                setLoader(true)
+
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_MATERIAL_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    //getDatas()
+                    setSavevisible(true)
+                    setUpdatevisible(false)
+                    setEntityVisible(false);
+                    setShowResults(true)
+                    setShowForm(false)
+                    setShowApprovallist(false);
+                    setShowitemLists(true);
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({
+                        ...initialFieldValues, matMastTrimsModels: [], matMastPurchaseModels: []
+                    });
+                    //  fields['ftdOprName'] = tempOprName
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
             }
-
-            //fields.matMastThreadModels.null;
-            //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
-            //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
-
-            //fields.matMastPurchaseModels.null;
-            debugger;
-        }
-        else if (fields.matType === 'FTD') {
-            ThreadrequiredFields.forEach(f => {
-                if (threadfields[f] === "") {
-                    err[f] = "This field is required"
-                    validation = false
-                }
-            })
-            setErrors({ ...initialErrorMessages, ...err })
-            if (fields.matMastTrimsModels == "") {
-                message.error("Atleast Add One Row in Details Tab")
-                return
-
-            }
-            else {
-                if (validation) {
-                    arrFab = null;
-                    arrPur = null;
-                    fields.matMastThreadModels.push(threadfields);
-                    //fields.matMastTrimsModels.push(trimsfields);
-                }
-                //fields.matMastTrimsModels.push(trimsfields);
-            }
-
-
         }
         else {
-            if (fields.matType === '') {
-                message.error("Please Fill The Header")
-                return
-                // setErrors({ ...initialErrorMessages, ...err })
-
-            }
-            else {
+            if (fields.matType === 'FBR') {
+                fabrequiredFields.forEach(f => {
+                    if (fabricfields[f] === "") {
+                        err[f] = "This field is required"
+                        validation = false
+                    }
+                })
+                setErrors({ ...initialErrorMessages, ...err })
                 if (fields.matMastTrimsModels == "") {
                     message.error("Atleast Add One Row in Details Tab")
                     return
+                }// trimsfields.length == 0) 
+                else {
+                    if (validation) {
+                        arrThd = null;
+                        arrPur = null;
+                        fields.matMastFBRModels.push(fabricfields);
+                        //fields.matMastTrimsModels.push(trimsfields);
+                    }
+                    //fields.matMastTrimsModels.push(trimsfields);
+                }
+
+                //fields.matMastThreadModels.null;
+                //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+                //setFields({ ...fields, aqlvmDetlModels: toUpdateData1 });
+
+                //fields.matMastPurchaseModels.null;
+                debugger;
+            }
+            else if (fields.matType === 'FTD') {
+                ThreadrequiredFields.forEach(f => {
+                    if (threadfields[f] === "") {
+                        err[f] = "This field is required"
+                        validation = false
+                    }
+                })
+                setErrors({ ...initialErrorMessages, ...err })
+                if (fields.matMastTrimsModels == "") {
+                    message.error("Atleast Add One Row in Details Tab")
+                    return
+
                 }
                 else {
                     if (validation) {
                         arrFab = null;
                         arrPur = null;
-                        arrThd = null;
+                        fields.matMastThreadModels.push(threadfields);
                         //fields.matMastTrimsModels.push(trimsfields);
                     }
                     //fields.matMastTrimsModels.push(trimsfields);
                 }
+
+
+            }
+            else {
+                if (fields.matType === '') {
+                    message.error("Please Fill The Header")
+                    return
+                    // setErrors({ ...initialErrorMessages, ...err })
+
+                }
+                else {
+                    if (fields.matMastTrimsModels == "") {
+                        message.error("Atleast Add One Row in Details Tab")
+                        return
+                    }
+                    else {
+                        if (validation) {
+                            arrFab = null;
+                            arrPur = null;
+                            arrThd = null;
+                            //fields.matMastTrimsModels.push(trimsfields);
+                        }
+                        //fields.matMastTrimsModels.push(trimsfields);
+                    }
+                }
+            }
+            console.log(fields);
+            setErrors({ ...initialErrorMessages, ...err })
+            if (validation) {
+                setLoader(true)
+
+                ApiCall({
+                    method: "POST",
+                    path: API_URLS.SAVE_MATERIAL_MASTER,
+                    data: {
+                        ...fields,
+                        hostName: getHostName()
+                    }
+                }).then(resp => {
+                    setLoader(false)
+                    message.success(resp.message)
+                    onClose()
+                    //getDatas()
+                    setSavevisible(true)
+                    setUpdatevisible(false)
+                    setEntityVisible(false);
+                    setShowResults(true)
+                    setShowForm(false)
+                    setShowApprovallist(false);
+                    setShowitemLists(true);
+                }).catch(err => {
+                    setLoader(false)
+                    setFields({
+                        ...initialFieldValues, matMastTrimsModels: [], matMastPurchaseModels: []
+                    });
+                    //  fields['ftdOprName'] = tempOprName
+                    setFields({ ...fields })
+                    setErrors({ ...initialErrorMessages })
+                    message.error(err.message || err)
+                })
             }
         }
-        console.log(fields);
-        setErrors({ ...initialErrorMessages, ...err })
-        if (validation) {
-            setLoader(true)
-
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_MATERIAL_MASTER,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                //getDatas()
-                setSavevisible(true)
-                setUpdatevisible(false)
-                setEntityVisible(false);
-                setShowResults(true)
-                setShowForm(false)
-            }).catch(err => {
-                setLoader(false)
-                setFields({
-                    ...initialFieldValues, matMastTrimsModels: [], matMastPurchaseModels: []
-                });
-                //  fields['ftdOprName'] = tempOprName
-                setFields({ ...fields })
-                setErrors({ ...initialErrorMessages })
-                message.error(err.message || err)
-            })
-        }
-
         // if (validation) {
         //     if (type === "update") {
         //         if (validation) {
@@ -1647,7 +1686,7 @@ function MaterialMaster({ name }) {
 
         // }
     }
-    const [tableProps, setTableProps] = useState({
+    const [ApptableProps, setappTableProps] = useState({
         page: 0,
         rowsPerPage: 10,
         sortOrder: {
@@ -1656,12 +1695,29 @@ function MaterialMaster({ name }) {
         }
     })
 
-    const updateTableProps = props => {
-        setTableProps({
-            ...tableProps,
-            ...props
+    const updateappTableProps = appprops => {
+        setappTableProps({
+            ...ApptableProps,
+            ...appprops
         })
     }
+
+    const [PentableProps, setpenTableProps] = useState({
+        page: 0,
+        rowsPerPage: 10,
+        sortOrder: {
+            name: 'buyDivCode',
+            direction: 'asc'
+        }
+    })
+
+    const updatepenTableProps = penprops => {
+        setpenTableProps({
+            ...PentableProps,
+            ...penprops
+        })
+    }
+
 
     const pendingtableColumns = [
         {
@@ -1937,17 +1993,77 @@ function MaterialMaster({ name }) {
             setVisible(true);
             setShowResults(false);
             setShowForm(true);
-            let { data } = (id && await getDataById(id))
+            setEditDVisible(true);
+            setEditUpDVisible(false);
 
+            let { data } = (id && await getDataById(id))
+            debugger;
             console.log(data);
-            // alert(data);
+            //alert(data);
             if (!data) {
                 message.error("Data not found")
                 return
             }
+
             // const tableId = type === 'clone' ? 0 : 0 matMastFBRModels matMastThreadModels matMastTrimsModels matMastPurchaseModels
-            setFields({ data })
-            // setFabricFields({ data })
+            setFields(data)
+            setFabricFields(data.matMastFBRModels[0]);
+            setThreadFields(data.matMastThreadModels[0]);
+            setTrimsFields(data.matMastTrimsModels);
+            setPurchaseFields(data.matMastPurchaseModels);
+            getMatType();
+            GetmatGroupDropDown(data.matType);
+            GetmatSubGroupDropDown(data.matType, data.matGroup);
+            debugger;
+            if (data.matType === 'FBR') {
+
+                setshowTrimsTab(true);
+                setshowPurchaseTab(true);
+                setshowThredTab(false);
+                setThreadvisible(true);
+                setFabricvisible(false);
+                setshowFabricTab(true);
+                setTrimsvisible(false);
+                setPurchasevisible(false);
+                clearPurchaseFields();
+                //("home-tab")    
+            }
+            else if (data.matType === 'FTD') {
+                setshowFabricTab(false);
+                setshowTrimsTab(true);
+                setshowPurchaseTab(true);
+                setshowThredTab(true);
+                setFabricvisible(true);
+                setThreadvisible(false);
+                setTrimsvisible(false);
+                setPurchasevisible(false);
+                clearPurchaseFields();
+            }
+            else {
+                setshowFabricTab(false);
+                setshowTrimsTab(true);
+                setshowPurchaseTab(true);
+                setshowThredTab(false);
+                setFabricvisible(true);
+                setThreadvisible(true);
+                setTrimsvisible(false);
+                setPurchasevisible(false);
+                clearPurchaseFields();
+            }
+
+            //setFields({ ...fields, [name]: value.toUpperCase() })
+
+
+            // else if (name === 'parentGroup') {
+            //     debugger;
+            //     getMatType();
+            //     // GetmatSubGroupDropDown(fields.matType, e.target.value);
+            //     setFields({ ...fields, [name]: value.toUpperCase() })
+            // }
+            // else if (name === 'matGroup') { 
+            //     GetmatSubGroupDropDown(fields.matType, e.target.value);
+            //     setFields({ ...fields, [name]: value.toUpperCase() })
+            // }           
             setShowResults(false)
             setShowForm(true)
             setEntityVisible(true);
@@ -2121,14 +2237,14 @@ function MaterialMaster({ name }) {
                                 jumpToPage: !0,
                                 selectableRows: "none",
                                 rowsPerPageOptions: [10, 25, 50, 100],
-                                rowsPerPage: tableProps.rowsPerPage,
-                                page: tableProps.page,
+                                rowsPerPage: PentableProps.rowsPerPage,
+                                page: PentableProps.page,
                                 count: pendinglist.length,
-                                sortOrder: tableProps.sortOrder,
+                                sortOrder: PentableProps.sortOrder,
                                 onTableChange: (action, tableState) => {
                                     if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
                                     const { page, rowsPerPage, sortOrder } = tableState
-                                    updateTableProps({
+                                    updatepenTableProps({
                                         page, rowsPerPage, sortOrder
                                     })
                                 }
@@ -2184,14 +2300,14 @@ function MaterialMaster({ name }) {
                                 jumpToPage: !0,
                                 selectableRows: "none",
                                 rowsPerPageOptions: [10, 25, 50, 100],
-                                rowsPerPage: tableProps.rowsPerPage,
-                                page: tableProps.page,
+                                rowsPerPage: ApptableProps.rowsPerPage,
+                                page: ApptableProps.page,
                                 count: approvedlist.length,
-                                sortOrder: tableProps.sortOrder,
+                                sortOrder: ApptableProps.sortOrder,
                                 onTableChange: (action, tableState) => {
                                     if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
                                     const { page, rowsPerPage, sortOrder } = tableState
-                                    updateTableProps({
+                                    updateappTableProps({
                                         page, rowsPerPage, sortOrder
                                     })
                                 }
@@ -2331,7 +2447,7 @@ function MaterialMaster({ name }) {
                             />
                         </div>
 
-                        <div class="col-lg-3">
+                        {/* <div class="col-lg-3">
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                 <label>Buyer Division<span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{fields.buyDivcode === '' ? errors.buyDivcode : ''}</small>
@@ -2341,12 +2457,7 @@ function MaterialMaster({ name }) {
                                     required
                                     value={fields.buyDivcode}
                                     onChange={inputOnChange("buyDivcode")}
-                                // onChange={(e) => {
-                                //     setFields({
-                                //         ...fields, buyDivcode: e.join(','),
-                                //         profArr: [...e]
-                                //     })
-                                // }}                             
+                                                          
                                 >
                                     <option value=""> Select Buyer Division</option>
                                     {buyerdivcodelist.map((v, index) => {
@@ -2354,12 +2465,50 @@ function MaterialMaster({ name }) {
                                     })}
                                 </select>
                             </div>
-                            {/* <input className='form-control form-control-sm mt-1' placeholder='Enter buyDivcode'
-                                value={fields.buyDivcode} minLength="1" maxLength="100"
-                                onChange={inputOnChange("buyDivcode")} disabled={entityVisible}
-                            /> */}
-                        </div>
-
+                          
+                        </div> */}
+                        {UpDVisible &&
+                            <div class="col-lg-3">
+                                <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                    <label>Buyer Division<span className='text-danger'>*  </span> </label>
+                                    <small className='text-danger'>{fields.buyDivcode === '' ? errors.buyDivcode : ''}</small>
+                                </div>
+                                <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select Buyer Division" required
+                                    value={fields.BuyDivArr}
+                                    // value={AddTnamodels.id !== 0 ? errors.notifyRoleId : AddTnamodels.NotroleArr}
+                                    onChange={(e) => {
+                                        setFields({
+                                            ...fields, buyDivcode: e.join(','),
+                                            BuyDivArr: [...e]
+                                        })
+                                    }} >
+                                    {buyerdivcodelist.map((v, index) => {
+                                        return <Option key={index} value={v.code}>{v.code}</Option>
+                                    })}
+                                </Select>
+                            </div>
+                        }
+                        {EditDVisible &&
+                            <div class="col-lg-3">
+                                <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                    <label>Buyer Division<span className='text-danger'>*  </span> </label>
+                                    <small className='text-danger'>{fields.buyDivcode === '' ? errors.buyDivcode : ''}</small>
+                                </div>
+                                <Select mode="multiple" className='form-control form-control-sm mt-1' style={{ width: '100%' }} placeholder="Select Buyer Division" required
+                                    value={fields.buyDivcode.split(',')}
+                                    // value={AddTnamodels.id !== 0 ? errors.notifyRoleId : AddTnamodels.NotroleArr}
+                                    onChange={(e) => {
+                                        setFields({
+                                            ...fields, buyDivcode: e.join(','),
+                                            BuyDivArr: [...e]
+                                        })
+                                    }} >
+                                    {buyerdivcodelist.map((v, index) => {
+                                        return <Option key={index} value={v.code}>{v.code}</Option>
+                                    })}
+                                </Select>
+                            </div>
+                        }
                         <div class="col-lg-3">
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                 <label>Material Description<span className='text-danger'>*  </span> </label>
@@ -2811,7 +2960,7 @@ function MaterialMaster({ name }) {
                                 {showTrimsTab &&
                                     <div class="row mt-15">
 
-                                        <div className='col-lg-3'>
+                                        <div className='col-lg-2'>
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Article No <span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{trimsfields.articleNo === '' ? errors.articleNo : ''}</small>
@@ -2821,7 +2970,7 @@ function MaterialMaster({ name }) {
                                                 onChange={inputOnChangeTrims("articleNo")}
                                             />
                                         </div>
-                                        <div className='col-lg-3'>
+                                        <div className='col-lg-2'>
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Product<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{trimsfields.product === '' ? errors.product : ''}</small>
@@ -2831,7 +2980,7 @@ function MaterialMaster({ name }) {
                                                 onChange={inputOnChangeTrims("product")}
                                             />
                                         </div>
-                                        <div className='col-lg-3'>
+                                        <div className='col-lg-2'>
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>Finish<span className='text-danger'>*  </span> </label>
                                                 <small className='text-danger'>{trimsfields.finish === '' ? errors.finish : ''}</small>
@@ -2843,16 +2992,16 @@ function MaterialMaster({ name }) {
                                         </div>
 
 
-                                        {/* <div className='col-lg-3'>
-                                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
-                                            <label>Remarks <span className='text-danger'>*  </span> </label>
-                                            <small className='text-danger'>{purchasefields.noOfMtr === '' ? errors.noOfMtr : ''}</small>
+                                        <div className='col-lg-4'>
+                                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                                                <label>Remarks <span className='text-danger'>*  </span> </label>
+                                                <small className='text-danger'>{purchasefields.remarks === '' ? errors.remarks : ''}</small>
+                                            </div>
+                                            <input className='form-control form-control-sm mt-1' placeholder='Enter Remarks'
+                                                value={trimsfields.remarks} minLength="1" maxLength="100"
+                                                onChange={inputOnChangeTrims("remarks")}
+                                            />
                                         </div>
-                                        <input className='form-control form-control-sm mt-1' placeholder='Enter Remarks'
-                                            value={trimsfields.noOfMtr} minLength="1" maxLength="50"
-                                            onChange={inputOnChangeTrims("noOfMtr")}
-                                        />
-                                    </div> */}
                                         <div className='col-lg-2'>
                                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                                 <label>   <span className='text-danger'>  </span> </label>
@@ -2904,7 +3053,7 @@ function MaterialMaster({ name }) {
                                                                     <td align='center'>{row.articleNo}</td>
                                                                     <td align='center'>{row.product}</td>
                                                                     <td align='center'>{row.finish}</td>
-                                                                    <td align='center'>{row.Remarks}</td>
+                                                                    <td align='center'>{row.remarks}</td>
                                                                 </tr>
                                                             ))
 
@@ -2957,12 +3106,13 @@ function MaterialMaster({ name }) {
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.supcode}
-                                                    onChange={inputOnChangeFab("supcode")}
+                                                    value={purchasefields.supcode}
+                                                    onChange={inputOnChangePurchase("supcode")}
                                                 >
                                                     <option value=""> Select Supplier</option>
                                                     {suplierlist.map((v, index) => {
-                                                        return <option key={index} value={v.id + "|" + v.code}>{v.codeDesc}</option>
+                                                        //return <option key={index} value={v.id + "|" + v.code}>{v.id + "|" + v.code + "|" + v.codeDesc}</option>
+                                                        return <option key={index} value={v.code}>{v.codeDesc}</option>
                                                     })}
 
                                                 </select>
@@ -3009,6 +3159,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter moq'
                                                 value={purchasefields.moq} minLength="1" maxLength="25"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO_PUR("moq")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO_PUR("moq")}
                                                 onChange={inputOnChangePurchase("moq")}
                                             />
                                         </div>
@@ -3021,9 +3173,8 @@ function MaterialMaster({ name }) {
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.moqUom}
-                                                    onChange={inputOnChangeFab("moqUom")}
-                                                >
+                                                    value={purchasefields.moqUom}
+                                                    onChange={inputOnChangePurchase("moqUom")}                                                >
                                                     <option value=""> Select MOQ UOM</option>
                                                     {uomlist.map((v, index) => {
                                                         return <option key={index} value={v.code}>{v.codeDesc}</option>
@@ -3040,6 +3191,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter multiples'
                                                 value={purchasefields.multiples} minLength="1" maxLength="50"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO_PUR("multiples")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO_PUR("multiples")}
                                                 onChange={inputOnChangePurchase("multiples")}
                                             />
                                         </div>
@@ -3051,6 +3204,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter leadtime'
                                                 value={purchasefields.leadtime} minLength="1" maxLength="50"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO_PUR("leadtime")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO_PUR("leadtime")}
                                                 onChange={inputOnChangePurchase("leadtime")}
                                             />
                                         </div>
@@ -3109,6 +3264,8 @@ function MaterialMaster({ name }) {
                                             </div>
                                             <input className='form-control form-control-sm mt-1' placeholder='Enter price'
                                                 value={purchasefields.price} minLength="1" maxLength="30"
+                                                onFocus={NUMBER_IS_FOCUS_IN_ZERO_PUR("price")}
+                                                onBlur={NUMBER_IS_FOCUS_OUT_ZERO_PUR("price")}
                                                 onChange={inputOnChangePurchase("price")}
                                             />
                                         </div>
@@ -3121,7 +3278,7 @@ function MaterialMaster({ name }) {
                                             <div class="main-select">
                                                 <select name="somename" className='form-control form-control-sm mt-1'
                                                     required
-                                                    value={fabricfields.curCode}
+                                                    value={purchasefields.curCode}
                                                     onChange={inputOnChangePurchase("curCode")}
                                                 >
                                                     <option value=""> Select Currency</option>

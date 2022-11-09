@@ -33,6 +33,7 @@ export const API_URLS = {
 
   // PRODUCT TYPE MASTER
   GET_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/GetAllProdType",
+  GET_ACTIVEPRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/GetAllActiveProdType",
   SAVE_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/SaveProdTypeMaster",
   GET_PRODUCTTYPE_BY_ID: "ProdTypeMaster/GetProdTypeByProdType",
 
@@ -195,8 +196,8 @@ SAVE_MATERIAL_MASTER: "MatMast/SaveMatMast",
 SAVE_MATERIAL_APPROVAL_LIST: "MatMast/MatMastApproveDecline",
 GET_MATERIAL_MASTER_EDIT_BY_ID: "MatMast/GetMatMast",
 GET_ALL_MATERIAL_LIST: "MatMast/GetAllMatMast",
-GET_ALL_MATERIAL_APPROVED_LIST: "MatMast/GetAllMatMastByApproved",
-GET_ALL_MATERIAL_PENDING_LIST: "MatMast/GetAllMatMastByPending",
+GET_ALL_MATERIAL_APPROVED_LIST: "MatMast/GetAllMatMastByApprovedList",
+GET_ALL_MATERIAL_PENDING_LIST: "MatMast/GetAllMatMastByPendingList",
 }
 
 export const MISCELLANEOUS_TYPES = {

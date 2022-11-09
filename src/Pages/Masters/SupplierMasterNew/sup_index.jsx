@@ -319,6 +319,8 @@ function SupplierMasterNew({ name }) {
                 }).then(resp => {
                     setLoader(false)
                     message.success(resp.message)
+                    setbtnSaveVisible(true);
+                    setbtnUpdateVisible(false);
                     onClose()
                     getDatas()
                 }).catch(err => {

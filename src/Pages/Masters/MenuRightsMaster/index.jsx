@@ -542,7 +542,7 @@ class MenurightsElement extends Component {
                                                     placeholder="Role Type"
                                                     values={this.state.roletype}
                                                 />
-                                                <span className="error">{this.state.errors["roletype"]}</span>
+                                                <span className="text-danger">{this.state.errors["roletype"]}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -558,7 +558,7 @@ class MenurightsElement extends Component {
                                                         placeholder="Module"
                                                         values={this.state.modulenameValue}
                                                     />
-                                                    <span className="error">{this.state.errors["modulenameValue"]}</span>
+                                                    <span className="text-danger">{this.state.errors["modulenameValue"]}</span>
                                                 </FormControl>
                                             </div>
                                         </div>
@@ -575,7 +575,7 @@ class MenurightsElement extends Component {
                                                         placeholder="Location"
                                                         values={this.state.lpcationItemValue}
                                                     />
-                                                    <span className="error">{this.state.errors["lpcationItemValue"]}</span>
+                                                    <span className="text-danger">{this.state.errors["lpcationItemValue"]}</span>
                                                 </FormControl>
                                             </div>
                                         </div>
@@ -592,7 +592,7 @@ class MenurightsElement extends Component {
                                                         placeholder="Unit Code"
                                                         values={this.state.codeItemValue}
                                                     />
-                                                    <span className="error">{this.state.errors["codeItemValue"]}</span>
+                                                    <span className="text-danger">{this.state.errors["codeItemValue"]}</span>
                                                 </FormControl>
                                             </div>
                                         </div>
