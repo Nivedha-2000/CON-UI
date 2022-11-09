@@ -335,7 +335,7 @@ class MenuElement extends Component {
                 this.setState({ modulelists: resp.data });
                 /// alert(modulelists);
             } catch (e) {
-                message.error("response is not as expected")
+               // message.error("response is not as expected")
             }
         }).catch(err => {
             message.error(err.message || err)
@@ -348,7 +348,7 @@ class MenuElement extends Component {
                 this.setState({ menutypelists: resp.data });
                 //alert(modulelists);
             } catch (e) {
-                message.error("response is not as expected")
+                //message.error("response is not as expected")
             }
         }).catch(err => {
             message.error(err.message || err)
@@ -374,7 +374,7 @@ class MenuElement extends Component {
                 this.setState({ menulists: resp.data });
                 console.log(response.data)
             } catch (e) {
-                message.error("response is not as expected")
+                //message.error("response is not as expected")
             }
         }).catch(err => {
             message.error(err.message || err)
