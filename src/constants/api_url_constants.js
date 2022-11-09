@@ -33,6 +33,7 @@ export const API_URLS = {
 
   // PRODUCT TYPE MASTER
   GET_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/GetAllProdType",
+  GET_ACTIVEPRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/GetAllActiveProdType",
   SAVE_PRODUCTTYPE_MASTER_LIST: "ProdTypeMaster/SaveProdTypeMaster",
   GET_PRODUCTTYPE_BY_ID: "ProdTypeMaster/GetProdTypeByProdType",
 
