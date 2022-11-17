@@ -26,6 +26,8 @@ var arrFab = [];
 var arrThd = [];
 var arrTrims = [];
 var arrPur = [];
+var arrApproved = [];
+
 let count = 0;
 let count1 = 0;
 const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGroup", "sysMatCode", "matCode", "matDesc", "buyDivcode", "approved", "approvedBy", "active"],
@@ -300,6 +302,9 @@ const MatmastrequiredFields = ["parentGroup", "matType", "matGroup", "matSubGrou
 
 function MaterialMaster({ name }) {
     const [visible, setVisible] = useState(false);
+    const [Approvedvisible, setApprovedvisible] = React.useState(false);
+    const [addvisible, setaddvisible] = React.useState(true);
+
     const [countryList, setcountryList] = useState([]);
     const [mattypeList, setmattypeList] = useState([]);
     const [matgroupList, setmatgroupList] = useState([]);
@@ -370,6 +375,7 @@ function MaterialMaster({ name }) {
     // const [list, setList] = useState([]);
     const [approvedlist, setApprovedList] = useState([]);
     const [pendinglist, setPendingList] = useState([]);
+    const [pendinglist1, setPendingList1] = useState([]);
     const [errors, setErrors] = useState({
         ...initialErrorMessages
     })
@@ -654,6 +660,7 @@ function MaterialMaster({ name }) {
             setListLoading(false)
             if (Array.isArray(resp.data)) {
                 setPendingList(resp.data)
+                setPendingList1(resp.data)
             } else {
                 message.error("Response data is expected as array")
             }
@@ -733,6 +740,8 @@ function MaterialMaster({ name }) {
         setShowitemLists(false);
         setEditDVisible(false);
         setEditUpDVisible(true);
+        count = 0;
+        count1 = 0;
     }
     const onClickList = () => {
         setShowResults(true)
@@ -1488,110 +1497,80 @@ function MaterialMaster({ name }) {
                 })
             }
         }
-        // if (validation) {
-        //     if (type === "update") {
-        //         if (validation) {
-        //             setLoader(true)
 
-        //             ApiCall({
-        //                 method: "POST",
-        //                 path: API_URLS.SAVE_MATERIAL_MASTER,
-        //                 data: {
-        //                     ...fields,
-        //                     hostName: getHostName()
-        //                 }
-        //             }).then(resp => {
-        //                 setLoader(false)
-        //                 message.success(resp.message)
-        //                 onClose()
-        //                 getDatas()
-        //                 setSavevisible(true)
-        //                 setUpdatevisible(false)
-        //                 setEntityVisible(false);
-        //                 setShowResults(true)
-        //                 setShowForm(false)
-        //             }).catch(err => {
-        //                 setLoader(false)
-
-        //                 //  fields['ftdOprName'] = tempOprName
-        //                 setFields({ ...fields })
-        //                 setErrors({ ...initialErrorMessages })
-        //                 message.error(err.message || err)
-        //             })
-        //         }
-        //     }
-        //     else {
-        //         ItrApiService.GET({
-        //             url: API_URLS.GET_COMPANY_MASTER_BY_ID + "/" + entityID + "/" + eCode + "/" + eName,
-        //             appCode: "CNF"
-        //         }).then(res => {
-        //             //  alert(res.Success);
-        //             if (res.Success == false) {
-        //                 if (validation) {
-        //                     setLoader(true)
-
-        //                     ApiCall({
-        //                         method: "POST",
-        //                         path: API_URLS.SAVE_MATERIAL_MASTER,
-        //                         data: {
-        //                             ...fields,
-        //                             hostName: getHostName()
-        //                         }
-        //                     }).then(resp => {
-        //                         setLoader(false)
-        //                         message.success(resp.message)
-        //                         onClose()
-        //                         getDatas()
-        //                         setSavevisible(true)
-        //                         setUpdatevisible(false)
-        //                         setEntityVisible(false);
-        //                         setShowResults(true)
-        //                         setShowForm(false)
-        //                     }).catch(err => {
-        //                         setLoader(false)
-        //                         setFields({ ...fields })
-        //                         setErrors({ ...initialErrorMessages })
-        //                         message.error(err.message || err)
-        //                     })
-        //                 }
-        //             }
-        //             else {
-
-        //                 setLoader(false);
-        //                 // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
-        //                 err = "Company Details Already Available"
-        //                 message.error(err)
-        //                 // }
-        //             }
-        //         });
-
-
-        //     }
-
-        // }
     }
 
     const ApprovalSave = async (status, id, eName, type) => {
-        if (validation) {
+        debugger;
+        var arr = [];       
+        if (pendinglist1.length > 0) {
+            let allbuyerrightss = pendinglist1.map(item => {
+                if (item.approved == 'Y') {
+
+                    //arr += arrApproved + item.id + ','
+                    arrApproved.push(item.id);
+                    //item.approved = 'Y'; else item.approved = 'N';
+                    return item;
+                }
+
+                /// arrApproved = arr;
+                //arr = [];
+                // arr1 = arrApproved;
+            });
+            // alert(arr1);
+            //setPendingList({ arrApproved });
+        }
+
+
+
+        // let allbuyerrightses = arrApproved.map(item => {
+        //     if (item.id == 'Y') {
+
+
+        //         return item;
+        //     }
+
+        //     arrApproved = arr;
+        //     //arr = [];
+        //     arr1 = arrApproved;
+        // });
+        //alert(pendinglist.id);
+        // pendinglist1.forEach(f => {
+        //     if (pendinglist1.approved == "Y") {
+
+        //         arrApproved = + pendinglist1.id + ','
+        //         //err[f] = "This field is required"
+        //         //validation = false
+        //     }
+        // })
+
+        // pendinglist1.forEach(f => {
+        //     if (pendinglist1[f] === "approved") {
+        //         id = pendinglist1.id;
+        //         arrApproved = + pendinglist1.id + ','
+        //     }
+        // })        
+        status = 'Y';
+        // alert(API_URLS.SAVE_MATERIAL_APPROVAL_LIST + "?Status=" + status,)
+        if (arrApproved != "") {
             setLoader(true)
 
             ApiCall({
                 method: "POST",
                 path: API_URLS.SAVE_MATERIAL_APPROVAL_LIST + "?Status=" + status,
-                data: {
-                    ...fields,
-                    hostName: getHostName()
-                }
+                data: arrApproved
+
+
             }).then(resp => {
+                //alert(resp)
                 setLoader(false)
                 message.success(resp.message)
-                onClose()
-                //getDatas()
-                setSavevisible(true)
-                setUpdatevisible(false)
-                setEntityVisible(false);
+                getPendingDatas();
                 setShowResults(true)
                 setShowForm(false)
+                setShowApprovallist(true);
+                setShowitemLists(false);
+                arrApproved = [];
             }).catch(err => {
                 setLoader(false)
                 setFields({
@@ -1603,7 +1582,14 @@ function MaterialMaster({ name }) {
                 message.error(err.message || err)
             })
         }
+        else {
 
+            setLoader(false);
+            // if (buyCode.toUpperCase() === res.data.buyCode.toUpperCase()) {
+            err = "Please Select Atleast One Row"
+            message.error(err)
+            // }
+        }
         // if (validation) {
         //     if (type === "update") {
         //         if (validation) {
@@ -1720,66 +1706,7 @@ function MaterialMaster({ name }) {
 
 
     const pendingtableColumns = [
-        {
-            name: "id",
-            label: <Checkbox color="primary" checked={false} />,
-            options: {
-                customBodyRender: (value, tm) => {
-                    return (
-                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                            <div onClick={() => Approved(tm.rowData[1])}>
-                                <Checkbox color="primary" checked={false} />
-                            </div>
-                            {/* <div>
-                                <Checkbox color="primary" checked={true} />
 
-                                
-                            </div> */}
-                            {/* <Checkbox color="primary"  checked={allCheck} /> */}
-                            {/* <div onClick={() => edit(value, 'clone')}>
-                                <FontAwesomeIcon icon={faCopy} color="#919191" />
-                            </div> */}
-                        </div>
-
-                        // <div>
-                        //     <div>
-                        //         <Checkbox color="primary" checked={false} />
-                        //         {/* <Checkbox color="primary"  checked={allCheck} /> */}
-                        //     </div>
-                        //     {/* <div onClick={() => edit(value, 'clone')}>
-                        //         <FontAwesomeIcon icon={faCopy} color="#919191" />
-                        //     </div> */}
-                        // </div>
-
-                    )
-                }
-            }
-        },
-        {
-            name: "id",
-            label: "Action",
-            options: {
-                customBodyRender: (value, tm) => {
-                    return (
-                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                            <div onClick={() => edit(tm.rowData[1])}>
-                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
-                            </div>
-                            {/* <div>
-                                <Checkbox color="primary" checked={true} />
-
-                                
-                            </div> */}
-                            {/* <Checkbox color="primary"  checked={allCheck} /> */}
-                            {/* <div onClick={() => edit(value, 'clone')}>
-                                <FontAwesomeIcon icon={faCopy} color="#919191" />
-                            </div> */}
-                        </div>
-
-                    )
-                }
-            }
-        },
         {
             name: "id",
             label: "ID",
@@ -2123,9 +2050,16 @@ function MaterialMaster({ name }) {
                             </div>
                             <div className='col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mt-1'>
                             </div>
-                            <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
-                                <button className='btn-sm btn defect-master-add' onClick={onClick} onClose={onClose} visible={visible} maskClosable={false}> + Add New </button>
-                            </div>
+                            {addvisible &&
+                                < div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
+                                    <button className='btn-sm btn defect-master-add' onClick={onClick} onClose={onClose} visible={visible} maskClosable={false}> + Add New </button>
+                                </div>
+                            }
+                            {Approvedvisible &&
+                                <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
+                                    <button className='btn-sm btn defect-master-add' onClick={ApprovalSave} onClose={onClose} visible={Approvedvisible} maskClosable={false}> Approved </button>
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -2222,32 +2156,114 @@ function MaterialMaster({ name }) {
                 </div >
             }
 
-            {showitemLists &&
+            {
+                showitemLists &&
 
                 <div className='defect-master-main'>
                     <div>
                         <CustomTableContainer
                             columns={pendingtableColumns}
-                            data={pendinglist}
+                            data={pendinglist}                          
                             options={{
                                 download: !1,
                                 print: !1,
                                 filter: !1,
                                 viewColumns: !1,
                                 jumpToPage: !0,
-                                selectableRows: "none",
+                                selectableRows: true,
                                 rowsPerPageOptions: [10, 25, 50, 100],
                                 rowsPerPage: PentableProps.rowsPerPage,
                                 page: PentableProps.page,
                                 count: pendinglist.length,
                                 sortOrder: PentableProps.sortOrder,
                                 onTableChange: (action, tableState) => {
+                                    debugger;
                                     if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
                                     const { page, rowsPerPage, sortOrder } = tableState
                                     updatepenTableProps({
                                         page, rowsPerPage, sortOrder
                                     })
+                                },
+                              
+                                onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
+
+                                    //  alert(pendinglist.approved = 'Y');
+                                    debugger;
+                                    console.log(currentRowsSelected, allRowsSelected, rowsSelected);
+                                    if (pendinglist1.length > 0) {
+                                        if (currentRowsSelected.length == 0) {
+                                            let allbuyerrights = pendinglist1.map(item => {
+                                                item.approved = 'N';
+                                                // arrApproved = item.id;
+                                                arrApproved = [];
+                                                return item;
+                                            });
+                                            setPendingList1(allbuyerrights)
+                                            setApprovedvisible(false);
+                                            setaddvisible(true);
+                                        }
+                                        else if (currentRowsSelected.length == 1) {
+                                            var valCheck = allRowsSelected.filter(f => f.index == currentRowsSelected[0].index).length > 0 ? 'Y' : 'N';
+                                            pendinglist1[currentRowsSelected[0].index].approved = valCheck;
+                                            // arrApproved = pendinglist1[currentRowsSelected[0].index].id;
+                                            if (valCheck == 'N') {
+                                                setApprovedvisible(false);
+                                                setaddvisible(true);
+                                            }
+                                            else {
+                                                setApprovedvisible(true);
+                                                setaddvisible(false);
+                                            }
+                                            //alert((pendinglist1.approved == 'Y').length)
+                                            setPendingList1(pendinglist1)
+
+
+                                        }
+                                        else if (currentRowsSelected.length > 1) {
+                                            let allbuyerrights = pendinglist1.map(item => {
+                                                item.approved = 'Y';
+
+                                                // arrApproved = item.id;
+                                                return item;
+                                            });
+
+                                            // alert((allbuyerrights.approved == 'Y').count())
+                                            setApprovedvisible(true);
+                                            setaddvisible(false);
+
+                                            setPendingList1(allbuyerrights)
+
+
+                                        }
+
+
+
+
+                                    }
+                                    //alert(arrApproved);
+                                    // console.log('checkall', currentRowsSelected, allRowsSelected, rowsSelected)
+                                    // const result = allRowsSelected.map(item => { return data.at(item.index) });
+                                    // const selectedIds = result.map(item => {
+                                    //     return item.id;
+                                    // });
                                 }
+
+                                //onRowClick: (rowData, rowMeta) => console.log('onRowsSelect.', rowData, rowMeta),
+                                // onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
+                                //     debugger;
+                                //     // if (pendinglist.length > 0) {
+                                //     //     let allbuyerrights = pendinglist.map(item => {
+                                //     //         if (event.target.checked) item.approved = 'Y'; else item.approved = 'N';
+                                //     //         return item;
+                                //     //     });
+                                //     //     setPendingList(allbuyerrights)
+                                //     // }
+                                //     // console.log('checkall', currentRowsSelected, allRowsSelected, rowsSelected)
+                                //     // const result = allRowsSelected.map(item => { return data.at(item.index) });
+                                //     // const selectedIds = result.map(item => {
+                                //     //     return item.id;
+                                //     // });
+                                // }
                             }}
                         />
                     </div>
@@ -2257,7 +2273,8 @@ function MaterialMaster({ name }) {
 
                 </div >
             }
-            {showApprovallist &&
+            {
+                showApprovallist &&
 
 
                 <div className='defect-master-main'>
@@ -2320,7 +2337,8 @@ function MaterialMaster({ name }) {
                 </div >
             }
 
-            {showForm &&
+            {
+                showForm &&
                 <div class="container-fluid">
                     {/* <!-- breadcrumb --> */}
                     <div class="breadcrumb-header justify-content-between bread-list">
