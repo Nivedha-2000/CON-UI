@@ -1502,7 +1502,7 @@ function MaterialMaster({ name }) {
 
     const ApprovalSave = async (status, id, eName, type) => {
         debugger;
-        var arr = [];       
+        var arr = [];
         if (pendinglist1.length > 0) {
             let allbuyerrightss = pendinglist1.map(item => {
                 if (item.approved == 'Y') {
@@ -1706,6 +1706,25 @@ function MaterialMaster({ name }) {
 
 
     const pendingtableColumns = [
+        {
+            name: "id",
+            label: "Action",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return (
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => edit(tm.rowData[1], 'edit')}>
+                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                            </div>
+                            {/* <div onClick={() => edit(value, 'clone')}>
+                                <FontAwesomeIcon icon={faCopy} color="#919191" />
+                            </div> */}
+                        </div>
+
+                    )
+                }
+            }
+        },
 
         {
             name: "id",
@@ -2163,7 +2182,7 @@ function MaterialMaster({ name }) {
                     <div>
                         <CustomTableContainer
                             columns={pendingtableColumns}
-                            data={pendinglist}                          
+                            data={pendinglist}
                             options={{
                                 download: !1,
                                 print: !1,
@@ -2184,7 +2203,7 @@ function MaterialMaster({ name }) {
                                         page, rowsPerPage, sortOrder
                                     })
                                 },
-                              
+
                                 onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
 
                                     //  alert(pendinglist.approved = 'Y');
