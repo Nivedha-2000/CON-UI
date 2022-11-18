@@ -30,7 +30,8 @@ import jquery from '../../../Assets/js/jquerymin'
 //     "criticalActivity", "tnaSeqNo", "duration", "dependActCode", "dependDeptCode", "dependActvity", "dependSubActvity", "preNotifyDays", "notifyRoleId", "l1EscalateDays", "l1EscalateRole", "l2EscalateDays", "l2EscalateRole", "category",
 //     "valueAddtype", "weightage", "skipped", "remarks", "cancel", "active"
 
-
+let count = 0;
+let count1 = 0;
 const requiredFields = ["buyCode", "buydivCode", "mActive", "deptcode", "activityType", "locCode", "activity", "duration", "preNotifyDays", "notifyRoleId"],
     initialErrorMessages = {
         id: 0,
@@ -215,6 +216,7 @@ function TNAMaster({ name }) {
         setAddTnamodels({
             ...TnaModels
         });
+        setFields([])
         // setAddTnamodels([])
         setErrors({ ...initialErrorMessages });
     }
@@ -236,7 +238,7 @@ function TNAMaster({ name }) {
         setEditVisible(false);
         setPackQtyVisible(false);
         setBuyerTypeVisible(false);
-        setCloneSave(true);
+        setCloneSave(false);
         onClose()
         getDatas()
         setFields([])
@@ -641,6 +643,11 @@ function TNAMaster({ name }) {
         //         // setBuyerTypeVisible(true);
         //     }
         // }
+        // else if (name === 'dependActCode') {
+        //     debugger;
+        //     //GetdependActivityDropDown(e.target.value);
+        //     setAddTnamodels({ ...AddTnamodels, [name]: parseInt(value) })
+        // }
         else if (name === 'dependDeptCode') {
             GetdependActivityDropDown(e.target.value);
             setAddTnamodels({ ...AddTnamodels, [name]: value })
@@ -662,7 +669,7 @@ function TNAMaster({ name }) {
             debugger;
             // alert(e.target.value);
             // alert([name]); setOGVisible
-            edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
+            Duplicate(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'SOP') {
                 setPackQtyVisible(true);
@@ -678,7 +685,7 @@ function TNAMaster({ name }) {
                 setPackQtyVisible(false);
                 setBuyerTypeVisible(false);
             }
-            GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
+            // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
         }
         else {
             setAddTnamodels({ ...AddTnamodels, [name]: value })
@@ -688,8 +695,11 @@ function TNAMaster({ name }) {
 
     function AddTna() {
         // alert("ADD");
-        debugger;
-        //  let c = 0;
+        // debugger;
+        // let c = 0;
+        // count = 0;
+        // count1 = 0;
+
         let err = {}, validation = true
         requiredFields.forEach(f => {
             if (AddTnamodels[f] === "") {
@@ -700,7 +710,34 @@ function TNAMaster({ name }) {
                 validation = true
             }
         })
+        //alert(fields.length + 1);
 
+        // count = 0;
+        // count1 = 0;
+        // if (fields.length > 0) {
+        //     let all = fields.map(item => {
+        //         if (item.weightage != '') {
+
+        //             count = parseInt(count1) + parseInt(item.weightage)
+        //             // arrApproved.push(item.id);
+        //             count1 = count;
+        //             //item.approved = 'Y'; else item.approved = 'N';
+        //             return item;
+        //         }
+
+
+        //         //arr = [];
+        //         // arr1 = arrApproved;
+        //     });
+        //     c = parseInt(count1) + parseInt(AddTnamodels.weightage)
+        //     // alert(c);
+        //     //setPendingList({ arrApproved });
+
+        // }
+        // if (parseInt(c) != 100) {
+        //     message.error(typeof err == "string" ? err : "weightage Should be 100");
+        //     return
+        // }
         // fields.forEach(f => {
         //     if (TnaModels[f] === "") {
         //         err[f] = "This field is required"
@@ -719,10 +756,70 @@ function TNAMaster({ name }) {
         if (validation == true) {
             //alert(AddTnamodels.id);
             if (AddTnamodels.id == 0) {
-                setFields([...fields, AddTnamodels])
+
+                if (AddTnamodels.buyCode != '' && AddTnamodels.buydivCode != '' && AddTnamodels.deptcode != '' && AddTnamodels.locCode != '' && AddTnamodels.activityType) {
+
+                    let num = [];
+                    // alert(fields.length);
+                    let dep = fields.length + 1
+                    for (let i = 1; i <= dep; i++) {
+                        num.push(i);
+                    }
+                    // alert(num)
+                    setdependActCodeList(num)
+
+                    setFields([...fields, AddTnamodels])
+                    //clearFields();                    
+
+                }
+                else {
+                    message.error(typeof err == "string" ? err : "Please Fill The Header Required Fields ");
+                    return
+                }
+                setAddTnamodels({
+                    id: 0,
+                    buyCode: fields[0].buyCode,
+                    buydivCode: fields[0].buydivCode,
+                    deptcode: fields[0].deptcode,
+                    locCode: fields[0].locCode,
+                    activityType: fields[0].activityType,
+                    mActive: fields[0].mActive,
+                    stage: "",
+                    orderCategory: "",
+                    fit: "",
+                    actCode: 0,
+                    activity: "",
+                    subActivity: "",
+                    criticalActivity: "",
+                    tnaSeqNo: 0,
+                    duration: 0,
+                    dependActCode: 0,
+                    dependDeptCode: "",
+                    dependActvity: "",
+                    dependSubActvity: "",
+                    preNotifyDays: 0,
+                    notifyRoleId: "",
+                    l1EscalateDays: 0,
+                    l1EscalateRole: "",
+                    l2EscalateDays: 0,
+                    l2EscalateRole: "",
+                    category: "NA",
+                    valueAddtype: "",
+                    weightage: 0,
+                    skipped: "N",
+                    remarks: "",
+                    cancel: "N",
+                    active: 'Y',
+                    hostName: "",
+                    createdDate: "2022-08-22",
+                    createdBy: "AD",
+                    modifiedDate: "2022-08-22",
+                    modifiedBy: "",
+                    isActive: false
+                })
                 // Clear();
                 // clearFields();
-               // setdependActCodeList([fields.id])
+                // setdependActCodeList([fields.id])
             } else {
                 debugger;
                 // alert(AddTnamodels.id);
@@ -730,7 +827,7 @@ function TNAMaster({ name }) {
                 setShowUpdatetolist(false);
                 setEditDVisible(false);
                 setEditUpDVisible(true);
-                GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
+                // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
                 //onChange={inputOnChange("activityType")};
                 // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
                 //console.log(toUpdateData);
@@ -777,6 +874,7 @@ function TNAMaster({ name }) {
                     }
                     return item;
                 });
+
                 AddTnamodels.id = 0;
                 AddTnamodels.orderCategory = "",
                     AddTnamodels.stage = "",
@@ -814,9 +912,12 @@ function TNAMaster({ name }) {
             }
             //  fields.push(AddTnamodels)
             //ClearDetails();
+
             AddTnamodels.NotroleArr = [],
                 AddTnamodels.L1Arr = [],
                 AddTnamodels.L2Arr = []
+
+            // setdependActCodeList();
         }
 
     }
@@ -856,12 +957,38 @@ function TNAMaster({ name }) {
             AddTnamodels.isActive = false
 
     }
+
     const save = () => {
         debugger;
+
         // alert('Hai save');
         // if (loader) return
-        let a = {}, validation = true
+        //  let a = {}, validation = true
         // debugger;
+        count = 0;
+        count1 = 0;
+        if (fields.length > 0) {
+            let all = fields.map(item => {
+                if (item.weightage != '') {
+
+                    count = parseInt(count1) + parseInt(item.weightage)
+                    // arrApproved.push(item.id);
+                    count1 = count;
+                    //item.approved = 'Y'; else item.approved = 'N';
+                    return item;
+                }
+
+
+                //arr = [];
+                // arr1 = arrApproved;
+            });
+            // alert(count1);
+            //setPendingList({ arrApproved });
+        }
+        if (parseInt(count1) != 100) {
+            message.error(typeof err == "string" ? err : "weightage Should be 100");
+            return
+        }
         // fields.forEach(weightage => {
         //     if (AddTnamodels[weightage] !== "") {
 
@@ -869,7 +996,7 @@ function TNAMaster({ name }) {
         //         // validation  = false
         //     }
         // })
-        // if (fields.weightage == 0) {
+        // if (sum(fields.weightage) == 0) {
         //     err['transitdays'] = "Should be greater than zero."
         //     validation = false
         // }
@@ -892,6 +1019,7 @@ function TNAMaster({ name }) {
                 return
             }
             {
+                //alert(cloneSave);
                 console.log(cloneSave)
                 if (cloneSave) {
                     if (AddTnamodels.buyCode != '' && AddTnamodels.buydivCode != '' && AddTnamodels.deptcode != '' && AddTnamodels.locCode != '' && AddTnamodels.activityType) {
@@ -957,6 +1085,8 @@ function TNAMaster({ name }) {
                             setShowResults(true);
                             setShowForm(false);
                             setCloneSave(false);
+                            count = 0;
+                            count1 = 0;
                         }).catch(err => {
 
                             //console.log('CATCH');
@@ -991,6 +1121,8 @@ function TNAMaster({ name }) {
                         getDatas()
                         setShowResults(true)
                         setShowForm(false)
+                        count = 0;
+                        count1 = 0;
                     }).catch(err => {
 
                         //console.log('CATCH');
@@ -1503,7 +1635,7 @@ function TNAMaster({ name }) {
                     //alert();
                     // GetdependActCodeDropDown(data[0].buyCode, data[0].buydivCode, data[0].deptcode, data[0].locCode,data[0].activityType);
                 }
-                //  alert(data);
+                //alert(type);
                 console.log(data)
                 if (type === 'clone') {
                     //alert(type);
@@ -1587,6 +1719,8 @@ function TNAMaster({ name }) {
                     // })
                     setEditVisible(false);
                     setCloneSave(true);
+                    // GetdependActCodeDropDown(data[0].buyCode, data[0].buydivCode, data[0].deptcode, data[0].locCode, data[0].activityType);
+
                 }
                 else {
                     setFields(data);
@@ -1632,6 +1766,7 @@ function TNAMaster({ name }) {
                         isActive: false
                     })
                     setEditVisible(true);
+                    setCloneSave(false);
                     GetdependActCodeDropDown(data[0].buyCode, data[0].buydivCode, data[0].deptcode, data[0].locCode, data[0].activityType);
 
                 }
@@ -1668,6 +1803,99 @@ function TNAMaster({ name }) {
         }
     }
 
+    const Duplicate = async (buyCode, buydivCode, deptcode, locCode, activityType, type) => {
+        try {
+            // alert(type);
+            setLoader(true)
+            setVisible(true);
+            setShowResults(false)
+            setShowForm(true)
+            //  clearFields();
+            let { data } = (buyCode && await getDataById(buyCode, buydivCode, deptcode, locCode, activityType))
+            debugger;
+            if (!data) {
+                message.error("Data not found")
+                return
+            }
+            else {
+                message.error(typeof err == "string" ? err : "This Combinations of Data Already available Please Check The Below Grid")
+                if (type === 'clone') {
+                }
+                else {
+                    if (data[0].activityType === 'SOP') {
+                        setPackQtyVisible(true);
+                        setBuyerTypeVisible(true);
+                        setOGVisible(true);
+                    }
+                    else if (data[0].activityType === 'BUYER') {
+                        setPackQtyVisible(true);
+                        setBuyerTypeVisible(false);
+                        setOGVisible(true);
+                    }
+                    else if (data[0].activityType === 'INTERNAL') {
+                        setPackQtyVisible(false);
+                        setBuyerTypeVisible(false);
+                    }
+                }
+                console.log(data)
+                if (type === 'clone') {
+                }
+                else {
+                    setFields(data);
+                    setAddTnamodels({
+                        id: 0,
+                        buyCode: data[0].buyCode,
+                        buydivCode: data[0].buydivCode,
+                        deptcode: data[0].deptcode,
+                        locCode: data[0].locCode,
+                        activityType: data[0].activityType,
+                        mActive: data[0].mActive,
+                        stage: "",
+                        orderCategory: "",
+                        fit: "",
+                        actCode: 0,
+                        activity: "",
+                        subActivity: "",
+                        criticalActivity: "",
+                        tnaSeqNo: 0,
+                        duration: 0,
+                        dependActCode: 0,
+                        dependDeptCode: "",
+                        dependActvity: "",
+                        dependSubActvity: "",
+                        preNotifyDays: 0,
+                        notifyRoleId: "",
+                        l1EscalateDays: 0,
+                        l1EscalateRole: "",
+                        l2EscalateDays: 0,
+                        l2EscalateRole: "",
+                        category: "NA",
+                        valueAddtype: "",
+                        weightage: 0,
+                        skipped: "N",
+                        remarks: "",
+                        cancel: "N",
+                        active: 'Y',
+                        hostName: "",
+                        createdDate: "2022-08-22",
+                        createdBy: "AD",
+                        modifiedDate: "2022-08-22",
+                        modifiedBy: "",
+                        isActive: false
+                    })
+                    setEditVisible(true);
+                    setCloneSave(false);
+                    GetdependActCodeDropDown(data[0].buyCode, data[0].buydivCode, data[0].deptcode, data[0].locCode, data[0].activityType);
+
+                }
+
+            }
+            setLoader(false)
+        } catch (err) {
+            setLoader(false)
+            message.error(typeof err == "string" ? err : "data not found")
+        }
+    }
     console.log(fields)
 
     return (
@@ -2147,12 +2375,6 @@ function TNAMaster({ name }) {
                                             <small className='text-danger'>{AddTnamodels.dependActCode === '' ? errors.dependActCode : ''}</small>
                                         </div>
                                         <select className='form-control form-control-sm mt-1' disabled={packQtyvisible} id="dependActCode" value={AddTnamodels.dependActCode} onChange={inputOnChange("dependActCode")} required>
-                                            {/* <option value="" hidden> Select Depend Code</option>
-                                            {
-                                                dependActCodeList.map((t, ind) => (
-                                                    <option key={ind} value={t}>{t}</option>
-                                                ))
-                                            } */}
                                             <option value="0">0 </option>
                                             {dependActCodeList.map((v, index) => {
 
