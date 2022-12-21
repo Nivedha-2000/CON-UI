@@ -83,6 +83,37 @@ function PDCMaster({ name }) {
         setFields({ ...fields, [name]: value })
     }
 
+    const inputOnChange1 = (index, name) => e => {
+        debugger;
+        let err = {}, validation = true
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === '' || re.test(e.target.value)) {
+            let value = e.target.value
+            let res = rowData[index];
+            let curname1 = name;
+            var oData = rowData;
+            res[name] = value;
+            let aa = parseInt(value);
+            if (parseInt(aa) > 100) {
+                message.error("pdcPer equal to or more than 0 and not more than 100 ...! ")
+                res["pdcPer"] = 0;
+                return false;
+            } else {
+                const updatedObject = rowData.map((user, rowIndex) =>
+                    index === rowIndex ? res : user
+                );
+                setRowData(updatedObject)
+            }
+        } else {
+            err['pdcPer'] = "Please enter numbers only"
+            validation = false
+            setErrors({ ...errors, ...err })
+        }
+
+
+
+    }
+
     const [listLoading, setListLoading] = useState(false);
     const [loader, setLoader] = useState(false);
     const [locationList, setLocationList] = useState([]);
@@ -95,40 +126,6 @@ function PDCMaster({ name }) {
     const [errors, setErrors] = useState({
         ...initialErrorMessages
     })
-
-    const save = () => {
-        if (loader) return
-        let err = {}, validation = true
-        requiredFields.forEach(f => {
-            if (fields[f] === "") {
-                err[f] = "This field is required"
-                validation = false
-            }
-        })
-        setErrors({ ...initialErrorMessages, ...err })
-        if (validation) {
-            setLoader(true)
-            ApiCall({
-                method: "POST",
-                path: API_URLS.SAVE_LINECOST_MASTER,
-                data: {
-                    ...fields,
-                    packType: fields.packType.trim(),
-                    maxShipPer: 0,
-                    hostName: getHostName()
-                }
-            }).then(resp => {
-                setLoader(false)
-                message.success(resp.message)
-                onClose()
-                getDatas()
-            }).catch(err => {
-                setLoader(false)
-                message.error(err.message || err)
-            })
-        }
-    }
-
 
 
     const getLocationList = () => {
@@ -144,28 +141,6 @@ function PDCMaster({ name }) {
             message.error(err.message || err)
         })
     }
-
-    // const getFactCodeDropDown = () => {
-    //     // alert(fields.locCode);
-    //     setFields({ ...fields, factCode: fields.id == 0 ? "" : fields.factCode })
-    //     if (fields.locCode) {
-    //         ApiCall({
-    //             path: API_URLS.GET_ALLFACTORY_LIST + `/${fields.locCode}`  //"/" + fields.locCode
-    //         }).then(respp => {
-    //             try {
-    //                 alert(respp.data);
-    //                 setFoctoryList(respp.data)
-    //             } catch (er) {
-    //                 message.error("Response data is not as expected")
-    //             }
-    //         })
-    //             .catch(err => {
-    //                 message.error(err.message || err)
-    //             })
-    //     } else {
-    //         setFoctoryList([])
-    //     }
-    // }
 
     const getFinyearList = () => {
 
@@ -242,7 +217,6 @@ function PDCMaster({ name }) {
             }).then(respp => {
                 console.log(respp)
                 if (Array.isArray(respp.data)) {
-                    console.log(respp.data)
                     // setList(respp.data)
                     setRowData(respp.data)
                 } else {
@@ -266,11 +240,6 @@ function PDCMaster({ name }) {
         }
     }, [fields.buyCode])
 
-    // useEffect(() => {
-    //     if (fields.locCode) {
-    //         getFactCodeDropDown(fields.locCode)
-    //     }
-    // }, [fields.locCode])
     useEffect(() => {
         if (fields.locCode) {
             getFinyearList(fields.locCode)
@@ -294,40 +263,6 @@ function PDCMaster({ name }) {
             , editable: true
         }
     ]);
-
-    // function change(testParam) {
-    const change = (testParam) => {
-        debugger;
-        setRowData({ ...rowData, testParam })
-        const test = rowData;
-        // const index=test.findIndex(x=>)
-        test[0] = testParam;
-        setRowData(test);
-    }
-
-    const change1 = (testParam) => {
-        debugger;
-        console.log(rowData);
-        const test = rowData;
-        test[0] = testParam;
-
-    }
-
-
-    // DefaultColDef sets props common to all Columns
-    const defaultColDef = useMemo(() => ({
-        sortable: true
-    }));
-
-    // Example of consuming Grid Event
-    const cellClickedListener = useCallback(event => {
-        console.log('cellClicked', event);
-    }, []);
-
-    // Example using Grid's API
-    const buttonListener = useCallback(e => {
-        gridRef.current.api.deselectAll();
-    }, []);
 
     function postPDCsave() {
         debugger;
@@ -371,7 +306,7 @@ function PDCMaster({ name }) {
                     data: dataset
                 }).then(resp => {
                     message.success(resp.message)
-                    console.log(resp);
+                    onClose();
                 }).catch(err => {
                     message.error(err.message || err)
                 })
@@ -478,35 +413,26 @@ function PDCMaster({ name }) {
                                         required />
                                 </div> */}
 
-                                <div class="col-lg-4">
-                               
-                                    <button class="btn btn-success search-btn btn-block ml-2 " onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.buyDivCode)}>
+                                <div class="col-lg-1">
+                                    <label></label>
+                                    <button class="btn btn-success search-btn btn-block ml-10 mt-10" onClick={() => GridDataLoad(fields.transYear, fields.locCode, fields.buyDivCode)}>
                                         ADD
-                                        {/* <i class="fe fe-plus fs-10 pe-auto">ADD</i> */}
                                     </button>
+                                </div>
+
+                                <div class="col-lg-1 ">
+                                    <label></label>
+                                    <button class="btn btn-primary search-btn btn-block  ml-10 mt-10" onClick={() => onClose()}>Cancel</button>
+                                </div>
+                                <div class="col-lg-1">
+                                    <label></label>
+                                    <button class="btn btn-success search-btn btn-block ml-10 mt-10" onClick={() => postPDCsave()}>Save</button>
                                 </div>
                             </div>
 
 
 
                             <div class="table-responsive pb-10 bg-white mt-20">
-
-                                {/* <div className="ag-theme-alpine" style={{ width: 1183, height: 700 }}>
-                                    <AgGridReact
-                                        ref={gridRef} // Ref for accessing Grid's API
-
-                                        rowData={rowData} // Row Data for Rows
-
-                                        columnDefs={columnDefs} // Column Defs for Columns
-                                        defaultColDef={defaultColDef} // Default Column Properties
-
-                                        animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-                                        rowSelection='multiple' // Options - allows click selection of rows
-
-                                        onCellClicked={cellClickedListener} // Optional - registering for Grid Event
-                                    />
-                                </div> */}
-
                                 <div className="table-responsive pb-10 bg-white mt-20">
                                     <table id="example-1" class="table table-striped tbl-wht   text-md-nowrap">
                                         <thead>
@@ -516,7 +442,7 @@ function PDCMaster({ name }) {
                                                 <th>Month</th>
                                                 <th>Buyer Div Code </th>
                                                 <th>PCDper </th>
-                                               
+
 
                                             </tr>
                                         </thead>
@@ -527,17 +453,10 @@ function PDCMaster({ name }) {
                                                     <td>{pcdcost.locCode}</td>
                                                     <td>{pcdcost.transMonth}</td>
                                                     <td>{pcdcost.buyDivCode}</td>
-                                                    {/* <td>
-                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.locCode} name={index} onChange={inputOnChange(index, "locCode")} />
-                                                    </td>
                                                     <td>
-                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.transMonth} name={index} onChange={inputOnChange(index, "transMonth")} />
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.buyDivCode} name={index} onChange={inputOnChange("buyDivCode")} />
-                                                    </td> */}
-                                                    <td>
-                                                        <input type="text" className="form-control-sm mt-1" value={pcdcost.pdcPer} name="pdcPer" onChange={inputOnChange("pdcPer")} />
+                                                        <input type="text" maxLength="3" className="form-control-sm mt-1" value={pcdcost.pdcPer} name={index} onChange={inputOnChange1(index, "pdcPer")} />
+                                                        {/* <input type="text" className="form-control-sm mt-1" value={linecost.linecost} name={index} onChange={inputOnChange1(index, "linecost")} /> */}
+
                                                     </td>
                                                 </tr>
                                             ))
@@ -551,12 +470,7 @@ function PDCMaster({ name }) {
                     <div class="d-flex align-content-center pt-20 pb-20 justify-content-center sticky-bottom">
 
 
-                        <div class=" ">
-                            <button class="btn btn-primary search-btn btn-block  " onClick={() => onClose()}>Cancel</button>
-                        </div>
-                        <div class="">
-                            <button class="btn btn-success search-btn btn-block ml-10" onClick={() => postPDCsave()}>Save</button>
-                        </div>
+
                     </div>
                 </div>
             </div>

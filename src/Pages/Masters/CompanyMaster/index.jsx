@@ -781,7 +781,7 @@ function CompanyMaster({ name }) {
                                             <small className='text-danger'>{fields.tinNo === '' ? errors.tinNo : ''}</small>
                                         </div>
                                         <input className='form-control form-control-sm mt-1' placeholder='Enter TIN No'
-                                            value={fields.tinNo} minLength="1" maxLength="10"
+                                            value={fields.tinNo} minLength="1" maxLength="50"
                                             onChange={inputOnChange("tinNo")}
                                         />
                                     </div>
@@ -897,7 +897,7 @@ function CompanyMaster({ name }) {
                                         />
                                     </div>
 
-                                    <div className='col-lg-3'>
+                                    {/* <div className='col-lg-3'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                             <label>Contact No <span className='text-danger'>*  </span> </label>
                                             <small className='text-danger'>{fields.contNo === '' ? errors.contNo : ''}</small>
@@ -906,7 +906,7 @@ function CompanyMaster({ name }) {
                                             value={fields.contNo} minLength="1" maxLength="25"
                                             onChange={inputOnChange("contNo")}
                                         />
-                                    </div>
+                                    </div> */}
 
                                     <div className='col-lg-3'>
                                         <div className='d-flex flex-wrap align-items-center justify-content-between'>

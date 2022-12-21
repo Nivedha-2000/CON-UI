@@ -102,6 +102,8 @@ export const API_URLS = {
   GET_SUPPLIER_MASTER_LIST: "SupplierMaster/GetAllSupplier",
   GET_SUPPLIER_MASTER_BY_ID: "SupplierMaster/GetSupplier",
   SAVE_SUPPLIER_MASTER: "SupplierMaster/SaveSupplierMaster",
+  GET_ACTIVE_SUPPLIER_MASTER_DD: "SupplierMaster/GetSupplierIdSupCodeSupNameActiveSupplier",
+
 
   GET_LOCATION_MASTER_LIST: "LocationMaster/GetAllLocCode",
   //MatGroupMaster
@@ -109,6 +111,9 @@ export const API_URLS = {
   GET_MATERIALGROUP_MASTER_BY_ID: "MatGroupMaster/GetMatGroupMasterByEntityID",
   SAVE_MATERIALGROUP_MASTER: "MatGroupMaster/SaveMatGroupMaster",
   GET_MATERIALTYPE_DROPDOWN: "MatTypeMaster/GetAllMattype",
+  GET_MATERIALGROUP_DROPDOWN: "MatGroupMaster/GetMatGroupMasterBymattype",
+  GET_MATERIAL_SUBGROUP_DROPDOWN: "MatGroupMaster/GetMatGroupMasterBymattypeMatGroup",
+
   ///BuyProdTypeMaster
   GET_BUYPRODTYPE_MASTER_LIST: "BuyProdTypeMaster/GetAllBuyProdType",
   GET_BUYPRODTYPE_MASTER_BY_ID: "BuyProdTypeMaster/GetBuyProdTypeByBuyCode",
@@ -128,6 +133,9 @@ export const API_URLS = {
   GET_HO_MASTER_LIST: "HOTaskMaster/GetAllHOTask",
   GET_HO_MASTER_BY_ID: "HOTaskMaster/GetHOTask",
   SAVE_HO_MASTER: "HOTaskMaster/SaveHOTaskMaster",
+  GET_HO_MASTER_TASKNAME_CHECK: "HOTaskMaster/GetHOTaskByHandoverTypeBuyDivCodeTaskName",
+  GET_HO_MASTER_TASKINDEX_CHECK: "HOTaskMaster/GetHOTaskByHandoverTypeBuyDivCodeTaskIndex",
+
   //UnitMaster
   GET_UNIT_MASTER_LIST: "UnitMaster/GetAllUCode",
   GET_UNIT_MASTER_BY_ID: "UnitMaster/GetUCode",
@@ -182,8 +190,13 @@ export const API_URLS = {
   GET_ALL_TNA_DPND_ACTIVITY_PARAMS: "TNAMaster/GetTNAMasterByDeptcode",
   GET_ALL_TNA_DPND_SUB_ACTIVITY_PARAMS: "TNAMaster/GetTNAMasterByDeptcodeActivity",
 
-
-
+//MATERIAL_MASTER 
+SAVE_MATERIAL_MASTER: "MatMast/SaveMatMast",
+SAVE_MATERIAL_APPROVAL_LIST: "MatMast/MatMastApproveDecline",
+GET_MATERIAL_MASTER_EDIT_BY_ID: "MatMast/GetMatMast",
+GET_ALL_MATERIAL_LIST: "MatMast/GetAllMatMast",
+GET_ALL_MATERIAL_APPROVED_LIST: "MatMast/GetAllMatMastByApproved",
+GET_ALL_MATERIAL_PENDING_LIST: "MatMast/GetAllMatMastByPending",
 }
 
 export const MISCELLANEOUS_TYPES = {
@@ -212,10 +225,21 @@ export const MISCELLANEOUS_TYPES = {
   AUDFORMAT: 'AUDFORMAT',
   FABTYPE: 'FABTYPE',
   DLEVEL: 'DLEVEL',
-  DEPT: 'DEPT',
-  ORDSTAGE: 'ORDSTAGE',
-  ORDCATE: 'ORDCATE',
-  ACTTYPE: 'ACTTYPE',
-  INDDEPT: 'INDDEPT',
-  VALUEADD: 'VALUEADD',
+  DEPT:'DEPT',
+  ORDSTAGE:'ORDSTAGE',
+  ORDCATE:'ORDCATE',
+  ACTTYPE:'ACTTYPE',
+  INDDEPT:'INDDEPT',
+  VALUEADD:'VALUEADD',
+  
+  PARENTGRP:'PARENTGRP',
+  FBRCONTENT:'FBRCONTENT',
+  FABTYPE:'FABTYPE',
+  FBRWeave:'FBRWeave',
+  FBRDyed:'FBRDyed',
+  WASH:'WASH',
+  UOM:'UOM',
+  FBRPhyFin:'FBRPhyFin',
+  FBRCheFin:'FBRCheFin',
+  CUR:'CUR',
 }

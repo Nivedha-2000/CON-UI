@@ -181,6 +181,8 @@ function TNAMaster({ name }) {
     const [fitList, setFitList] = useState([]);
     const [valueaddList, setValueAdd] = useState([]);
     const [packQtyvisible, setPackQtyVisible] = useState(false);
+    const [OGvisible, setOGVisible] = useState(true);
+
     const [buyerTypeVisible, setBuyerTypeVisible] = useState(false);
     const [EditVisible, setEditVisible] = useState(false);
     const [fields, setFields] = useState([
@@ -313,13 +315,13 @@ function TNAMaster({ name }) {
     }
 
     const GetdependActCodeDropDown = (buyCode, buydivCode, deptcode, locCode, activityType) => {
-       // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType);
+        // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType);
         // alert(API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + AddTnamodels.buyCode + "&BuydivCode=" + AddTnamodels.buydivCode + "&Deptcode=" + AddTnamodels.deptcode + "&LocCode=" + AddTnamodels.locCode + "&ActivityType=" + value);       
         ApiCall({
             path: API_URLS.GET_ALL_TNA_DPND_CODE_PARAMS + "?BuyCode=" + buyCode + "&BuydivCode=" + buydivCode + "&Deptcode=" + deptcode + "&LocCode=" + locCode + "&ActivityType=" + activityType,
         }).then(resp => {
             try {
-               // alert(resp.data);
+                // alert(resp.data);
                 setdependActCodeList(resp.data)
                 console.log(resp.data)
             } catch (er) {
@@ -640,19 +642,31 @@ function TNAMaster({ name }) {
             GetdependSubActivityDropDown(e.target.value);
             setAddTnamodels({ ...AddTnamodels, [name]: value })
         }
+        else if (name === 'stage') {
+            if (e.target.value === 'CONFIRMED') {
+                setOGVisible(false);
+            }
+            else
+            {
+                setOGVisible(true);
+            }
+            setAddTnamodels({ ...AddTnamodels, [name]: value })
+        }
         else if (name === 'activityType') {
             debugger;
             // alert(e.target.value);
-            // alert([name]);
+            // alert([name]); setOGVisible
             edit(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'SOP') {
                 setPackQtyVisible(true);
                 setBuyerTypeVisible(true);
+                setOGVisible(true);
             }
             else if (e.target.value === 'BUYER') {
                 setPackQtyVisible(true);
                 setBuyerTypeVisible(false);
+                setOGVisible(true);
             }
             else if (e.target.value === 'INTERNAL') {
                 setPackQtyVisible(false);
@@ -824,15 +838,16 @@ function TNAMaster({ name }) {
         debugger;
         // alert('Hai save');
         // if (loader) return
-        // let err = {}, validation = true
+        let a = {}, validation = true
         // debugger;
-        // requiredFields.forEach(f => {
-        //     if (AddTnamodels[f] === "") {
-        //         err[f] = "This field is required"
-        //         validation  = false
+        // fields.forEach(weightage => {
+        //     if (AddTnamodels[weightage] !== "") {
+
+        //         a[weightage]++// = "This field is required"
+        //         // validation  = false
         //     }
         // })
-        // if (fields.transitdays == 0) {
+        // if (fields.weightage == 0) {
         //     err['transitdays'] = "Should be greater than zero."
         //     validation = false
         // }
@@ -1435,10 +1450,12 @@ function TNAMaster({ name }) {
                     if (data[0].activityType === 'SOP') {
                         setPackQtyVisible(true);
                         setBuyerTypeVisible(true);
+                        setOGVisible(true);
                     }
                     else if (data[0].activityType === 'BUYER') {
                         setPackQtyVisible(true);
                         setBuyerTypeVisible(false);
+                        setOGVisible(true);
                     }
                     else if (data[0].activityType === 'INTERNAL') {
                         setPackQtyVisible(false);
@@ -2020,7 +2037,7 @@ function TNAMaster({ name }) {
                                     <small className='text-danger'>{AddTnamodels.orderCategory === '' ? errors.orderCategory : ''}</small>
                                 </div>
                                 <select className='form-select form-select-sm mt-1' required
-                                    value={AddTnamodels.orderCategory} disabled={packQtyvisible}
+                                    value={AddTnamodels.orderCategory} disabled={OGvisible}
                                     onChange={inputOnChange("orderCategory")} >
                                     <option value=""> Select orderCategory</option>
                                     {orderCatList.map((v, index) => {
@@ -2189,7 +2206,7 @@ function TNAMaster({ name }) {
                                         <label>{AddTnamodels.skipped === 'Y' ? 'Skipped' : 'Skipped'}</label>
                                         <div className='mt-1'>
                                             <Switch size='default'
-                                                checked={AddTnamodels.skipped === 'Y'}
+                                                checked={AddTnamodels.skipped === 'Y'} disabled={packQtyvisible}
                                                 onChange={(e) => setAddTnamodels({ ...AddTnamodels, skipped: e ? 'Y' : 'N' })} />
                                         </div>
                                     </div>
