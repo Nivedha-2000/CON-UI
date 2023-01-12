@@ -95,8 +95,10 @@ export default function TranslationMaster() {
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
+               
                 setLangList(res.data);
-            }
+            
+        }
             else {
                 setLoader(false);
             }
@@ -278,7 +280,7 @@ export default function TranslationMaster() {
     return (
         <div className='defect-master-main'>
             <div className='m-3'>
-                <h6 className='m-0 p-0'>Defect Translation Master</h6>
+                <h6 className='m-0 p-0'>Defect Translation Master</h6> 
                 <div className='row align-items-center mt-2'>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1'>
                         <input type="search" className='form-control' id='operationSearch' placeholder='Search' onChange={myFunction} />
@@ -288,9 +290,9 @@ export default function TranslationMaster() {
                             <option> All Locations </option>
                         </select> */}
                     </div>
-                    {/* <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
-                        <button className='btn-sm btn defect-master-add' onClick={showDrawer}> + Add New </button>
-                    </div> */}
+                    <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1 text-end'>
+                        <button className='btn-sm btn defect-master-add' onClick={() => navigate(-1)}> Go back </button>
+                    </div>
                 </div>
 
 
@@ -310,7 +312,7 @@ export default function TranslationMaster() {
                                     {/* <td> {index + 1} </td> */}
                                     <td> {trans?.defectCode ? trans?.defectCode : '-'} </td>
                                     <td> {trans?.defectName ? trans?.defectName : '-'} </td>
-                                    <td> {trans?.translation ? trans?.translation : ''} </td>
+                                    <td>{langCode == 'EN' ? trans?.defectName ? trans?.defectName:'' : trans?.translation ? trans?.translation : 'NA' } </td>
                                     <td>
                                         <div className='text-center' onClick={() => { editDefect(trans?.id) }}>
                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />

@@ -129,7 +129,7 @@ export default function Sidebar() {
                 </Menu.Item>
                 <Menu.Item key="1-9" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
                   <NavLink to="masters/aql-master">
-                    <span className='mx-2'> AQL Master</span>
+                    <span className='mx-2'>AQL Master</span>
                   </NavLink>
                 </Menu.Item>
                 {/* <Menu.Item key="1-10" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
@@ -137,6 +137,17 @@ export default function Sidebar() {
                     <span className='mx-2'> AQL Master</span>
                   </NavLink>
                 </Menu.Item> */}
+                <Menu.Item key="1-11" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
+                  <NavLink to="masters/measurement-defects">
+                    <span className='mx-2'>Measurement Defects</span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="1-12" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
+                  <NavLink to="masters/season-master">
+                    <span className='mx-2'>Season Master</span>
+                  </NavLink>
+                </Menu.Item>
+
               </SubMenu>
 
               <SubMenu key="3" title="Pre-Production " icon={<img src={production} width="20" />} >

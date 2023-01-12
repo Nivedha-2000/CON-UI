@@ -50,6 +50,7 @@ export default function DefectMasters() {
             appCode: "CNF",
         }).then(res => {
             if (res.Success == true) {
+                console.log(res);
                 setDefectMaster(res.data);
             }
             else {
@@ -75,7 +76,7 @@ export default function DefectMasters() {
         displayName: "",
         indexNo: "0",
         defectProfile: '',
-        isFav: '',
+               isFav: '',
         hostName: "",
         shtkey: '',
         garmentType: "",
@@ -91,7 +92,7 @@ export default function DefectMasters() {
         displayName: '',
         defectProfile: ''
     });
-
+    
     const [exist, setexists] = useState(false);
 
     const [focus, setFocus] = useState(false);
@@ -134,6 +135,7 @@ export default function DefectMasters() {
                 garmentType: defectMaster.garmentType,
                 active: defectMaster.active
             }
+
             setLoader(true);
             ItrApiService.POST({
                 appCode: 'ENAPP003',
@@ -152,6 +154,29 @@ export default function DefectMasters() {
                             data: data
                         }).then(res => {
                             if (res.Success == true) {
+                                let translationMaster = {
+                                    isActive: res.data.isActive,
+                                    id: 0,
+                                    defectMast_Id: res.data.id,
+                                    defectCode: res.data.defectCode,
+                                    defectName: res.data.defectName,
+                                    translation: res.data.defectName,
+                                    languageCode: 'EN',
+
+                                };
+                                ItrApiService.POST({
+                                    url: `DefectTranslationMaster/SaveDefectTranslationMasterList`,
+                                    appCode: 'CNF',
+                                    data: [translationMaster]
+                                }).then(res => {
+                                    if (res.Success == true) {
+                                        console.log(res);
+                                        message.success(res.message);
+                                    }
+                                    else {
+                                        setLoader(false);
+                                    }
+                                })
                                 // setDatas(res.data)
                                 message.success("Defects added successfull");
                                 setLoader(false);
@@ -166,24 +191,6 @@ export default function DefectMasters() {
                         });
                     }
 
-                } else {
-                    ItrApiService.POST({
-                        url: 'DefectMaster/SaveDefectMaster',
-                        appCode: "CNF",
-                        data: data
-                    }).then(res => {
-                        if (res.Success == true) {
-                            // setDatas(res.data)
-                            message.success("Defects added successfull");
-                            setLoader(false);
-                            onClose();
-                            clearFields();
-                            getDatas();
-                        }
-                        else {
-                            setLoader(false);
-                        }
-                    });
                 }
             })
 
@@ -233,10 +240,20 @@ export default function DefectMasters() {
             if (defectLevel == '' || defectLevel == '0' || defectLevel == undefined) obj = { ...obj, defectLevel: 'Defect Level is required' };
             if (displayName == '' || displayName == '0' || displayName == undefined) obj = { ...obj, displayName: 'Display Name is required' };
             if (defectProfile == '' || defectProfile == '0' || defectProfile == undefined) obj = { ...obj, defectProfile: 'Defect Profile is required' };
-            setErrors(obj)
+            setErrors(obj);
             // setErrors({ ...errors, name: 'Defect Name is required', code: 'Defect Code is required', level: 'Defect Level is required', category: 'Defect Cateogry is required', displayName: 'Display Name is required', profile: 'Defect Profile is required' })
         }
         else {
+            let translationMaster = [{
+                isActive: defectMaster.isActive,
+                id: 0,
+                defectMast_Id: defectMaster.id,
+                defectCode: defectMaster.defectCode,
+                defectName: defectMaster.defectName,
+                translation: defectMaster.defectName,
+                languageCode:'EN',
+            }]
+
             setLoader(true);
             ItrApiService.POST({
                 url: `DefectMaster/SaveDefectMaster`,
@@ -244,6 +261,20 @@ export default function DefectMasters() {
                 data: defectMaster
             }).then(res => {
                 if (res.Success == true) {
+                    console.log(defectMaster);
+                    ItrApiService.POST({
+                        url: `DefectTranslationMaster/SaveDefectTranslationMasterList`,
+                        appCode: 'CNF',
+                        data: translationMaster
+                    }).then(res => {
+                        if (res.Success == true) {
+                            console.log(res);
+                            message.success(res.message);
+                        }
+                        else {
+                            setLoader(false);
+                        }
+                    })
                     setLoader(false);
                     cancel();
                     clearFields();
@@ -272,7 +303,7 @@ export default function DefectMasters() {
     const handleChange = (page) => {
         setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
     };
-
+    
     const [defCat, setDefCat] = useState([]);
 
     const getDefectCat = () => {
@@ -323,6 +354,7 @@ export default function DefectMasters() {
     useEffect(() => {
         getDatas();
         getDefectCat();
+       
     }, []);
 
 
@@ -580,7 +612,7 @@ export default function DefectMasters() {
                                 onChange={(e) => setDefectMaster({ ...defectMaster, displayName: e.target.value })}
                                 required />
                         </div>
-
+                      
                         <div className='mt-3'>
                             <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                 <label>Defect Profile <span className='text-danger'>*  </span> </label>
@@ -612,8 +644,7 @@ export default function DefectMasters() {
                             </Select>
                             {/* <p className='text-danger'> {errors} </p> */}
                         </div>
-
-                        <div className='mt-3'>
+                                               <div className='mt-3'>
                             <label>Defect Status <span className='text-danger'>*</span> </label>
                             <div className='mt-1'>
                                 <Switch size='default' checked={defectMaster.active == 'Y'}
@@ -751,7 +782,7 @@ export default function DefectMasters() {
                         </Select>
                         {/* <p className='text-danger'> {errors} </p> */}
                     </div>
-
+                  
                     <div className='mt-3'>
                         <label>Defect Status <span className='text-danger'>*</span> </label>
                         <div className='mt-1'>
