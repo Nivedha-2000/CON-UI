@@ -278,6 +278,7 @@ export default function OperationMaster() {
                         <thead id='table-header'>
                             <tr>
                                 <th scope="col">Part ID</th>
+                                <th scope="col">Part Name</th>
                                 <th scope="col">Operation Code</th>
                                 <th scope="col">Operation Name</th>
                                 <th scope="col">Active</th>
@@ -288,6 +289,7 @@ export default function OperationMaster() {
                             {datas.map((operation, index) => index >= pagination.minIndex && index < pagination.maxIndex && (
                                 <tr key={index}>
                                     <td> {operation?.part_ID ? operation?.part_ID : '-'} </td>
+                                    <td>{operation?.partName ? operation?.partName : '-'}</td>
                                     <td> {operation?.operCode ? operation?.operCode : '-'} </td>
                                     <td> {operation?.operName ? operation?.operName : '-'} </td>
                                     <td>

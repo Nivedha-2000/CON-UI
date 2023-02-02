@@ -142,7 +142,7 @@ export default function Routing() {
         <Route path='masters/material-group-master1' element={<MatGroupMaster name="Material Type Group Master" />} />
         <Route path='masters/HSN' element={<HsnMaster />} />
         <Route path='masters/measurement-defects' element={<MeasurementDefects />} />
-        <Route path='masters/season-master' element={<SessionMaster />} />
+        <Route path='masters/session-master' element={<SessionMaster />} />
         {/* <Route path='scheduler-01' element={<Scheduler />} /> */}
       </Route>
     </Routes>

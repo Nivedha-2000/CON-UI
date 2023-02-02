@@ -9,7 +9,7 @@ import moment from 'moment';
 export default function SessionMaster() {
     const clearFields = () => {
         setSessionMaster({
-            ...sessionMaster, isActive: true,
+            ...sessionMaster, isActive: true,   
             id: 0,
             unitcode: "",
             sessionCode: "",

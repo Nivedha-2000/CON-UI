@@ -123,6 +123,8 @@ function BuyerMaster({ name }) {
         setBuyerCodeVisible(false);
         setShowResults(true)
         setShowForm(false)
+        setSavevisible(true)
+        setUpdatevisible(false)
     }
     const showDrawer = () => {
         setVisible(true);
