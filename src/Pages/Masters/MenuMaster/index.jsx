@@ -2,6 +2,7 @@
  * Simple Line Icons
  */
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 //import api from 'Api';
 import { Button, Form, FormGroup, Label, FormText, Col, FormFeedback } from 'reactstrap';
 // page title bar
@@ -72,9 +73,74 @@ class MenuElement extends Component {
 
         fields: {},
         errors: {},
-        userInfo: {}
-    }
+        userInfo: {},
+        tableColumns: [{
+            name: "menuId",
+            label: "Action",
+            options: {
+                customBodyRender: (value, tm) => {
+                    return (
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div onClick={() => this.editMenu(tm.rowData[0])}>
+                                <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
+                            </div>
+                        </div>
 
+                    )
+                }
+            }
+        },
+        {
+            name: "menuId",
+            label: "Menu ID",
+        },
+        {
+            name: "parantMenuId",
+            label: "ParentMenuID",
+        },
+        {
+            name: "menuType",
+            label: "Menu Type",
+        },
+        {
+            name: "menuName",
+            label: "Menu Name",
+        },
+        {
+            name: "menuUrl",
+            label: "Menu URL",
+        },
+        {
+            name: "appName",
+            label: "Module",
+        },
+        {
+            name: "menuVisible",
+            label: "Visible",
+        },
+        {
+            name: "active",
+            label: "Active",
+        }],
+        tableProps: {
+            page: 0,
+            rowsPerPage: 10,
+            sortOrder: {
+                name: 'menuId',
+                direction: 'asc'
+            }
+        }
+    }
+    updateTableProps = penprops => {
+        debugger;
+        this.setState({
+            tableProps: {
+                page: penprops.page,
+                rowsPerPage: penprops.rowsPerPage,
+                sortOrder: penprops.sortOrder
+            }
+        })
+    }
     createNotification = (type) => {
         return () => {
             switch (type) {
@@ -96,7 +162,21 @@ class MenuElement extends Component {
             }
         };
     };
+    pageSize = 10;
 
+    // for-list-pagination
+    // [pagination, setPagination] = useState({
+    //     totalPage: 0,
+    //     current: 1,
+    //     minIndex: 0,
+    //     maxIndex: 0
+    // });
+    handleChangepage(index) {
+        this.setState({ activeIndex: index });
+    }
+    handleChange = (page) => {
+        setPagination({ ...pagination, current: page, minIndex: (page - 1) * pageSize, maxIndex: page * pageSize })
+    };
     handleChangesingledropdown = name => event => {
         this.setState({ [name]: (event.target.value == "N" ? "Y" : "N") });
     };
@@ -335,7 +415,7 @@ class MenuElement extends Component {
                 this.setState({ modulelists: resp.data });
                 /// alert(modulelists);
             } catch (e) {
-               // message.error("response is not as expected")
+                // message.error("response is not as expected")
             }
         }).catch(err => {
             message.error(err.message || err)
@@ -497,7 +577,7 @@ class MenuElement extends Component {
                                 {/* <RctCollapsibleCard heading=""> */}
 
 
-                                <div className="w-50 float-right pr-0 but-tp">
+                                {/* <div className="w-50 float-right pr-0 but-tp">
                                     <Form>
                                         {(() => {
 
@@ -513,7 +593,7 @@ class MenuElement extends Component {
                                         })()}
                                         <button className="col-sm-2 col-md-2 col-xl-2 p-0 defect-master-add" type="button" onClick={(e) => this.getCancel()}><span className="MuiButton-label">Cancel <i className="zmdi zmdi-close"></i></span><span className="MuiTouchRipple-root"></span></button>
                                     </Form>
-                                </div>
+                                </div> */}
                                 <div className="clearfix"></div>
                                 <div className="row new-form">
                                     <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -528,7 +608,7 @@ class MenuElement extends Component {
                                                 placeholder="Module"
                                                 values={this.state.module}
                                             />
-                                            <span className="error">{this.state.errors["module"]}</span>
+                                            <span className="text-danger">{this.state.errors["module"]}</span>
                                         </div>
                                     </div>
 
@@ -543,14 +623,14 @@ class MenuElement extends Component {
                                                 placeholder="Menu Type"
                                                 values={this.state.menu_type}
                                             />
-                                            <span className="error">{this.state.errors["menu_type"]}</span>
+                                            <span className="text-danger">{this.state.errors["menu_type"]}</span>
                                         </div>
                                     </div>
 
                                     <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div className="form-group">
                                             <TextField id="menuname" value={this.state.menuname} onChange={this.handleChange('menuname')} fullWidth label="Menu Name" type="text" />
-                                            <span className="error">{this.state.errors["menuname"]}</span>
+                                            <span className="text-danger">{this.state.errors["menuname"]}</span>
                                         </div>
                                     </div>
 
@@ -565,7 +645,7 @@ class MenuElement extends Component {
                                                 placeholder="Parent Menu ID"
                                                 values={this.state.parent_menu_id}
                                             />
-                                            <span className="error">{this.state.errors["parent_menu_id"]}</span>
+                                            <span className="text-danger">{this.state.errors["parent_menu_id"]}</span>
                                         </div>
                                     </div>
 
@@ -576,13 +656,13 @@ class MenuElement extends Component {
                                     <div className="col-lg-6 col-md-3 col-sm-6 col-xs-12">
                                         <div className="form-group">
                                             <TextField id="menudesc" value={this.state.menudesc} onChange={this.handleChange('menudesc')} fullWidth label="Menu Desc" type="text" />
-                                            <span className="error">{this.state.errors["menudesc"]}</span>
+                                            <span className="text-danger">{this.state.errors["menudesc"]}</span>
                                         </div>
                                     </div>
                                     <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div className="form-group">
                                             <TextField id="menuurl" value={this.state.menuurl} onChange={this.handleChange('menuurl')} fullWidth label="Menu URL" type="text" />
-                                            <span className="error">{this.state.errors["menuurl"]}</span>
+                                            <span className="text-danger">{this.state.errors["menuurl"]}</span>
                                         </div>
                                     </div>
                                     <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -628,6 +708,32 @@ class MenuElement extends Component {
                                                  })() */}
                                         </div>
                                     </div>
+                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div className="form-group">
+
+                                            <Form>
+                                                {(() => {
+
+                                                    if (this.state.edit_add == false) {
+                                                        return (
+                                                            <button className="col-sm-4 col-md-4 col-xl-4 p-0 defect-master-add" type="button" onClick={(e) => this.getMenusave()} ><span className="MuiButton-label">save <i className="zmdi zmdi-save"></i></span><span className="MuiTouchRipple-root"></span></button>
+                                                        )
+                                                    }
+                                                    if (this.state.edit_add != false) {
+                                                        return (<button className="col-sm-4 col-md-4 col-xl-4 p-0 defect-master-add" type="button" onClick={(e) => this.getMenuUpdate()} ><span className="MuiButton-label">Update <i className="zmdi zmdi-save"></i></span><span className="MuiTouchRipple-root"></span></button>
+                                                        )
+                                                    }
+                                                })()}
+                                            </Form>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div className="form-group">
+
+                                            <button className="col-sm-4 col-md-4 col-xl-4 p-0 defect-master-add" type="button" onClick={(e) => this.getCancel()}><span className="MuiButton-label">Cancel <i className="zmdi zmdi-close"></i></span><span className="MuiTouchRipple-root"></span></button>
+
+                                        </div>
+                                    </div>
                                 </div>
                                 {/* </RctCollapsibleCard> */}
                             </div>
@@ -639,7 +745,7 @@ class MenuElement extends Component {
                 <div className="row ">
                     {/* d-tbl-sp  */}
                     <div className="col-sm-12 col-md-12 col-xl-12">
-                        {/* <RctCollapsibleCard heading="" fullBlock> */}
+                        {/* <RctCollapsibleCard heading="" fullBlock> */} 
                         <Accordion expanded>
                             <AccordionSummary expandIcon={<i className="zmdi zmdi-chevron-down"></i>}>
                                 <div className="acc_title_font">
@@ -647,41 +753,7 @@ class MenuElement extends Component {
                                 </div>
                             </AccordionSummary>
                             <AccordionDetails>
-                                {/* <div className="float-right tbl-filter-btn">
-                                         <button className="MuiButtonBase-root MuiIconButton-root"     type="button" aria-label="Search" data-testid="Search-iconButton" title="Search">
-                                             <span className="MuiIconButton-label">
-                                                 <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                                                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
-                                                 </svg>
-                                             </span>
-                                         </button>
-                                         <button className="MuiButtonBase-root MuiIconButton-root jss26"     type="button" data-testid="Download CSV-iconButton" aria-label="Download CSV" title="Download CSV">
-                                             <span className="MuiIconButton-label">
-                                                 <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                                                     <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"></path>
-                                                 </svg>
-                                             </span>
-                                         </button>
-                                         <button className="MuiButtonBase-root MuiIconButton-root"     type="button" data-testid="Print-iconButton" aria-label="Print">
-                                             <span className="MuiIconButton-label">
-                                                 <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                                                     <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"></path>
-                                                 </svg>
-                                             </span>
-                                         </button>
-                                         <button className="MuiButtonBase-root MuiIconButton-root"     type="button" data-testid="View Columns-iconButton" aria-label="View Columns">
-                                             <span className="MuiIconButton-label"><svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                                                 <path d="M10 18h5V5h-5v13zm-6 0h5V5H4v13zM16 5v13h5V5h-5z"></path>
-                                             </svg>
-                                             </span>
-                                         </button>
-                                         <button className="MuiButtonBase-root MuiIconButton-root jss26"     type="button" data-testid="Filter Table-iconButton" aria-label="Filter Table" title="Filter Table"><span className="MuiIconButton-label"><svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
-                                             <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>
-                                         </svg>
-                                         </span>
-                                         </button>
-                                     </div> */}
-                                <table className="table">
+                                {/* <table className="table">
                                     <thead className="thead-light">
                                         <th className="text-center w-10">Actions</th>
                                         <th className="text-center w-10">Menu ID</th>
@@ -700,17 +772,9 @@ class MenuElement extends Component {
                                             return (
                                                 <tr>
                                                     <td className="text-center">
-                                                        {/* <button className="MuiButtonBase-root MuiButton-root MuiButton-contained btn-danger mr-10 text-white btn-icon b-ic" type="button" onClick={(e) => this.deleteMenu(n.menuId, n.menuType, n.menuUrl)}>
-                                                            <i className="zmdi zmdi-delete"></i>
-                                                            <span className="MuiTouchRipple-root"></span>
-                                                        </button> */}
                                                         <div onClick={(e) => this.editMenu(n.menuId)}>
                                                             <FontAwesomeIcon icon={faPenToSquare} color="#919191" />
                                                         </div>
-                                                        {/* <button className="MuiButtonBase-root MuiButton-root MuiButton-contained btn-primary mr-10 text-white btn-icon b-ic" type="button" onClick={(e) => this.editMenu(n.menuId)}>
-                                                            <i className="zmdi zmdi-edit"></i>
-                                                            <span className="MuiTouchRipple-root"></span>
-                                                        </button> */}
                                                     </td>
                                                     <td>{n.menuId}</td>
                                                     <td>{n.parantMenuId}</td>
@@ -724,11 +788,39 @@ class MenuElement extends Component {
                                             );
                                         })}
                                     </tbody>
-                                </table>
-
+                                </table> */}
+                                <div>
+                                    <CustomTableContainer
+                                        columns={this.state.tableColumns}
+                                        data={this.state.menulists}
+                                        options={{
+                                            download: !1,
+                                            print: !1,
+                                            filter: !1,
+                                            viewColumns: !1,
+                                            jumpToPage: !0,
+                                            selectableRows: "none",
+                                            rowsPerPageOptions: [10, 25, 50, 100],
+                                            rowsPerPage: this.state.tableProps.rowsPerPage,
+                                            page: this.state.tableProps.page,
+                                            count: this.state.menulists.length,
+                                            sortOrder: this.state.tableProps.sortOrder,
+                                            onTableChange: (action, tableState) => {
+                                                if (!["changePage", "search", "changeRowsPerPage", "sort"].includes(action)) return
+                                                const { page, rowsPerPage, sortOrder } = tableState
+                                                this.updateTableProps({
+                                                    page, rowsPerPage, sortOrder
+                                                })
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </AccordionDetails>
                         </Accordion>
                         {/* </RctCollapsibleCard> */}
+
+
+
                     </div>
 
 
@@ -736,6 +828,9 @@ class MenuElement extends Component {
             </div>
         );
     };
+}
+MenuElement.propTypes = {
+    name: PropTypes.string
 }
 export default MenuElement;
 

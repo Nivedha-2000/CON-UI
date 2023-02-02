@@ -667,9 +667,14 @@ function TNAMaster({ name }) {
         }
         else if (name === 'activityType') {
             debugger;
+            if (AddTnamodels.buyCode != '' && AddTnamodels.buydivCode != '' && AddTnamodels.deptcode != '' && AddTnamodels.locCode != '' && e.target.value != '') {
+
+                Duplicate(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
+                setEditVisible(true);
+                //setCloneSave(false);
+            }
             // alert(e.target.value);
             // alert([name]); setOGVisible
-            Duplicate(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value, 'edit')
             setAddTnamodels({ ...AddTnamodels, [name]: value })
             if (e.target.value === 'SOP') {
                 setPackQtyVisible(true);
@@ -685,6 +690,7 @@ function TNAMaster({ name }) {
                 setPackQtyVisible(false);
                 setBuyerTypeVisible(false);
             }
+
             // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, e.target.value);
         }
         else {
@@ -695,10 +701,10 @@ function TNAMaster({ name }) {
 
     function AddTna() {
         // alert("ADD");
-        // debugger;
-        // let c = 0;
-        // count = 0;
-        // count1 = 0;
+        debugger;
+        let c = 0;
+        count = 0;
+        count1 = 0;
 
         let err = {}, validation = true
         requiredFields.forEach(f => {
@@ -714,62 +720,57 @@ function TNAMaster({ name }) {
 
         // count = 0;
         // count1 = 0;
-        // if (fields.length > 0) {
-        //     let all = fields.map(item => {
-        //         if (item.weightage != '') {
+        if (fields.length > 0) {
+            let all = fields.map(item => {
+                if (item.weightage != '') {
 
-        //             count = parseInt(count1) + parseInt(item.weightage)
-        //             // arrApproved.push(item.id);
-        //             count1 = count;
-        //             //item.approved = 'Y'; else item.approved = 'N';
-        //             return item;
-        //         }
+                    count = parseInt(count1) + parseInt(item.weightage)
+                    count1 = count;
+                    return item;
+                }
+            });
+            if (AddTnamodels.id == 0) {
+                c = parseInt(count1) + parseInt(AddTnamodels.weightage)
+            }
+            {
+                if (fields.length == 1) {
+                    c = parseInt(AddTnamodels.weightage);
+                }
+                else {
+                    let n = 0;
+                    let ta = fields.map((item) => {
+                        if (item.id === AddTnamodels.id) {
+                            n = item.weightage
+                        }
+                        return item;
+                    });
+                    c = parseInt(count1) + parseInt(AddTnamodels.weightage) - parseInt(n);
+                    //alert(n);
+                    // alert(c);
+                }
+            }
+        }
+        if (parseInt(c) > 100) {
+            message.error(typeof err == "string" ? err : "weightage Should be 100");
+            return
+        }
 
-
-        //         //arr = [];
-        //         // arr1 = arrApproved;
-        //     });
-        //     c = parseInt(count1) + parseInt(AddTnamodels.weightage)
-        //     // alert(c);
-        //     //setPendingList({ arrApproved });
-
-        // }
-        // if (parseInt(c) != 100) {
-        //     message.error(typeof err == "string" ? err : "weightage Should be 100");
-        //     return
-        // }
-        // fields.forEach(f => {
-        //     if (TnaModels[f] === "") {
-        //         err[f] = "This field is required"
-        //         validation = false
-        //         //   ++c;
-        //     } else {
-        //         validation = true
-        //     }
-        // })
         setErrors({ ...initialErrorMessages, ...err })
         debugger;
         console.log(AddTnamodels);
-        //fields.push(AddTnamodels)
-        //clearFieldsVisualSam();
         debugger;
         if (validation == true) {
-            //alert(AddTnamodels.id);
             if (AddTnamodels.id == 0) {
 
                 if (AddTnamodels.buyCode != '' && AddTnamodels.buydivCode != '' && AddTnamodels.deptcode != '' && AddTnamodels.locCode != '' && AddTnamodels.activityType) {
 
                     let num = [];
-                    // alert(fields.length);
                     let dep = fields.length + 1
                     for (let i = 1; i <= dep; i++) {
                         num.push(i);
                     }
-                    // alert(num)
                     setdependActCodeList(num)
-
                     setFields([...fields, AddTnamodels])
-                    //clearFields();                    
 
                 }
                 else {
@@ -817,20 +818,11 @@ function TNAMaster({ name }) {
                     modifiedBy: "",
                     isActive: false
                 })
-                // Clear();
-                // clearFields();
-                // setdependActCodeList([fields.id])
             } else {
-                debugger;
-                // alert(AddTnamodels.id);
                 setShowAddtolist(true);
                 setShowUpdatetolist(false);
                 setEditDVisible(false);
                 setEditUpDVisible(true);
-                // GetdependActCodeDropDown(AddTnamodels.buyCode, AddTnamodels.buydivCode, AddTnamodels.deptcode, AddTnamodels.locCode, AddTnamodels.activityType);
-                //onChange={inputOnChange("activityType")};
-                // let toUpdateData = fields.filter(q => q.id == AddTnamodels.id)
-                //console.log(toUpdateData);
                 let toUpdateData = fields.map((item) => {
                     if (item.id === AddTnamodels.id) {
                         item.buyCode = AddTnamodels.buyCode,
@@ -902,22 +894,11 @@ function TNAMaster({ name }) {
                     AddTnamodels.remarks = "",
                     AddTnamodels.cancel = "Y",
                     AddTnamodels.active = 'Y',
-                    //this.setState({ TaskData: toUpdateData });
                     setFields(toUpdateData);
-
-                //Clear();
-                //clearFields();
-                //onClose();
-                // alert(AddTnamodels.id);
             }
-            //  fields.push(AddTnamodels)
-            //ClearDetails();
-
             AddTnamodels.NotroleArr = [],
                 AddTnamodels.L1Arr = [],
                 AddTnamodels.L2Arr = []
-
-            // setdependActCodeList();
         }
 
     }
@@ -959,12 +940,6 @@ function TNAMaster({ name }) {
     }
 
     const save = () => {
-        debugger;
-
-        // alert('Hai save');
-        // if (loader) return
-        //  let a = {}, validation = true
-        // debugger;
         count = 0;
         count1 = 0;
         if (fields.length > 0) {
@@ -972,23 +947,12 @@ function TNAMaster({ name }) {
                 if (item.weightage != '') {
 
                     count = parseInt(count1) + parseInt(item.weightage)
-                    // arrApproved.push(item.id);
                     count1 = count;
-                    //item.approved = 'Y'; else item.approved = 'N';
                     return item;
                 }
-
-
-                //arr = [];
-                // arr1 = arrApproved;
             });
-            // alert(count1);
-            //setPendingList({ arrApproved });
         }
-        if (parseInt(count1) != 100) {
-            message.error(typeof err == "string" ? err : "weightage Should be 100");
-            return
-        }
+
         // fields.forEach(weightage => {
         //     if (AddTnamodels[weightage] !== "") {
 
@@ -1019,6 +983,10 @@ function TNAMaster({ name }) {
                 return
             }
             {
+                if (parseInt(count1) != 100) {
+                    message.error(typeof err == "string" ? err : "weightage Should be 100");
+                    return
+                }
                 //alert(cloneSave);
                 console.log(cloneSave)
                 if (cloneSave) {
@@ -1813,6 +1781,7 @@ function TNAMaster({ name }) {
             //  clearFields();
             let { data } = (buyCode && await getDataById(buyCode, buydivCode, deptcode, locCode, activityType))
             debugger;
+            // alert(data);
             if (!data) {
                 message.error("Data not found")
                 return
