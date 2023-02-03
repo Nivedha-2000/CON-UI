@@ -190,7 +190,7 @@ export default function PartsMasters() {
         setLoader(true);
         await ItrApiService.GET({
             url: 'ProductType/GetProductTypeDropDown',
-            appCode: "ENAPP002"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
@@ -210,7 +210,7 @@ export default function PartsMasters() {
         setLoader(true);
         ItrApiService.GET({
             url: `StyleHeader/GetSubProducttypeDropDown?ProductType=${subProductType}`,
-            appCode: "ENAPP002"
+            appCode: "CNF"
         }).then(res => {
             if (res.Success == true) {
                 setLoader(false);
