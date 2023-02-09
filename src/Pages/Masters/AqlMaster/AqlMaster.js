@@ -14,8 +14,7 @@ import { findDOMNode } from 'react-dom';
 
 
 const requiredFields = ["aqlType", "auditFormat", "unitCode", "buyerCode", "packQtyFrom", "packQtyTo", "sampleSize", "noofCtnsFrom", "noofCtnsTo", "packSamples",
-    //  "sampleSize", "mesurementPcs", "maxAllowVisualDefects", "maxAllowCriticalDefects", "maxAllowSewDefects",
-    //     "maxAllowOthDefects", "maxAllowMesurementDefects"
+    //  "sampleSize", "mesurementPcs", "maxAllowVisualDefects", "maxAllowCriticalDefects", "maxAllowSewDefects", "maxAllowOthDefects", "maxAllowMesurementDefects"
 ],
     requiredFieldsHeader = ["aqlType", "auditFormat", "unitCode", "buyerCode"],
     requiredVisualsample = ["packQtyFrom", "packQtyTo", "sampleSize"],
@@ -255,11 +254,13 @@ export default function AqlMaster() {
         })
     }
     const getUnitCode = () => {
+
         ApiCall({
             path: API_URLS.GET_UNIT_MASTER_LIST
         }).then(resps => {
             try {
-                setUnitCodeList(resps.data.filter(d => d.active == "Y").map(d => ({ uCode: d.uCode, uCode: d.uCode })))
+                setUnitCodeList(resps.data.filter(d => d.active == "Y" ).map(d => ({ uCode: d.uCode, uCode: d.uCode })))
+                //   && d.loccode == document.getElementById("glocation").value
             } catch (e) {
                 message.error("response is not as expected")
             }
@@ -301,7 +302,7 @@ export default function AqlMaster() {
     }
     function AddVisualSamplingPlan(aqlType, auditFormat, unitCode, buyerCode) {
 
-
+        debugger;
 
         let err = {}, validation = true
         requiredFieldsHeader.forEach(f => {
@@ -371,10 +372,10 @@ export default function AqlMaster() {
     }
 
     function AddVisualSamPlan() {
-
+        debugger;
         let err = {}, validation = true
 
-     
+
         requiredVisualsample.forEach(f => {
             if (visualSampling[f] === "") {
                 err[f] = "This field is required"
@@ -411,10 +412,10 @@ export default function AqlMaster() {
                             fields.aqlvmDetlModels.push(visualSampling)
                             console.log(fields);
                             clearFieldsVisualSam();
-                        }else{
+                        } else {
                             message.error("Pack-Qty From start with " + nextpackqtyF)
                         }
-                      
+
                     } else {
                         message.error("Pack-Qty From should be lesser than Pack-Qty To .....!")
                     }
@@ -533,6 +534,7 @@ export default function AqlMaster() {
     }
 
     function UpdateVisualSamPlan() {
+        debugger;
         setAddBtnVisible(true)
         setBtnVisible(false);
         console.log(fields.aqlvmDetlModels.filter(q => q.id == visualSampling.id)[0]);
@@ -541,7 +543,7 @@ export default function AqlMaster() {
 
 
         let toUpdateData = fields.aqlvmDetlModels.map((item) => {
-            if (item.id === visualSampling.id) {
+            if (item.id === visualSampling.id && item.packQtyFrom === visualSampling.packQtyFrom) {
                 item.aqlHead_ID = visualSampling.aqlHead_ID;
                 item.packQtyFrom = visualSampling.packQtyFrom;
                 item.packQtyTo = visualSampling.packQtyTo;
@@ -652,6 +654,7 @@ export default function AqlMaster() {
     }
 
     function AqlMastsave() {
+        debugger;
         //console.log(fields.aqlpkDetlModels.filter(d=>d.noofCtnsFrom>0) && fields.aqlvmDetlModels.filter(a=>a.packQtyFrom>0));
         console.log(fields);
 
@@ -697,6 +700,10 @@ export default function AqlMaster() {
 
     const Measurementvalidation = name => e => {
         let value = e.target.value
+        if (e.target.value == "" || e.target.value == undefined || e.target.value == 0) {
+            setVisualSampling({ ...visualSampling, [name]: 0 })
+        }
+
         if (name === 'mesurementPcs') {
 
             let MP = visualSampling.mesurementPcs;
@@ -721,6 +728,11 @@ export default function AqlMaster() {
     }
     const PackDefectvalidation = name => e => {
         let value = e.target.value
+
+        if (e.target.value == "" || e.target.value == undefined || e.target.value == 0) {
+            setPackAuditSampling({ ...packAuditSampling, [name]: 0 })
+        }
+
         if (name === 'packSamples') {
 
             let PS = packAuditSampling.packSamples;
@@ -749,6 +761,13 @@ export default function AqlMaster() {
 
     const Defvalidation = name => e => {
         let value = e.target.value
+        debugger;
+        // const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
+        if (e.target.value == "" || e.target.value == undefined || e.target.value == 0) {
+            setVisualSampling({ ...visualSampling, [name]: 0 })
+        }
+        // }
+
 
         if (name === 'maxAllowVisualDefects') {
 
@@ -779,7 +798,9 @@ export default function AqlMaster() {
                 return false;
             }
         } else {
-
+            if (e.target.value == "" || e.target.value == undefined || e.target.value == 0) {
+                setVisualSampling({ ...visualSampling, [name]: 0 })
+            }
         }
     }
 
@@ -1010,7 +1031,7 @@ export default function AqlMaster() {
     const NUMBER_IS_FOCUS_IN_ZERO = name => (e) => {
         if (e.target.value == "0" || e.target.value == "" || e.target.value == undefined) {
             //    setprofitPercentList({ ...profitPercentList, [name]: "" });
-            setVisualSampling({ ...visualSampling, [name]: "" })
+            setVisualSampling({ ...visualSampling, [name]: 0 })
         }
     }
     const NUMBER_IS_FOCUS_OUT_ZERO = name => (e) => {
@@ -1198,8 +1219,8 @@ export default function AqlMaster() {
                                         onChange={inputOnChange("maxAllowVisualDefects")}
                                         onBlur={Defvalidation("maxAllowVisualDefects")}
                                         autoComplete="off"
-                                    // onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")}
-                                    // onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
+                                    //  onFocus={NUMBER_IS_FOCUS_IN_ZERO("maxAllowVisualDefects")}
+                                    //  onBlur={NUMBER_IS_FOCUS_OUT_ZERO("maxAllowVisualDefects")}
                                     />
                                     <small className='text-danger'>{visualSampling.maxAllowVisualDefects === '' ? errors.maxAllowVisualDefects : ''}</small>
                                 </div>
@@ -1262,6 +1283,7 @@ export default function AqlMaster() {
                                         disabled={visible}
                                         maxLength="4"
                                         onChange={inputOnChange("mesurementPcs")}
+
                                         autoComplete="off"
                                         onBlur={Measurementvalidation("mesurementPcs")}
                                     />
