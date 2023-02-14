@@ -143,11 +143,11 @@ export default function Sidebar() {
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="1-12" icon={<FontAwesomeIcon icon={faFlagCheckered} size="lg" />}>
-                  <NavLink to="masters/season-master">
-                    <span className='mx-2'>Season Master</span>
+                  <NavLink to="masters/session-master">
+                    <span className='mx-2'>Session Master</span>
                   </NavLink>
                 </Menu.Item>
-
+               
               </SubMenu>
 
               <SubMenu key="3" title="Pre-Production " icon={<img src={production} width="20" />} >

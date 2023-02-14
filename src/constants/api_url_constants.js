@@ -11,7 +11,7 @@ export const API_URLS = {
   GET_PACK_TYPE_MASTER: "PackTypeMaster/GetAllPackTypeMaster",
   GET_PACK_TYPE_MASTER_BY_ID: "PackTypeMaster/GetPackTypeMasterBasedID",
   GET_BUYER_DROPDOWN: "BuyerMaster/GetAllBuyerInfo",
-  GET_BUYER_DIVISION_DROPDOWN: "BuyerDivMaster/GetAllBuyerDivCodeBybuyercode",
+  GET_BUYER_DIVISION_DROPDOWN: "BuyerDivMaster/GetAllBuyerDivCodeBybuyercodeActive",
   SAVE_PACK_TYPE_MASTER: "PackTypeMaster/SavePackTypeMaster",
   SAVE_SHIP_TOLERANCE_MASTER: "ShipToleranceMaster/SaveShipToleranceMaster",
   GET_SHIP_TOLERANCE_MASTER: "ShipToleranceMaster/GetAllShipToleranceMaster",
