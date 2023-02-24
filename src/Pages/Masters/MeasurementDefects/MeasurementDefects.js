@@ -11,12 +11,18 @@ export default function MeasurementDefects() {
 
     const clearFields = () => {
         SetMesmentMaster({
+            ...mesmentmaster,
             isActive: true,
             id: 0,
             isFav: 'Y',
             uom: "",
             deviation: "",
-            active: 'Y'
+            active: 'Y',
+            createdDate: new Date(),
+            createdBy: "",
+            modifiedDate: new Date(),
+            modifiedBy: "",
+
 
         });
         setErrors({ ...errors, uom: '', deviation: '' });
@@ -146,7 +152,7 @@ export default function MeasurementDefects() {
     };
     const [uom, setUom] = useState([]);
     const getDatas = (onCreate, onUpdate) => {
-               ItrApiService.GET({
+        ItrApiService.GET({
             url: 'MesurementDefects/GetAllMesurementDefects',
             appCode: "CNF"
         }).then(res => {
@@ -166,7 +172,7 @@ export default function MeasurementDefects() {
                 //         }
                 //     });
                 //     console.log(uniqueChars);
-               //}
+                //}
                 let loopData = res.data;
                 if (onCreate && onCreate == true) {
                     setPagination({ ...pagination, totalPage: loopData.length / pageSize, minIndex: (Math.ceil(loopData.length / pageSize) - 1) * pageSize, maxIndex: Math.ceil(loopData.length / pageSize) * pageSize, current: Math.ceil(loopData.length / pageSize) });
@@ -185,8 +191,8 @@ export default function MeasurementDefects() {
 
     useEffect(() => {
         getDatas();
-             }, []);
-      
+    }, []);
+
     const [loader, setLoader] = useState(false);
     const [datas, setDatas] = useState([]);
     const [datas2, setDatas2] = useState([]);
@@ -322,7 +328,7 @@ export default function MeasurementDefects() {
                             </div>
                             <input
                                 className='form-control form-control-sm mt-1'
-                                placeholder= {mesmentmaster?.uom == 'INCH' ? '00/00' : mesmentmaster?.uom == 'CM' ? '0.00' :  'Enter Deviation'}
+                                placeholder={mesmentmaster?.uom == 'INCH' ? '00/00' : mesmentmaster?.uom == 'CM' ? '0.00' : 'Enter Deviation'}
                                 value={mesmentmaster.deviation}
                                 onChange={(e) => {
                                     if (mesmentmaster.uom == "INCH") {
@@ -338,7 +344,7 @@ export default function MeasurementDefects() {
                                             SetMesmentMaster({ ...mesmentmaster, deviation: e.target.value })
                                     }
                                     else {
-                                       
+
                                     }
                                 }
                                 }
@@ -396,11 +402,11 @@ export default function MeasurementDefects() {
                 <div className='defect-master-add-new'>
                     <form>
                         <div className='mt-3'>
-                        <div className='d-flex flex-wrap align-items-center justify-content-between'>
+                            <div className='d-flex flex-wrap align-items-center justify-content-between'>
                                 <label>UOM <span className='text-danger'>*  </span> </label>
                                 <small className='text-danger'>{mesmentmaster.uom == '' ? errors.uom : ''}</small>
                             </div>
-                            <select className='form-select form-select-sm mt-1' required
+                            <select className='form-select form-select-sm mt-1' disabled
                                 value={mesmentmaster.uom}
                                 onChange={(e) => {
                                     SetMesmentMaster({ ...mesmentmaster, uom: e.target.value })
@@ -422,10 +428,11 @@ export default function MeasurementDefects() {
                                 <small className='text-danger'>{mesmentmaster.deviation == '' ? errors.deviation : ''}</small>
                             </div>
                             <input
+                                readOnly
                                 className='form-control form-control-sm mt-1'
                                 placeholder="Enter Deviation"
                                 value={mesmentmaster.deviation}
-                               
+
                                 onChange={(e) => {
                                     if (mesmentmaster.uom == "INCH") {
                                         let re = /^(?=.*\d)\d{0,3}(?:\/\d{0,2})?$/;
@@ -440,7 +447,7 @@ export default function MeasurementDefects() {
                                             SetMesmentMaster({ ...mesmentmaster, deviation: e.target.value })
                                     }
                                     else {
-                                      
+
                                     }
                                 }
                                 }
